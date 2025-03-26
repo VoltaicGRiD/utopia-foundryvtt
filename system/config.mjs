@@ -250,6 +250,13 @@ export function registerConfig() {
       tags: ["will", "maintainConcentration", "concentration", "concentrate"],
       label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.MaintainConcentration.label"),
       icon: "fas fa-crosshairs"
+    },
+    appealAgainstHostile: {
+      defaultAttribute: "app",
+      formula: "3d6 + @app.mod",
+      tags: ["appeal", "appealAgainstHostile", "appeal", "hostile"],
+      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.AppealAgainstHostile.label"),
+      icon: "fas fa-user-shield"
     }
   }
 

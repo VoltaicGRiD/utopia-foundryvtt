@@ -48,8 +48,6 @@
       "npc": {}
     },
     "Item": {
-      "advancement": {},
-
       "body": {},
       "kit": {},
       "class": {},
@@ -63,16 +61,9 @@
       "talent": {},
       "talentTree": {},
       "specialistTalent": {},
-      "speciesTalent": {},
 
       "spell": {},
       "spellFeature": {},
-      
-      "armor": {},
-      "artifact": {},
-      "consumable": {},
-      "trinket": {},
-      "weapon": {},
 
       "gear": {},
       "gearFeature": {},

@@ -281,6 +281,26 @@
           "damages": {
             "label": "Damage and Healing",
             "hint": "The damage and healing effects of this action."
+          },
+          "validityCheck": {
+            "label": "Only deal damage if a check is successful",
+            "hint": "If enabled, the damage and effects of this action are only applied if the check is successful."
+          },
+          "validityCheck.enabled": {
+            "label": "Enabled",
+            "hint": "If enabled, the validity check is performed."
+          },
+          "validityCheck.check": {
+            "label": "Check",
+            "hint": "The check to perform."
+          },
+          "validityCheck.favor": {
+            "label": "Apply (Dis)Favor",
+            "hint": "Whether to apply favor to the check."
+          },
+          "validityCheck.difficulty": {
+            "label": "Difficulty",
+            "hint": "The difficulty of the check."
           }
         },
         "Actor": {
@@ -921,10 +941,27 @@
     }
   },
   "TYPES": {
+    "Actor": {
+      "character": "Playable Character",
+      "npc": "Non-Playable Character",
+      "pawn": "Pawn / Creature"
+    },
     "Item": {
+      "action": "Action",
+      "body": "Body",
+      "class": "Class",
+      "favor": "(Dis)Favor",
+      "gear": "Gear",
+      "gearFeature": "Gear Feature",
+      "generic": "Generic",
+      "kit": "Kit",
+      "quirk": "Quirk",
+      "specialistTalent": "Specialist Talent",
+      "species": "Species",
+      "spell": "Spell",
+      "spellFeature": "Spell Feature",
       "talent": "Talent",
-      "talentTree": "Talent Tree",
-      "species": "Species"
+      "talentTree": "Talent Tree"
     },
     "ActiveEffect": {
       "temporary": "Temporary",

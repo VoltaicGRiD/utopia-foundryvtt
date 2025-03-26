@@ -115,24 +115,31 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
 
   /**
    * Assigns attributes to a feature based on the classification key.
+   * If the classification key corresponds to a sub-classification (weapon, armor, or artifact)
+   * and mergeShared is true, it will merge the shared attributes.
+   *
    * @param {object} feature - The feature to update.
    * @param {string} classificationKey - The key to match.
    * @param {object} [options] - Options for assignment.
    * @param {boolean} [options.mergeShared=false] - Whether to merge with the "shared" classification.
    */
   _assignAttributes(feature, classificationKey, { mergeShared = false } = {}) {
-    Object.keys(feature.system.classifications).forEach(key => {
-      if (key === classificationKey) {
-        if (mergeShared && classificationKey === this.weaponType) {
-          feature.system.attributes = foundry.utils.mergeObject(
-            feature.system.classifications[key],
-            feature.system.classifications['shared']
-          );
-        } else {
-          feature.system.attributes = feature.system.classifications[key];
-        }
-      }
-    });
+    // Check if the feature has the desired classification.
+    if (!feature.system.classifications[classificationKey]) return;
+
+    // If mergeShared is enabled and the classification key is one of the sub-classifications,
+    // merge the specific classification with any shared attributes.
+    if (
+      mergeShared &&
+      feature.system.classifications.shared
+    ) {
+      feature.system.attributes = foundry.utils.mergeObject(
+        feature.system.classifications[classificationKey],
+        feature.system.classifications.shared
+      );
+    } else {
+      feature.system.attributes = feature.system.classifications[classificationKey];
+    }
   }
 
   /**
@@ -228,6 +235,13 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
 
     // Update gear attributes based on selected features.
     const gear = await this.updateGear();
+
+    // Process non-selected features: assign attributes.
+    for (const feature of Object.values(this.features)) {
+      if (!this.selected[feature.uuid]) {
+        this._assignAttributes(feature, relevantKey);
+      }
+    }
 
     // Build type data for the context.
     const typeData = {

@@ -64,6 +64,18 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     schema.fullbody = new fields.FilePathField({categories: ["IMAGE", "VIDEO"], required: true}),
 
+    schema.favorLocks = new fields.SchemaField({});
+    schema.favorLocks.fields.blockDisfavor = new fields.SchemaField({});
+    schema.favorLocks.fields.blockFavor = new fields.SchemaField({});
+    for (const [key, value] of Object.entries(CONFIG.UTOPIA.TRAITS)) {
+      schema.favorLocks.fields.blockDisfavor[key] = new fields.BooleanField({ required: true, nullable: false, initial: false });
+      schema.favorLocks.fields.blockFavor[key] = new fields.BooleanField({ required: true, nullable: false, initial: false });
+      for (const subtrait of value.subtraits) {
+        schema.favorLocks.fields.blockDisfavor[subtrait] = new fields.BooleanField({ required: true, nullable: false, initial: false });
+        schema.favorLocks.fields.blockFavor[subtrait] = new fields.BooleanField({ required: true, nullable: false, initial: false });
+      }
+    }
+    
     schema.hitpoints = new fields.SchemaField({
       surface: ResourceField(),
       deep: ResourceField(),
@@ -290,7 +302,9 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     });
     schema.slots = new fields.NumberField({ ...requiredInteger, initial: 0 });
 
-      
+    schema.turnOrder = new fields.SchemaField({
+      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['spd'] }),
+    })
 
     const returns = {};
     const traitOptions = {

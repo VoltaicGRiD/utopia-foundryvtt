@@ -61,6 +61,7 @@ export class Action extends UtopiaItemBase {
     }), { initial: [] });
     
     schema.validityCheck = new UtopiaSchemaField({
+      enabled: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       check: new fields.StringField({ required: true, nullable: false, initial: "agi", choices: allOptions }),
       favor: new fields.BooleanField({ required: true, nullable: false, initial: true }),
       difficulty: new fields.StringField({ required: true, nullable: false, initial: "10", validate: (v) => Roll.validate(v) }),

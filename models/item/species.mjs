@@ -80,9 +80,9 @@ export class Species extends UtopiaItemBase {
       size: new fields.NumberField({ ...required, initial: 12, min: 1 }),
     }); 
 
-    schema.constitution = new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, max: 6, step: 1 });
-    schema.endurance = new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, max: 6, step: 1 });
-    schema.effervescence = new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, max: 6, step: 1 });
+    schema.constitution = new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, max: 8, step: 1 });
+    schema.endurance = new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, max: 8, step: 1 });
+    schema.effervescence = new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, max: 8, step: 1 });
 
     schema.quirkPoints = new fields.NumberField({ required: true, nullable: false, initial: 0 });
 

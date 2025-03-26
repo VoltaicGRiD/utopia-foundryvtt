@@ -11,6 +11,7 @@
       <input type="text" name="filter" class="filter" value="{{filter}}" placeholder="{{localize 'UTOPIA.CommonTerms.filter'}}" />
       <ol class="feature-list">
         {{#each features as |feature key|}}
+          {{log feature}}
           <li class="feature available-feature {{#if (eq feature.hidden true)}}hidden{{/if}}" 
           data-name="{{feature.name}}" 
           style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
@@ -25,7 +26,7 @@
             <span class="feature-name">
               <span data-tooltip="{{feature.system.description}}" data-tooltip-direction="DOWN"><i class="fa-fw fa-solid fa-circle-info"></i></span>
               {{feature.name}} 
-              (<span id="cost" class="cost">{{feature.cost}}</span>)
+              (<span id="cost" class="cost">{{feature.system.attributes.costFormula}}</span>)
             </span> 
           </li>
         {{/each}}

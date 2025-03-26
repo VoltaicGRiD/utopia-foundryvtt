@@ -105,7 +105,18 @@
     var(--utopia-artistry-divination) 85.7143%,
     var(--utopia-artistry-wake) 100%);
 
-  --utopia-artifice-background: #053019;
+  --utopia-artifice-dark: #053019;
+  --utopia-artifice-light: #546e24;
+
+  --utopia-artifice-background: linear-gradient(180deg,
+    var(--utopia-artifice-dark) 0%,
+    var(--utopia-artifice-light) 50%,
+    var(--utopia-artifice-dark) 100%);
+
+  --utopia-artifice-header: linear-gradient(90deg,
+    var(--utopia-artifice-dark) 0%,
+    var(--utopia-artifice-light) 50%,
+    var(--utopia-artifice-dark) 100%);
   
   --utopia-capacity-container-background-color: oklch(57.5% 0.012 101);
   --utopia-capacity-container-border-color: oklch(20.8% 0.01 98);

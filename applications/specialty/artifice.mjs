@@ -1,10 +1,15 @@
-const { api, sheets } = foundry.applications;
-
-//import { gatherSpellFeatures, gatherSpells } from '../../helpers/gatherSpells.mjs';
 import { gatherItems } from '../../system/helpers/gatherItems.mjs';
+import { isNumeric } from '../../system/helpers/isNumeric.mjs';
 import { getTextContrast } from '../../system/helpers/textContrast.mjs';
 
+const { api } = foundry.applications;
+
+/**
+ * Class representing the Artifice Sheet.
+ * Extends the Foundry ApplicationV2 with Handlebars mixin.
+ */
 export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.ApplicationV2) {
+  // Class properties
   selected = {};
   allFeatures = {};
   features = {};
@@ -14,27 +19,36 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
   items = [];
   featureSettings = {};
 
+  /**
+   * Creates an instance of ArtificeSheet.
+   * @param {object} options - Options for the sheet.
+   */
   constructor(options = {}) {
     super(options);
+    this.type = "";
+    this.weaponType = "";
+    this.armorType = "";
+    this.artifactType = "";
   }
 
+  // Default options for the application.
   static DEFAULT_OPTIONS = {
     classes: ["utopia", "artifice"],
     position: {
-      width: 1300,
+      width: 870,
       height: 800,
     },
     actions: {
       image: this._image,
-      saveAndCast: this._saveAndCast,
       save: this._save,
-      cast: this._cast,
+      chat: this._chat, 
     },
     window: {
       title: "UTOPIA.SheetLabels.artifice",
     },
   };
 
+  // Template parts for the application.
   static PARTS = {
     content: {
       template: "systems/utopia/templates/specialty/artifice.hbs",
@@ -42,53 +56,251 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     },
   };
 
+  /**
+   * Configures render options.
+   * @param {object} options - Render options.
+   */
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
     options.parts = ["content"];
   }
 
+  /**
+   * Centralized logging method.
+   * @param {string} message - The log message.
+   * @param {...any} args - Additional data to log.
+   */
+  _log(message, ...args) {
+    console.log(`[ArtificeSheet] ${message}`, ...args);
+  }
+
+  /**
+   * Centralized error logging method.
+   * @param {string} message - The error message.
+   * @param {...any} args - Additional data to log.
+   */
+  _error(message, ...args) {
+    console.error(`[ArtificeSheet ERROR] ${message}`, ...args);
+  }
+
+  /**
+   * Builds a localized choices object from field choices.
+   * @param {object} choices - The raw choices from the schema.
+   * @returns {object} Localized choices.
+   */
+  _buildLocalizedChoices(choices) {
+    const localized = {};
+    Object.entries(choices).forEach(([key, value]) => {
+      localized[key] = game.i18n.localize(value);
+    });
+    return localized;
+  }
+
+  /**
+   * Determines the relevant classification key based on this.type.
+   * @returns {string} The classification key.
+   */
+  _getRelevantClassificationKey() {
+    switch (this.type) {
+      case "weapon":
+        return this.weaponType;
+      case "armor":
+        return this.armorType;
+      case "artifact":
+        return this.artifactType;
+      default:
+        return this.type;
+    }
+  }
+
+  /**
+   * Assigns attributes to a feature based on the classification key.
+   * @param {object} feature - The feature to update.
+   * @param {string} classificationKey - The key to match.
+   * @param {object} [options] - Options for assignment.
+   * @param {boolean} [options.mergeShared=false] - Whether to merge with the "shared" classification.
+   */
+  _assignAttributes(feature, classificationKey, { mergeShared = false } = {}) {
+    Object.keys(feature.system.classifications).forEach(key => {
+      if (key === classificationKey) {
+        if (mergeShared && classificationKey === this.weaponType) {
+          feature.system.attributes = foundry.utils.mergeObject(
+            feature.system.classifications[key],
+            feature.system.classifications['shared']
+          );
+        } else {
+          feature.system.attributes = feature.system.classifications[key];
+        }
+      }
+    });
+  }
+
+  /**
+   * Prepares the context for rendering the sheet.
+   * @param {object} options - Options passed to the sheet.
+   * @returns {object} The prepared context.
+   */
   async _prepareContext(options) {
-    const features = await gatherItems({ type: "gearFeature", gatherFromActor: false });
+    // Gather gear features.
+    const features = await gatherItems({ type: "gearFeature", gatherFromActor: false, gatherFolders: false });
     this.features = features;
 
-    const context = {
-      features: features,
-      selected: this.selected,
+    // Build localized choice objects.
+    const fields = CONFIG.Item.dataModels.gear.schema.fields;
+    const types = this._buildLocalizedChoices(fields.type.choices);
+    const weaponTypes = this._buildLocalizedChoices(fields.weaponType.choices);
+    const armorTypes = this._buildLocalizedChoices(fields.armorType.choices);
+    const artifactTypes = this._buildLocalizedChoices(fields.artifactType.choices);
+
+    // If an item is provided, set the type and subtypes.
+    const item = options.item ?? null;
+    if (item) {
+      this.type = item.system.type;
+      this.weaponType = item.system.weaponType;
+      this.armorType = item.system.armorType;
+      this.artifactType = item.system.artifactType;
     }
 
-    console.log(context);
-    console.log(this);
+    // Filter features based on the type.
+    let filteredFeatures = [];
+    switch (this.type) {
+      case "weapon":
+        filteredFeatures = features.filter(f =>
+          ["fastWeapon", "moderateWeapon", "slowWeapon"].some(r =>
+            Object.keys(f.system.classifications).includes(r)
+          )
+        );
+        break;
+      case "armor":
+        filteredFeatures = features.filter(f =>
+          ["headArmor", "chestArmor", "waistArmor", "handsArmor", "feetArmor"].some(r =>
+            Object.keys(f.system.classifications).includes(r)
+          )
+        );
+        break;
+      case "shield":
+        filteredFeatures = features.filter(f =>
+          ["shield", "shields"].some(r =>
+            Object.keys(f.system.classifications).includes(r)
+          )
+        );
+        break;
+      case "consumable":
+        filteredFeatures = features.filter(f =>
+          ["consumable"].some(r =>
+            Object.keys(f.system.classifications).includes(r)
+          )
+        );
+        break;
+      case "artifact":
+        filteredFeatures = features.filter(f =>
+          ["ammunitionArtifact", "equippableArtifact", "handheldArtifact", "artifact"].some(r =>
+            Object.keys(f.system.classifications).includes(r)
+          )
+        );
+        break;
+      default:
+        break;
+    }
+
+    // Process selected features: assign attributes.
+    const relevantKey = this._getRelevantClassificationKey();
+    for (const feature of Object.values(this.selected)) {
+      this._assignAttributes(feature, relevantKey);
+      const uuid = feature.uuid ?? feature._uuid;
+      if (!uuid && this.featureSettings[feature.uuid]) {
+        this.featureSettings[feature.uuid].stacks.maximum = feature.system.attributes.maxStacks;
+      }
+    }
+
+    // Process available features: assign attributes (merge shared for weapons).
+    for (const feature of Object.values(this.features)) {
+      this._assignAttributes(feature, relevantKey, { mergeShared: (this.type === "weapon") });
+    }
+    
+    // Process stacks for each selected feature.
+    for (const feature of Object.values(this.selected)) {
+      const uuid = feature.uuid ?? feature._uuid;
+      const featureResponse = await this.processStacks(feature, this.featureSettings[uuid].stacks.value);
+      feature.system.final = featureResponse;
+      this._log("Processed feature stacks:", featureResponse);
+    }
+
+    // Update gear attributes based on selected features.
+    const gear = await this.updateGear();
+
+    // Build type data for the context.
+    const typeData = {
+      type: this.type,
+      weaponType: this.weaponType,
+      armorType: this.armorType,
+      artifactType: this.artifactType,
+      types: types,
+      weaponTypes: weaponTypes,
+      armorTypes: armorTypes,
+      artifactTypes: artifactTypes,
+    };
+
+    const context = {
+      features: filteredFeatures,
+      featureSettings: this.featureSettings,
+      selected: this.selected,
+      systemFields: CONFIG.Item.dataModels.gear.schema.fields,
+      ...typeData,
+      ...gear,
+    };
+
+    this._log("Context prepared", context);
+    this._log("Sheet instance", this);
 
     return context;
   }
 
+  /**
+   * Prepares additional context for a specific part.
+   * @param {string} partId - The part identifier.
+   * @param {object} context - The current context.
+   * @returns {object} The updated context.
+   */
   async _preparePartContext(partId, context) {
     if (partId === "column") {
+      // Placeholder for future column-specific context modifications.
     }
-
     return context;
   }
 
+  /**
+   * Sets up event listeners after the sheet is rendered.
+   * @param {object} context - The render context.
+   * @param {object} options - Render options.
+   */
   async _onRender(context, options) {
-    const available = this.element.querySelectorAll(".available-feature");
-    available.forEach(f => {
+    // Setup select element change listeners.
+    this.element.querySelectorAll("select[data-action='update']").forEach(s => {
+      s.addEventListener("change", async (event) => {
+        this._update(event, s);
+      });
+    });
+
+    // Setup drag-and-drop for available features.
+    this.element.querySelectorAll(".available-feature").forEach(f => {
       f.draggable = true;
       f.addEventListener("dragstart", (event) => {
-        event.dataTransfer.setData("text", JSON.stringify({id: f.dataset.id, type: "feature"}));
+        event.dataTransfer.setData("text", JSON.stringify({ id: f.dataset.id, type: "feature" }));
       });
     });
 
-    const items = this.element.querySelectorAll(".gear");
-    items.forEach(s => {
+    // Setup drag-and-drop for gear items.
+    this.element.querySelectorAll(".gear").forEach(s => {
       s.draggable = true;
       s.addEventListener("dragstart", (event) => {
-        event.dataTransfer.setData("text", JSON.stringify({id: s.dataset.id, type: "gear"}));
+        event.dataTransfer.setData("text", JSON.stringify({ id: s.dataset.id, type: "gear" }));
       });
     });
 
-    const features = this.element.querySelectorAll(".feature");    
-    features.forEach(f => {
-      f.addEventListener("mouseover", (event) => {
+    // Setup hover listeners on features for showing/hiding controls.
+    this.element.querySelectorAll(".feature").forEach(f => {
+      f.addEventListener("mouseover", () => {
         const list = f.closest("ol");
         if (list.classList.contains("selected-feature-list")) {
           f.querySelector(".remove-feature").classList.remove("hidden");
@@ -97,7 +309,7 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
           f.querySelector(".favorite-feature").classList.remove("hidden");
         }
       });
-      f.addEventListener("mouseout", (event) => {
+      f.addEventListener("mouseout", () => {
         const list = f.closest("ol");
         if (list.classList.contains("selected-feature-list")) {
           f.querySelector(".remove-feature").classList.add("hidden");
@@ -108,62 +320,55 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       });
     });
 
-    const removeButtons =
-     this.element.querySelectorAll(".remove-feature");
-    removeButtons.forEach(b => {
+    // Setup remove-feature button listeners.
+    this.element.querySelectorAll(".remove-feature").forEach(b => {
       b.addEventListener("click", (event) => {
         const id = event.target.closest("li").dataset.id;
-
         delete this.selected[id];
-        
         this.render();
       });
     });
 
-    const favoriteButtons = this.element.querySelectorAll(".favorite-feature");
-    favoriteButtons.forEach(b => {
+    // Setup favorite-feature button listeners.
+    this.element.querySelectorAll(".favorite-feature").forEach(b => {
       b.addEventListener("click", async (event) => {
-        const name = event.target.closest("li").dataset.name;
-        const id = event.target.closest("li").dataset.id;
+        const li = event.target.closest("li");
+        const id = li.dataset.id;
         const feature = this.features[id];
         if (feature.favorite === true) {
           await this.removeFavorite(feature);
-          this.render();
         } else {
           await this.addFavorite(feature);
-          this.render();
         }
+        this.render();
       });
     });
 
-    this.element.addEventListener("dragover", (event) => {
+    // Setup drag events on the main element for styling.
+    this.element.addEventListener("dragover", () => {
       this.element.querySelector('.gear-panel').classList.add("dragging");
     });
-    this.element.addEventListener("dragleave", (event) => {
+    this.element.addEventListener("dragleave", () => {
       this.element.querySelector('.gear-panel').classList.remove("dragging");
     });
-    this.element.addEventListener("drop", (event) => {
+    this.element.addEventListener("drop", () => {
       this.element.querySelector('.gear-panel').classList.remove("dragging");
     });
 
-    const gearFeaturesList = document.querySelector('.feature-list');
-    const itemHeight = 25; // Height of each item
-    const itemGap = 5; // Gap between items
-    const scrollAmount = itemHeight + itemGap; // Total scroll amount per item
-
+    // Setup scroll listener for feature list.
+    const gearFeaturesList = this.element.querySelector('.feature-list');
+    const itemHeight = 25;
+    const itemGap = 5;
+    const scrollAmount = itemHeight + itemGap;
     gearFeaturesList.addEventListener('wheel', (event) => {
       event.preventDefault();
       const delta = Math.sign(event.deltaY);
-      gearFeaturesList.scrollBy({
-        top: delta * scrollAmount,
-        behavior: 'auto'
-      });
+      gearFeaturesList.scrollBy({ top: delta * scrollAmount, behavior: 'auto' });
     });
 
+    // Setup drag-and-drop for gear panel.
     const gear = this.element.querySelector(".gear-panel");
-    gear.addEventListener("dragover", (event) => {
-      event.preventDefault();
-    });
+    gear.addEventListener("dragover", (event) => event.preventDefault());
     gear.addEventListener("drop", async (event) => {
       event.preventDefault();
       const data = JSON.parse(event.dataTransfer.getData("text"));
@@ -171,14 +376,12 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
         const id = data.id;
         const feature = this.features[id];
         const selectedId = foundry.utils.randomID();
-        this.selected ??= {};
         this.selected[selectedId] = feature;
-        const uuid = feature.uuid ?? feature._uuid ?? undefined
-        if (uuid === undefined) 
-          return ui.notifications.error("This feature cannot be added to a gear.");
-        if (!feature) 
-          return ui.notifications.error("This feature does not exist.");
-        
+        const uuid = feature.uuid ?? feature._uuid;
+        if (!uuid) return ui.notifications.error("This feature cannot be added to a gear.");
+        if (!feature) return ui.notifications.error("This feature does not exist.");
+
+        // Set default feature settings.
         this.featureSettings[uuid] = { 
           stacks: {
             variableName: "stacks",
@@ -189,10 +392,8 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
             value: 1
           }
         };
-
         this.render();
-      }
-      else if (data.type === "gear") {
+      } else if (data.type === "gear") {
         const id = data.id;
         const gear = this.worldSpells[id];
         if (!gear) return;
@@ -201,427 +402,169 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       }
     });
 
-    const name = this.element.querySelector("input[name='name']");
-    name.addEventListener("change", (event) => {
+    // Setup input listeners.
+    this.element.querySelector("input[name='name']").addEventListener("change", (event) => {
       this.name = event.target.value;
     });
-
-    const textVariables = this.element.querySelectorAll("input[class='feature-variable-text']");
-    textVariables.forEach(v => {
+    this.element.querySelectorAll("input[type='number']").forEach(v => {
       v.addEventListener("change", async (event) => {
         const featureItem = event.target.closest("li");
         const featureId = featureItem.dataset.id;
-        const variableId = event.target.dataset.variable;
-        const value = event.target.value;
-        
-        const parentList = event.target.closest("ol");
-        const isSelected = parentList.classList.contains("selected-feature-list");
-        const selected = isSelected ? this.selected : this.features;
-        const feature = isSelected ? await fromUuid(selected.find(f => f === featureId)) : selected[featureId];
-
-        const variable = feature.system.variables[variableId];
-        variable.value = value;
-        this.featureSettings[feature.uuid][variable.name] = variable;
-        
-        this.render();
-      });
-    });
-
-    const numVariables = this.element.querySelectorAll("input[type='number']");
-    numVariables.forEach(v => {
-      v.addEventListener("change", async (event) => {
-        const featureItem = event.target.closest("li");
-        const featureId = featureItem.dataset.id;
-        const variableId = event.target.dataset.variable;
-        const value = event.target.value;
-
-        const parentList = event.target.closest("ol");
-        const isSelected = parentList.classList.contains("selected-feature-list");
-        const selected = isSelected ? this.selected : this.features;
-        const feature = isSelected ? await fromUuid(selected.find(f => f === featureId)) : selected[featureId];
-
-        const variable = feature.system.variables[variableId];        
-        variable.value = parseInt(value);
-        this.featureSettings[featureId][variable.name] = variable;
-
-        this.render();
-      });
-    });
-
-    const optVariables = this.element.querySelectorAll(".feature-variable-options");
-    optVariables.forEach(v => {
-      v.addEventListener("click", async (event) => {
-        const featureItem = event.target.closest("li");
-        const featureId = featureItem.dataset.id;
-        const variableId = event.target.dataset.variable;
-        const parentList = event.target.closest("ol");
-        const isSelected = parentList.classList.contains("selected-feature-list");
-        const selected = isSelected ? this.selected : this.features;
-        const feature = isSelected ? await fromUuid(selected.find(f => f === featureId)) : selected[featureId];
-        const name = feature.system.variables[variableId].name;
-        const options = feature.system.variables[variableId].options.split(',');   
-        const value = feature.system.variables[variableId].value || options[0];
-        const description = feature.system.variables[variableId].description || "No description provided.";
-        const template = await renderTemplate(
-          'systems/utopia/templates/dialogs/variable-options.hbs', 
-          {name: name, description: description, options: options, selected: value}
-        );
-
-        new api.DialogV2({
-          window: {title: `Options for ${name}`},
-          content: template,
-          buttons: [{
-            action: "save",
-            label: "Save",
-            default: true,
-            callback: (event, button, dialog) => button.form.elements["variable-option"].value
-          }],
-          submit: result => {
-            const variable = feature.system.variables[variableId];
-            event.target.style.backgroundColor = "#90c96b";
-            event.target.style.color = "#000";
-            event.target.innerHTML = `&#x2713`;
-            variable.value = result;
-            this.featureSettings[featureId][variable.name] = variable;
-          }
-        }).render(true);
-      });
-    });
-
-    const formulaDown = this.element.querySelectorAll(".formula-down");
-    formulaDown.forEach(f => {
-      f.addEventListener("click", async (event) => {
-        const featureId = event.target.dataset.feature;
         const feature = this.selected[featureId];
-        let currentFormula = feature.currentFormula;
-        const options = Object.values(feature.formulaOptions)[0];
-
-        if (currentFormula === 0) return;
-        else currentFormula--;
-
-        this.selected[featureId].currentFormula = currentFormula;
-        this.selected[featureId].customFormula = true;
-        
+        const uuid = feature.uuid ?? feature._uuid;
+        const value = parseInt(event.target.value);
+        this.featureSettings[uuid].stacks.value = value;
         this.render();
       });
     });
-
-    const formulaUp = this.element.querySelectorAll(".formula-up");
-    formulaUp.forEach(f => {
-      f.addEventListener("click", async (event) => {
-        const featureId = event.target.dataset.feature;
-        const feature = this.selected[featureId];
-        let currentFormula = feature.currentFormula;
-        const options = Object.values(feature.formulaOptions)[0];
-
-        if (currentFormula === options.length - 1) return;
-        else currentFormula++;
-
-        this.selected[featureId].currentFormula = currentFormula;
-        this.selected[featureId].customFormula = true;
-
-        this.render();
-      });
-    });
-
-    const artistries = this.element.querySelectorAll(".artistry");
-    artistries.forEach(a => {
-      a.addEventListener("click", (event) => {
-        const artistry = event.target.dataset.name;
-        const features = this.artistries[artistry].features;
-        const active = event.target.classList.contains("active");
-        if (active) {
-          event.target.classList.remove("active");
-          if (!this.filter.includes("!"+artistry))
-            this.filter += "!"+artistry;
-          Object.keys(features).forEach(f => {
-            });
-        } else {
-          event.target.classList.add("active");
-          if (this.filter.includes("!"+artistry))
-            this.filter = this.filter.replace("!"+artistry, "");
-          Object.keys(features).forEach(f => {
-            
-          });
-        }
-
-        this.render();
-      });
-    });
-
-    const filter = this.element.querySelector("input[name='filter']");
-    filter.addEventListener("change", (event) => {
+    this.element.querySelector("input[name='filter']").addEventListener("change", (event) => {
       this.filter = event.target.value;
       this.render();
     });
-
-    const flavor = this.element.querySelector("textarea[name='flavor']");
-    flavor.addEventListener("change", (event) => {
+    this.element.querySelector("textarea[name='flavor']").addEventListener("change", (event) => {
       this.flavor = event.target.value;
       this.render();
     });
-  };
+  }
 
-  async updateSpell() {
-    this.duration = 0;
-    this.range = 0;
-    this.aoe = "None";
-    this.cost = 0;
+  /**
+   * Updates the gear based on selected features.
+   * @returns {object} An object containing calculated gear attributes.
+   */
+  async updateGear() {
+    const item = new Item({ name: this.name ?? "Unnamed Gear", type: "gear", system: {} });
+    const costs = {};
+    const relevantKey = this._getRelevantClassificationKey();
 
-    const features = await Promise.all(this.selected.map(async i => {
-      return await fromUuid(i);
-    }));
-
-    let ppCost = 0;
-    let staminaCost = 0;
-    for (let feature of features) {
-      feature.stacks = this.featureSettings[feature.uuid]?.stacks?.value ?? 1;
-      feature.costVariable = this.featureSettings[feature.uuid]?.cost?.value ?? 1;
-      feature.cost = feature.system.cost;
-
-      ppCost += feature.cost * feature.stacks * feature.costVariable;
-      
-      // Manage gear range 
-      if (feature.system.modifies === "range") {
-        let range = feature.system.modifiedRange.value;
-
-        // If range is 0, we assume the feature is indicating that the variable is the parsing data
-        if (range === 0) {
-          range = 1;
-        }
-
-        // If the range is variable, multiply it by the variable value
-        if (
-          feature.system.modifiedRange.variable && 
-          feature.system.modifiedRange.variable !== "X" &&
-          feature.system.variables[feature.system.modifiedRange.variable]
-        ) {
-          range *= feature.system.variables[feature.system.modifiedRange.variable].value;
-        } 
-
-        // If the range is variable and the variable is "X", multiply it by the cost variable
-        else if (
-          feature.system.modifiedRange.variable && 
-          feature.system.modifiedRange.variable === "X"
-        ) {
-          range *= feature.system.variables["cost"].value ?? 1;
-        }
-
-        // If the range is in kilometers, convert it to meters
-        if (feature.system.modifiedRange.unit === "kilometers") {
-          range *= 1000;
-        }
-
-        range = range * feature.stacks;
-
-        this.range += range;
-      }
-
-      // Manage gear duration
-      if (feature.system.modifies === "duration") {
-        let duration = feature.system.modifiedDuration.value;
-
-        // If duration is 0, we assume the feature is indicating that the variable is the parsing data
-        if (duration === 0) {
-          duration = 1;
-        }
-
-        // If the duration is variable, multiply it by the variable value
-        if (
-          feature.system.modifiedDuration.variable && 
-          feature.system.modifiedDuration.variable !== "X" &&
-          feature.system.variables[feature.system.modifiedDuration.variable]
-        ) {
-          duration *= feature.system.variables[feature.system.modifiedDuration.variable].value;
-        } 
-        
-        // If the duration is variable and the variable is "X", multiply it by the cost variable
-        else if (
-          feature.system.modifiedDuration.variable && 
-          feature.system.modifiedDuration.variable === "X"
-        ) {
-          duration *= feature.system.variables["cost"].value;
-        }
-
-        let unit = feature.system.modifiedDuration.unit;
-        switch (unit) {
-          case "turns": duration *= 6; break;
-          case "minutes": duration *= 60; break;
-          case "hours": duration *= 3600; break;
-          case "days": duration *= 86400; break;
-          case "months": duration *= 2592000; break;
-          case "years": duration *= 31536000; break;
-        }
-
-        duration = duration * feature.stacks;
-
-        this.duration += duration;
-      }
-
-      // Manage gear area of effect
-      if (feature.system.modifies === "aoe") {
-        let aoe = feature.system.modifiedAoE.value;
-
-        // If aoe is 0, we assume the feature is indicating that the variable is the parsing data
-        if (aoe === 0) {
-          aoe = 1;
-        }
-
-        // If the aoe is variable, multiply it by the variable value
-        if (
-          feature.system.modifiedAoE.variable && 
-          feature.system.modifiedAoE.variable !== "X" &&
-          feature.system.variables[feature.system.modifiedAoE.variable]
-        ) {
-          aoe *= feature.system.variables[feature.system.modifiedAoE.variable].value;
-        } 
-        
-        // If the aoe is variable and the variable is "X", multiply it by the cost variable
-        else if (
-          feature.system.modifiedAoE.variable && 
-          feature.system.modifiedAoE.variable === "X"
-        ) {
-          aoe *= feature.system.variables["cost"].value ?? 1;
-        }
-
-        let type = feature.system.modifiedAoE.type;
-        let output = "";
-        if (type === "template") {
-          let shape = feature.system.modifiedAoE.shape;
-
-          switch (shape) {
-            case "circle": output = "radius"; break;
-            case "cone": output = "angle"; break;
-            case "rectangle": output = "width x height"; break;
-            case "ray": output = "length"; break;
-          }  
-        }
-        else if (type === "point") {
-          output = "Target Point";
-        }
-        else if (type === "attach") {
-          output = "Attached";
-        }
-
-        this.aoe += `${aoe}m ${output}`;
+    // Merge attributes and costs from each selected feature.
+    for (const feature of Object.values(this.selected)) {
+      if (feature.system.final) {
+        // Merge attributes.
+        Object.entries(feature.system.final).forEach(([key, value]) => {
+          item.system[key] = value;
+        });
+        // Merge costs.
+        Object.entries(feature.system.costs[relevantKey]).forEach(([key, value]) => {
+          costs[key] = value;
+        });
       }
     }
 
-    staminaCost = Math.ceil(ppCost / 10);
-    this.cost = staminaCost;
+    const damage = item.system.damage ?? "N/A";
+    const formula = item.system.formula ?? "N/A";
+    const close = item.system.closeRange ?? 0;
+    const far = item.system.farRange ?? 0;
+    const range = `${close}/${far}`;
+    const aoe = "N/A";
+    const rarityOut = "TODO";
 
-    this.prepareFormulaOptions();
+    return { damage, formula, aoe, range, rarity: rarityOut };
   }
 
+  /**
+   * Updates a property based on a select input change.
+   * @param {Event} event - The change event.
+   * @param {HTMLElement} target - The select element.
+   */
+  async _update(event, target) {
+    this[target.name] = target.selectedOptions[0].value;
+    this.render(true);
+  }
+
+  /**
+   * Saves the current gear configuration.
+   */
   static async _save() {
     if (Object.keys(this.selected).length === 0) return;
 
-    let selected = this.selected;
-    let name = this.name;
-    let duration = this.duration;
-    let range = this.range;
-    let aoe = this.aoe;
-    let flavor = this.flavor;
-    let cost = this.cost;
-
-    let gear = {
-      name: name,
+    const { selected, name, duration, range, aoe, flavor, cost } = this;
+    const gear = {
+      name,
       type: "gear",
       system: {
         features: selected,
-        duration: duration,
-        range: range,
-        aoe: aoe,
-        flavor: flavor,
-        cost: cost,
-      }
-    }
+        duration,
+        range,
+        aoe,
+        flavor,
+        cost,
+      },
+    };
 
-    console.log(this);
+    this._log("Saving gear", gear);
 
     if (this.actor && Object.keys(this.actor).length > 0) {
       await this.actor.createEmbeddedDocuments("Item", [gear]);
-    }
-    else if (this.items.length === 1) { // We need to update the current gear instead
+    } else if (this.items.length === 1) {
+      // Update existing gear.
       await this.items[0].update({
-        name: name,
+        name,
         system: {
           features: selected,
-          duration: duration,
-          range: range,
-          aoe: aoe,
-          flavor: flavor,
-          cost: cost,
-        }
+          duration,
+          range,
+          aoe,
+          flavor,
+          cost,
+        },
       });
-    }
-    else {
+    } else {
       const doc = await Item.create(gear);
       await game.packs.get('utopia.items').importDocument(doc);
       await doc.delete();
     }
-
     this.render();
   }
 
+  /**
+   * Filters available features based on the filter input.
+   */
   async applyFilter() {
-    let terms = [];
-    if (this.filter.includes(" ")) 
-      terms = this.filter.split(" ");
-    else 
-      terms.push(this.filter);
-
+    let terms = this.filter.includes(" ") ? this.filter.split(" ") : [this.filter];
     const availableFeatures = this.features;
     const remainingFeatures = {};
-    const keys = Object.keys(availableFeatures);
-    keys.forEach(k => {
-      const feature = availableFeatures[k];
-    
+
+    Object.values(availableFeatures).forEach(feature => {
       if (terms.length === 0 || terms[0] === "") {
         remainingFeatures[feature.uuid] = feature;
       } else {
-        // Now we need to check to see if the feature matches the terms
+        // Check if the feature matches the filter terms.
         const matches = terms.map(t => {
           let isInverse = false;
           if (t.startsWith("!")) {
             isInverse = true;
             t = t.substring(1);
           }
-      
-          const name = feature.name.toLowerCase().includes(t.toLowerCase());
-          const description = feature.system.description.toLowerCase().includes(t.toLowerCase());
-          const variables = feature.system.variables.length > 0 ? Object.values(feature.system.variables).some(v => v.name.toLowerCase().includes(t.toLowerCase())) : false;
-          const variableOptions = Object.values(feature.system.variables).some(v => {
+          const nameMatch = feature.name.toLowerCase().includes(t.toLowerCase());
+          const descriptionMatch = feature.system.description.toLowerCase().includes(t.toLowerCase());
+          const variablesMatch = feature.system.variables.length > 0 &&
+            Object.values(feature.system.variables).some(v => v.name.toLowerCase().includes(t.toLowerCase()));
+          const variableOptionsMatch = Object.values(feature.system.variables).some(v => {
             if (!v.options) return false;
-            let options = v.options;
-            if (typeof v.options === "string") {
-              options = v.options.split(',');
-            }
+            let options = typeof v.options === "string" ? v.options.split(',') : v.options;
             return options.some(o => o.toLowerCase().includes(t.toLowerCase()));
           });
-          const cost = feature.cost.toString().toLowerCase().includes(t.toLowerCase());
-          const duration = feature.system.modifies == "duration" ? feature.system.modifiedDuration.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
-          const range = feature.system.modifies == "range" ? feature.system.modifiedRange.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
-          const aoe = feature.system.modifies == "aoe" ? feature.system.modifiedAoE.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
-      
-          const criteria = [name, description, variables, variableOptions, cost, duration, range, aoe];
-      
-          if (isInverse) {
-            return !criteria.some(Boolean);
-          } else {
-            return criteria.includes(true);
-          }
+          const costMatch = feature.cost.toString().toLowerCase().includes(t.toLowerCase());
+          const durationMatch = feature.system.modifies === "duration" ?
+            feature.system.modifiedDuration.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
+          const rangeMatch = feature.system.modifies === "range" ?
+            feature.system.modifiedRange.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
+          const aoeMatch = feature.system.modifies === "aoe" ?
+            feature.system.modifiedAoE.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
+          const criteria = [nameMatch, descriptionMatch, variablesMatch, variableOptionsMatch, costMatch, durationMatch, rangeMatch, aoeMatch];
+          return isInverse ? !criteria.some(Boolean) : criteria.includes(true);
         });
-      
         if (matches.some(Boolean)) {
           remainingFeatures[feature.uuid] = feature;
         }
       }
     });
-
     this.remainingFeatures = remainingFeatures;
   }
 
+  /**
+   * Parses spell duration and range into human-readable outputs.
+   */
   async parseSpell() {
     if (this.duration === 0) {
       this.durationOut = "Instant";
@@ -630,61 +573,51 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       if (this.duration >= 6 && this.duration % 6 === 0 && this.duration < 60) {
         this.duration /= 6;
         unit = "turns";
-      }
-      else if (this.duration >= 60 && this.duration < 3600) {
+      } else if (this.duration >= 60 && this.duration < 3600) {
         this.duration /= 60;
         unit = "minutes";
-      }
-      else if (this.duration >= 3600 && this.duration < 86400) {
+      } else if (this.duration >= 3600 && this.duration < 86400) {
         this.duration /= 3600;
         unit = "hours";
-      }
-      else if (this.duration >= 86400 && this.duration < 2592000) {
+      } else if (this.duration >= 86400 && this.duration < 2592000) {
         this.duration /= 86400;
         unit = "days";
-      }
-      else if (this.duration >= 2592000 && this.duration < 31536000) {
+      } else if (this.duration >= 2592000 && this.duration < 31536000) {
         this.duration /= 2592000;
         unit = "months";
-      }
-      else if (this.duration >= 31536000) {
+      } else if (this.duration >= 31536000) {
         this.duration /= 31536000;
         unit = "years";
       }
-     
       this.durationOut = `${this.duration} ${unit}`;
     }
-    if (this.range === 0) {
-      this.rangeOut = "Touch";
-    } else {
-      this.rangeOut = `${this.range}m`;
-    }
+    this.rangeOut = this.range === 0 ? "Touch" : `${this.range}m`;
   }
 
+  /**
+   * Adds a spell (gear) to the sheet.
+   * @param {object} gear - The gear to add.
+   */
   async addSpell(gear) {
     this.items.push(gear);
     if (this.items.length === 1) {
       this.selected = gear.system.features;
       this.name = gear.name;
       this.flavor = gear.system.flavor;
-      if (!this.actor) this.actor = gear.actor;
-      if (!this.actor) this.actor = game.user.character;
-      if (!this.actor) this.actor = game.canvas.tokens.controlled[0].actor;
+      this.actor = this.actor || gear.actor || game.user.character || (game.canvas.tokens.controlled[0] && game.canvas.tokens.controlled[0].actor);
       this.render();
-    }
-    else {
-      let gearFeatures = gear.system.features;
-      let selectedFeatures = this.selected;
-      let newFeatures = [];
+    } else {
+      const gearFeatures = gear.system.features;
+      const selectedFeatures = this.selected;
+      const newFeatures = {};
       let index = 0;
-      for (let feature of Object.values(gearFeatures)) {
-        let newId = `selected-${index}`;
-        newFeatures[newId] = feature;
+      // Merge features from new gear and existing selections.
+      for (const feature of Object.values(gearFeatures)) {
+        newFeatures[`selected-${index}`] = feature;
         index++;
       }
-      for (let feature of Object.values(selectedFeatures)) {
-        let newId = `selected-${index}`;
-        newFeatures[newId] = feature;
+      for (const feature of Object.values(selectedFeatures)) {
+        newFeatures[`selected-${index}`] = feature;
         index++;
       }
       this.selected = newFeatures;
@@ -692,121 +625,115 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     }
   }
 
+  /**
+   * Retrieves favorite features for the current user.
+   */
   async getFavorites() {
     const favorites = game.user.getFlag('utopia', 'favorites') || {};
     const gearFeatures = favorites["gearFeature"] || [];
-    const features = this.features;
-    for (let feature of Object.values(features)) {
+    for (const feature of Object.values(this.features)) {
       feature.favorite = gearFeatures.includes(feature._id);
     }
   }
-  
+
+  /**
+   * Removes a feature from favorites.
+   * @param {object} feature - The feature to remove.
+   */
   async removeFavorite(feature) {
     let favorites = game.user.getFlag('utopia', 'favorites') || {};
-    if (!favorites["gearFeature"]) {
-      favorites["gearFeature"] = [];
-    }
+    if (!favorites["gearFeature"]) favorites["gearFeature"] = [];
     favorites["gearFeature"] = favorites["gearFeature"].filter(f => f !== feature._id);
     await game.user.setFlag('utopia', 'favorites', favorites);
   }
-  
+
+  /**
+   * Adds a feature to favorites.
+   * @param {object} feature - The feature to add.
+   */
   async addFavorite(feature) {
     let favorites = game.user.getFlag('utopia', 'favorites') || {};
-    if (!favorites["gearFeature"]) {
-      favorites["gearFeature"] = [];
-    }
+    if (!favorites["gearFeature"]) favorites["gearFeature"] = [];
     if (!favorites["gearFeature"].includes(feature._id)) {
       favorites["gearFeature"].push(feature._id);
     }
     await game.user.setFlag('utopia', 'favorites', favorites);
   }
 
-  static async _cast(event, target) {
-    const settings = {};
-
-    for (const feature of this.selected) {
-      const item = await fromUuid(feature);
-      settings[feature] = {};
-
-      if (item.system.variables) {
-        for (const variable of Object.values(item.system.variables)) {
-          settings[feature][variable.name] = variable.value;
-        }
-      }
+  /**
+   * Casts the gear as a temporary item.
+   * @param {Event} event - The triggering event.
+   * @param {HTMLElement} target - The target element.
+   */
+  static async _chat(event, target) {
+    const system = {}; 
+    
+    for (const feature of Object.values(this.selected)) {
+      const final = await this.processStacks(feature, this.featureSettings[feature.uuid].stacks.value);
+      system[feature.name] = final;
     }
 
     const gear = await Item.create({
       name: this.name,
       type: "gear",
-      system: {
-        features: this.selected,
-        featureSettings: this.featureSettings,
-        duration: this.duration,
-        range: this.range,
-        aoe: this.aoe,
-        flavor: this.flavor,
-      }
+      system: system
     }, { temporary: true });
+    
     await gear.use();
   }
 
-  async prepareFormulaOptions() {
-    // const selected = await Promise.all(this.selected.map(async i => {
-    //   return await fromUuid(i);
-    // }));
-    // selected.forEach(entry => {
-    //   const itemData = entry[1];
-    //   const formula = itemData.system.formula;
-    //   let newFormula = formula;
-    //   const stacks = itemData.stacks || 1;
-    //   const variables = Object.entries(itemData.system.variables).map(v => {
-    //     return {[v[1].name]: v[1].value};
-    //   });
-    //   const data = foundry.utils.mergeObject(itemData.rollData, variables);
-    //   const roll = new Roll(formula, data);
-    //   const dice = roll.terms.filter(term => term instanceof Die);
-    //   const diceOptions = {};
-    //   dice.forEach((die, index) => {
-    //     const max = die.faces * (die.number * stacks);
-    //     newFormula = roll.formula.replace(die.formula, `${die.number * stacks}d${die.faces}`);
-        
-    //     // We only allow dice in the standard array:
-    //     // 4, 6, 8, 10, 12, 20, 100
-    //     // We need to calculate the various other options
-    //     const options = [4, 6, 8, 10, 12, 20, 100].filter(f => max % f === 0);
-    //     diceOptions[index] = [];
+  /**
+   * Processes feature stacks and calculates simulation values.
+   * @param {object} feature - The feature being processed.
+   * @param {number} [stackCount=1] - The number of stacks.
+   * @returns {object} Simulation results.
+   */
+  async processStacks(feature, stackCount = 1) {
+    const attributes = feature.system.attributes;
+    const costs = feature.system.costs[this._getRelevantClassificationKey()];
+    let material, refinement, power, cost = 0;
+    const componentsPerStack = costs.componentsPerStack ?? true;
+    
+    if (componentsPerStack) {
+      material = (costs.material ?? 0) * stackCount;
+      refinement = (costs.refinement ?? 0) * stackCount;
+      power = (costs.power ?? 0) * stackCount;
+    } else {
+      material = costs.material ?? 0;
+      refinement = costs.refinement ?? 0;
+      power = costs.power ?? 0;
+    }
 
-    //     options.forEach(option => {
-    //       let count = max / option;
-    //       diceOptions[index].push(`${count}d${option}`);
-    //     });
-    //   });
+    const costFormula = await new Roll(String(costs.costFormula) ?? "0", { ...attributes, ...costs }).evaluate({ async: true });
+    cost = costFormula.total * stackCount;
+  
+    const simulation = {
+      stacks: stackCount,
+      material,
+      refinement,
+      power,
+      cost,
+    };
 
-    //   entry[1].formulaOptions = diceOptions;
-
-    //   if (itemData.customFormula === false) {
-    //     if (game.settings.get("utopia", "diceRedistribution")) {
-    //       let size = game.settings.get("utopia", "diceRedistributionSize");
-    //       if (size === 1) {
-    //         entry[1].currentFormula = 0;
-    //       }
-    //       else if (size === 2) {
-    //         entry[1].currentFormula = diceOptions[0].length - 1;
-    //       } 
-    //       else {
-    //         let min = 0;
-    //         let max = diceOptions[0] ? diceOptions[0].length - 1 : 0;
-    //         // Get the middle option
-    //         entry[1].currentFormula = Math.floor((min + max) / 2);
-    //       }
-    //     }
-    //   }
-
-    //   if (itemData.currentFormula && itemData.currentFormula > diceOptions[0].length - 1) {
-    //     entry[1].currentFormula = diceOptions[0].length - 1;
-    //   }
-    // });
-
-    // this.selected = entries;
+    for (const [key, value] of Object.entries(attributes)) {
+      if (value && value.length > 0) {
+        if (isNumeric(value)) {
+          simulation[key] = parseFloat(value) * stackCount;
+        } else if (typeof value === "string" && value !== "\u0000" && !isNumeric(value)) {
+          try {
+            const extraRoll = await new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0).evaluate({ async: true });
+            simulation[key] = extraRoll.formula;
+          } catch (error) {
+            this._error(`Error evaluating roll for attribute ${key}:`, error);
+            const extraRoll = await new Roll(value, { ...attributes, ...costs }).evaluate({ async: true });
+            simulation[key] = extraRoll.total;
+          }
+        } else if (typeof value === "number" && !isNaN(value)) {
+          simulation[key] = value * stackCount;
+        }
+      }
+    }
+  
+    return simulation;
   }
 }

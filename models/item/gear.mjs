@@ -8,47 +8,61 @@ export class Gear extends UtopiaItemBase {
     const schema = super.defineSchema();
       
     schema.type = new fields.StringField({ required: true, nullable: false, initial: "weapon", choices: {
-      weapon: "UTOPIA.Gear.Type.Weapon",
-      shield: "UTOPIA.Gear.Type.Shield",
-      armor: "UTOPIA.Gear.Type.Armor",
-      consumable: "UTOPIA.Gear.Type.Consumable",
-      artifact: "UTOPIA.Gear.Type.Artifact",
+      weapon: "UTOPIA.Items.Gear.FIELDS.Type.Weapon",
+      shield: "UTOPIA.Items.Gear.FIELDS.Type.Shield",
+      armor: "UTOPIA.Items.Gear.FIELDS.Type.Armor",
+      consumable: "UTOPIA.Items.Gear.FIELDS.Type.Consumable",
+      artifact: "UTOPIA.Items.Gear.FIELDS.Type.Artifact",
     }});
 
-    schema.weaponType = new fields.StringField({ required: false, nullable: true, initial: "fast", choices: {
-      fast: "UTOPIA.Gear.WeaponType.Fast",
-      moderate: "UTOPIA.Gear.WeaponType.Moderate",
-      slow: "UTOPIA.Gear.WeaponType.Slow",
+    schema.weaponType = new fields.StringField({ required: false, nullable: true, initial: "fastWeapon", choices: {
+      "fastWeapon": "UTOPIA.Items.Gear.FIELDS.WeaponType.Fast",
+      "moderateWeapon": "UTOPIA.Items.Gear.FIELDS.WeaponType.Moderate",
+      "slowWeapon": "UTOPIA.Items.Gear.FIELDS.WeaponType.Slow",
     }});
 
-    schema.armorType = new fields.StringField({ required: false, nullable: true, initial: "head", choices: {
-      "head": "UTOPIA.Gear.ArmorType.Head",
-      "neck": "UTOPIA.Gear.ArmorType.Neck",
-      "chest": "UTOPIA.Gear.ArmorType.Chest",
-      "back": "UTOPIA.Gear.ArmorType.Back",
-      "waist": "UTOPIA.Gear.ArmorType.Waist",
-      "ring": "UTOPIA.Gear.ArmorType.Ring",
-      "hands": "UTOPIA.Gear.ArmorType.Hands",
-      "feet": "UTOPIA.Gear.ArmorType.Feet",
+    schema.armorType = new fields.StringField({ required: false, nullable: true, initial: "headArmor", choices: {
+      "headArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Head",
+      "neckArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Neck",
+      "chestArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Chest",
+      "backArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Back",
+      "waistArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Waist",
+      "ringArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Ring",
+      "handsArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Hands",
+      "feetArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Feet",
+    }});
+
+    schema.artifactType = new fields.StringField({ required: false, nullable: true, initial: "handheldArtifact", choices: {
+      "handheldArtifact": "UTOPIA.Items.Gear.FIELDS.ArtifactType.Handheld",
+      "equippableArtifact": "UTOPIA.Items.Gear.FIELDS.ArtifactType.Equippable",
+      "ammunitionArtifact": "UTOPIA.Items.Gear.FIELDS.ArtifactType.Ammunition",
     }});
 
     schema.value = new fields.NumberField({ required: true, nullable: false, initial: 0 });
-    schema.attributes = new fields.SetField(
-      new fields.SchemaField({
-        key: new fields.StringField({ required: true, nullable: false }),
-        value: new fields.StringField({ required: true, nullable: false }),
-      }), { label: "UTOPIA.Quirk.Attributes.label", hint: "UTOPIA.Quirk.Attributes.hint" }
-    ); 
+    schema.attributes = new fields.ObjectField();
 
     schema.features = new fields.ArrayField(
       new fields.DocumentUUIDField({ type: "Item" }), 
       { label: "UTOPIA.Gear.Features.label", hint: "UTOPIA.Gear.Features.hint" }
     );
 
-    return schema;
-  }
+    const components = {};
+    Object.entries(CONFIG.UTOPIA.COMPONENTS).forEach(([component, _]) => {
+      components[`${component}`] = new fields.SchemaField({});
 
-  
+      Object.entries(CONFIG.UTOPIA.RARITIES).forEach(([rarity, _]) => {
+        components[`${component}`].fields[`${rarity}`] = new fields.NumberField({ required: true, nullable: false, initial: 0 });
+      });
+    });
+    console.warn(components);
+
+    schema.prototype = new fields.BooleanField({ required: true, nullable: false, initial: true });
+    schema.contributedComponents = new fields.SchemaField({
+      ...components,
+    })
+
+    return schema;
+  }  
 
   prepareDerivedData() {
     this.cost = {
@@ -56,4 +70,6 @@ export class Gear extends UtopiaItemBase {
       utian: this.value * 1000
     }
   }
+
+  
 }

@@ -145,8 +145,7 @@ export class GearSheet extends api.HandlebarsApplicationMixin(
   }
 
   static async _edit(event, target) {
-    let artifice = await new ArtificeSheet().render(true);
-    artifice.addGear(this.item);
+    let artifice = await new ArtificeSheet().render({item: this.item, force: true});
   }
   
   static async _save(event, target) {

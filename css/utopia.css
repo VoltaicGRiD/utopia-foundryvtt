@@ -101,7 +101,16 @@
     var(--utopia-artistry-necromancy) 71.4286%,
     var(--utopia-artistry-divination) 85.7143%,
     var(--utopia-artistry-wake) 100%);
-  --utopia-artifice-background: #053019;
+  --utopia-artifice-dark: #053019;
+  --utopia-artifice-light: #546e24;
+  --utopia-artifice-background: linear-gradient(180deg,
+    var(--utopia-artifice-dark) 0%,
+    var(--utopia-artifice-light) 50%,
+    var(--utopia-artifice-dark) 100%);
+  --utopia-artifice-header: linear-gradient(90deg,
+    var(--utopia-artifice-dark) 0%,
+    var(--utopia-artifice-light) 50%,
+    var(--utopia-artifice-dark) 100%);
   --utopia-capacity-container-background-color: oklch(57.5% 0.012 101);
   --utopia-capacity-container-border-color: oklch(20.8% 0.01 98);
   --utopia-capacity-background-color: oklch(62% 0.05 246);
@@ -2257,7 +2266,7 @@
   flex-direction: row;
   align-content: start;
   gap: 10px;
-  padding: 0 10px;
+  padding-left: 10px;
 }
 .utopia.gear-sheet .artistries, .utopia.artifice .artistries {
   max-height: 30px;
@@ -2468,18 +2477,19 @@
   }
 }
 .utopia.gear-sheet .window-header, .utopia.artifice .window-header {
-  background: #874d86;
+  background: #053019;
 }
 .utopia.gear-sheet .window-header::after, .utopia.artifice .window-header::after {
   content: "";
   position: absolute;
   border: solid;
-  border-image-source: var(--utopia-artifice-background);
+  border-image-source: var(--utopia-artifice-header);
   border-image-slice: 1;
-  border-width: 0px 4px 0 4px;
+  border-width: 4px 0 0 0;
   pointer-events: none;
-  left: 4px;
-  right: 4px;
+  inset: 30px 0 0 0;
+  left: 0;
+  right: 0;
 }
 .utopia.gear-sheet .window-content, .utopia.artifice .window-content {
   padding: 0;
@@ -2496,7 +2506,7 @@
   overflow: hidden auto;
   font-size: var(--font-size-11);
   color: var(--utopia-color-black);
-  flex: 1 1 400px;
+  flex: 1 1 450px;
 }
 .utopia.gear-sheet .gear-panel::before, .utopia.artifice .gear-panel::before {
   content: "";
@@ -2564,10 +2574,22 @@
   align-items: center;
   justify-content: space-between;
 }
-.utopia.gear-sheet .gear-attributes .gear-duration,
+.utopia.gear-sheet .gear-attributes .gear-attribute label, .utopia.artifice .gear-attributes .gear-attribute label {
+  align-self: flex-end;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  width: 80%;
+  z-index: 100;
+  color: var(--utopia-color-blue-white);
+}
+.utopia.gear-sheet .gear-attributes .gear-formula,
+.utopia.gear-sheet .gear-attributes .gear-damage,
+.utopia.gear-sheet .gear-attributes .gear-rarity,
 .utopia.gear-sheet .gear-attributes .gear-range,
 .utopia.gear-sheet .gear-attributes .gear-aoe,
-.utopia.gear-sheet .gear-attributes .gear-cost, .utopia.artifice .gear-attributes .gear-duration,
+.utopia.gear-sheet .gear-attributes .gear-cost, .utopia.artifice .gear-attributes .gear-formula,
+.utopia.artifice .gear-attributes .gear-damage,
+.utopia.artifice .gear-attributes .gear-rarity,
 .utopia.artifice .gear-attributes .gear-range,
 .utopia.artifice .gear-attributes .gear-aoe,
 .utopia.artifice .gear-attributes .gear-cost {
@@ -2578,10 +2600,14 @@
   z-index: 100;
   color: var(--utopia-color-blue-white);
 }
-.utopia.gear-sheet .gear-attributes .gear-duration-value,
+.utopia.gear-sheet .gear-attributes .gear-formula-value,
+.utopia.gear-sheet .gear-attributes .gear-damage-value,
+.utopia.gear-sheet .gear-attributes .gear-rarity-value,
 .utopia.gear-sheet .gear-attributes .gear-range-value,
 .utopia.gear-sheet .gear-attributes .gear-aoe-value,
-.utopia.gear-sheet .gear-attributes .gear-cost-value, .utopia.artifice .gear-attributes .gear-duration-value,
+.utopia.gear-sheet .gear-attributes .gear-cost-value, .utopia.artifice .gear-attributes .gear-formula-value,
+.utopia.artifice .gear-attributes .gear-damage-value,
+.utopia.artifice .gear-attributes .gear-rarity-value,
 .utopia.artifice .gear-attributes .gear-range-value,
 .utopia.artifice .gear-attributes .gear-aoe-value,
 .utopia.artifice .gear-attributes .gear-cost-value {

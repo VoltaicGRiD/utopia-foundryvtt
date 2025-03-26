@@ -109,6 +109,16 @@
         "ammunitionArtifact": "Ammunition"
       }
     },
+    "Artifice": {
+      "Damage": "Damage",
+      "Formula": "Formula",
+      "Range": "Range",
+      "AoE": "AoE",
+      "Rarity": "Rarity",
+      "Save": "Save",
+      "Chat": "To Chat",
+      "Flavor": "Gear Flavor (Boxed) Text"
+    },
     "Spellcraft": {
       "Save": "Save",
       "SaveAndCast": "Save and Cast",
@@ -116,7 +126,8 @@
       "Duration": "Duration",
       "Range": "Range",
       "AoEShort": "Area of Effect",
-      "Stamina": "Stamina"
+      "Stamina": "Stamina",
+      "Flavor": "Spell Flavor (Boxed) Text"
     },
     "Actors": {
       "Actions": {
@@ -386,6 +397,29 @@
             "Artifact": "Artifact",
             "Consumable": "Consumable",
             "Shield": "Shield"
+          },
+          "WeaponType": {
+            "label": "Weapon Type",
+            "Fast": "Fast",
+            "Moderate": "Moderate",
+            "Slow": "Slow"
+          },
+          "ArmorType": {
+            "label": "Armor Type",
+            "Head": "Head",
+            "Neck": "Neck",
+            "Chest": "Chest",
+            "Back": "Back",
+            "Waist": "Waist",
+            "Ring": "Ring",
+            "Hands": "Hands",
+            "Feet": "Feet"
+          },
+          "ArtifactType": {
+            "label": "Artifact Type",
+            "Equippable": "Equippable",
+            "Handheld": "Handheld",
+            "Ammunition": "Ammunition"
           }
         },
         "BUTTONS": {

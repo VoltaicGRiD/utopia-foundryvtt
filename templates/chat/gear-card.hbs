@@ -1,0 +1,60 @@
+<div class="chat-card gear-card">
+  
+  <div class="card-header">
+    <img class="card-header-icon" src="systems/utopia/assets/gear.svg" title="gear" style="width: 30px; height: 30px;"/>
+    <span class="card-title">{{item.name}}</span>
+  </div>
+
+  <div class="gear-attributes">
+    <span class="gear-prototype"><i class="fas fa-hammer"></i> {{item.system.prototype}}</span>
+  </div>
+
+  <div class="gear-attributes">
+    <span class="gear-damage"><i class="fas fa-sword"></i> {{item.system.damage}}</span>
+    <span class="gear-formula"><i class="fas fa-dice"></i> {{item.system.formula}}</span>
+    <span class="gear-range"><i class="fas fa-code-compare"></i> {{item.system.range}}</span>
+    <span class="gear-aoe"><i class="fas fa-bullseye"></i> {{item.system.aoe}}</span>
+    <span class="gear-rarity"><i class="fas fa-coin"></i> {{item.system.rarity}}</span>
+  </div>
+
+  <div class="gear-features">
+    <ol class="selected-feature-list flexcol">
+      {{#each features as |feature key|}}
+        <li class="feature" 
+          style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
+          data-id="{{feature.uuid}}">
+          
+          <details>
+            <summary class="feature-name">
+              <img src="{{feature.img}}" class="feature-icon" />
+              {{feature.name}} 
+            </summary>
+
+            <div class="feature-variables">
+              {{#each feature.variables as |variable varKey|}}
+                {{#if (eq varKey "stacks")}}
+                  <div class="feature-variable">
+                    <span class="feature-variable-character"><i class="fa-solid fa-cubes-stacked"></i></span>
+                    <span class="feature-variable-value">{{variable.value}}</span>
+                  </div>
+                {{/if}}
+              {{/each}}
+            </div>
+          </details>  
+        </li>
+      {{/each}}
+    </ol>
+  </div>
+
+  {{#if template}}
+    <button data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></button>
+  {{/if}}
+
+  <div class="card-content">
+    {{{item.system.flavor}}}
+  </div>
+
+  <!-- <footer data-visibility="gm">
+    <button data-action="acceptgear"><i class="fa-solid fa-check"></i>{{localize "UTOPIA.COMMON.accept"}}</button>
+  </footer> -->
+</div>

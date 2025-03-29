@@ -328,8 +328,8 @@
     }
   ],
   "socket": true,
-  "manifest": "Replace this with a link to the /latest release system.json so people can receive updates after they've installed the system",
-  "download": "This must link to a .zip file of the current version",
+  "manifest": "https://github.com/VoltaicGRiD/utopia-foundryvtt-v1/edit/rewrite/system.json",
+  "download": "https://github.com/VoltaicGRiD/utopia-foundryvtt-v1/archive/refs/tags/Beta-1.zip",
   "background": "systems/utopia/assets/Utopia-Background.webp",
   "grid": {
     "distance": 1,

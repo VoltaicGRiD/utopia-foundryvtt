@@ -127,7 +127,12 @@
               <span class="feature-name">{{feature.name}} (<span id="cost" class="cost">{{feature.system.final.cost}}</span>)</span>
               <div class="feature-controls">
                 <div class="flexrow feature-variable">
-                  {{#with (lookup ../featureSettings feature.uuid) as |featureSettings|}}
+                  <!-- <input type="number" 
+                      min="1" 
+                      max="{{feature.system.final.maxStacks}}" 
+                      value="{{feature.system.final.stacks}}" />
+                  <span class="feature-variable-character"><i class="fa-solid fa-cubes-stacked"></i></span> -->
+                  {{#with (lookup ../featureSettings key) as |featureSettings|}}
                     <input type="number" 
                       min="1" 
                       max="{{featureSettings.stacks.maximum}}" 

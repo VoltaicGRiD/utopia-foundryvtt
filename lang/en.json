@@ -27,9 +27,12 @@
     "COMMON": {
       "consolidate": "Consolidate sheet",
       "description": "Description",
+      "confirmDialog": "Are you sure?",
+      "confirmUpdateGearType": "Are you sure you want to update the gear type?<br/>This will remove all existing gear features.",
       "accept": "Accept",
       "save": "Save",
-      "saveFinal": "Save (You cannot undo this action)"
+      "saveFinal": "Save (You cannot undo this action)",
+      "gmCraftItem": "No actor owns this item. As the GM you can craft it.<br/>This will not create a new item, but will mark this item as crafted.<br/>Craft anyways?"
     },
     "RARITIES": {
       "Crude": "Crude",
@@ -400,6 +403,10 @@
         }
       },
       "Gear": {
+        "Prototype": {
+          "true": "This item is a prototype, you must craft it before it can be used.",
+          "false": "This item has been crafted, it can be used immediately."
+        },
         "FIELDS": {
           "Range": {
             "label": "Range"
@@ -443,7 +450,9 @@
           }
         },
         "BUTTONS": {
-          "Save": "Save",
+          "Use": "Use",
+          "Equip": "Equip",
+          "Craft": "Craft",
           "Artifice": "Open in Artifice"
         },
         "Slot": { 

@@ -75,8 +75,10 @@
   font-size: var(--font-size-16);
 }
 
-.spell-card {
-  .spell-attributes {
+.spell-card,
+.gear-card {
+  .spell-attributes,
+  .gear-attributes {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 5px;
@@ -141,63 +143,4 @@
     font-weight: 900;
     font-size: var(--font-size-16);
   }
-
-  //@import "../components/spellcraft.scss";
-
-  // .feature {
-  //   display: flex;
-  //   flex-direction: column;
-  // }
-
-  // .feature-name {
-  //   display: flex;
-  //   flex-direction: row;
-  //   gap: 5px;
-  //   align-items: flex-start;
-  //   justify-content: flex-start;
-  //   position: relative;
-  //   left: 0;
-  //   top: 0;
-  //   transform: none;
-  //   height: 30px;
-  //   line-height: 30px;
-
-  //   img {
-  //     position: unset;
-  //   }
-  // }
-
-  // .feature-controls {
-  //   height: unset;
-  //   position: unset;
-  //   display: flex;
-  //   flex-direction: column;
-  //   width: 100%;
-  //   align-items: flex-end;
-  //   justify-content: flex-end;
-  //   margin-bottom: 5px;
-
-  //   .feature-variable {   
-  //     position: unset;
-  //     width: 100px;
-  //     justify-content: flex-end;
-
-  //     .feature-variable-value { 
-  //       border: 1px solid var(--utopia-color-maroon);
-  //       color: black;
-  //       position: unset;
-  //       text-align: right;
-  //       padding: 2px;
-  //       border: none;
-  //       margin: 0;  
-  //     }
-
-  //     .feature-variable-character {
-  //       width: 50px;
-  //       height: 25px;
-  //       line-height: 25px;
-  //       text-align: center;
-  //     }
-  //   }
-  // }
 }

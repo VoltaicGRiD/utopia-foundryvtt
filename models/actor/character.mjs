@@ -50,7 +50,16 @@ export class Character extends UtopiaActorBase {
     schema.talentPoints = PointField(0);
     schema.specialistPoints = PointField(0);
     schema.languagePoints = PointField(0);
+    
+    // Actor owned crafting components
     schema.components = new fields.SchemaField({});
+
+    // An actor can own components of various rarities
+    // Each component has a number of available and craftable components
+    // Each rarity has 
+    // - available: number of components owned
+    // - craftable: whether the component can be crafted
+    // - trait: the trait check required to craft the component
     for (const [component, componentValue] of Object.entries(CONFIG.UTOPIA.COMPONENTS)) {
       schema.components[component] = new fields.SchemaField({});
       for (const [rarity, rarityValue] of Object.entries(CONFIG.UTOPIA.RARITIES)) {
@@ -89,14 +98,12 @@ export class Character extends UtopiaActorBase {
    */
   prepareDerivedData() {
     try { this._prepareTraits() } catch (e) { console.error(e) }
-    try { this._prepareSpecies() } catch (e) { console.error(e) }
+    try { prepareSpeciesData(this); } catch (e) { console.error(e); }
     try { this._prepareDefenses() } catch (e) { console.error(e) }
     try { this._prepareTalents() } catch (e) { console.error(e) }
     try { this._preparePoints(); } catch (e) { console.error(e); }
     try { this._prepareAttributes(); } catch (e) { console.error(e); }
-    try { this._prepareAutomation(); } catch (e) { console.error(e); }
-    try { prepareSpeciesData(this); } catch (e) { console.error(e); }
-    try { this._prepareAdvancements(); } catch (e) { console.error(e); }
+    //try { this._prepareAutomation(); } catch (e) { console.error(e); }
   }
   
   /**
@@ -222,12 +229,23 @@ export class Character extends UtopiaActorBase {
    * Aggregate innate and armor-based defenses for this actor.
    */
   _prepareDefenses() {
+    this.armorDefenses = {};
+
+    for (const item of this.parent.items) {
+      if (item.system.defenses) {
+        for (const [key, value] of Object.entries(item.system.defenses)) {
+          if (this.armorDefenses[key] === undefined) this.armorDefenses[key] = 0;
+          this.armorDefenses[key] += value;
+        }
+      }
+    }
+
     this.defenses = {
-      energy:    this.innateDefenses.energy    + this.armorDefenses.energy,
-      heat:      this.innateDefenses.heat      + this.armorDefenses.heat,
-      chill:     this.innateDefenses.chill     + this.armorDefenses.chill,
-      physical:  this.innateDefenses.physical  + this.armorDefenses.physical,
-      psyche:    this.innateDefenses.psyche    + this.armorDefenses.psyche,
+      energy:    this.innateDefenses.energy    + this.armorDefenses.energy ?? 0,
+      heat:      this.innateDefenses.heat      + this.armorDefenses.heat ?? 0,
+      chill:     this.innateDefenses.chill     + this.armorDefenses.chill ?? 0,
+      physical:  this.innateDefenses.physical  + this.armorDefenses.physical ?? 0,
+      psyche:    this.innateDefenses.psyche    + this.armorDefenses.psyche ?? 0,
     }
   }
 

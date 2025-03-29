@@ -399,31 +399,61 @@ export function registerConfig() {
       value: 0,
       label: game.i18n.localize('UTOPIA.RARITIES.Crude'),
       color: '#808080',
+      points: {
+        minimum: 0,
+        maximum: 20,
+        multiplier: 1,
+      }
     },
     common: {
       value: 1,
       label: game.i18n.localize('UTOPIA.RARITIES.Common'),
       color: '#FFFFFF',
+      points: {
+        minimum: 21,
+        maximum: 40,
+        multiplier: 2,
+      }
     },
     extraordinary: {
       value: 2,
       label: game.i18n.localize('UTOPIA.RARITIES.Extraordinary'),
       color: '#1E90FF',
+      points: {
+        minimum: 41,
+        maximum: 70,
+        multiplier: 4,
+      }
     },
     rare: {
       value: 3,
       label: game.i18n.localize('UTOPIA.RARITIES.Rare'),
       color: '#9370DB',
+      points: {
+        minimum: 71,
+        maximum: 110,
+        multiplier: 8,
+      }
     },
     legendary: {
       value: 4,
       label: game.i18n.localize('UTOPIA.RARITIES.Legendary'),
       color: '#FFD700',
+      points: {
+        minimum: 111,
+        maximum: 160,
+        multiplier: 16,
+      }
     },
     mythical: {
       value: 5,
       label: game.i18n.localize('UTOPIA.RARITIES.Mythical'),
       color: '#FF4500',
+      points: {
+        minimum: 161,
+        maximum: 220,
+        multiplier: 32,
+      }
     },
   }
 

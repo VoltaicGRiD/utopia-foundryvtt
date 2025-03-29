@@ -33,6 +33,78 @@ export class UtopiaActor extends Actor {
     return data;
   }
 
+  /**
+   * Updates the actor's available components by contributing what they have toward crafting,
+   * and updates the provided neededComponents to reflect any remaining shortage.
+   * 
+   * For each component type (e.g., "material", "refinement", "power"):
+   * - If the actor's available amount is less than the required amount, the actor contributes all available,
+   *   and the neededComponents for that type is reduced by that amount.
+   * - If the actor has more available than required, they contribute only what is needed,
+   *   and the leftover (excess) is recorded.
+   *
+   * @param {object} neededComponents - Object with required amounts, e.g. { material: number, refinement: number, power: number }.
+   * @param {object} excessComponents - Object to be populated with any leftover (unused) amounts.
+   * @param {string} craftingRarity - The rarity level (e.g., "crude", "common", etc.) for which the contribution is calculated.
+   * @returns {object} The updated neededComponents reflecting any remaining shortage.
+   */
+  async craft(neededComponents, excessComponents, craftingRarity) {
+    // Return our excess components
+    for (const [componentType, excessAmount] of Object.entries(excessComponents)) {
+
+      // If the item was contributed more than what we need, or a type that we don't need,
+      // return the excess amount to the actor's available components.
+      if (excessAmount > 0) {
+        await this.update({
+          [`system.components.${componentType}.${craftingRarity}.available`]: excessAmount
+        });
+      }
+    }
+
+    // Get the actor's current available components for the given rarity.
+    const actorComponents = this.system.components;
+    
+    // Initialize contributedComponents to track the actor's contributions.
+    const contributedComponents = {
+      ...Object.keys(componentConfig).reduce((acc, key) => {
+        acc[key] = 0;
+        return acc;
+      }, {})
+    };
+    
+    // Process each required component type.
+    for (const [componentType, requiredAmount] of Object.entries(neededComponents)) {
+      if (requiredAmount > 0) {
+        // Get the actor's available amount for this component type and rarity.
+        const availableAmount = actorComponents[componentType][craftingRarity].available;
+        
+        // Calculate the contribution: the actor can contribute up to what is required.
+        const contribution = Math.min(availableAmount, requiredAmount);
+        contributedComponents[componentType] = contribution;
+        
+        // Update the actor's available amount by subtracting the contribution.
+        const newAvailable = availableAmount - contribution;
+        await this.update({
+          [`system.components.${componentType}.${craftingRarity}.available`]: newAvailable
+        });
+        
+        // Update the neededComponents: subtract the contributed amount.
+        neededComponents[componentType] = requiredAmount - contribution;
+        
+        // If the actor had more than was required, record the surplus as excess.
+        if (availableAmount > requiredAmount) {
+          excessComponents[componentType] = availableAmount - requiredAmount;
+        } else {
+          excessComponents[componentType] = 0;
+        }
+      }
+    }
+
+    // Return the updated neededComponents, which now shows any remaining shortage.
+    return [neededComponents, contributedComponents];
+  }
+
+
   async addTalent(talent, talentTree) {
     let points = -1;
     if (this.type === "character")

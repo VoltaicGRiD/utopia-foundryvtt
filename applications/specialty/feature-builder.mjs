@@ -166,58 +166,50 @@ export class FeatureBuilder extends api.HandlebarsApplicationMixin(api.Applicati
       }
     }
     
-    const editables = this.element.querySelectorAll("[data-editable]");
-    editables.forEach(editable => {
-      editable.addEventListener("blur", (event) => {
-        const target = event.currentTarget;
-        const value = target.innerText.trim();
-        const type = target.dataset.type;
-        const attribute = target.dataset.attribute;
-        if (type === "shared") {
-          if (!this.shared[attribute])
-            this.shared[attribute] = {};
-          this.shared[attribute] = value;
-        }
-        else {
-          if (!this.attributes[type])
-            this.attributes[type] = {};
+    // Process editable text inputs and other text-based fields
+    const editableElements = this.element.querySelectorAll("[data-editable]");
+    editableElements.forEach(element => {
+      element.addEventListener("blur", (event) => {
+        const targetElement = event.currentTarget;
+        // Use 'value' if available (e.g. for input elements) otherwise use innerText.
+        const inputValue = targetElement.value !== undefined ? targetElement.value.trim() : targetElement.innerText.trim();
+        const dataGroup = targetElement.dataset.type;     // "shared" or a classification like "fastWeapon", etc.
+        const attributeKey = targetElement.dataset.attribute;
 
-          if (["maxStacks", "material", "refinement", "power", "costFormula", "componentsPerStack"].includes(attribute)) {
-            this.attributes[type][attribute] = value;
+        // Save value in either the shared or classification-specific attributes.
+        if (dataGroup === "shared") {
+          this.shared[attributeKey] = inputValue;
+        } else {
+          if (!this.attributes[dataGroup]) {
+            this.attributes[dataGroup] = {};
           }
-          else {
-            this.attributes[type][attribute] = value;
-          }
+          this.attributes[dataGroup][attributeKey] = inputValue;
         }
-  
+
+        // Re-render to update the interface.
         this.render(true);
-      });      
+      });
     });
 
-    const checkboxes = this.element.querySelectorAll("input[type=checkbox]");
-    checkboxes.forEach(checkbox => {
+    // Process checkboxes (non-text inputs)
+    const checkboxElements = this.element.querySelectorAll("input[type=checkbox]");
+    checkboxElements.forEach(checkbox => {
       checkbox.addEventListener("change", (event) => {
-        const target = event.currentTarget;
-        const value = target.innerText.trim();
-        const type = target.dataset.type;
-        const attribute = target.dataset.attribute;
-        if (type === "shared") {
-          if (!this.shared[attribute])
-            this.shared[attribute] = {};
-          this.shared[attribute] = value;
-        }
-        else {
-          if (!this.attributes[type])
-            this.attributes[type] = {};
+        const targetCheckbox = event.currentTarget;
+        // For checkboxes, use the checked property.
+        const inputValue = targetCheckbox.checked;
+        const dataGroup = targetCheckbox.dataset.type;
+        const attributeKey = targetCheckbox.dataset.attribute;
 
-          if (["maxStacks", "material", "refinement", "power", "costFormula", "componentsPerStack"].includes(attribute)) {
-            this.attributes[type][attribute] = value;
+        if (dataGroup === "shared") {
+          this.shared[attributeKey] = inputValue;
+        } else {
+          if (!this.attributes[dataGroup]) {
+            this.attributes[dataGroup] = {};
           }
-          else {
-            this.attributes[type][attribute] = value;
-          }
+          this.attributes[dataGroup][attributeKey] = inputValue;
         }
-  
+
         this.render(true);
       });
     });

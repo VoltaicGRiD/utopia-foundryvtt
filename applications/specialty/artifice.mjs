@@ -18,6 +18,8 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
   actor = {};
   items = [];
   featureSettings = {};
+  name = "Unnamed gear";
+  originalSystem = {};
 
   /**
    * Creates an instance of ArtificeSheet.
@@ -135,10 +137,14 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     ) {
       feature.system.attributes = foundry.utils.mergeObject(
         feature.system.classifications[classificationKey],
-        feature.system.classifications.shared
+        feature.system.classifications.shared,
+        feature.system.costs[classificationKey]
       );
     } else {
-      feature.system.attributes = feature.system.classifications[classificationKey];
+      feature.system.attributes = foundry.utils.mergeObject(
+        feature.system.classifications[classificationKey],
+        feature.system.costs[classificationKey]
+      )
     }
   }
 
@@ -148,6 +154,12 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
    * @returns {object} The prepared context.
    */
   async _prepareContext(options) {
+    if (options.item) {
+      this.items.push(options.item);
+      this.originalSystem = options.item.system;
+      this.name = options.item.name;
+    }
+    
     // Gather gear features.
     const features = await gatherItems({ type: "gearFeature", gatherFromActor: false, gatherFolders: false });
     this.features = features;
@@ -162,6 +174,8 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     // If an item is provided, set the type and subtypes.
     const item = options.item ?? null;
     if (item) {
+      this.selected = item.system.features;
+      this.featureSettings = item.system.featureSettings;
       this.type = item.system.type;
       this.weaponType = item.system.weaponType;
       this.armorType = item.system.armorType;
@@ -212,11 +226,10 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
 
     // Process selected features: assign attributes.
     const relevantKey = this._getRelevantClassificationKey();
-    for (const feature of Object.values(this.selected)) {
+    for (const [id, feature] of Object.entries(this.selected)) {
       this._assignAttributes(feature, relevantKey);
-      const uuid = feature.uuid ?? feature._uuid;
-      if (!uuid && this.featureSettings[feature.uuid]) {
-        this.featureSettings[feature.uuid].stacks.maximum = feature.system.attributes.maxStacks;
+      if (this.featureSettings[id]) {
+        this.featureSettings[id].stacks.maximum = feature.system.attributes.maxStacks;
       }
     }
 
@@ -226,10 +239,9 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     }
     
     // Process stacks for each selected feature.
-    for (const feature of Object.values(this.selected)) {
-      const uuid = feature.uuid ?? feature._uuid;
-      const featureResponse = await this.processStacks(feature, this.featureSettings[uuid].stacks.value);
-      feature.system.final = featureResponse;
+    for (const [id, feature] of Object.entries(this.selected)) {
+      const featureResponse = await this.processStacks(feature, this.featureSettings[id].stacks.value);
+      this.selected[id].system.final = featureResponse;
       this._log("Processed feature stacks:", featureResponse);
     }
 
@@ -256,6 +268,7 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     };
 
     const context = {
+      name: this.name,
       features: filteredFeatures,
       featureSettings: this.featureSettings,
       selected: this.selected,
@@ -265,6 +278,7 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     };
 
     this._log("Context prepared", context);
+    this._log("Options", options);
     this._log("Sheet instance", this);
 
     return context;
@@ -390,13 +404,10 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
         const id = data.id;
         const feature = this.features[id];
         const selectedId = foundry.utils.randomID();
-        this.selected[selectedId] = feature;
-        const uuid = feature.uuid ?? feature._uuid;
-        if (!uuid) return ui.notifications.error("This feature cannot be added to a gear.");
-        if (!feature) return ui.notifications.error("This feature does not exist.");
-
-        // Set default feature settings.
-        this.featureSettings[uuid] = { 
+        // Create a deep clone of the feature so each instance is independent.
+        this.selected[selectedId] = foundry.utils.deepClone(feature);
+        // ...
+        this.featureSettings[selectedId] = { 
           stacks: {
             variableName: "stacks",
             variableDescription: "Stacks",
@@ -424,13 +435,11 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       v.addEventListener("change", async (event) => {
         const featureItem = event.target.closest("li");
         const featureId = featureItem.dataset.id;
-        const feature = this.selected[featureId];
-        const uuid = feature.uuid ?? feature._uuid;
         const value = parseInt(event.target.value);
-        this.featureSettings[uuid].stacks.value = value;
+        this.featureSettings[featureId].stacks.value = value;
         this.render();
       });
-    });
+    });    
     this.element.querySelector("input[name='filter']").addEventListener("change", (event) => {
       this.filter = event.target.value;
       this.render();
@@ -450,16 +459,44 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     const costs = {};
     const relevantKey = this._getRelevantClassificationKey();
 
+    
     // Merge attributes and costs from each selected feature.
-    for (const feature of Object.values(this.selected)) {
-      if (feature.system.final) {
+    for (const [id, feature] of Object.entries(this.selected)) {
+      const final = await this.processStacks(feature, this.featureSettings[id].stacks.value);
+
+      if (final) {
         // Merge attributes.
-        Object.entries(feature.system.final).forEach(([key, value]) => {
-          item.system[key] = value;
+        Object.entries(final).forEach(([key, value]) => {
+          if (item.system[key] !== undefined) {
+            // If both values are strings, join them with a plus operator.
+            if (typeof item.system[key] === "string" && typeof value === "string") {
+              item.system[key] = `${item.system[key]} + ${value}`;
+            }
+            // If both values are numbers, add them.
+            else if (typeof item.system[key] === "number" && typeof value === "number") {
+              item.system[key] += value;
+            }
+            // Otherwise, default to the new value.
+            else {
+              item.system[key] = value;
+            }
+          } else {
+            item.system[key] = value;
+          }
         });
         // Merge costs.
         Object.entries(feature.system.costs[relevantKey]).forEach(([key, value]) => {
-          costs[key] = value;
+          if (costs[key] !== undefined) {
+            if (typeof costs[key] === "string" && typeof value === "string") {
+              costs[key] = `${costs[key]} + ${value}`;
+            } else if (typeof costs[key] === "number" && typeof value === "number") {
+              costs[key] += value;
+            } else {
+              costs[key] = value;
+            }
+          } else {
+            costs[key] = value;
+          }
         });
       }
     }
@@ -481,8 +518,17 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
    * @param {HTMLElement} target - The select element.
    */
   async _update(event, target) {
-    this[target.name] = target.selectedOptions[0].value;
-    this.render(true);
+    const confirm = await foundry.applications.api.DialogV2.confirm({
+      window: { title: "UTOPIA.COMMON.confirmDialog" }, 
+      content: game.i18n.localize("UTOPIA.COMMON.confirmUpdateGearType"),
+      modal: true
+    }) 
+
+    if (confirm) {
+      this.selected = {};
+      this[target.name] = target.selectedOptions[0].value;
+      this.render(true);  
+    }
   }
 
   /**
@@ -491,17 +537,17 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
   static async _save() {
     if (Object.keys(this.selected).length === 0) return;
 
-    const { selected, name, duration, range, aoe, flavor, cost } = this;
+    const { selected, name, featureSettings, type, weaponType, armorType, artifactType } = this;
     const gear = {
       name,
       type: "gear",
       system: {
         features: selected,
-        duration,
-        range,
-        aoe,
-        flavor,
-        cost,
+        featureSettings,
+        type,
+        weaponType,
+        armorType,
+        artifactType
       },
     };
 
@@ -510,24 +556,36 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     if (this.actor && Object.keys(this.actor).length > 0) {
       await this.actor.createEmbeddedDocuments("Item", [gear]);
     } else if (this.items.length === 1) {
+      if (foundry.utils.objectsEqual(this.items[0].system, gear.system))
+        return ui.notifications.error(game.i18n.localize("UTOPIA.COMMON.gearAlreadyExists"));
+
       // Update existing gear.
       await this.items[0].update({
         name,
         system: {
+          prototype: true,
           features: selected,
-          duration,
-          range,
-          aoe,
-          flavor,
-          cost,
+          featureSettings,
+          type,
+          weaponType,
+          armorType,
+          artifactType
         },
       });
+
+      this.items[0].sheet.render(true);
+      this.close();
     } else {
-      const doc = await Item.create(gear);
-      await game.packs.get('utopia.items').importDocument(doc);
-      await doc.delete();
+      if (game.user.isGM) {
+        const doc = await Item.create(gear);
+        await game.packs.get('utopia.items').importDocument(doc);
+        await doc.delete();
+      }
     }
-    this.render();
+
+    // TODO: Swap these when creating SRD content
+    this.close();
+    //this.render(true); 
   }
 
   /**
@@ -577,69 +635,6 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
   }
 
   /**
-   * Parses spell duration and range into human-readable outputs.
-   */
-  async parseSpell() {
-    if (this.duration === 0) {
-      this.durationOut = "Instant";
-    } else {
-      let unit = "seconds";
-      if (this.duration >= 6 && this.duration % 6 === 0 && this.duration < 60) {
-        this.duration /= 6;
-        unit = "turns";
-      } else if (this.duration >= 60 && this.duration < 3600) {
-        this.duration /= 60;
-        unit = "minutes";
-      } else if (this.duration >= 3600 && this.duration < 86400) {
-        this.duration /= 3600;
-        unit = "hours";
-      } else if (this.duration >= 86400 && this.duration < 2592000) {
-        this.duration /= 86400;
-        unit = "days";
-      } else if (this.duration >= 2592000 && this.duration < 31536000) {
-        this.duration /= 2592000;
-        unit = "months";
-      } else if (this.duration >= 31536000) {
-        this.duration /= 31536000;
-        unit = "years";
-      }
-      this.durationOut = `${this.duration} ${unit}`;
-    }
-    this.rangeOut = this.range === 0 ? "Touch" : `${this.range}m`;
-  }
-
-  /**
-   * Adds a spell (gear) to the sheet.
-   * @param {object} gear - The gear to add.
-   */
-  async addSpell(gear) {
-    this.items.push(gear);
-    if (this.items.length === 1) {
-      this.selected = gear.system.features;
-      this.name = gear.name;
-      this.flavor = gear.system.flavor;
-      this.actor = this.actor || gear.actor || game.user.character || (game.canvas.tokens.controlled[0] && game.canvas.tokens.controlled[0].actor);
-      this.render();
-    } else {
-      const gearFeatures = gear.system.features;
-      const selectedFeatures = this.selected;
-      const newFeatures = {};
-      let index = 0;
-      // Merge features from new gear and existing selections.
-      for (const feature of Object.values(gearFeatures)) {
-        newFeatures[`selected-${index}`] = feature;
-        index++;
-      }
-      for (const feature of Object.values(selectedFeatures)) {
-        newFeatures[`selected-${index}`] = feature;
-        index++;
-      }
-      this.selected = newFeatures;
-      this.render();
-    }
-  }
-
-  /**
    * Retrieves favorite features for the current user.
    */
   async getFavorites() {
@@ -680,17 +675,17 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
    * @param {HTMLElement} target - The target element.
    */
   static async _chat(event, target) {
-    const system = {}; 
-    
-    for (const feature of Object.values(this.selected)) {
-      const final = await this.processStacks(feature, this.featureSettings[feature.uuid].stacks.value);
-      system[feature.name] = final;
-    }
-
     const gear = await Item.create({
       name: this.name,
       type: "gear",
-      system: system
+      system: {
+        type: this.type,
+        weaponType: this.weaponType,
+        armorType: this.armorType,
+        artifactType: this.artifactType,
+        features: this.selected,
+        featureSettings: this.featureSettings
+      }
     }, { temporary: true });
     
     await gear.use();

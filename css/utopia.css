@@ -233,21 +233,27 @@
 .chat-message .damage-value {
   font-size: var(--font-size-16);
 }
-.chat-message .spell-card .spell-attributes {
+.chat-message .spell-card .spell-attributes,
+.chat-message .spell-card .gear-attributes,
+.chat-message .gear-card .spell-attributes,
+.chat-message .gear-card .gear-attributes {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 5px;
 }
-.chat-message .spell-card .selected-feature-list {
+.chat-message .spell-card .selected-feature-list,
+.chat-message .gear-card .selected-feature-list {
   list-style: none;
   padding: 0;
 }
-.chat-message .spell-card .feature {
+.chat-message .spell-card .feature,
+.chat-message .gear-card .feature {
   padding: 0 5px;
   height: 30px;
   line-height: 30px;
 }
-.chat-message .spell-card summary {
+.chat-message .spell-card summary,
+.chat-message .gear-card summary {
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -256,24 +262,29 @@
   height: 30px;
   line-height: 30px;
 }
-.chat-message .spell-card summary:not([open])::before {
+.chat-message .spell-card summary:not([open])::before,
+.chat-message .gear-card summary:not([open])::before {
   content: "▶";
 }
-.chat-message .spell-card summary[open]::before {
+.chat-message .spell-card summary[open]::before,
+.chat-message .gear-card summary[open]::before {
   content: "▼";
 }
-.chat-message .spell-card img {
+.chat-message .spell-card img,
+.chat-message .gear-card img {
   border: none;
   width: 20px;
   height: 20px;
 }
-.chat-message .spell-card .feature-variables {
+.chat-message .spell-card .feature-variables,
+.chat-message .gear-card .feature-variables {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
 }
-.chat-message .spell-card .feature-variable {
+.chat-message .spell-card .feature-variable,
+.chat-message .gear-card .feature-variable {
   line-height: 20px;
   height: 20px;
   width: 100%;
@@ -283,7 +294,8 @@
   align-items: center;
   justify-content: flex-start;
 }
-.chat-message .spell-card .feature-variable-character {
+.chat-message .spell-card .feature-variable-character,
+.chat-message .gear-card .feature-variable-character {
   width: 25px;
   text-align: center;
   font-weight: 900;
@@ -2581,6 +2593,21 @@
   width: 80%;
   z-index: 100;
   color: var(--utopia-color-blue-white);
+}
+.utopia.gear-sheet .gear-attributes .gear-prototype, .utopia.artifice .gear-attributes .gear-prototype {
+  flex: 2 0 99%;
+  text-align: center;
+  align-self: flex-end;
+  font-size: var(--font-size-14);
+  font-weight: 700;
+  width: 80%;
+  z-index: 100;
+  color: var(--utopia-color-blue-white);
+}
+.utopia.gear-sheet .gear-attributes .gear-prototype.prototype, .utopia.artifice .gear-attributes .gear-prototype.prototype {
+  background: #403e4e;
+  border: 1px solid #c9593f;
+  color: c9593f;
 }
 .utopia.gear-sheet .gear-attributes .gear-formula,
 .utopia.gear-sheet .gear-attributes .gear-damage,

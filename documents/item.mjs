@@ -2,6 +2,178 @@ import { DamageInstance } from "../system/damage.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
 
 export class UtopiaItem extends Item {
+  /**
+   * Only used for 'gear' type items.
+   * Calculates which component amounts are still needed after subtracting contributions,
+   * and determines if any excess components should be returned.
+   */
+  async craft(iterations = 0) {
+    // Prevent infinite loops by limiting the number of iterations.
+    iterations++;
+
+    // Parent item (unused in this snippet but kept for context)
+    const actorOwner = this.parent;
+    // Retrieve rarity configuration from the game system
+    const rarityConfig = CONFIG.UTOPIA.RARITIES;
+    // Retrieve component configuration from the game system
+    const componentConfig = CONFIG.UTOPIA.COMPONENTS;
+    // Calculate total cost points (using absolute value)
+    const totalCostPoints = Math.abs(this.system.cost);
+    // Components that have been contributed:
+    // Expected structure: { material: { crude: number, common: number, ... }, refinement: {...}, power: {...} }
+    const contributedComponents = this.system.contributedComponents;
+    
+    // Create a boolean to check if any components are needed
+    var anyNeeded = false;
+
+    // Initialize the total required amounts for each main component type.
+    const neededComponents = {
+      ...Object.keys(componentConfig).reduce((acc, key) => {
+        acc[key] = 0;
+        return acc;
+      }, {})
+    };
+    
+    // Create a boolean to check if any components are excess
+    var anyExcess = false;
+
+    // Initialize excess components (to be returned if contributions exceed requirements).
+    const excessComponents = {
+      ...Object.keys(componentConfig).reduce((acc, key) => {
+        acc[key] = 0;
+        return acc;
+      }, {})
+    };
+    
+    // Sum up required component amounts from each feature.
+    // Each feature defines its own required amounts under feature.system.final.
+    for (const [featureId, feature] of Object.entries(this.system.features)) {
+      neededComponents.material += parseFloat(feature.system.final.material);
+      neededComponents.refinement += parseFloat(feature.system.final.refinement);
+      neededComponents.power += parseFloat(feature.system.final.power);
+    }
+    
+    // Determine the item's rarity based on the total cost points.
+    let itemRarity = "crude";
+    let itemRarityValue = 0;
+    for (const [rarityKey, rarityData] of Object.entries(rarityConfig)) {
+      if (totalCostPoints >= rarityData.points.minimum && totalCostPoints <= rarityData.points.maximum) {
+        itemRarity = rarityKey;
+        itemRarityValue = rarityData.value;
+        break;
+      }
+    }
+    
+    // Process contributed components:
+    // For each component type (material, refinement, power), subtract contributed amounts (matching the current rarity)
+    // from the needed components.
+    for (const [componentType, rarityContributions] of Object.entries(contributedComponents)) {
+      for (const [rarity, amount] of Object.entries(rarityContributions)) {
+        if (
+          amount > 0 &&
+          (rarity === itemRarity || rarityConfig[rarity].value === itemRarityValue)
+        ) {
+          // Subtract the contributed amount from the total needed amount.
+          neededComponents[componentType] -= amount;
+          
+          // If the exact requirement is met, remove that component key.
+          if (neededComponents[componentType] === 0) {
+            delete neededComponents[componentType];
+          }
+          // If contributions exceed the requirement, record the surplus and remove the key.
+          if (neededComponents[componentType] < 0) {
+            excessComponents[componentType] = Math.abs(neededComponents[componentType]);
+            delete neededComponents[componentType];
+          }
+        }
+        else if (
+          amount > 0 &&
+          (rarity !== itemRarity || rarityConfig[rarity].value !== itemRarityValue)
+        ) {
+          // If the rarity doesn't match, add the contributed amount to excessComponents.
+          excessComponents[componentType] ??= {};
+          excessComponents[componentType][rarity] += amount;
+        }
+      }
+    }
+    
+    // At this point:
+    // - neededComponents contains any remaining required amounts (if any).
+    // - excessComponents contains any surplus that should be returned.
+    
+    // Go through the neededComponents and 'anyNeeded' to indicate if any components are still needed.
+    if (Object.values(neededComponents).some(amount => amount > 0)) {
+      anyNeeded = true;
+    }
+    
+    // Go through the excessComponents and 'anyExcess' to indicate if any components are excess.
+    if (Object.values(excessComponents).some(amount => amount > 0)) {
+      anyExcess = true;
+    }
+
+    // If there are no needed components and no excess components, we can mark the item as complete.
+    if (!anyNeeded && !anyExcess) {
+      return await this.update({
+        [`system.prototype`]: false
+      })
+    }
+    
+    // Create variables to hold the remaining components and actor contributions.
+    var remainingComponents = {};
+    var actorContributed = {};
+
+    // If there are needed components, we need to pass the crafting functionality to the actor.
+    if (anyNeeded || anyExcess) {
+      if (!actorOwner && game.user.isGM) {
+        const confirm = await foundry.applications.api.DialogV2.confirm({
+          window: { title: "UTOPIA.COMMON.confirmDialog" }, 
+          content: game.i18n.localize("UTOPIA.COMMON.gmCraftItem"),
+          rejectClose: false,
+          modal: true
+        });
+
+        return await this.update({
+          [`system.prototype`]: !confirm
+        })
+      }
+
+      [remainingComponents, actorContributed] = await actorOwner.craft(neededComponents, excessComponents, itemRarity);
+    }
+
+    // If the actor contributed any components, we need to update the item,
+    // and add them to the contributedComponents.
+    if (Object.values(actorContributed).some(amount => amount > 0)) {
+      for (const [componentType, contribution] of Object.entries(actorContributed)) {
+        if (contribution > 0) {
+          const existingAmount = this.system.contributedComponents[componentType]?.[rarity] ?? 0;
+          const newAmount = existingAmount + contribution;
+          await this.update({
+            [`system.contributedComponents.${componentType}.${rarity}`]: newAmount
+          })
+        }
+      }
+    }
+
+    // From the 'remainingComponents' object, we need to display a dialog to indicate
+    // how many components are still needed.
+    const content = await renderTemplate("systems/utopia/templates/dialogs/craft-remaining.hbs", {
+      componentTypes: Object.values(componentConfig),
+      rarityTypes: Object.values(rarityConfig),
+      components: remainingComponents,
+    })
+
+    const confirm = await foundry.applications.api.DialogV2.confirm({
+      window: { title: "UTOPIA.COMMON.confirmDialog" }, 
+      content: content,
+      rejectClose: false,
+      modal: true
+    });
+
+    // If there are remaining components, the item remains a prototype,
+    // and we should re-run the crafting function if we have not reached the max iterations.
+    
+  }
+
   async use() {
     switch (this.type) {
       case "gear": 
@@ -24,13 +196,16 @@ export class UtopiaItem extends Item {
   }
 
   async _useGear() {
-    const parsedFeatures = [];
+    const html = await renderTemplate("systems/utopia/templates/chat/gear-card.hbs", {
+      item: this,
+      features: this.system.features,
+    });
 
-    for (const feature of this.system.features) {
-      parsedFeatures.push( await fromUuid(feature) );
-    }
-
-    
+    UtopiaChatMessage.create({
+      user: game.user._id,
+      speaker: ChatMessage.getSpeaker(),
+      content: html
+    });
   }
 
   async _castSpell() {

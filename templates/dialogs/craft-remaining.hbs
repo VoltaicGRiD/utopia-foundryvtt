@@ -1,0 +1,31 @@
+<div class="dialog crafting-dialog">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        {{#each componentTypes as |componentType|}}
+          <th>{{componentType.label}}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rarityTypes as |rarity|}}
+        <tr>
+          <th>{{rarity.label}}</th>
+          {{!--
+            Within each rarity row, iterate over componentTypes.
+            Note: Using "../../components" because:
+            - In the outer loop, the context is a rarity.
+            - In the inner loop, the context is a componentType.
+            - ../../ takes us back to the top-level context where "components" is defined.
+          --}}
+          {{#each ../componentTypes as |componentType|}}
+            <td>
+              {{lookup (lookup ../../components componentType.key) rarity.key}}
+            </td>
+          {{/each}}
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

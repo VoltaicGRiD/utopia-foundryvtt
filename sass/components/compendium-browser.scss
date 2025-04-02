@@ -1,0 +1,75 @@
+@mixin animation-mixin($name, $boxshadow1, $boxshadow2Percent, $boxshadow2, $boxshadow3) {
+  @keyframes #{$name} {
+    0% {
+      box-shadow: $boxshadow1;
+    }
+    #{$boxshadow2Percent} {
+      box-shadow: $boxshadow2;
+    }
+    100% {
+      box-shadow: $boxshadow3;
+    }
+  }
+}
+
+& {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: repeat;
+  background-image: url("/systems/utopia/assets/compendium-browser-background.svg");
+}
+
+.window-content {
+  backdrop-filter: blur(2px);
+}
+
+.compendium-browser-content {
+  height: 710px;
+}
+
+.folder-list,
+.item-list {
+  padding: 0;
+  overflow-y: auto;
+  height: 100%;
+  list-style: none;
+  width: 100%;
+}
+
+.folder-name {
+  font-size: var(--font-size-16);
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.25em 0.5em;
+}
+
+.item:nth-child(odd) {
+  background-color: var(--utopia-table-color);
+}
+
+.item:nth-child(even) {
+  background-color: var(--utopia-table-alternate-color);
+}
+
+.item:hover {
+  background-color: var(--utopia-table-hover-color);
+}
+
+.item-name {
+  font-size: var(--font-size-14);
+  cursor: pointer;
+}
+
+.item-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+}

@@ -1,0 +1,56 @@
+<div class="paper-doll-entry {{#if (eq dir "left")}}left{{/if}}">
+  <span>{{localize (concat "UTOPIA.Items.Gear.Slot." key)}}</span>
+
+  {{!-- {{#if evolution}}
+    <div class="evolution">
+      <i class="fas fa-hashtag fa-fw"></i>
+      <input type="number" name="system.evolution.{{key}}" value="{{slot.evolution}}">
+    </div>
+  {{/if}} --}}
+
+  <div class="item-slots {{#if (eq dir "left")}}left{{/if}}">
+    {{#if (and (eq slot.unaugmentable false) (eq slot.unequippable false))}}
+      {{#if (gt slot.items.length 0)}}
+        {{#each slot.items as |item|}}
+          <div class="item-slot filled" data-action="viewItem" data-slot="{{../key}}" data-id="{{item.id}}">
+            <img class="profile-img" src="{{item.img}}" data-action="viewItem" title="{{item.name}}" height="40" width="40"/>
+          </div>
+        {{/each}}
+      {{else}}
+        <div class="item-slot" data-slot="{{key}}"></div>
+      {{/if}}
+      {{#if (gt slot.augments.length 0)}}
+        {{#each slot.augments as |item|}}
+          <div class="augment-slot filled" data-action="viewItem" data-slot="{{../key}}" data-id="{{item.id}}">
+            <img class="profile-img" src="{{item.img}}" data-action="viewItem" title="{{item.name}}" height="40" width="40"/>
+          </div>
+        {{/each}}
+      {{else}}
+        <div class="augment-slot" data-slot="{{key}}"></div>
+      {{/if}}
+    {{else if (eq slot.unequippable true)}}
+      <div class="item-slot locked" data-slot="{{key}}"></div>
+      {{#if (gt slot.augments.length 0)}}
+        {{#each slot.augments as |item|}}
+          <div class="augment-slot filled" data-action="viewItem" data-slot="{{../key}}" data-id="{{item.id}}">
+            <img class="profile-img" src="{{item.img}}" data-action="viewItem" title="{{item.name}}" height="40" width="40"/>
+          </div>
+        {{/each}}
+      {{else}}
+        <div class="augment-slot" data-slot="{{key}}"></div>
+      {{/if}}
+    {{else if (eq slot.unaugmentable true)}}
+      {{#if (gt slot.items.length 0)}}
+        {{#each slot.items as |item|}}
+          <div class="item-slot filled" data-action="viewItem" data-slot="{{../key}}" data-id="{{item.id}}">
+            <img class="profile-img" src="{{item.img}}" data-action="viewItem" title="{{item.name}}" height="40" width="40"/>
+          </div>
+        {{/each}}
+      {{else}}
+        <div class="item-slot" data-slot="{{key}}"></div>
+      {{/if}}
+    {{else if (and (eq slot.unaugmentable true) (eq slot.unequippable true))}}
+      <span class="fully-locked">{{localize "UTOPIA.Actor.PaperDoll.fullyLocked"}}</span>
+    {{/if}}
+  </div>  
+</div>

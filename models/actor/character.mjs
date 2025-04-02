@@ -50,6 +50,14 @@ export class Character extends UtopiaActorBase {
     schema.talentPoints = PointField(0);
     schema.specialistPoints = PointField(0);
     schema.languagePoints = PointField(0);
+    schema.flexibility = new fields.ArrayField(new fields.ObjectField({}), { initial: [] });
+    schema._talentTracking = new fields.ArrayField(new fields.SchemaField({
+      tree: new fields.DocumentUUIDField({ required: true, nullable: false }),
+      branch: new fields.NumberField({ required: true, nullable: false }),
+      tier: new fields.NumberField({ required: true, nullable: false }),
+      talent: new fields.DocumentUUIDField({ required: true, nullable: false }),
+    }))    
+    schema._talentOptions = new fields.ObjectField({ initial: {} });
     
     // Actor owned crafting components
     schema.components = new fields.SchemaField({});
@@ -60,13 +68,13 @@ export class Character extends UtopiaActorBase {
     // - available: number of components owned
     // - craftable: whether the component can be crafted
     // - trait: the trait check required to craft the component
-    for (const [component, componentValue] of Object.entries(CONFIG.UTOPIA.COMPONENTS)) {
-      schema.components[component] = new fields.SchemaField({});
-      for (const [rarity, rarityValue] of Object.entries(CONFIG.UTOPIA.RARITIES)) {
-        schema.components[component][rarity] = new fields.SchemaField({});
-        schema.components[component][rarity].available = new fields.NumberField({ ...required, initial: 0 });
-        schema.components[component][rarity].craftable = new fields.BooleanField({ required: true, nullable: false, initial: rarity === "crude" ? true : false });        
-        schema.components[component][rarity].trait = new fields.StringField({ required: true, nullable: false, initial: "eng" });
+    for (const [component, componentValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components")))) {
+      schema.components.fields[component] = new fields.SchemaField({});
+      for (const [rarity, rarityValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")))) {
+        schema.components.fields[component].fields[rarity] = new fields.SchemaField({});
+        schema.components.fields[component].fields[rarity].fields.available = new fields.NumberField({ ...required, initial: 0 });
+        schema.components.fields[component].fields[rarity].fields.craftable = new fields.BooleanField({ required: true, nullable: false, initial: rarity === "crude" ? true : false });        
+        schema.components.fields[component].fields[rarity].fields.trait = new fields.StringField({ required: true, nullable: false, initial: "eng" });
       }
     }   
 
@@ -163,35 +171,11 @@ export class Character extends UtopiaActorBase {
       this.body += talent.system.body;
       this.mind += talent.system.mind;
       this.soul += talent.system.soul;
-    }
 
-    const treeTiers = {};
-    const trees = await gatherItems({ type: 'talentTree', gatherFromActor: false });
-    for (const tree of trees) {
-      treeTiers[tree.name] = [];
-      
-      for (const branch of tree.system.branches) {
-        var highestTier = -1;
-        
-        for (var t = 0; t < branch.talents.length; t++) {
-          const branchTalent = await fromUuid(branch.talents[t].uuid);
-          
-          // We can compare points, name, and other properties, but can't compare
-          // the entire object because it's a different instance
-          for (const talent of talents) {
-            var match = true;
-            
-            if (talent.name !== branchTalent.name) match = false;
-            if (foundry.utils.objectsEqual(talent.system.toObject(), branchTalent.system.toObject()) === false) match = false;
-            
-            if (match) {
-              if (t > highestTier) highestTier = t;
-              break;
-            }
-          }
-        }
-        
-        treeTiers[tree.name].push(highestTier);
+      if (talent.system.selectedOption.length !== 0) {
+        const category = talent.system.options.category;
+        this._talentOptions[category] ??= [];
+        this._talentOptions[category].push(talent.system.selectedOption);
       }
     }
     
@@ -216,8 +200,6 @@ export class Character extends UtopiaActorBase {
           }
         }
       }
-      
-      treeTiers[this._speciesData.name] = highestTier;
     }
 
 
@@ -229,7 +211,13 @@ export class Character extends UtopiaActorBase {
    * Aggregate innate and armor-based defenses for this actor.
    */
   _prepareDefenses() {
-    this.armorDefenses = {};
+    this.armorDefenses = {
+      energy:    0,
+      heat:      0,
+      chill:     0,
+      physical:  0,
+      psyche:    0,
+    };
 
     for (const item of this.parent.items) {
       if (item.system.defenses) {
@@ -263,7 +251,11 @@ export class Character extends UtopiaActorBase {
       subtrait.total = subtrait.value + subtrait.bonus;
       if (subtrait.total === 0) subtrait.value = 1;
       subtrait.total = subtrait.value + subtrait.bonus;
-      if (subtrait.gifted) subtrait.mod = Math.max(subtrait.total - 4, 0);
+      if (subtrait.gifted) {
+        this.giftPoints.available -= 1;
+        this.giftPoints.spent += 1;
+        subtrait.mod = Math.max(subtrait.total - 4, 0);
+      }
       else subtrait.mod = subtrait.total - 4;
       this.traits[subtrait.parent].total += subtrait.total;
       //this.traits[subtrait.parent].mod = this.traits[subtrait.parent].total - 4;

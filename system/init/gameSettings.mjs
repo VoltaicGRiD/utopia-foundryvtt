@@ -1,39 +1,94 @@
-const { api } = foundry.applications;
-class AdvancedSettings extends api.HandlebarsApplicationMixin(api.DocumentSheetV2) {
-  static DEFAULT_OPTIONS = {
-    ...api.ApplicationV2.DEFAULT_OPTIONS,
-    position: {
-      width: 500,
-      height: 600,
-    },
-    window: {
-      title: "UTOPIA.Settings.advancedSettingsMenu",
-    }
-  }
-}
+import { AdvancedSettingsMenu } from "../../applications/specialty/advanced-game-settings.mjs"
 
 export function registerGameSettings() {
-  // game.settings.registerMenu("utopia", "advancedSettingsMenu", {
-  //   name: "UTOPIA.Settings.advancedSettingsMenu",
-  //   label: "UTOPIA.Settings.advancedSettingsMenu",
-  //   icon: "fas fa-cogs",
-  //   type: AdvancedSettings,
-  //   restricted: true,
-  // })
+  game.settings.registerMenu("utopia", "advancedSettings", {
+    name: "UTOPIA.Settings.advancedSettingsMenu",
+    label: "UTOPIA.Settings.advancedSettingsMenu",
+    icon: "fas fa-cogs",
+    type: AdvancedSettingsMenu,
+    restricted: true,
+  })
 
-  // game.settings.register("utopia", "globalSpellcap", {
-  //   name: "UTOPIA.Settings.globalSpellcap",
-  //   hint: "UTOPIA.Settings.globalSpellcapHint",
-  //   scope: "world",
-  //   config: true,
-  //   type: Number,
-  //   default: 0,
-  //   range: {
-  //     min: 0,
-  //     max: Infinity
-  //   }
-  // });
+  game.settings.register("utopia", "advancedSettings.traits", {
+    name: "UTOPIA.Settings.traits",
+    hint: "UTOPIA.Settings.traitsHint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: CONFIG.UTOPIA.TRAITS,
+  })
 
+  game.settings.register("utopia", "advancedSettings.subtraits", {
+    name: "UTOPIA.Settings.subtraits",
+    hint: "UTOPIA.Settings.subtraitsHint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: CONFIG.UTOPIA.SUBTRAITS,
+  })
+
+  game.settings.register("utopia", "advancedSettings.damageTypes", {
+    name: "UTOPIA.Settings.damageTypes",
+    hint: "UTOPIA.Settings.damageTypesHint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: CONFIG.UTOPIA.DAMAGE_TYPES,
+  })
+
+  game.settings.register("utopia", "advancedSettings.specialtyChecks", {
+    name: "UTOPIA.Settings.specialtyChecks",
+    hint: "UTOPIA.Settings.specialtyChecksHint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: CONFIG.UTOPIA.SPECIALTY_CHECKS,
+  })
+
+  game.settings.register("utopia", "advancedSettings.artistries", {
+    name: "UTOPIA.Settings.artistries",
+    hint: "UTOPIA.Settings.artistriesHint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: CONFIG.UTOPIA.ARTISTRIES,
+  })
+
+  game.settings.register("utopia", "advancedSettings.rarities", {
+    name: "UTOPIA.Settings.rarities",
+    hint: "UTOPIA.Settings.raritiesHint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: CONFIG.UTOPIA.RARITIES,
+  })
+
+  game.settings.register("utopia", "advancedSettings.languages", {
+    name: "UTOPIA.Settings.languages",
+    hint: "UTOPIA.Settings.languagesHint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: CONFIG.UTOPIA.LANGUAGES,
+  })
+
+  game.settings.register("utopia", "advancedSettings.components", {
+    name: "UTOPIA.Settings.components",
+    hint: "UTOPIA.Settings.componentsHint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: CONFIG.UTOPIA.COMPONENTS,
+  })
+
+  game.settings.register("utopia", "activeMeasuredTemplatePreview", {
+    name: "UTOPIA.Settings.activeMeasuredTemplatePreview",
+    hint: "UTOPIA.Settings.activeMeasuredTemplatePreviewHint",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true,
+  })
 
   // Register System settings in the game settings menu
   game.settings.register("utopia", "targetRequired", {
@@ -115,6 +170,33 @@ export function registerGameSettings() {
     },
     default: true,
   });
+
+  game.settings.register("utopia", "turnActionsMax", {
+    name: "UTOPIA.Settings.turnActionsMax",
+    hint: "UTOPIA.Settings.turnActionsMaxHint",
+    scope: "world",
+    config: true,
+    type: Number,
+    default: 6,
+  });
+
+  game.settings.register("utopia", "interruptActionsMax", {
+    name: "UTOPIA.Settings.interruptActionsMax",
+    hint: "UTOPIA.Settings.interruptActionsMaxHint",
+    scope: "world",
+    config: true,
+    type: Number,
+    default: 2,
+  });
+
+  // game.settings.register("utopia", "turnActionsSeconds", {
+  //   name: "UTOPIA.Settings.turnActionsSeconds",
+  //   hint: "UTOPIA.Settings.turnActionsSecondsHint",
+  //   scope: "world",
+  //   config: true,
+  //   type: Number,
+  //   default: 1,
+  // });
 
   game.settings.register('utopia', 'displayActionsOnToken', {
     name: "UTOPIA.Settings.displayActionsOnToken",

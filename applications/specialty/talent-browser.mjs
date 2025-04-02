@@ -10,6 +10,7 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
   actor = {}; // The actor associated with this sheet
   unlockAll = false; // Determines if all talents should be unlocked
   filter = ""; // Filters the talents by name, tree, species, or points
+  talents = {};
 
   constructor(options = {}) {
     super(options);
@@ -44,18 +45,102 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
     },
   }
 
-  async _prepareContext(options) {
-    const trees = await gatherItems({ type: 'talentTree', gatherFromActor: false });
-    const species = await gatherItems({ type: 'species', gatherFromActor: false });
-    const allTrees = trees.concat(species);
-    let actorSpecies = undefined;
+  async handleTalent(talent, tree, branch, t, b, flexibility = {}) {
+    const item = await fromUuid(talent.uuid);
 
-    if (this.options.actor) {
-      actorSpecies = this.options.actor.system._speciesData.name;
+    talent.item = item;
+    talent.body = !talent.overridden ? item.system.body : talent.body;
+    talent.mind = !talent.overridden ? item.system.mind : talent.mind;
+    talent.soul = !talent.overridden ? item.system.soul : talent.soul;
+
+    // Available has 3 states:
+    // - unlocked: The talent is able to be taken
+    // - locked: The talent is locked and cannot be taken
+    // - taken: The talent is already taken
+    const talentTracker = this.actor.system._talentTracking;
+    
+    // The actor has talents in this tree
+    if (talentTracker.some(tracker => tracker.tree === tree.uuid)) {
+    
+      // The actor has talents in this tree and branch
+      if (talentTracker.some(tracker => tracker.tree === tree.uuid && tracker.branch === b)) {
+
+        var maxTier = 0;
+        // Get the hightest tier of talent the actor has in this tree and branch
+        for (const tracker of talentTracker.filter(tracker => tracker.tree === tree.uuid && tracker.branch === b)) {
+          if (tracker.tier > maxTier) {
+            maxTier = tracker.tier;
+          }
+        }
+
+        if (maxTier >= t) {
+          branch.talents[t].available = "taken";
+          talent.available = "taken";
+        }
+        else if (maxTier + 1 === t) {
+          branch.talents[t].available = "available";
+          talent.available = "available";
+        }
+        else {
+          branch.talents[t].available = "locked";
+          talent.available = "locked";
+        }
+      }
+
+      // The actor has talents in this tree but not this branch
+      else {
+        // The talent is the first in this branch
+        if (t === 0) {
+          branch.talents[t].available = "available";
+          talent.available = "available";
+        }
+        // The talent is not the first in this branch
+        else {
+          branch.talents[t].available = "locked";
+          talent.available = "locked";
+        }
+      }
+    }
+    
+    // The actor does not have talents in this tree
+    else {
+      // The talent is the first in this branch
+      if (t === 0) {
+        branch.talents[t].available = "available";
+        talent.available = "available";
+      }
+      // The talent is not the first in this branch
+      else {
+        branch.talents[t].available = "locked";
+        talent.available = "locked";
+      }
     }
 
+    if (Object.keys(flexibility).length > 0) {
+      if (talent.available !== "taken") {
+        branch.talents[t].available = "available";
+        talent.available = "available";
+      }
+    }
+
+    talent.flexibility = flexibility;    
+
+    return talent;
+  }
+
+  async _prepareContext(options) {
+    if (this.options.actor) {
+      this.actor = this.options.actor;
+    }
+
+    let actorSpecies = this.actor.system._speciesData.name;
+    
+    const trees = await gatherItems({ type: 'talentTree', gatherFolders: false, gatherFromWorld: true, gatherFromActor: false });
+    const species = await gatherItems({ type: 'species', gatherFolders: false, gatherFromWorld: true, gatherFromActor: false });
+    const allTrees = trees.concat(species);
+
     const actorTrees = this.options.actor.system.trees;
-    const flexibilities = [];
+    const flexibilities = this.actor.system.flexibility;
 
     for (const tree of allTrees) {
       if (tree.type === "talentTree" || (actorSpecies && tree.type === 'species' && tree.name === actorSpecies) ) {
@@ -64,35 +149,107 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
 
           for (var t = 0; t < branch.talents.length; t++) {
             const talent = branch.talents[t];
-            const item = await fromUuid(talent.uuid);
-
-            if (item) {
-              branch.talents[t] = {
-                ...talent,
-                item: item,
-              }
-            }
-
-            // Identify if this talent has flexibility enabled
-            // Flexibililty allows for talents from other trees to be taken
-            if (item.system.flexibility.enabled) 
-              flexibilities.push(item.system.flexibility)
-
-            if (this.unlockAll) continue;
-
-            // Available has 3 states:
-            // - unlocked: The talent is able to be taken
-            // - locked: The talent is locked and cannot be taken
-            // - taken: The talent is already taken
-            if (actorTrees[tree.name]) {
-              if (actorTrees[tree.name][b] === t - 1) 
-                branch.talents[t].available = "available";
-              else if (actorTrees[tree.name][b] >= t) 
-                branch.talents[t].available = "taken";
-              else 
-                branch.talents[t].available = "unavailable";
-            }
+            const response = await this.handleTalent(talent, tree, branch, t, b);
+            this.talents[talent.uuid] = response;
           };
+        }
+      }
+      else if (flexibilities.some(flexibility => ["subspecies", "speciesFirst", "speciesSecond", "speciesAll"].includes(flexibility.category) && tree.type === "species")) {
+        for (var b = 0; b < tree.system.branches.length; b++) {
+          const branch = tree.system.branches[b];
+
+          if (flexibilities.some(flexibility => flexibility.category === "subspecies") && branch.category === "subspecies") {
+            var tiers = [];
+
+            for (const flexibility of flexibilities.filter(flexibility => flexibility.category === "subspecies")) {
+              tiers.push(flexibility.tier);
+            }
+
+            for (var t = 0; t < branch.talents.length; t++) {
+              if (!tiers.includes(t)) {
+                continue;
+              }
+
+              const talent = branch.talents[t];
+              const flexibility = flexibilities.find(flexibility => flexibility.category === "subspecies" && flexibility.tier === t);
+              const response = await this.handleTalent(talent, tree, branch, t, b, flexibility);
+
+              response.body += flexibility.body;
+              response.mind += flexibility.mind;
+              response.soul += flexibility.soul;
+
+              this.talents[talent.uuid] = response;
+            }
+          }
+          else if (flexibilities.some(flexibility => flexibility.category === "speciesFirst") && b === 0) {
+            var tiers = [];
+
+            for (const flexibility of flexibilities.filter(flexibility => flexibility.category === "speciesFirst")) {
+              tiers.push(flexibility.tier);
+            }
+
+            for (var t = 0; t < branch.talents.length; t++) {
+              if (!tiers.includes(t)) {
+                continue;
+              }
+
+              const talent = branch.talents[t];
+              const flexibility = flexibilities.find(flexibility => flexibility.category === "speciesFirst" && flexibility.tier === t);
+              const response = await this.handleTalent(talent, tree, branch, t, b, flexibility);
+
+              response.body += flexibility.body;
+              response.mind += flexibility.mind;
+              response.soul += flexibility.soul;
+
+              this.talents[talent.uuid] = response;
+            }
+          }
+          else if (flexibilities.some(flexibility => flexibility.category === "speciesSecond") && b === 1) {
+            var tiers = [];
+
+            for (const flexibility of flexibilities.filter(flexibility => flexibility.category === "speciesAll")) {
+              tiers.push(flexibility.tier);
+            }
+
+            for (var t = 0; t < branch.talents.length; t++) {
+              if (!tiers.includes(t)) {
+                continue;
+              }
+
+              const talent = branch.talents[t];
+              const flexibility = flexibilities.find(flexibility => flexibility.category === "speciesSecond" && flexibility.tier === t);
+              const response = await this.handleTalent(talent, tree, branch, t, b, flexibility);
+
+              response.body += flexibility.body;
+              response.mind += flexibility.mind;
+              response.soul += flexibility.soul;
+
+              this.talents[talent.uuid] = response;
+            }
+          }
+          else if (flexibilities.some(flexibility => flexibility.category === "speciesAll")) {
+            var tiers = [];
+
+            for (const flexibility of flexibilities.filter(flexibility => flexibility.category === "speciesAll")) {
+              tiers.push(flexibility.tier);
+            }
+
+            for (var t = 0; t < branch.talents.length; t++) {
+              if (!tiers.includes(t)) {
+                continue;
+              }
+
+              const talent = branch.talents[t];
+              const flexibility = flexibilities.find(flexibility => flexibility.category === "speciesAll" && flexibility.tier === t);
+              const response = await this.handleTalent(talent, tree, branch, t, b, flexibility);
+
+              response.body += flexibility.body;
+              response.mind += flexibility.mind;
+              response.soul += flexibility.soul;
+
+              this.talents[talent.uuid] = response;
+            }
+          }
         }
       }
       else {
@@ -108,13 +265,19 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
     // Remove all empty trees
     const filteredTrees = allTrees.filter(tree => tree.system.branches.length > 0);
 
-    // Add all trees that meet flexibilities
-    for (const flex of flexibilities) {
-      switch (flex.category) {
-        case "species": 
-          break;
-        case "subspecies":
-          break;
+    // Check if the actor has any flexibility points
+    if (this.actor.system.flexibility.length > 0) {
+      for (const flexibility of this.actor.system.flexibility) {
+        // The tree should be indicated by
+        // - subspecies: Add all species trees, but only the subspecies branch
+        // - speciesFirst: Add all species trees, but only the first branch
+        // - speciesSecond: Add all species trees, but only the second branch
+        // - speciesAll: Add all species trees, but all branches
+        // - generalPurpose: Add all general purpose trees (not species)
+
+        if (flexibility.category === "subspecies") {
+
+        }
       }
     }
 
@@ -135,11 +298,11 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
     return context;
   }
 
-  #searchFilter = new SearchFilter({
-    inputSelector: 'input[name="filter"]',
-    contentSelector: '.skill-grid',
-    callback: this._filter.bind(this),
-  });
+  // #searchFilter = new SearchFilter({
+  //   inputSelector: 'input[name="filter"]',
+  //   contentSelector: '.skill-grid',1
+  //   callback: this._filter.bind(this),
+  // });
 
   _onRender(context, options) {
     try {
@@ -150,8 +313,9 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
 
       this.element.querySelectorAll('.skill').forEach(skill => {
         skill.addEventListener('mouseover', async (event) => {
+          const talent = this.talents[event.target.dataset.talent];
           let content = await renderTemplate('systems/utopia/templates/specialty/talent-browser/tooltip.hbs', { 
-            talent: this.availableTalents.find(t => t.id === event.target.dataset.talent),
+            talent
           });
           let element = document.createElement('div');
           element.innerHTML = content;
@@ -167,12 +331,16 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
   }
 
   static async _onTalentClick(event, target) {
-    const id = target.dataset.talent;
-    const tree = target.dataset.tree;
+    const talentUuid = target.dataset.talent;
+    const treeUuid = target.dataset.tree;
+    const branch = target.dataset.branch;
+    const tier = target.dataset.tier
     const available = target.dataset.available;
-    
+    const talent = this.talents[talentUuid];
+    const tree = await fromUuid(treeUuid);
+
     if (available === "available")
-      await this.options.actor.addTalent(id, tree);
+      await this.options.actor.addTalent(talent, tree, branch, tier);
 
     this.render();
   }

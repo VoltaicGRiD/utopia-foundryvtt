@@ -12,7 +12,7 @@ export class SpellFeature extends UtopiaItemBase {
 
     schema.formula = new fields.StringField({ required: false, nullable: true });
 
-    const artistries = CONFIG.UTOPIA.ARTISTRIES
+    const artistries = JSON.parse(game.settings.get("utopia", "advancedSettings.artistries"))
     schema.art = new fields.StringField({ required: true, nullable: false, initial: "array", choices: artistries });
 
     // The PP Cost of the spell feature
@@ -257,7 +257,7 @@ export class SpellFeature extends UtopiaItemBase {
   }
 
   get style() {
-    const artistries = CONFIG.UTOPIA.ARTISTRIES;
+    const artistries = JSON.parse(game.settings.get("utopia", "advancedSettings.artistries"));
     return {
       background: artistries[this.art].color,
       color: getTextContrastHex(artistries[this.art].color),

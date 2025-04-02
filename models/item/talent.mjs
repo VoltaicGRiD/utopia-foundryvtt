@@ -20,6 +20,8 @@ export class Talent extends UtopiaItemBase {
       category: new fields.StringField({ required: true, nullable: false, initial: "" }),
     });
 
+    schema.selectedOption = new fields.StringField({ required: true, nullable: false, initial: "" });
+
     schema.flexibility = new UtopiaSchemaField({
       enabled: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       body: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
@@ -93,7 +95,13 @@ export class Talent extends UtopiaItemBase {
     ]
   }
 
-  get total() {
-    return this.body + this.mind + this.soul;
+  prepareDerivedData() {
+    super.prepareDerivedData();
+    
+    this.cost = this.body + this.mind + this.soul;
+
+    if (this.options.choices.size === 1) {
+      this.options.choices = new Set(Array.from(this.options.choices)[0].split(",").map(c => c.trim()));[[]]
+    }
   }
 }

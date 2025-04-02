@@ -85,7 +85,7 @@
 
             <div class="attributes-input-group-container">
               {{#each value as |attribute key|}}
-                {{log attribute}}
+                
                 {{> 'attribute' featureOptions=../../featureOptions value=attribute key=key type=classification index=@index}}
               {{/each}}
             </div>

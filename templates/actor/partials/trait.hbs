@@ -4,8 +4,8 @@
     <span class="trait-total">{{numberFormat trait.total}}</span>
     <span class="trait-mod">{{numberFormat trait.mod sign=true}}</span>
   {{else}}
-    {{log key}}
-    {{log source}}
+    
+    
     <span class="trait-name">{{localize trait.name}}</span>
     <input name="system.traits.{{key}}.value" type="number" value="{{source.value}}">
     <input name="system.traits.{{key}}.mod" type="number" value="{{source.mod}}">

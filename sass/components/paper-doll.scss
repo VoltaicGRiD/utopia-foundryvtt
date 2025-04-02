@@ -1,4 +1,5 @@
 .paper-doll {
+  margin-top: 20px;
   position: relative;
   width: 100%;
   height: 300px;
@@ -132,70 +133,70 @@
   .head {
     position: absolute;
     flex-direction: row;
-    top: 50%;
+    top: 20px;
     left: 50%;
-    transform: translateX(-50%) translateY(-125px);
+    transform: translateX(-50%);
     width: 60px;
   }
 
   .neck {
     position: absolute;
     flex-direction: row;
-    top: 50%;
+    top: 65px;
     left: 50%;
-    transform: translateX(-50%) translateY(-88px);
+    transform: translateX(-50%);
     width: 60px;
   }
 
   .back {
     position: absolute;
     flex-direction: row-reverse;
-    top: 50%;
+    top: 80px;
     left: 50%;
-    transform: translateX(-50%) translateY(-67px);
+    transform: translateX(-50%);
     width: 110px;
   }
 
   .chest {
     position: absolute;
     flex-direction: row-reverse;
-    top: 50%;
+    top: 110px;
     left: 50%;
-    transform: translateX(-50%) translateY(-35px);
+    transform: translateX(-50%);
     width: 140px;
   }
 
   .waist {
     position: absolute;
     flex-direction: row-reverse;
-    top: 50%;
+    top: 140px;
     left: 50%;
-    transform: translateX(-50%) translateY(56px);
-    width: 90px;
+    transform: translateX(-50%);
+    width: 170px;
   }
 
   .hands {
     position: absolute;
     flex-direction: row-reverse;
-    top: 50%;
+    top: 170px;
     left: 50%;
-    transform: translateX(-50%) translateY(12px);
+    transform: translateX(-50%);
     width: 180px;
   }
 
   .ring {
     position: absolute;
-    top: 50%;
+    top: 200px;
     left: 50%;
-    transform: translateX(-50%) translateY(49px);
+    transform: translateX(-50%);
     width: 110px;
   }
 
   .feet {
     position: absolute;
-    top: 50%;
+    bottom: 20px;
     left: 50%;
-    transform: translateX(-50%) translateY(128px);
+    transform: translateX(-50%);
     width: 90px;
   }
 }

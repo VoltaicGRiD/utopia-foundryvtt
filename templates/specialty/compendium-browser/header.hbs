@@ -1,0 +1,18 @@
+<div class="compendium-browser-header">
+  <select name="type" id="type">
+    {{#each types}}
+      <option value="{{this}}" {{#if (eq this ../type)}}selected{{/if}}>{{this}}</option>
+    {{/each}}
+  </select>
+
+  <label for="world">{{localize "UTOPIA.CompendiumBrowser.ViewWorldItems"}}</label>
+  <input type="checkbox" id="world" name="world" {{#if includeWorld}}checked{{/if}}>
+
+  {{#if isGM}}
+    <label for="actor">{{localize "UTOPIA.CompendiumBrowser.ViewActorItems"}}</label>
+    <input type="checkbox" id="actor" name="actor" {{#if includeActor}}checked{{/if}}>
+  {{/if}}
+
+  <label for="search">{{localize "UTOPIA.CompendiumBrowser.Search"}}</label>
+  <input type="text" id="search" name="search" value="{{search}}">
+</div>

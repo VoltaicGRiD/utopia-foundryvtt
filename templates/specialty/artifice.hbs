@@ -11,7 +11,7 @@
       <input type="text" name="filter" class="filter" value="{{filter}}" placeholder="{{localize 'UTOPIA.CommonTerms.filter'}}" />
       <ol class="feature-list">
         {{#each features as |feature key|}}
-          {{log feature}}
+          
           <li class="feature available-feature {{#if (eq feature.hidden true)}}hidden{{/if}}" 
           data-name="{{feature.name}}" 
           style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
@@ -116,7 +116,7 @@
       <div class="gear-features">
         <ol class="selected-feature-list flexcol">
           {{#each selected as |feature key|}}
-            {{log feature}}
+            
             <li class="feature" 
               style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
               data-id="{{key}}">

@@ -5,7 +5,7 @@ export class AdvancementSheet extends DragDropAppV2 {
   constructor(options = {}) {
     super(options);
     this.actor = options.actor;
-    this.subtraits = Object.values(CONFIG.UTOPIA.SUBTRAITS).map((subtrait) => {
+    this.subtraits = Object.values(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).map((subtrait) => {
       return {
         ...subtrait,
         gifted: this.actor.system.subtraits[subtrait.short].gifted,
@@ -26,13 +26,14 @@ export class AdvancementSheet extends DragDropAppV2 {
       increase: this._increase,
       decrease: this._decrease,
       save: this._save,
+      gift: this._gift,
     },
     form: {
       submitOnChange: false,
     },
     tag: "form",
   window: {
-      title: "UTOPIA.SheetLabels.advancement",
+      title: "UTOPIA.SheetLabels.Advancement",
     },
   };
 
@@ -51,9 +52,9 @@ export class AdvancementSheet extends DragDropAppV2 {
     var context = {
       actor: this.actor,
       subtraits: this.subtraits,
+      giftPoints: this.actor.system.giftPoints.available,
       points: this.actor.system.subtraitPoints.available - this.subtraits.reduce((acc, subtrait) => acc + subtrait.newValue - subtrait.value, 0)
     };
-    
 
     return context;
   }
@@ -82,5 +83,31 @@ export class AdvancementSheet extends DragDropAppV2 {
     this.subtraits.find((subtrait) => subtrait.short === key).newValue -= 1;
 
     this.render();
+  }
+
+  static async _gift(event, target) {
+    const key = target.dataset.key;
+    const subtrait = this.subtraits.find((subtrait) => subtrait.short === key);
+
+    if (subtrait.gifted) 
+      subtrait.gifted = false;
+    else {
+      const points = this.actor.system.giftPoints.available - this.subtraits.reduce((acc, subtrait) => acc + (subtrait.gifted ? 1 : 0), 0);
+      if (points <= 0) return;
+      subtrait.gifted = true;
+    }
+
+    this.render();
+  }
+
+  static async _save(event, target) {
+    for (const subtrait of this.subtraits) {
+      await this.actor.update({
+        [`system.subtraits.${subtrait.short}.value`]: subtrait.newValue,
+        [`system.subtraits.${subtrait.short}.gifted`]: subtrait.gifted,
+      });
+    }
+
+    this.close();
   }
 }

@@ -1,6 +1,8 @@
+import { getPaperDollContext } from "../../models/utility/paper-doll-utils.mjs";
 import { fitTextToWidth } from "../../system/helpers/fitTextToWidth.mjs";
 import { flattenFields } from "../../system/helpers/flattenFields.mjs";
 import { AdvancementSheet } from "../item/advancement.mjs";
+import { CompendiumBrowser } from "../specialty/compendium-browser.mjs";
 import { SpellcraftSheet } from "../specialty/spellcraft.mjs";
 import { TalentBrowser } from "../specialty/talent-browser.mjs";
 
@@ -11,14 +13,14 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     super(options);
     this.#dragDrop = this.#createDragDropHandlers();
   }
-
+  
   static MODES = {
     PLAY: 0,
     EDIT: 1,
   }
 
   _mode = this.constructor.MODES.PLAY;
-  
+
   static DEFAULT_OPTIONS = {
     classes: ["utopia", "actor-sheet"],
     actions: {
@@ -33,7 +35,6 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       toggleEffect: this._toggleEffect,      
       viewActor: this._viewActor,
       tab: this._tab,
-      toggleMode: this._toggleMode,
       roll: this._roll
     },
     form: {
@@ -52,26 +53,26 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
   };
 
   async _prepareContext(options) {
-    for (const [key, value] of Object.entries(CONFIG.UTOPIA.TRAITS)) {
+    for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits")))) {
       this.actor.system.traits[key].name = value.label;
       this.actor.system.traits[key].icon = value.icon;
     }
 
-    for (const [key, value] of Object.entries(CONFIG.UTOPIA.SUBTRAITS)) {
+    for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits")))) {
       this.actor.system.subtraits[key].name = value.label;
       this.actor.system.subtraits[key].icon = value.icon;
     }
 
     const checks = {
-      ...Object.entries(CONFIG.UTOPIA.TRAITS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, ...this.actor.system.traits[key], group: game.i18n.localize("UTOPIA.TRAITS.GroupName") };
         return acc;
       }, {}),
-      ...Object.entries(CONFIG.UTOPIA.SUBTRAITS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, ...this.actor.system.subtraits[key], group: game.i18n.localize("UTOPIA.SUBTRAITS.GroupName") };
         return acc;
       }, {}),
-      ...Object.entries(CONFIG.UTOPIA.SPECIALTY_CHECKS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.GroupName") };
         return acc;
       }, {}),
@@ -93,7 +94,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       checkOptions[group] = game.i18n.sortObjects(checkOptions[group], "label");
     }    
 
-    var specialtyChecks = Object.fromEntries(await Promise.all(Object.entries(CONFIG.UTOPIA.SPECIALTY_CHECKS).map(async ([key, value]) => {
+    var specialtyChecks = Object.fromEntries(await Promise.all(Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))).map(async ([key, value]) => {
       const netFavor = await this.actor.checkForFavor(key) || 0;
       const attribute = this.actor.system.checks[key];
       const newFormula = value.formula.replace(`@${value.defaultAttribute}`, `@${attribute}`);
@@ -171,6 +172,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     switch (partId) {
       case 'attributes':
       case 'spellbook':
+      case 'equipment':
+        context.paperdoll = await getPaperDollContext(this.actor);
       case 'background':
         context.tab = context.tabs[partId];
         context.enrichedDescription = await TextEditor.enrichHTML(
@@ -297,8 +300,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       fitTextToWidth(inputElement, 12, 24);
     });
 
-    const toggle = this.element.querySelector(".mode-toggle");
-    toggle.checked = this._mode === this.constructor.MODES.EDIT;
+    // const toggle = this.element.querySelector(".mode-toggle");
+    // toggle.checked = this._mode === this.constructor.MODES.EDIT;
     
     const traitChecks = this.element.querySelectorAll(".trait-select");
     traitChecks.forEach((check) => {
@@ -356,6 +359,11 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         element.innerText = formula;
       }
     });
+    const subButtonElements = container.querySelectorAll(`.sub-button.${type}-check`);
+    subButtonElements.forEach((element) => {
+      element.dataset.check = trait;
+      element.dataset.formula = formula;
+    });
   }
 
   static async _roll(event, target) {
@@ -371,9 +379,14 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         return await new Roll(dodgeFormula, this.actor.getRollData()).toMessage();
       case "rest": 
         return this.actor.rest();
+      case "forage": 
+        return this.actor.forage();
+      case "craft": 
+        return this.actor.craft();
       case "check": 
         const check = target.dataset.check;
-        return this.actor.check(check);
+        const specification = target.dataset.specification ?? "always";
+        return this.actor.check(check, { specification });
       case "item": 
         const item = this.actor.items.get(target.dataset.item);
         return await item.roll();
@@ -383,17 +396,6 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     }
   }
 
-  static async _toggleMode(event, target) {
-    const { MODES } = this.constructor;
-    const toggle = target;
-    const label = game.i18n.localize(`DND5E.SheetMode${toggle.checked ? "Play" : "Edit"}`);
-    toggle.dataset.tooltip = label;
-    toggle.setAttribute("aria-label", label);
-    this._mode = toggle.checked ? MODES.EDIT : MODES.PLAY;
-    await this.submit();
-    this.render();
-  }
-
   static async _createDocument(event, target) {
     const type = target.dataset.documentType;
     await this.actor.createEmbeddedDocuments("Item", [{ name: target.innerText, type: type }]);
@@ -401,7 +403,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
   static async _deleteDocument(event, target) {
     const id = target.dataset.documentId;
-    await this.actor.deleteEmbeddedDocuments("Item", [id]);
+    await this.actor.deleteItem(this.actor.items.get(id));
   }
 
   static async _viewDocument(event, target) {
@@ -413,11 +415,10 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     const documentType = target.dataset.documentType;
     switch (documentType) {
       case "specialtyCheck": 
+        const check = JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))[target.dataset.check];
         return await foundry.applications.api.DialogV2.prompt({
           window: { title: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.WindowTitle") },
-          content: await renderTemplate("systems/utopia/templates/dialogs/specialty-check.hbs", {
-            check: CONFIG.UTOPIA.SPECIALTY_CHECKS[target.dataset.check]
-          }),
+          content: '<p>' + game.i18n.localize(check.description) + '</p>',
           modal: true,
         });
     }
@@ -438,13 +439,16 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     const app = target.dataset.application;
     switch (app) {
       case "talent-browser":
+        if (this.actor.system._speciesData.name === "No Species") {
+          return ui.notifications.warn(game.i18n.localize("UTOPIA.NoSpeciesWarning"));
+        }
         return new TalentBrowser({ actor: this.actor }).render(true);
       case "spellcraft": 
         return new SpellcraftSheet({ actor: this.actor }).render(true);
-      case "artifice": 
-        return new ArtificeSheet({ actor: this.actor }).render(true);
       case "advancement":
         return new AdvancementSheet({ actor: this.actor }).render(true);
+      case "browser": 
+        return new CompendiumBrowser({ actor: this.actor, type: target.dataset.documentType }).render(true);
     }
   }
 

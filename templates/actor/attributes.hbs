@@ -36,9 +36,32 @@
     {{else}}
       <legend data-action="createDocument" data-document-type="gear" title="{{localize "UTOPIA.Gear.New"}}">{{localize "DOCUMENT.Create" type="Gear"}} <i class="fas fa-plus"></i></legend>
     {{/if}}
-    <a data-action="openApplication" data-application="artifice-builder"><i class="fas fa-hammer"></i> {{localize "UTOPIA.Actors.Actions.NewArtifice"}}</a>
+    <a data-action="createDocument" data-document-type="gear"><i class="fas fa-hammer"></i> {{localize "UTOPIA.Actors.Actions.NewArtifice"}}</a>
     <div class="item-container">
-      {{#each gear as |item|}} 
+      {{#each equipment as |item|}} 
+        {{#if ../isPlay}}
+          <div class="item">
+            <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
+              <span class="item-name">{{item.name}}</span>
+            </a>
+          </div>
+        {{else}}
+          <div class="item-edit">
+            <div class="item">
+              <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+            <div class="item-actions">
+              <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+            </div>        
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+    <a data-action="createDocument" data-document-type="generic"><i class="fas fa-hammer"></i> {{localize "UTOPIA.Actors.Actions.NewGeneric"}}</a>
+    <div class="item-container">
+      {{#each generic as |item|}} 
         {{#if ../isPlay}}
           <div class="item">
             <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
@@ -83,7 +106,7 @@
     {{#if isPlay}}
       <legend>{{localize "UTOPIA.Actors.Items.Consumables"}} <i class="fas fa-flask"></i></legend>
     {{else}}
-      <legend data-action="createDocument" data-document-type="gear" title="{{localize "UTOPIA.Consumables.New"}}">{{localize "DOCUMENT.Create" type="Gear"}} <i class="fas fa-plus"></i></legend>
+      <legend data-action="createDocument" data-document-type="gear" title="{{localize "UTOPIA.Consumables.New"}}">{{localize "DOCUMENT.Create" type="Consumable"}} <i class="fas fa-plus"></i></legend>
     {{/if}}
     <div class="item-container">
       {{#each consumables as |item|}} 
@@ -96,15 +119,72 @@
     </div>
   </fieldset>
 
-  <fieldset class="components-container">
-    <legend>{{localize "UTOPIA.Actors.Items.Components"}} <i class="fas fa-cogs"></i></legend>
-    <div class="components">
-      {{#each components as |component|}}
-        <div class="component" data-component="{{component.id}}">
-          <span class="component-name">{{component.name}}</span>
-          <span class="component-quantity">{{component.quantity}}</span>
+  <fieldset class="item-set" data-item="{{item.id}}">
+    {{#if isPlay}}
+      <legend>{{localize "UTOPIA.Actors.Items.Favors"}} <i class="fas fa-dice"></i></legend>
+    {{else}}
+      <legend data-action="createDocument" data-document-type="favor" title="{{localize "UTOPIA.Favors.New"}}">{{localize "DOCUMENT.Create" type="Favor"}} <i class="fas fa-plus"></i></legend>
+    {{/if}}
+    <div class="item-container">
+      {{#each favors as |item|}} 
+        <div class="item">
+          <a class="consumable" data-action="viewDocument" data-document-id="{{item.id}}">
+            <span class="item-name">{{item.name}}</span>
+            {{#each item.system.conditions}}
+              <span class="item-condition">[vs. {{capitalize this}}]</span>
+            {{/each}}
+            <span class="item-value">{{numberFormat item.system.value sign=true}}</span>
+          </a>
         </div>
       {{/each}}
+    </div>
+  </fieldset>
+
+  <fieldset class="item-set components-container">
+    <legend>{{localize "UTOPIA.Actors.Items.Components"}} <i class="fas fa-cogs"></i></legend>
+    <a class="action-button" data-action="roll" data-roll="forage"><i class="fa-fw fas fa-person-digging"></i> {{localize "UTOPIA.Actors.Actions.Forage"}}</a>
+    <a class="action-button" data-action="roll" data-roll="craft"><i class="fa-fw fas fa-person-digging"></i> {{localize "UTOPIA.Actors.Actions.Forage"}}</a>
+    <div class="item-container">
+      {{#if isPlay}}
+        {{#each components as |component key|}}
+          {{#each component.rarities as |rarity key|}}
+            {{#if (gt rarity.value 0)}}
+              <div class="item">
+                <span class="item-name">{{localize component.label}}</span>
+                <span class="item-rarity">{{localize rarity.label}}</span>
+                <span class="item-value">{{numberFormat rarity.value}}</span>
+              </div>
+            {{/if}}
+          {{/each}}
+        {{/each}}
+      {{else}}
+        <table class="components-table">
+          <thead>
+            <tr>
+              <th></th>
+              {{#each components as |component key|}}
+                {{#if @first}}
+                  {{#each component.rarities as |rarity key|}}
+                    <th>{{localize rarity.label}}</th>
+                  {{/each}}
+                {{/if}}
+              {{/each}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each components as |component key|}}
+              <tr>
+                <th>{{localize component.label}}</th>
+                {{#each component.rarities as |rarity key|}}
+                  <td>
+                    <input type="number" name={{rarity.name}} value="{{rarity.value}}" />
+                  </td>
+                {{/each}}
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      {{/if}}
     </div>
   </fieldset>
 </section>

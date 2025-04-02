@@ -26,6 +26,33 @@ export async function prepareSpeciesData(character) {
     quantity: character._speciesData.system.dodge.quantity
   }
 
+  const traits = JSON.parse(game.settings.get("utopia", "advancedSettings.traits"));
+  const subtraits = JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"));
+  const allTraits = { ...traits, ...subtraits };
+  for (const trait of character._speciesData.system.gifts.subtraits) {
+    for (const [traitKey, traitValue] of Object.entries(traits)) {
+      if (
+        traitKey === trait.toLowerCase() || 
+        traitValue.long === trait.toLowerCase() ||
+        traitValue.short === trait.toLowerCase()
+      ) {
+        character.traits[traitKey].gifted = true;      
+      }
+    }
+
+    for (const [traitKey, traitValue] of Object.entries(subtraits)) {
+      if (
+        traitKey === trait.toLowerCase() || 
+        traitValue.long === trait.toLowerCase() ||
+        traitValue.short === trait.toLowerCase()
+      ) {
+        character.subtraits[traitKey].gifted = true;      
+      }
+    }
+  }
+
+  character.giftPoints.available = character._speciesData.system.gifts.points;
+
   for (const [key, value] of Object.entries(character._speciesData.system.travel)) {
     const rolldata = await character.parent.getRollData();
     const innateRoll = new Roll(String(character.innateTravel[key].speed), rolldata);
@@ -37,9 +64,9 @@ export async function prepareSpeciesData(character) {
     character.travel[key].speed += speciesRoll.total;
   }
 
-  character.constitution += character._speciesData.system.constitution;
-  character.endurance += character._speciesData.system.endurance;
-  character.effervescence += character._speciesData.system.effervescence;
+  character.constitution = character._speciesData.system.constitution;
+  character.endurance = character._speciesData.system.endurance;
+  character.effervescence = character._speciesData.system.effervescence;
 
   character.evolution.head = Math.max(species.evolution.head, 1);
   character.evolution.feet = species.evolution.feet;
@@ -68,7 +95,7 @@ export async function prepareSpeciesData(character) {
 
 export async function prepareSpeciesDefault(character) {
   character._speciesData = {
-    name: "Human",
+    name: "No Species",
     system: {
       travel: {
         land: "@spd.total",

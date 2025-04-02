@@ -1,0 +1,84 @@
+<div class="forage-and-crafting-content">
+  <h3>{{localize "UTOPIA.ForageAndCrafting.Foraging"}}</h3>
+  <div class="grid grid-3col">
+    <select name="foraging-component" id="foraging-component">
+      {{#each components as |component key|}}
+        <option value="{{key}}" {{#if (eq ../foraging.component key)}}selected{{/if}}>{{localize component.label}}</option>
+      {{/each}}
+    </select>
+
+    <select name="foraging-rarity" id="foraging-rarity">
+      {{#each rarities as |rarity key|}}
+        <option value="{{key}}"{{#if (eq ../foraging.rarity key)}}selected{{/if}}>{{localize rarity.label}}</option>
+      {{/each}}
+    </select>
+
+    <select name="foraging-time" id="foraging-time">
+      {{#each foragingTimes as |time key|}}
+        <option value="{{key}}"{{#if (eq ../foraging.time key)}}selected{{/if}}>{{localize time.label}}</option>
+      {{/each}}
+    </select>
+
+    <div class="foraging-difficulty">
+      <span class="foraging-difficulty-title">{{localize "UTOPIA.ForageAndCrafting.Difficulty"}}</span>
+      <span class="foraging-difficulty-value">{{foraging.difficulty}}</span>
+    </div>
+
+    <div class="foraging-formula">
+      <span class="foraging-formula-title">{{localize "UTOPIA.ForageAndCrafting.Formula"}}</span>
+      <span class="foraging-formula-value">{{foraging.formula}}</span>
+    </div>
+
+    <div class="foraging-returns">
+      <span class="foraging-returns-title">{{localize "UTOPIA.ForageAndCrafting.Returns"}}</span>
+      <span class="foraging-returns-value">{{foraging.returns}}</span>
+    </div>
+
+    <button class="foraging-button" data-action="forage">
+      {{localize "UTOPIA.ForageAndCrafting.Forage"}}
+    </button>
+  </div>
+
+  <hr/>
+
+  <h3>{{localize "UTOPIA.ForageAndCrafting.Crafting"}}</h3>
+  <div class="grid grid-3col">
+    <select name="crafting-component" id="crafting-component">
+      {{#each components as |component key|}}
+        <option value="{{key}}" {{#if (eq ../crafting.component key)}}selected{{/if}}>{{localize component.label}}</option>
+      {{/each}}
+    </select>
+
+    <select name="crafting-rarity" id="crafting-rarity">
+      {{#each rarities as |rarity key|}}
+        {{#if (gte ../craftingLevel rarity.value)}}
+          <option value="{{key}}" {{#if (eq ../crafting.rarity key)}}selected{{/if}}>{{localize rarity.label}}</option>
+        {{/if}}
+      {{/each}}
+    </select>
+
+    <div></div>
+
+    <div class="crafting-difficulty">
+      <span class="crafting-difficulty-title">{{localize "UTOPIA.ForageAndCrafting.Difficulty"}}</span>
+      <span class="crafting-difficulty-value">{{crafting.difficulty}}</span>
+    </div>
+
+    <div class="crafting-requirements">
+      <span class="crafting-requirements-title">{{localize "UTOPIA.ForageAndCrafting.Requirements"}}</span>
+      {{#each crafting.requirements as |requirement|}}
+        <span class="crafting-requirements-value">{{requirement}}</span>
+      {{/each}}
+    </div>
+
+    <div class="crafting-returns">
+      <span class="crafting-returns-title">{{localize "UTOPIA.ForageAndCrafting.Returns"}}</span>
+      <span class="crafting-returns-value">{{crafting.returns}}</span>
+      <span class="crafting-returns-value">{{crafting.time}}</span>
+    </div>
+
+    <button class="crafting-button" data-action="forage">
+      {{localize "UTOPIA.ForageAndCrafting.Craft"}}
+    </button>
+  </div>
+</div>

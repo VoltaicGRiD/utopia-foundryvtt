@@ -44,10 +44,10 @@ export class Gear extends UtopiaItemBase {
     schema.featureSettings = new fields.ObjectField();
 
     const components = {};
-    Object.entries(CONFIG.UTOPIA.COMPONENTS).forEach(([component, _]) => {
+    Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components"))).forEach(([component, _]) => {
       components[`${component}`] = new fields.SchemaField({});
 
-      Object.entries(CONFIG.UTOPIA.RARITIES).forEach(([rarity, _]) => {
+      Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities"))).forEach(([rarity, _]) => {
         components[`${component}`].fields[`${rarity}`] = new fields.NumberField({ required: true, nullable: false, initial: 0 });
       });
     });
@@ -55,9 +55,9 @@ export class Gear extends UtopiaItemBase {
 
     schema.prototype = new fields.BooleanField({ required: true, nullable: false, initial: true });
     schema.contributedComponents = new fields.SchemaField({});
-    for (const [component, componentValue] of Object.entries(CONFIG.UTOPIA.COMPONENTS)) {
+    for (const [component, componentValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components")))) {
       schema.contributedComponents[component] = new fields.SchemaField({});
-      for (const [rarity, rarityValue] of Object.entries(CONFIG.UTOPIA.RARITIES)) {
+      for (const [rarity, rarityValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")))) {
         schema.contributedComponents[component][rarity] = new fields.NumberField({required: true, nullable: false, initial: 0});
       }
     }   

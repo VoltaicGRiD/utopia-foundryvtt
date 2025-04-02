@@ -1,5 +1,5 @@
 <div class="chat-card gear-card">
-  {{log item}}
+  
 
   <div class="card-header">
     <img class="card-header-icon" src="systems/utopia/assets/gear.svg" title="gear" style="width: 30px; height: 30px;"/>
@@ -21,7 +21,7 @@
   <div class="gear-features">
     <ol class="selected-feature-list flexcol">
       {{#each features as |feature key|}}
-        {{log feature}}
+        
 
         <li class="feature" 
           style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 

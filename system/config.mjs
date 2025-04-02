@@ -1,10 +1,12 @@
+import { UtopiaTemplates } from "./init/measuredTemplates.mjs"
+
 export function registerConfig() {
   CONFIG.UTOPIA.TRAITS = {
     agi: {
       name: 'Agility',
       short: 'agi',
       long: 'agility',
-      label: game.i18n.localize('UTOPIA.TRAITS.Agility'),
+      label: 'UTOPIA.TRAITS.Agility',
       icon: 'fas fa-rabbit-running',
       color: '#005F5F',
       path: 'system.traits.agi',
@@ -16,7 +18,7 @@ export function registerConfig() {
       long: 'strength',
       icon: 'fas fa-dumbbell',
       color: '#7F0D0D',
-      label: game.i18n.localize('UTOPIA.TRAITS.Strength'),
+      label: 'UTOPIA.TRAITS.Strength',
       path: 'system.traits.str',
       subtraits: ['pow', 'for']
     },
@@ -26,7 +28,7 @@ export function registerConfig() {
       long: 'intellect',
       icon: 'fas fa-brain-circuit',
       color: '#0D7F5F',
-      label: game.i18n.localize('UTOPIA.TRAITS.Intellect'),
+      label: 'UTOPIA.TRAITS.Intellect',
       path: 'system.traits.int',
       subtraits: ['eng', 'mem']
     },
@@ -36,7 +38,7 @@ export function registerConfig() {
       long: 'will',
       icon: 'fas fa-shield-alt',
       color: '#7F0D5F',
-      label: game.i18n.localize('UTOPIA.TRAITS.Will'),
+      label: 'UTOPIA.TRAITS.Will',
       path: 'system.traits.wil',
       subtraits: ['res', 'awa']
     },
@@ -46,7 +48,7 @@ export function registerConfig() {
       long: 'display',
       icon: 'fas fa-tv',
       color: '#7F5F0D',
-      label: game.i18n.localize('UTOPIA.TRAITS.Display'),
+      label: 'UTOPIA.TRAITS.Display',
       path: 'system.traits.dis',
       subtraits: ['por', 'stu']
     },
@@ -56,7 +58,7 @@ export function registerConfig() {
       long: 'charm',
       icon: 'fas fa-face-grin-stars',
       color: '#782355',
-      label: game.i18n.localize('UTOPIA.TRAITS.Charm'),
+      label: 'UTOPIA.TRAITS.Charm',
       path: 'system.traits.cha',
       subtraits: ['app', 'lan']
     }
@@ -69,7 +71,7 @@ export function registerConfig() {
       long: 'dexterity',
       icon: 'fas fa-hand-sparkles',
       color: '#007A7A',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Dexterity'),
+      label: 'UTOPIA.SUBTRAITS.Dexterity',
       path: 'system.subtraits.dex',
     },
     spd: {
@@ -78,7 +80,7 @@ export function registerConfig() {
       long: 'speed',
       icon: 'fas fa-running',
       color: '#007A7A',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Speed'),
+      label: 'UTOPIA.SUBTRAITS.Speed',
       path: 'system.subtraits.spd',
     },
     pow: {
@@ -87,7 +89,7 @@ export function registerConfig() {
       long: 'power',
       icon: 'fas fa-fist-raised',
       color: '#7F0D0D',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Power'),
+      label: 'UTOPIA.SUBTRAITS.Power',
       path: 'system.subtraits.pow',
     },
     for: {
@@ -96,7 +98,7 @@ export function registerConfig() {
       long: 'fortitude',
       icon: 'fas fa-fist-raised',
       color: '#7F0D0D',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Fortitude'),
+      label: 'UTOPIA.SUBTRAITS.Fortitude',
       path: 'system.subtraits.for',
     },
     eng: {
@@ -105,7 +107,7 @@ export function registerConfig() {
       long: 'engineering',
       icon: 'fas fa-cogs',
       color: '#0D7F5F',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Engineering'),
+      label: 'UTOPIA.SUBTRAITS.Engineering',
       path: 'system.subtraits.eng',
     },
     mem: {
@@ -114,7 +116,7 @@ export function registerConfig() {
       long: 'memory',
       icon: 'fas fa-brain',
       color: '#0D7F5F',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Memory'),
+      label: 'UTOPIA.SUBTRAITS.Memory',
       path: 'system.subtraits.mem',
     },
     res: {
@@ -123,7 +125,7 @@ export function registerConfig() {
       long: 'resolve',
       icon: 'fas fa-shield-alt',
       color: '#7F0D5F',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Resolve'),
+      label: 'UTOPIA.SUBTRAITS.Resolve',
       path: 'system.subtraits.res',
     },
     awa: {
@@ -132,7 +134,7 @@ export function registerConfig() {
       long: 'awareness',
       icon: 'fas fa-eye',
       color: '#7F0D5F',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Awareness'),
+      label: 'UTOPIA.SUBTRAITS.Awareness',
       path: 'system.subtraits.awa',
     },
     por: {
@@ -141,7 +143,7 @@ export function registerConfig() {
       long: 'portrayal',
       icon: 'fas fa-mobile-alt',
       color: '#7F5F0D',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Portrayal'),
+      label: 'UTOPIA.SUBTRAITS.Portrayal',
       path: 'system.subtraits.por',
     },
     stu: {
@@ -150,7 +152,7 @@ export function registerConfig() {
       long: 'stunt',
       icon: 'fas fa-mobile-alt',
       color: '#7F5F0D',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Stunt'),
+      label: 'UTOPIA.SUBTRAITS.Stunt',
       path: 'system.subtraits.stu',
     },
     app: {
@@ -159,7 +161,7 @@ export function registerConfig() {
       long: 'appeal',
       icon: 'fas fa-face-grin-stars',
       color: '#782355',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Appeal'),
+      label: 'UTOPIA.SUBTRAITS.Appeal',
       path: 'system.subtraits.app',
     },
     lan: {
@@ -168,7 +170,7 @@ export function registerConfig() {
       long: 'language',
       icon: 'fas fa-language',
       color: '#782355',
-      label: game.i18n.localize('UTOPIA.SUBTRAITS.Language'),
+      label: 'UTOPIA.SUBTRAITS.Language',
       path: 'system.subtraits.lan',
     }
   }
@@ -178,86 +180,97 @@ export function registerConfig() {
       defaultAttribute: "stu",
       formula: "3d6 + @stu.mod",
       tags: ["stunt", "stealth", "sneak", "sneaking", "hide", "hiding"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.Stealth.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.Stealth.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Stealth.description",
       icon: "fas fa-user-secret"
     },
     disguise: {
       defaultAttribute: "por",
       formula: "3d6 + @por.mod",
       tags: ["portrayal", "disguise", "disguising", "camouflage", "camouflaging", "secretIdentity", "unknownIdentity"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.Disguise.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.Disguise.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Disguise.description",
       icon: "fas fa-theater-masks"
     },
     mimic: {
       defaultAttribute: "dis",
       formula: "3d6 + @dis.mod",
       tags: ["display", "mimic", "mimicking", "copy", "copying", "impersonate", "impersonating"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.Mimic.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.Mimic.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Mimic.description",
       icon: "fas fa-copy"
     },
     insight: {
       defaultAttribute: "int",
       formula: "3d6 + @int.mod",
       tags: ["intellect", "insight", "insightful", "analyze", "analyzing", "understand", "understanding"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.Insight.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.Insight.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Insight.description",
       icon: "fas fa-lightbulb"
     },
     comprehendLanguages: {
       defaultAttribute: "mem",
       formula: "3d6 + @mem.mod",
       tags: ["memory", "comprehendLanguages", "understandLanguages", "translateLanguages", "translate"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.ComprehendLanguages.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.ComprehendLanguages.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.ComprehendLanguages.description",
       icon: "fas fa-language"
     },
     perception: {
       defaultAttribute: "awa",
       formula: "3d6 + @awa.mod",
       tags: ["awareness", "perception", "search", "searching"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.Perception.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.Perception.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Perception.description",
       icon: "fas fa-eye"
     },
     persuasion: {
       defaultAttribute: "cha",
       formula: "3d6 + @cha.mod",
       tags: ["charm", "persuasion", "convince", "convincing", "negotiate", "negotiating", "bargain", "bargaining"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.Persuasion.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.Persuasion.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Persuasion.description",
       icon: "fas fa-comments"
     },
     resistInfluence: {
       defaultAttribute: "wil",
       formula: "3d6 + @wil.mod",
       tags: ["will", "resistInfluence", "resistAction"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.ResistInfluence.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.ResistInfluence.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.ResistInfluence.description",
       icon: "fas fa-shield-alt"
     },
     forage: {
       defaultAttribute: "awa",
       formula: "3d6 + @awa.mod",
       tags: ["awareness", "forage", "foraging", "gather", "gathering"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.Forage.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.Forage.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Forage.description",
       icon: "fas fa-leaf"
     },
     maintainFocus: {
       defaultAttribute: "wil",
       formula: "3d6 + @wil.mod",
       tags: ["will", "maintainFocus", ""],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.MaintainFocus.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.MaintainFocus.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.MaintainFocus.description",
       icon: "fas fa-bullseye"
     },
     maintainConcentration: {
       defaultAttribute: "wil",
       formula: "3d6 + @wil.mod",
       tags: ["will", "maintainConcentration", "concentration", "concentrate"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.MaintainConcentration.label"),
+      label: "UTOPIA.SPECIALTY_CHECKS.MaintainConcentration.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.MaintainConcentration.description",
       icon: "fas fa-crosshairs"
     },
-    appealAgainstHostile: {
-      defaultAttribute: "app",
-      formula: "3d6 + @app.mod",
-      tags: ["appeal", "appealAgainstHostile", "appeal", "hostile"],
-      label: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.AppealAgainstHostile.label"),
-      icon: "fas fa-user-shield"
-    }
+    // appealAgainstHostile: {
+    //   defaultAttribute: "app",
+    //   formula: "3d6 + @app.mod",
+    //   tags: ["appeal", "appealAgainstHostile", "appeal", "hostile"],
+    //   label: "UTOPIA.SPECIALTY_CHECKS.AppealAgainstHostile.label",
+    //   icon: "fas fa-user-shield"
+    // }
   }
 
   CONFIG.UTOPIA.DAMAGE_TYPES = {
@@ -267,7 +280,7 @@ export function registerConfig() {
       block: 1.0,
       dodge: true,
       armor: true,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.Energy'),
+      label: 'UTOPIA.DAMAGE_TYPES.Energy',
     },
     heat: {
       name: 'Heat',
@@ -275,7 +288,7 @@ export function registerConfig() {
       block: 1.0,
       dodge: true,
       armor: true,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.Heat'),
+      label: 'UTOPIA.DAMAGE_TYPES.Heat',
     },
     chill: {
       name: 'Chill',
@@ -283,7 +296,7 @@ export function registerConfig() {
       block: 1.0,
       dodge: true,
       armor: true,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.Chill'),
+      label: 'UTOPIA.DAMAGE_TYPES.Chill',
     },
     physical: {
       name: 'Physical',
@@ -291,7 +304,7 @@ export function registerConfig() {
       block: 1.0,
       dodge: true,
       armor: true,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.Physical'),
+      label: 'UTOPIA.DAMAGE_TYPES.Physical',
     },
     pysche: {
       name: 'Psyche',
@@ -299,7 +312,7 @@ export function registerConfig() {
       block: 1.0,
       dodge: true,
       armor: true,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.Psyche'),
+      label: 'UTOPIA.DAMAGE_TYPES.Psyche',
     },
     kinetic: {
       name: 'Kinetic',
@@ -307,7 +320,7 @@ export function registerConfig() {
       block: 0,
       dodge: false,
       armor: false,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.Kinetic'),
+      label: 'UTOPIA.DAMAGE_TYPES.Kinetic',
     },
     stamina: {
       name: 'Stamina',
@@ -315,7 +328,7 @@ export function registerConfig() {
       block: 0,
       dodge: false,
       armor: false,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.Stamina'),
+      label: 'UTOPIA.DAMAGE_TYPES.Stamina',
     },
     healing: {
       name: 'Healing',
@@ -323,7 +336,7 @@ export function registerConfig() {
       block: 0,
       dodge: false,
       armor: false,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.Healing'),
+      label: 'UTOPIA.DAMAGE_TYPES.Healing',
     },
     restoreStamina: {
       name: 'Restore Stamina',
@@ -331,7 +344,7 @@ export function registerConfig() {
       block: 0,
       dodge: false,
       armor: false,
-      label: game.i18n.localize('UTOPIA.DAMAGE_TYPES.RestoreStamina'),
+      label: 'UTOPIA.DAMAGE_TYPES.RestoreStamina',
     }
   }
 
@@ -341,64 +354,68 @@ export function registerConfig() {
       short: 'alt',
       long: 'alteration',
       color: '#90c96b',
-      label: game.i18n.localize('UTOPIA.ARTISTRIES.Alteration'),
+      label: 'UTOPIA.ARTISTRIES.Alteration',
     },
     array: {
       name: 'Array',
       short: 'arr',
       long: 'array',
       color: '#f3ec68',
-      label: game.i18n.localize('UTOPIA.ARTISTRIES.Array'),
+      label: 'UTOPIA.ARTISTRIES.Array',
     },
     enchantment: {
       name: 'Enchantment',
       short: 'ench',
       long: 'enchantment',
       color: '#ee92b7',
-      label: game.i18n.localize('UTOPIA.ARTISTRIES.Enchantment'),
+      label: 'UTOPIA.ARTISTRIES.Enchantment',
     },
     evocation: {
       name: 'Evocation',
       short: 'evo',
       long: 'evocation',
       color: '#ee6448',
-      label: game.i18n.localize('UTOPIA.ARTISTRIES.Evocation'),
+      label: 'UTOPIA.ARTISTRIES.Evocation',
     },
     divination: {
       name: 'Divination',
       short: 'div',
       long: 'divination',
       color: '#62b4ae',
-      label: game.i18n.localize('UTOPIA.ARTISTRIES.Divination'),
+      label: 'UTOPIA.ARTISTRIES.Divination',
     },
     illusion: {
       name: 'Illusion',
       short: 'ill',
       long: 'illusion',
       color: '#94d2e1',
-      label: game.i18n.localize('UTOPIA.ARTISTRIES.Illusion'),
+      label: 'UTOPIA.ARTISTRIES.Illusion',
     },
     necromancy: {
       name: 'Necromancy',
       short: 'necro',
       long: 'necromancy',
       color: '#a75aa2',
-      label: game.i18n.localize('UTOPIA.ARTISTRIES.Necromancy'),
+      label: 'UTOPIA.ARTISTRIES.Necromancy',
     },
     wake: {
       name: 'Wake',
       short: 'wake',
       long: 'wake',
       color: '#f5a755',
-      label: game.i18n.localize('UTOPIA.ARTISTRIES.Wake'),
+      label: 'UTOPIA.ARTISTRIES.Wake',
     },
   }
 
   CONFIG.UTOPIA.RARITIES = {
     crude: {
       value: 0,
-      label: game.i18n.localize('UTOPIA.RARITIES.Crude'),
+      label: 'UTOPIA.RARITIES.Crude',
       color: '#808080',
+      times: {
+        item: 30,
+        component: 5
+      },
       points: {
         minimum: 0,
         maximum: 20,
@@ -407,8 +424,12 @@ export function registerConfig() {
     },
     common: {
       value: 1,
-      label: game.i18n.localize('UTOPIA.RARITIES.Common'),
+      label: 'UTOPIA.RARITIES.Common',
       color: '#FFFFFF',
+      times: {
+        item: 60,
+        component: 10
+      },
       points: {
         minimum: 21,
         maximum: 40,
@@ -417,8 +438,12 @@ export function registerConfig() {
     },
     extraordinary: {
       value: 2,
-      label: game.i18n.localize('UTOPIA.RARITIES.Extraordinary'),
+      label: 'UTOPIA.RARITIES.Extraordinary',
       color: '#1E90FF',
+      times: {
+        item: 180,
+        component: 30
+      },
       points: {
         minimum: 41,
         maximum: 70,
@@ -427,8 +452,12 @@ export function registerConfig() {
     },
     rare: {
       value: 3,
-      label: game.i18n.localize('UTOPIA.RARITIES.Rare'),
+      label: 'UTOPIA.RARITIES.Rare',
       color: '#9370DB',
+      times: {
+        item: 480,
+        component: 120
+      },
       points: {
         minimum: 71,
         maximum: 110,
@@ -437,8 +466,12 @@ export function registerConfig() {
     },
     legendary: {
       value: 4,
-      label: game.i18n.localize('UTOPIA.RARITIES.Legendary'),
+      label: 'UTOPIA.RARITIES.Legendary',
       color: '#FFD700',
+      times: {
+        item: 1440,
+        component: 360
+      },
       points: {
         minimum: 111,
         maximum: 160,
@@ -447,8 +480,12 @@ export function registerConfig() {
     },
     mythical: {
       value: 5,
-      label: game.i18n.localize('UTOPIA.RARITIES.Mythical'),
+      label: 'UTOPIA.RARITIES.Mythical',
       color: '#FF4500',
+      times: {
+        item: 4320,
+        component: 1080
+      },
       points: {
         minimum: 161,
         maximum: 220,
@@ -460,64 +497,60 @@ export function registerConfig() {
   CONFIG.UTOPIA.LANGUAGES = {
     utopian: {
       name: "Utopian",
-      label: game.i18n.localize("UTOPIA.LANGUAGES.Utopian")
+      label: "UTOPIA.LANGUAGES.Utopian"
     },
     elven: {
       name: "Elven",
-      label: game.i18n.localize("UTOPIA.LANGUAGES.Elven")
+      label: "UTOPIA.LANGUAGES.Elven"
     },
     apparatusCode: {
       name: "Apparatus Code",
-      label: game.i18n.localize("UTOPIA.LANGUAGES.ApparatusCode")
+      label: "UTOPIA.LANGUAGES.ApparatusCode"
     },
     dwarven: {
       name: "Dwarven",
-      label: game.i18n.localize("UTOPIA.LANGUAGES.Dwarven")
+      label: "UTOPIA.LANGUAGES.Dwarven"
     },
     oxtan: { 
       name: "Oxtan",
-      label: game.i18n.localize("UTOPIA.LANGUAGES.Oxtan")
+      label: "UTOPIA.LANGUAGES.Oxtan"
     },
     primordial: {
       name: "Primordial",
-      label: game.i18n.localize("UTOPIA.LANGUAGES.Primordial")
+      label: "UTOPIA.LANGUAGES.Primordial"
     },
   }
 
   CONFIG.UTOPIA.COMPONENTS = {
     material: {
-      label: game.i18n.localize("UTOPIA.COMPONENTS.Material"),
+      label: "UTOPIA.COMPONENTS.Material",
       icon: "fas fa-cube",
       color: "#A52A2A",
+      foragingTrait: "awa",
+      craftingTrait: "eng",
       foraging: {
         crude: {
           test: "1d4",
-          trait: "awa",
           harvest: "1d8"
         },
         common: {
           test: "3d6",
-          trait: "awa",
           harvest: "1d8"
         },
         extraordinary: {
           test: "5d8",
-          trait: "awa",
           harvest: "1d8"
         },
         rare: {
           test: "7d10",
-          trait: "awa",
           harvest: "1d8"
         },
         legendary: {
           test: "9d12",
-          trait: "awa",
           harvest: "1d8"
         },
         mythical: {
           test: "11d20",
-          trait: "awa",
           harvest: "1d8"
         },
       },
@@ -527,64 +560,56 @@ export function registerConfig() {
             common: 2
           },
           difficulty: 12,
-          trait: "eng",
         },
         rare: {
           material: {
             extraordinary: 2
           },
           difficulty: 18,
-          trait: "eng",
         },
         legendary: {
           material: {
             rare: 2
           },
           difficulty: 24,
-          trait: "eng",
         },
         mythical: {
           material: {
             legendary: 2
           },
           difficulty: 30,
-          trait: "eng",
         },
       }
     },
     refinement: {
-      label: game.i18n.localize("UTOPIA.COMPONENTS.Refinement"),
+      label: "UTOPIA.COMPONENTS.Refinement",
       icon: "fas fa-hammer",
       color: "#A52A2A",
+      foragingTrait: "awa",
+      craftingTrait: "eng",
       foraging: {
         crude: {
           test: "2d4",
-          trait: "awa",
           harvest: "1d6"
         },
         common: {
           test: "4d6",
-          trait: "awa",
           harvest: "1d6"
         },
         extraordinary: {
           test: "6d8",
-          trait: "awa",
           harvest: "1d6"
         },
         rare: {
           test: "8d10",
-          trait: "awa",
           harvest: "1d6"
         },
         legendary: {
           test: "10d12",
-          trait: "awa",
           harvest: "1d6"
         },
         mythical: {
           test: "12d20",
-          trait: "awa",
           harvest: "1d6"
         },
       },
@@ -595,7 +620,6 @@ export function registerConfig() {
             extraordinary: 1
           },
           difficulty: 14,
-          trait: "eng",
         },
         rare: {
           material: {
@@ -603,7 +627,6 @@ export function registerConfig() {
             extraordinary: 1
           },
           difficulty: 20,
-          trait: "eng",
         },
         legendary: {
           material: {
@@ -611,7 +634,6 @@ export function registerConfig() {
             rare: 1
           },
           difficulty: 26,
-          trait: "eng",
         },
         mythical: {
           material: {
@@ -619,43 +641,38 @@ export function registerConfig() {
             mythical: 1
           },
           difficulty: 32,
-          trait: "eng",
         },
       }
     },
     power: {
-      label: game.i18n.localize("UTOPIA.COMPONENTS.Power"),
+      label: "UTOPIA.COMPONENTS.Power",
       icon: "fas fa-bolt",
       color: "#A52A2A",
+      foragingTrait: "awa",
+      craftingTrait: "eng",
       foraging: {
         crude: {
           test: "3d4",
-          trait: "awa",
           harvest: "1d4"
         },
         common: {
           test: "5d6",
-          trait: "awa",
           harvest: "1d4"
         },
         extraordinary: {
           test: "7d8",
-          trait: "awa",
           harvest: "1d4"
         },
         rare: {
           test: "9d10",
-          trait: "awa",
           harvest: "1d4"
         },
         legendary: {
           test: "11d12",
-          trait: "awa",
           harvest: "1d4"
         },
         mythical: {
           test: "13d20",
-          trait: "awa",
           harvest: "1d4"
         },
       },
@@ -668,7 +685,6 @@ export function registerConfig() {
             common: 1
           },
           difficulty: 11,
-          trait: "eng"
         },
         extraordinary: {
           material: {
@@ -678,7 +694,6 @@ export function registerConfig() {
             extraordinary: 1
           },
           difficulty: 17,
-          trait: "eng"
         },
         rare: {
           material: {
@@ -688,7 +703,6 @@ export function registerConfig() {
             rare: 1
           },
           difficulty: 23,
-          trait: "eng"
         },
         legendary: {
           material: {
@@ -698,7 +712,6 @@ export function registerConfig() {
             legendary: 1
           },
           difficulty: 29,
-          trait: "eng"
         },
         mythical: {
           material: {
@@ -708,87 +721,61 @@ export function registerConfig() {
             mythical: 1
           },
           difficulty: 35,
-          trait: "eng"
         },
       }
     }
   }
 
-  // CONFIG.UTOPIA.SLOTS = {
-  //   head: {
-  //     name: "Head",
-  //     label: game.i18n.localize("UTOPIA.SLOTS.Head")
-  //   },
-  //   neck: {
-  //     name: "Neck",
-  //     label: game.i18n.localize("UTOPIA.SLOTS.Neck")
-  //   },
-  //   chest: {
-  //     name: "Chest",
-  //     label: game.i18n.localize("UTOPIA.SLOTS.Chest")
-  //   },
-  //   back: {
-  //     name: "Back",
-  //     label: game.i18n.localize("UTOPIA.SLOTS.Back")
-  //   },
-  //   hands: {
-  //     name: "Hands",
-  //     label: game.i18n.localize("UTOPIA.SLOTS.Hands")
-  //   },
-  //   ring: {
-  //     name: "Ring",
-  //     label: game.i18n.localize("UTOPIA.SLOTS.Ring")
-  //   },
-  //   waist: {
-  //     name: "Waist",
-  //     label: game.i18n.localize("UTOPIA.SLOTS.Waist")
-  //   },
-  //   feet: {
-  //     name: "Feet",
-  //     label: game.i18n.localize("UTOPIA.SLOTS.Feet")
-  //   },
-  // }
-
   CONFIG.statusEffects = [
     {
       id: "deafened",
       img: "icons/svg/sound-off.svg",
-      label: "UTOPIA.StatusEffects.deafened",
+      name: "UTOPIA.StatusEffects.deafened",
     },
     {
       id: "blinded",
       img: "icons/svg/blind.svg",
-      label: "UTOPIA.StatusEffects.blinded",
+      name: "UTOPIA.StatusEffects.blinded",
     },
     {
       id: "unconcious",
       img: "icons/svg/unconscious.svg",
-      label: "UTOPIA.StatusEffects.unconscious",
+      name: "UTOPIA.StatusEffects.unconscious",
     },
     {
       id: "paralysis",
       img: "icons/svg/paralysis.svg",
-      label: "UTOPIA.StatusEffects.paralysis",
+      name: "UTOPIA.StatusEffects.paralysis",
     },
     {
       id: "dazed",
       img: "icons/svg/stoned.svg",
-      label: "UTOPIA.StatusEffects.dazed",
+      name: "UTOPIA.StatusEffects.dazed",
     },
     {
       id: "concentration",
       img: "icons/svg/padlock.svg",
-      label: "UTOPIA.StatusEffects.concentration",
+      name: "UTOPIA.StatusEffects.concentration",
     },
     {
       id: "focus",
       img: "icons/svg/daze.svg",
-      label: "UTOPIA.StatusEffects.focus",
+      name: "UTOPIA.StatusEffects.focus",
     },
     {
       id: "fatigue",
       img: "icons/svg/degen.svg",
-      label: "UTOPIA.StatusEffects.fatigue",
+      name: "UTOPIA.StatusEffects.fatigue",
+    },
+    {
+      id: "stasis", 
+      img: "icons/svg/aura.svg",
+      name: "UTOPIA.StatusEffects.stasis",
+    },
+    {
+      id: "dead",
+      img: "icons/svg/skull.svg",
+      name: "UTOPIA.StatusEffects.dead",
     }
   ]
 

@@ -43,6 +43,11 @@
       "Mythical": "Mythical",
       "GroupName": "Rarities"
     },
+    "COMPONENTS": {
+      "Material": "Material",
+      "Refinement": "Refinement",
+      "Power": "Power"
+    },
     "DAMAGE_TYPES": {
       "Physical": "Physical",
       "Energy": "Energy",
@@ -51,7 +56,8 @@
       "Psyche": "Psyche",
       "Kinetic": "Kinetic",
       "Necrotic": "Necrotic",
-      "Healing": "Healing"
+      "Healing": "Healing",
+      "Stamina": "Stamina"
     },  
     "ARTISTRIES": {
       "Alteration": "Alteration",
@@ -76,10 +82,62 @@
       "Floor": "Floor",
       "Random": "Random"
     },
+    "TIME": {
+      "Seconds": "Seconds",
+      "Minutes": "Minutes",
+      "Hours": "Hours",
+      "Days": "Days",
+      "Weeks": "Weeks",
+      "Months": "Months",
+      "Years": "Years"
+    },
+    "ERRORS": {
+      "ArtistryNotUnlocked": "At least one of the features of this spell is from an artistry that you haven't unlocked yet.",
+      "NotEnoughStamina": "<p>You don't have enough stamina to cast this spell.<br/>However, you can spend Deep Hitpoints (DHP) to in place of the remaining stamina, if you wish.<br/>Cast this spell for <b>{dhp}</b> DHP?</p>",
+      "ReplaceSpeciesTitle": "Replace Species",
+      "ReplaceSpecies": "You must be a GM to replace the species of an actor.",
+      "ReplaceSpeciesGM": "As the GM, you can replace the species of this actor.<br>This will remove the existing species features and talents.<br/>Are you sure you want to do this? (Talent points will be returned)"
+    },
+    "StatusEffects": {
+      "deafened": "Deafened",
+      "blinded": "Blinded",
+      "unconscious": "Unconscious",
+      "dazed": "Dazed",
+      "paralysis": "Paralysis",
+      "concentration": "Concentration",
+      "focus": "Focus",
+      "stasis": "Stasis",
+      "dead": "Dead"
+    },
     "Settings": {
+      "AdvancedSettingsMenu": "Advanced Settings",
       "Buttons": {
         "CompendiumBrowser": "Compendium Browser",
         "FeatureBuilder": "Artifice Feature Builder"
+      }
+    },
+    "CompendiumBrowser": {
+      "Title": "Utopia Compendium Browser",
+      "Take": "Take Item",
+      "TakeAndClose": "Take Item and Close",
+      "ViewWorldItems": "Include World Items in Search",
+      "Search": "Search"
+    },
+    "ForageAndCrafting": {
+      "Foraging": "Foraging",
+      "Crafting": "Crafting",
+      "Forage": "Forage",
+      "Craft": "Craft",
+      "Difficulty": "Difficulty",
+      "Formula": "Formula",
+      "Returns": "Returns",
+      "Requirements": "Requirements",
+      "ForagingTimes": {
+        "1": "1 Hour",
+        "4": "4 Hours",
+        "8": "8 Hours",
+        "12": "12 Hours",
+        "18": "18 Hours"
       }
     },
     "FeatureBuilder": {
@@ -133,23 +191,35 @@
       "Flavor": "Spell Flavor (Boxed) Text"
     },
     "Actors": {
+      "EditMode": "Enter Edit Mode",
+      "PlayMode": "Return to Play Mode",
       "Actions": {
         "Block": "Block",
         "Dodge": "Dodge",
         "Rest": "Rest",
         "OpenTalentTree": "Open Talent Tree",
         "OpenSpellcraft": "Open Spellcraft",
-        "NewArtifice": "Create New Artifice",
+        "NewArtifice": "New Gear Item",
+        "NewGeneric": "New Generic Item",
         "NoSpecies": "No Species, Click to Select",
         "Perform": "Perform",
-        "LevelUp": "Level Up"
+        "LevelUp": "Level Up",
+        "Forage": "Forage"
       },
       "Items": {
         "Talents": "Talents",
         "Actions": "Actions",
         "Gear": "Gear",
         "Consumables": "Consumables",
-        "Components": "Components"
+        "Components": "Components",
+        "Artistries": "Artistries",
+        "Favors": "Favors"
+      },
+      "Points": {
+        "subtraits": "Subtraits",
+        "body": "Body",
+        "mind": "Mind",
+        "soul": "Soul"
       },
       "FIELDS": {
         "travel.land.speed": {
@@ -184,7 +254,136 @@
         },
         "effervescence": {
           "label": "Effervescence"
-        }
+        },
+        "biography.age": {
+          "label": "Age"
+        },
+        "biography.birthday": {
+          "label": "Birthday"
+        },
+        "biography.deathday": {
+          "label": "Deathday"
+        },
+        "biography.height": {
+          "label": "Height"
+        },
+        "biography.weight": {
+          "label": "Weight"
+        },
+        "biography.pronouns": {
+          "label": "Pronouns"
+        },
+        "biography.hairEyesSkin": {
+          "label": "Hair Eyes Skin"
+        },
+        "biography.markings": {
+          "label": "Markings"
+        },
+        "biography.voice": {
+          "label": "Voice"
+        },
+        "biography.bodyType": {
+          "label": "Body Type"
+        },
+        "biography.ethnicity": {
+          "label": "Ethnicity"
+        },
+        "biography.nationality": {
+          "label": "Nationality"
+        },
+        "biography.quirks": {
+          "label": "Quirks"
+        },
+        "biography.relationshipDivider": {
+          "label": "Relationship Divider"
+        },
+        "biography.enemies": {
+          "label": "Enemies"
+        },
+        "biography.allies": {
+          "label": "Allies"
+        },
+        "biography.rivals": {
+          "label": "Rivals"
+        },
+        "biography.family": {
+          "label": "Family"
+        },
+        "biography.friends": {
+          "label": "Friends"
+        },
+        "biography.partners": {
+          "label": "Partners"
+        },
+        "biography.personalInfoDivider": {
+          "label": "Personal Info Divider"
+        },
+        "biography.strength": {
+          "label": "Strength"
+        },
+        "biography.education": {
+          "label": "Education"
+        },
+        "biography.upbringing": {
+          "label": "Upbringing"
+        },
+        "biography.achievements": {
+          "label": "Achievements"
+        },
+        "biography.coreMemories": {
+          "label": "Core Memories"
+        },
+        "biography.phobias": {
+          "label": "Phobias"
+        },
+        "biography.dreams": {
+          "label": "Dreams"
+        },
+        "biography.nightmares": {
+          "label": "Nightmares"
+        },
+        "biography.anathema": {
+          "label": "Anathema"
+        },
+        "biography.edicts": {
+          "label": "Edicts"
+        },
+        "biography.ambitions": {
+          "label": "Ambitions"
+        },
+        "biography.motivations": {
+          "label": "Motivations"
+        },
+        "biography.personalSecrets": {
+          "label": "Personal Secrets"
+        },
+        "biography.alignmentDivider": {
+          "label": "Alignment Divider"
+        },
+        "biography.moralAlignment": {
+          "label": "Moral Alignment"
+        },
+        "biography.philosophicalAlignment": {
+          "label": "Philosophical Alignment"
+        },
+        "biography.politicalAlignment": {
+          "label": "Political Alignment"
+        },
+        "biography.publicInfoDivider": {
+          "label": "Public Info Divider"
+        },
+        "biography.occupation": {
+          "label": "Occupation"
+        },
+        "biography.reputation": {
+          "label": "Reputation"
+        },
+        "biography.hobbies": {
+          "label": "Hobbies"
+        },
+        "biography.interests": {
+          "label": "Interests"
+        }        
       },
       "Attributes": {
         "Summary": "Attributes"
@@ -197,7 +396,8 @@
       },
       "Defenses": {
         "Summary": "Defenses"
-      }
+      },
+      "PaperDoll": "Blue slots are augment slots | Drag equipment to a slot to fill it | Right-click to clear a slot"
     },
     "Chats": {
       "DamageInstance": {
@@ -467,6 +667,15 @@
         }
       },
       "Generic": {
+        "Categories": {
+          "misc": "Miscellaneous",
+          "consumable": "Consumable",
+          "tool": "Tool",
+          "trinket": "Trinket",
+          "junk": "Junk",
+          "ammunition": "Ammunition",
+          "valuable": "Valuable"
+        },
         "FIELDS": {
           "quantity": {
             "label": "Quantity"
@@ -873,61 +1082,74 @@
       }
     },
     "SPECIALTY_CHECKS": {
+      "WindowTitle": "Specialty Check Description",
+      
       "GroupName": "Specialty Checks",
       "Stealth": {
         "noun": "Stealth",
         "verb": "to Sneak",
-        "label": "Stealth"
+        "label": "Stealth",
+        "description": "Stealth is the ability to move silently and avoid detection."
       },
       "Disguise": {
         "noun": "Disguise",
         "verb": "to Disguise",
-        "label": "Disguise"
+        "label": "Disguise",
+        "description": "Disguise is the ability to alter one's appearance to avoid recognition."
       },
       "Mimic": {
         "noun": "Mimic",
         "verb": "to Mimic",
-        "label": "Mimic"
+        "label": "Mimic",
+        "description": "Mimic is the ability to imitate the voice or mannerisms of another."
       },
       "Insight": {
         "noun": "Insight",
         "verb": "to Discern",
-        "label": "Insight"
+        "label": "Insight",
+        "description": "Insight is the ability to read and understand the emotions and intentions of others."
       },
       "ComprehendLanguages": {
         "noun": "Comprehend Languages",
         "verb": "to Comprehend Languages",
-        "label": "Comprehend Languages"
+        "label": "Comprehend Languages",
+        "description": "Comprehend Languages is the ability to understand and interpret languages."
       },
       "Perception": {
         "noun": "Perception",
         "verb": "to Notice",
-        "label": "Perception"
+        "label": "Perception",
+        "description": "Perception is the ability to notice and interpret sensory information."
       },
       "Persuasion": {
         "noun": "Persuasion",
         "verb": "to Persuade",
-        "label": "Persuasion"
+        "label": "Persuasion",
+        "description": "Persuasion is the ability to convince others to accept your point of view."
       },
       "ResistInfluence": {
         "noun": "Resist Influence",
         "verb": "to Resist Influence",
-        "label": "Resist Influence"
+        "label": "Resist Influence",
+        "description": "Resist Influence is the ability to withstand attempts to manipulate or control your mind."
       },
       "Forage": {
         "noun": "Forage",
         "verb": "to Forage",
-        "label": "Forage"
+        "label": "Forage",
+        "description": "Forage is the ability to search for and gather components and other resources."
       },
       "MaintainFocus": {
         "noun": "Maintain Focus",
         "verb": "to Maintain Focus",
-        "label": "Maintain Focus"
+        "label": "Maintain Focus",
+        "description": "Maintain Focus is the ability to maintain focus on spells when taking damage."
       },
       "MaintainConcentration": {
         "noun": "Maintain Concentration",
         "verb": "to Maintain Concentration",
-        "label": "Maintain Concentration"
+        "label": "Maintain Concentration",
+        "description": "Maintain Concentration is the ability to maintain concentration on spells when taking damage."
       }
     },
     "Macros": {
@@ -947,6 +1169,58 @@
           "label": "Save"
         }
       }
+    },
+    "Biography": {
+      "biographyFields": "Biography Fields",
+      "age": "Age",
+      "pronouns": "Pronouns",
+      "education": "Education",
+      "ethnicity": "Ethnicity",
+      "occupation": "Occupation",
+      "nationality": "Nationality",
+      "upbringing": "Upbringing",
+      "height": "Height",
+      "weight": "Weight",
+      "bodyType": "Body Type",
+      "hairEyesSkin": "Hair, eyes, and skin",
+      "markings": "Markings",
+      "voice": "Voice / Accent",
+      "quirks": "Quirks",
+      "enemies": "Enemies",
+      "allies": "Allies",
+      "rivals": "Rivals",
+      "family": "Family",
+      "friends": "Friends",
+      "partners": "Partners",
+      "strength": "Strength Source",
+      "reputation": "Reputation",
+      "personalSecrets": "Personal Secrets",
+      "gmSecrets": "GM Secrets",
+      "achievements": "Achievements",
+      "coreMemories": "Core Memories",
+      "phobias": "Phobias",
+      "dreams": "Dreams",
+      "nightmares": "Nightmares",
+      "anathema": "Anathema",
+      "edicts": "Edicts",
+      "hobbies": "Hobbies",
+      "interests": "Interests",
+      "ambitions": "Ambitions",
+      "moralAlignment": "Moral Alignment",
+      "philosophicalAlignment": "Philosophical Alignment",
+      "politicalAlignment": "Political Alignment",
+      "motivations": "Motivations",
+      "birthday": "Birthday",
+      "deathday": "Deathday",
+      "generalKnowledgeDivider": "----- General Knowledge -----",
+      "relationshipsDivider": "----- Relationships -----",
+      "personalInformationDivider": "----- Personal Information -----",
+      "alignmentsDivider": "----- Alignments -----",
+      "publicInformationDivider": "----- Public Information -----"
+    },
+    "SheetLabels": {
+      "Advancement": "Advancement",
+      "forageAndCrafting": "Foraging and Crafting"
     }
   },
   "TYPES": {

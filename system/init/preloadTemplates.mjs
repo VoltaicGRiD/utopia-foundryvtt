@@ -20,6 +20,9 @@ export const preloadHandlebarsTemplates = async function () {
     'paper-doll':
       'systems/utopia/templates/specialty/paperdoll-attributes.hbs',
 
+    'actor-paper-doll': 
+      'systems/utopia/templates/actor/partials/paperdoll-attributes.hbs',
+
     'classification':
       'systems/utopia/templates/specialty/feature-builder/classification.hbs',
     

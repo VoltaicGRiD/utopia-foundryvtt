@@ -16,6 +16,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
 
   constructor(options = {}) {
     super(options);
+    this.actor = options.actor ?? {};
   }
 
   static DEFAULT_OPTIONS = {
@@ -48,7 +49,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
   }
 
   async _prepareContext(options) {
-    if (options.isFirstRender) {
+    if (options.isFirstRender) {     
       const features = {};
 
       //const retreivedFeatures = await gatherSpellFeatures();

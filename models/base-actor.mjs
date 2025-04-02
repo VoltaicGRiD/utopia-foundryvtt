@@ -14,16 +14,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
    * Prepare base data, such as establishing default action values.
    */
   prepareBaseData() {
-    this.actions = {
-      turn: {
-        value: 6,
-        max: 6
-      },
-      interrupt: {
-        value: 2,
-        max: 2
-      }
-    }
+
   }
 
   /**
@@ -55,7 +46,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     schema.traits = new fields.SchemaField({});
     schema.subtraits = new fields.SchemaField({});
-    for (const [key, value] of Object.entries(CONFIG.UTOPIA.TRAITS)) {
+    for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits")))) {
       schema.traits.fields[key] = TraitField();
       for (const subtrait of value.subtraits) {
         schema.subtraits.fields[subtrait] = TraitField(key);
@@ -67,7 +58,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     schema.favorLocks = new fields.SchemaField({});
     schema.favorLocks.fields.blockDisfavor = new fields.SchemaField({});
     schema.favorLocks.fields.blockFavor = new fields.SchemaField({});
-    for (const [key, value] of Object.entries(CONFIG.UTOPIA.TRAITS)) {
+    for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits")))) {
       schema.favorLocks.fields.blockDisfavor[key] = new fields.BooleanField({ required: true, nullable: false, initial: false });
       schema.favorLocks.fields.blockFavor[key] = new fields.BooleanField({ required: true, nullable: false, initial: false });
       for (const subtrait of value.subtraits) {
@@ -102,7 +93,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     schema.weaponlessAttacks = new fields.SchemaField({
       formula: new fields.StringField({ ...requiredInteger, initial: "1d6" }),
       type: new fields.StringField({ ...requiredInteger, initial: "physical", choices: {
-        ...CONFIG.UTOPIA.DAMAGE_TYPES
+        ...JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))
       } }),
       range: new fields.StringField({ ...requiredInteger, initial: "0/0" }),
       traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: [] }),
@@ -111,7 +102,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     const siphon = () => {
       const returns = {};
-      for (const [key, value] of Object.entries(CONFIG.UTOPIA.DAMAGE_TYPES)) {
+      for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes")))) {
         returns[key] = new fields.SchemaField({
           convertToStaminaPercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToStaminaFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -147,7 +138,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     const artistries = () => {
       // Create a new StringField for each SPECIALTY_CHECKS
       const returns = {};
-      for (const [key, value] of Object.entries(CONFIG.UTOPIA.ARTISTRIES)) {
+      for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.artistries")))) {
         returns[key] = new fields.SchemaField({
           multiplier: new fields.NumberField({ ...requiredInteger, initial: 1 }),
           unlocked: new fields.BooleanField({ required: true, nullable: false, initial: false }),
@@ -159,17 +150,19 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     schema.artifice = new fields.SchemaField({
       level: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      gearDiscounts: new fields.SchemaField({ // Discounts is used for anything that is NOT a crafting component
-        material: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-        refinement: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-        power: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      }),
-      componentDiscounts: new fields.SchemaField({
-        material: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-        refinement: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-        power: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      })
+      gearDiscounts: new fields.SchemaField({}),
+      componentDiscounts: new fields.SchemaField({}),
+      components: new fields.SchemaField({})
     })
+
+    for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components")))) {
+      schema.artifice.fields.components.fields[key] = new fields.SchemaField({
+        foragingTrait: new fields.StringField({ required: true, nullable: false, initial: value.foragingTrait }),
+        craftingTrait: new fields.StringField({ required: true, nullable: false, initial: value.craftingTrait }),
+      }),
+      schema.artifice.fields.gearDiscounts.fields[key] = new fields.NumberField({ ...requiredInteger, initial: 0 });
+      schema.artifice.fields.componentDiscounts.fields[key] = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    }
 
     schema.spellcasting = new fields.SchemaField({
       artistries: new fields.SchemaField({
@@ -193,7 +186,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     const languages = () => {
       // Create a new StringField for each SPECIALTY_CHECKS
       const returns = {};
-      for (const [key, value] of Object.entries(CONFIG.UTOPIA.LANGUAGES)) {
+      for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.languages")))) {
         returns[key] = new fields.BooleanField({ required: true, nullable: false, initial: false });
       }      
       return returns;
@@ -247,8 +240,16 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     }), { initial: [] });
 
     schema.fatigue = ResourceField();
-    schema.turnActions = ResourceField();
-    schema.interruptActions = ResourceField();
+    schema.turnActions = new fields.SchemaField({
+      value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
+      max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
+      rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
+    })
+    schema.interruptActions = new fields.SchemaField({
+      value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "interruptActionsMax") }),
+      max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "interruptActionsMax") }),
+      rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
+    })
 
     schema.evolution = new fields.SchemaField({
       head: new fields.NumberField({ ...requiredInteger, initial: 1 }),
@@ -308,11 +309,11 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     const returns = {};
     const traitOptions = {
-      ...Object.entries(CONFIG.UTOPIA.TRAITS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.TRAITS.GroupName" };
         return acc;
       }, {}),
-      ...Object.entries(CONFIG.UTOPIA.SUBTRAITS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.SUBTRAITS.GroupName" };
         return acc;
       }, {}),
@@ -321,7 +322,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     const specialtyChecks = () => {
       // Create a new StringField for each SPECIALTY_CHECKS
       const returns = {};
-      for (const [key, value] of Object.entries(CONFIG.UTOPIA.SPECIALTY_CHECKS)) {
+      for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks")))) {
         returns[key] = new fields.StringField({ required: true, nullable: false, initial: value.defaultAttribute, choices: traitOptions });
       }      
       return returns;
@@ -357,6 +358,13 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       canBeNegative: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       visible: new fields.BooleanField({ required: true, nullable: false, initial: true }),
     }))
+
+    schema._decendantItemTracker = new fields.ArrayField(new fields.SchemaField({
+      lookup: new fields.StringField({ required: true, nullable: false }),
+      lookupName: new fields.StringField({ required: true, nullable: false }),
+      granted: new fields.StringField({ required: true, nullable: false }),
+      grantedName: new fields.StringField({ required: true, nullable: false }), 
+    }));
 
     UtopiaActorBase.getBiography(schema);
     
@@ -414,7 +422,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         "family": "UTOPIA.Biography.family",
         "friends": "UTOPIA.Biography.friends",
         "partners": "UTOPIA.Biography.partners",
-        
+
         "personalInfoDivider": "UTOPIA.Biography.personalInformationDivider",
         "strength": "UTOPIA.Biography.strength",
         "education": "UTOPIA.Biography.education",
@@ -424,12 +432,12 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         "phobias": "UTOPIA.Biography.phobias",
         "dreams": "UTOPIA.Biography.dreams",
         "nightmares": "UTOPIA.Biography.nightmares",
-        "anathema": "UTOPIA.Biography.anathema",
         "edicts": "UTOPIA.Biography.edicts",
+        "anathema": "UTOPIA.Biography.anathema",
         "ambitions": "UTOPIA.Biography.ambitions",
         "motivations": "UTOPIA.Biography.motivations",
         "personalSecrets": "UTOPIA.Biography.personalSecrets",
-        
+
         "alignmentDivider": "UTOPIA.Biography.alignmentsDivider",
         "moralAlignment": "UTOPIA.Biography.moralAlignment",
         "philosophicalAlignment": "UTOPIA.Biography.philosophicalAlignment",
@@ -453,13 +461,13 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       age: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       birthday: new TextareaField({ required: false, nullable: true }),
       deathday: new TextareaField({ required: false, nullable: true }),
-      height: new TextareaField({ required: false, nullable: true }),
+      height: new fields.StringField({ required: false, nullable: true }),
       weight: new fields.NumberField({ required: false, nullable: true }),
-      pronouns: new TextareaField({ required: false, nullable: true }),
+      pronouns: new fields.StringField({ required: false, nullable: true }),
       hairEyesSkin: new TextareaField({ required: false, nullable: true }),
       bodyType: new TextareaField({ required: false, nullable: true }),
-      ethnicity: new TextareaField({ required: false, nullable: true }),
-      nationality: new TextareaField({ required: false, nullable: true }),
+      ethnicity: new fields.StringField({ required: false, nullable: true }),
+      nationality: new fields.StringField({ required: false, nullable: true }),
       markings: new TextareaField({ required: false, nullable: true }),
       voice: new TextareaField({ required: false, nullable: true }),
       quirks: new TextareaField({ required: false, nullable: true }),

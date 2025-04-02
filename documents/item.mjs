@@ -14,9 +14,9 @@ export class UtopiaItem extends Item {
     // Parent item (unused in this snippet but kept for context)
     const actorOwner = this.parent;
     // Retrieve rarity configuration from the game system
-    const rarityConfig = CONFIG.UTOPIA.RARITIES;
+    const rarityConfig = JSON.parse(game.settings.get("utopia", "advancedSettings.rarities"));
     // Retrieve component configuration from the game system
-    const componentConfig = CONFIG.UTOPIA.COMPONENTS;
+    const componentConfig = JSON.parse(game.settings.get("utopia", "advancedSettings.components"));
     // Calculate total cost points (using absolute value)
     const totalCostPoints = Math.abs(this.system.cost);
     // Components that have been contributed:
@@ -224,9 +224,9 @@ export class UtopiaItem extends Item {
       
       if (spellcasting.artistries[art]) {
         if (spellcasting.artistries[art].unlocked === false) 
-          return ui.notifications.error(game.i18n.localize('UTOPIA.Errors.ArtistryNotUnlocked'));
+          return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.ArtistryNotUnlocked'));
         if (spellcasting.artistries[art].multiplier === 0) 
-          return ui.notifications.error(game.i18n.localize('UTOPIA.Errors.ArtistryMultiplierZero'));
+          return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.ArtistryMultiplierZero'));
 
         if (featureSettings) {
           const costVariable = settings.cost?.value ?? 1;
@@ -243,9 +243,9 @@ export class UtopiaItem extends Item {
 
     cost = Math.floor(cost / 10);
 
-    if (stamina <= cost) {
+    if (stamina < cost) {
       const proceed = await foundry.applications.api.DialogV2.confirm({
-        content: game.i18n.localize('UTOPIA.Errors.NotEnoughStamina, '),
+        content: game.i18n.format('UTOPIA.ERRORS.NotEnoughStamina', { dhp: Math.abs(cost - stamina) }),
         rejectClose: false,
         modal: true
       });
@@ -255,9 +255,10 @@ export class UtopiaItem extends Item {
     }
     
     if (!owner.isGM) {
-      const damage = DamageInstance.create({
-        type: CONFIG.UTOPIA.DAMAGE_TYPES.stamina,
-        value: owner.system.stamina.value,
+      const damage = new DamageInstance({
+        type: "stamina",
+        source: this,
+        value: cost,
         target: owner
       });
       
@@ -274,7 +275,7 @@ export class UtopiaItem extends Item {
       template: template
     });
 
-    UtopiaChatMessage.create({
+    return UtopiaChatMessage.create({
       user: game.user._id,
       speaker: ChatMessage.getSpeaker(),
       content: content,
@@ -290,7 +291,7 @@ export class UtopiaItem extends Item {
     //     const keys = ["type", "damage", "damagetype", "damage type"];
     //     for (const [key, value] of Object.entries(feature.variables)) {
     //       if (keys.includes(key.toLowerCase())) {
-    //         const type = CONFIG.UTOPIA.DAMAGE_TYPES[value] ?? CONFIG.UTOPIA.DAMAGE_TYPES.energy;
+    //         const type = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[value] ?? JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes")).energy;
     //         const damage = DamageInstance.create({
     //           type: type,
     //           value: roll.total,
@@ -306,7 +307,7 @@ export class UtopiaItem extends Item {
 
   static GM_SPELLCASTING = () => {
     const artistries = {}
-    Object.entries(CONFIG.UTOPIA.ARTISTRIES).map(([key, value]) => {
+    Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.artistries"))).map(([key, value]) => {
       artistries[key] = {
         unlocked: true,
         multiplier: 1

@@ -16,8 +16,8 @@
   {{else}}
     {{#if (lookup featureOptions key)}}
       {{#with (lookup featureOptions key) as |option key|}}
-        {{log option}}
-        {{log key}}
+        
+        
         {{#if option.choices}}
           <select class="attribute-input" data-editable data-type="{{type}}" data-attribute="{{key}}">
             {{#each option.choices as |choice|}}
@@ -33,8 +33,8 @@
               type=classification}}
           {{/each}}
         {{else}}
-          {{log key}}
-          {{log ../key}}
+          
+          
           <span data-editable contenteditable="true" data-type="{{../type}}" data-attribute="{{../key}}" class="attribute-input">{{../value}}</span>
         {{/if}}
       {{/with}}

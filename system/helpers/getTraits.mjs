@@ -2,8 +2,8 @@ export function getTrait(trait, data = {}) {
   const lower = trait.toLowerCase();
 
   const allTraits = {
-    ...CONFIG.UTOPIA.TRAITS,
-    ...CONFIG.UTOPIA.SUBTRAITS
+    ...JSON.parse(game.settings.get("utopia", "advancedSettings.traits")),
+    ...JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))
   }
 
   const correctTrait = {};

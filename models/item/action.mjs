@@ -26,19 +26,19 @@ export class Action extends UtopiaItemBase {
 
     const returns = {};
     const allOptions = {
-      ...Object.entries(CONFIG.UTOPIA.TRAITS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.TRAITS.GroupName" };
         return acc;
       }, {}),
-      ...Object.entries(CONFIG.UTOPIA.SUBTRAITS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.SUBTRAITS.GroupName" };
         return acc;
       }, {}),
-      ...Object.entries(CONFIG.UTOPIA.SPECIALTY_CHECKS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.SPECIALTY_CHECKS.GroupName" };
         return acc;
       }, {}),
-      ...Object.entries(CONFIG.UTOPIA.DAMAGE_TYPES).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.DAMAGE_TYPES.GroupName" };
         return acc;
       }, {}),
@@ -49,7 +49,7 @@ export class Action extends UtopiaItemBase {
     schema.checkFavor = new fields.BooleanField({ required: true, nullable: false, initial: true });
 
     const damageTypes = {
-      ...Object.entries(CONFIG.UTOPIA.DAMAGE_TYPES).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.DAMAGE_TYPES.GroupName", value: key };
         return acc;
       }, {}),

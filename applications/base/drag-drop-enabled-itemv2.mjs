@@ -145,7 +145,7 @@ export class DragDropItemV2 extends api.HandlebarsApplicationMixin(sheets.ItemSh
           tab.icon = 'fas fa-fw fa-book';
           break;
         case 'description': 
-          tab.id = 'Description';
+          tab.id = 'description';
           tab.label += 'Description';
           tab.icon = 'fas fa-fw fa-align-left';
           break;

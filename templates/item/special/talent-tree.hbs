@@ -1,8 +1,8 @@
 <div class="tab talent-tree {{tab.cssClass}}" data-group="primary" data-tab="talent-tree" style="height: calc({{position.height}}px - var(--header-height) - var(--utopia-header-border-width))">
   {{formGroup systemFields.branchCount value=system.branchCount stacked=true localize=true}}
   
-  {{log position}}
-  {{log branches}}
+  
+  
   {{#each branches as |branch branchIndex|}}
     {{#if (eq ../item.type "species")}}
       <select class="branch-category" data-branch="{{branchIndex}}">

@@ -4,12 +4,11 @@
       <span class="skill-tree-header">{{tree.name}}</span>
 
       <div class="trees">
-        {{#each tree.system.branches as |branch|}}
+        {{#each tree.system.branches as |branch branchIndex|}}
           {{#if (gt branch.talents.length 0)}}
 
             <div class="skill-tree">
-              {{#each branch.talents as |parentTalent|}}
-                {{log parentTalent}}
+              {{#each branch.talents as |parentTalent talentIndex|}}
                 {{#with parentTalent.item as |talent|}}              
 
                   {{#unless @first}}
@@ -26,7 +25,7 @@
                     </svg>
                   {{/unless}}
                   
-                  <a class="skill" data-action="talentClick" data-tree="{{tree.uuid}}" data-available="{{parentTalent.available}}" data-talent="{{talent.uuid}}" {{#if (eq parentTalent.available "available")}}available{{else if (eq parentTalent.available "locked")}}unavailable{{else}}taken disabled{{/if}}>
+                  <a class="skill" data-branch="{{branchIndex}}" data-tier="{{talentIndex}}" data-action="talentClick" data-tree="{{tree.uuid}}" data-available="{{parentTalent.available}}" data-talent="{{talent.uuid}}" {{#if (eq parentTalent.available "available")}}available{{else if (eq parentTalent.available "locked")}}unavailable{{else}}taken disabled{{/if}}>
                     <div class="skill-icon">
                       <img class="skill-image" title="{{talent.name}}" src="{{talent.img}}" alt="{{talent.name}}">
                       {{#if (eq parentTalent.available "locked")}}

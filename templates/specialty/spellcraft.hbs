@@ -103,7 +103,7 @@
       <div class="spell-features">
         <ol class="selected-feature-list flexcol">
           {{#each selected as |feature key|}}
-            {{log feature}}
+            
             <li class="feature" 
               style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
               data-id="{{feature.uuid}}">
@@ -114,7 +114,7 @@
               <span class="feature-name">{{feature.name}} (<span id="cost" class="cost">{{feature.cost}}</span>)</span>
               <div class="feature-controls">
                 {{#if feature.hasFormula}}
-                  {{log feature.currentFormula}}
+                  
                   <div class="formula-select">
                     {{#if ../allowRedistribution}}<a class="formula-down" data-feature="{{key}}"><i class="fa-solid fa-chevron-left"></i></a>{{/if}}
                     <div class="formula">{{lookup feature.formulaOptions.[0] feature.currentFormula}}</div>

@@ -8,11 +8,20 @@ export class DamageInstance {
    * @param {Object} param0.target - The target actor.
    */
   constructor({ type, value, source, target }) {
-    this.type = type;
+    if (typeof type === "string") {
+      this.type = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[type];
+      this.typeKey = type;
+    }
+    else {
+      this.type = type;
+      const systemTypes = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
+      // Find the key that matches the type object.
+      const key = Object.entries(systemTypes).find(([key, config]) => foundry.utils.objectsEqual(config, type))?.[0];
+      this.typeKey = key;
+    }
     this.value = value ?? 0;
     this.source = source ?? null;
     this.target = target;
-    this.typeKey = this.type.key ?? Object.entries(CONFIG.UTOPIA.DAMAGE_TYPES).find(([key, value]) => value === this.type)?.[0];
     // If no target is provided, use an "Unknown" actor or create a default target.
     if (target === null || target === undefined) {
       if (game.actors.getName("Unknown"))
@@ -35,7 +44,6 @@ export class DamageInstance {
     this.dhpPercent = source.getFlag("utopia", "dhpPercent") ?? 1;
     // Check if the damage should bypass defenses.
     this.penetrate = source.getFlag("utopia", "penetrative") ?? false;
-    this.
     this.finalized = false;
   }
 
@@ -76,9 +84,9 @@ export class DamageInstance {
   get shp() {
     const typeKey = this.typeKey;
     // For specific damage types, compute new surface hitpoints.
-    if (["stamina, restoreStamina", "kinetic", "dhp"].includes(typeKey))
-      return (this.target.system.hitpoints.surface.value - this.damage) * this.shpPercent;
-    return 0;
+    if (["stamina", "restoreStamina", "kinetic", "dhp"].includes(typeKey))
+      return 0;
+    return (this.target.system.hitpoints.surface.value - this.damage) * this.shpPercent;
   }
 
   /**
@@ -92,14 +100,17 @@ export class DamageInstance {
    * Getter for adjusted deep hitpoints (dhp) if surface hitpoints drop below zero.
    */
   get dhp() {
-    return this.shp < 0 ? Math.abs(this.shp) * this.dhpPercent : 0;
+    if (this.shp > 0) return this.target.system.hitpoints.deep.value;;
+
+    const remaining = Math.abs(this.shp) * this.dhpPercent;
+    return this.target.system.hitpoints.deep.value - remaining;
   }
 
   /**
    * Getter for the amount of damage dealt to deep hitpoints.
    */
   get dhpDamageDealt() {
-    return this.shp < 0 ? Math.abs(this.shp) - this.dhp : 0;
+    return this.target.system.hitpoints.deep.value - this.dhp;
   }
 
   /**
@@ -108,12 +119,12 @@ export class DamageInstance {
    * Otherwise, if the source is "exhausting", combine surface and deep damage.
    */
   get stamina() {
+    const currentStamina = this.target.system.stamina.value || 0;
     if (this.typeKey === "stamina") {
-      const currentStamina = this.target.system.stamina.value || 0;
       // Apply only as much stamina damage as possible.
-      return Math.min(this.value, currentStamina);
+      return Math.max(currentStamina - this.damage, 0);
     }
-    return 0;
+    return currentStamina;
   }
 
   /**
@@ -121,9 +132,12 @@ export class DamageInstance {
    * If stamina damage exceeds the target's stamina, the overflow goes to deep hitpoints.
    */
   get deepDamageFromStamina() {
+    const currentStamina = this.target.system.stamina.value || 0;
     if (this.typeKey === "stamina") {
-      const currentStamina = this.target.system.stamina.value || 0;
-      return Math.max(this.value - currentStamina, 0);
+      if (currentStamina - this.damage < 0) {
+        const overflow = Math.abs(currentStamina - this.damage);
+        return overflow * this.dhpPercent;
+      }
     }
     return 0;
   }
@@ -132,7 +146,7 @@ export class DamageInstance {
    * Getter for actual stamina damage dealt.
    */
   get staminaDamageDealt() {
-    return this.stamina;
+    this.target.system.stamina.value - this.stamina;
   }
 
   /**
@@ -150,7 +164,7 @@ export class DamageInstance {
       staminaDamageDealt: this.staminaDamageDealt,
       deepDamageFromStamina: this.deepDamageFromStamina,
       total: this.damage,
-      type: CONFIG.UTOPIA.DAMAGE_TYPES[this.type]
+      type: JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[this.type]
     }
   }
 

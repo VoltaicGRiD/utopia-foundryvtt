@@ -63,8 +63,24 @@ export function registerHooks() {
       });
     });
 
-    Hooks.on("preUpdateActor", (actor, data, meta, userId) => {
+    Hooks.on("updateActor", (actor, data, meta, userId) => {
+      console.log("[UPDATE ACTOR]", actor, data, meta, userId);
 
+      const dhp = actor.system.hitpoints.deep.value;
+      const maxDhp = actor.system.hitpoints.deep.max;
+
+      // If an actors DHP is in the negatives and less than or equal to their max DHP,
+      // The body is considered "dead", and unusable
+      if (dhp <= (maxDhp * -1)) {
+        actor.toggleStatusEffect("dead", { active: true });
+      }
+
+      // If the actor's DHP is in the negatives and greater than their max DHP,
+      // the body is in "stasis"
+      else if (dhp < 0 && dhp > (maxDhp * -1)) {
+        // Create the stasis effect
+        actor.toggleStatusEffect("stasis", { active: true });
+      }
     });
 
     Hooks.on("renderMacroConfig", async (app, html, data) => {

@@ -14,10 +14,10 @@
           {{numberFormat talent.soul decimals=0}}
       </span>
     </div>
-    {{{talent.description}}}
-    {{#if talent.formula}}
+    {{{talent.item.system.description}}}
+    {{#if talent.item.system.formula}}
       <div class="skill-formula">
-        <strong>{{localize 'UTOPIA.CommonTerms.formula'}}:</strong> {{talent.formula}}
+        <strong>{{localize 'UTOPIA.CommonTerms.formula'}}:</strong> {{talent.item.system.formula}}
       </div>
     {{/if}}
     {{#if (eq talent.available "locked")}}

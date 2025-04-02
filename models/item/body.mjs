@@ -19,11 +19,11 @@ export class Body extends UtopiaItemBase {
     
     const returns = {};
     const allOptions = {
-      ...Object.entries(CONFIG.UTOPIA.TRAITS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.TRAITS.GroupName" };
         return acc;
       }, {}),
-      ...Object.entries(CONFIG.UTOPIA.SUBTRAITS).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.SUBTRAITS.GroupName" };
         return acc;
       }, {}),
@@ -54,7 +54,7 @@ export class Body extends UtopiaItemBase {
 
 
     const rarities = {
-      ...Object.entries(CONFIG.UTOPIA.RARITIES).reduce((acc, [key, value]) => {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.RARITIES.GroupName" };
         return acc;
       }, {}),

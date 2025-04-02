@@ -32,7 +32,7 @@ export class UtopiaTemplates extends MeasuredTemplate {
       flags: item ? { utopia: { origin: item.uuid } } : {}
     };
 
-    const presetPrototype = CONFIG.UTOPIA.measuredTemplatePresets.find(
+    const presetPrototype = game.settings.get("utopia", "measuredTemplatePresets").find(
       (c) => c.button.name === preset
     );
     if (!presetPrototype) return null;
@@ -131,7 +131,7 @@ export class UtopiaTemplates extends MeasuredTemplate {
   }
 
   destroy(...args) {
-    CONFIG.UTOPIA.activeMeasuredTemplatePreview = null;
+    game.settings.get("utopia", "activeMeasuredTemplatePreview") = null;
     this._removeListenersFromCanvas();
     return super.destroy(...args);
   }
@@ -260,7 +260,7 @@ export function registerMeasuredTemplates() {
         visible: true,
         button: true,
         onClick: () => {
-          UTOPIAMeasuredTemplate.fromPreset(TEMPLATE_PRESETS.CONE);
+          UtopiaTemplates.fromPreset(TEMPLATE_PRESETS.CONE);
         },
       },
     },
@@ -277,7 +277,7 @@ export function registerMeasuredTemplates() {
         visible: true,
         button: true,
         onClick: () => {
-          UTOPIAMeasuredTemplate.fromPreset(TEMPLATE_PRESETS.LINE);
+          UtopiaTemplates.fromPreset(TEMPLATE_PRESETS.LINE);
         },
       },
     },
@@ -290,7 +290,7 @@ export function registerMeasuredTemplates() {
         visible: true,
         button: true,
         onClick: () => {
-          UTOPIAMeasuredTemplate.fromPreset(TEMPLATE_PRESETS.SBT);
+          UtopiaTemplates.fromPreset(TEMPLATE_PRESETS.SBT);
         },
       },
     },
@@ -303,7 +303,7 @@ export function registerMeasuredTemplates() {
         visible: true,
         button: true,
         onClick: () => {
-          UTOPIAMeasuredTemplate.fromPreset(TEMPLATE_PRESETS.MBT);
+          UtopiaTemplates.fromPreset(TEMPLATE_PRESETS.MBT);
         },
       },
     },
@@ -316,7 +316,7 @@ export function registerMeasuredTemplates() {
         visible: true,
         button: true,
         onClick: () => {
-          UTOPIAMeasuredTemplate.fromPreset(TEMPLATE_PRESETS.LBT);
+          UtopiaTemplates.fromPreset(TEMPLATE_PRESETS.LBT);
         },
       },
     },

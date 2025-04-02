@@ -1,0 +1,75 @@
+& .forage-and-crafting-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  .foraging-difficulty,
+  .foraging-formula,
+  .foraging-returns {
+    margin: 0;
+    margin-top: 10px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .foraging-difficulty-title,
+    .foraging-formula-title,
+    .foraging-returns-title {
+      font-size: var(--font-size-20);
+      font-weight: bold;
+    }
+
+    .foraging-difficulty-value,
+    .foraging-formula-value,
+    .foraging-returns-value {
+      font-size: var(--font-size-20);
+      text-align: right;
+      align-self: flex-end;
+      justify-self: flex-end;
+    }
+
+    .foraging-returns-value {
+      font-size: var(--font-size-16);
+    }
+  }
+
+  .crafting-difficulty,
+  .crafting-requirements,
+  .crafting-returns {
+    margin: 0;
+    margin-top: 10px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .crafting-difficulty-title,
+    .crafting-requirements-title,
+    .crafting-returns-title {
+      font-size: var(--font-size-20);
+      font-weight: bold;
+    }
+
+    .crafting-difficulty-value,
+    .crafting-requirements-value,
+    .crafting-returns-value {
+      font-size: var(--font-size-20);
+      text-align: right;
+      align-self: flex-end;
+      justify-self: flex-end;
+      width: 100%;
+    }
+
+    .crafting-requirements-value,
+    .crafting-returns-value {
+      font-size: var(--font-size-16);
+    }
+  }
+
+  .foraging-button,
+  .crafting-button {
+    grid-column-start: 3;
+  }
+}
+

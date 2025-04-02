@@ -1,7 +1,7 @@
 import UtopiaItemBase from "../base-item.mjs";
   
 export class GenericItem extends UtopiaItemBase {
-  static LOCALIZATION_PREFIXES = [...super.LOCALIZATION_PREFIXES, "UTOPIA.Item.Generic"];
+  static LOCALIZATION_PREFIXES = [...super.LOCALIZATION_PREFIXES, "UTOPIA.Items.Generic"];
 
   static defineSchema() {
     const fields = foundry.data.fields;
@@ -23,10 +23,10 @@ export class GenericItem extends UtopiaItemBase {
       "valuable": "UTOPIA.Items.Generic.Categories.valuable",
     }});
 
-    schema.rarity = new fields.StringField({ required: true, nullable: false, initial: "common", options: () => {
+    schema.rarity = new fields.StringField({ required: true, nullable: false, initial: "common", choices: () => {
       const returns = {};
       const allOptions = {
-        ...Object.entries(CONFIG.UTOPIA.RARITIES).reduce((acc, [key, value]) => {
+        ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities"))).reduce((acc, [key, value]) => {
           acc[key] = { ...value, group: "UTOPIA.RARITIES.GroupName" };
           return acc;
         }, {}),

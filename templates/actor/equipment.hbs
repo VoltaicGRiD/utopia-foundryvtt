@@ -1,0 +1,71 @@
+<section class="tab equipment {{tab.cssClass}}" data-group="primary" data-tab="equipment">
+
+  <fieldset class="item-set" data-item="{{item.id}}">
+    {{#if isPlay}}
+      <legend>{{localize "UTOPIA.Actors.Items.Gear"}} <i class="fas fa-sword"></i></legend>
+    {{else}}
+      <legend data-action="createDocument" data-document-type="gear" title="{{localize "UTOPIA.Gear.New"}}">{{localize "DOCUMENT.Create" type="Gear"}} <i class="fas fa-plus"></i></legend>
+    {{/if}}
+    <a data-action="createDocument" data-document-type="gear"><i class="fas fa-hammer"></i> {{localize "UTOPIA.Actors.Actions.NewArtifice"}}</a>
+    <div class="item-container">
+      {{#each equipment as |item|}} 
+        {{#if ../isPlay}}
+          <div class="item">
+            <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
+              <span class="item-name">{{item.name}}</span>
+            </a>
+          </div>
+        {{else}}
+          <div class="item-edit">
+            <div class="item">
+              <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+            <div class="item-actions">
+              <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+            </div>        
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+    <a data-action="createDocument" data-document-type="generic"><i class="fas fa-hammer"></i> {{localize "UTOPIA.Actors.Actions.NewGeneric"}}</a>
+    <div class="item-container">
+      {{#each generic as |item|}} 
+        {{#if ../isPlay}}
+          <div class="item">
+            <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
+              <span class="item-name">{{item.name}}</span>
+            </a>
+          </div>
+        {{else}}
+          <div class="item-edit">
+            <div class="item">
+              <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+            <div class="item-actions">
+              <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+            </div>        
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+  </fieldset>
+
+  <div class="paper-doll">
+    <i class="fa-solid fa-person"></i>
+    <div class="head">{{> "actor-paper-doll" evolution=true slot=paperdoll.head key='head' dir="right"}}</div>
+    <div class="neck">{{> "actor-paper-doll" evolution=false slot=paperdoll.neck key='neck' dir="right"}}</div>
+    <div class="back">{{> "actor-paper-doll" evolution=false slot=paperdoll.back key='back' dir="left"}}</div>
+    <div class="chest">{{> "actor-paper-doll" evolution=false slot=paperdoll.chest key='chest' dir="right"}}</div>
+    <div class="waist">{{> "actor-paper-doll" evolution=false slot=paperdoll.waist key='waist' dir="left"}}</div>
+    <div class="hands">{{> "actor-paper-doll" evolution=true slot=paperdoll.hands key='hands' dir="right"}}</div>
+    <div class="ring">{{> "actor-paper-doll" evolution=false slot=paperdoll.ring key='ring' dir="left"}}</div>
+    <div class="feet">{{> "actor-paper-doll" evolution=true slot=paperdoll.feet key='feet' dir="right"}}</div>
+
+    <span class="key">{{localize "UTOPIA.Actors.PaperDoll"}}</span>
+  </div>
+
+</section>

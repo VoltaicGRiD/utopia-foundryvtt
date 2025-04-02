@@ -1,0 +1,23 @@
+<div class="compendium-browser-content">
+  <ol class="folder-list">
+    {{#each folders}}
+      <li class="folder-name">
+        <span class="folder-name">{{this.name}}</span>
+        <ol class="item-list" data-uuid="{{this.uuid}}">
+          {{#each this.items}}
+            <li class="item">
+              <div class="item-name">
+                <!-- <input type="checkbox" class="item-select" data-uuid="{{this.uuid}}"> -->
+                <span data-uuid="{{this.uuid}}" data-action="view">{{this.name}}</span>
+              </div>
+              <div class="item-controls">
+                <a class="item-control" data-uuid="{{this.uuid}}" data-action="take"><i class="fas fa-boxes-stacked"></i> {{localize "UTOPIA.CompendiumBrowser.Take"}}</a>
+                <a class="item-control" data-uuid="{{this.uuid}}" data-action="takeAndClose"><i class="fas fa-box-open"></i> {{localize "UTOPIA.CompendiumBrowser.TakeAndClose"}}</a>
+              </div>
+            </li>
+          {{/each}}
+        </ol>
+      </li>
+    {{/each}}
+  </ol>
+</div>

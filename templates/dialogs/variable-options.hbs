@@ -1,7 +1,7 @@
 <h3>{{name}}</h3>
 {{#if description}}<p>{{description}}</p>{{/if}}
 <div class="grid grid-3col">
-  {{log options}}
+  
   {{#each options as |option|}}
     <label class="tooltip-option {{#if (eq ../selected option)}}active{{/if}}">
       <input type="radio" name="variable-option" value="{{option}}" {{#if (eq ../selected option)}}checked{{/if}}>

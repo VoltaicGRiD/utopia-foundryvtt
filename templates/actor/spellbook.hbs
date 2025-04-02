@@ -1,4 +1,27 @@
 <section class="tab spellbook {{tab.cssClass}}" data-group="primary" data-tab="spellbook"> 
+
+  <fieldset class="item-set">
+    <legend>{{localize "UTOPIA.Actors.Items.Artistries"}} <i class="fas fa-magic"></i></legend>
+    <div class="item-container">
+      {{#each system.spellcasting.artistries as |value key|}}
+        {{#if (eq value.unlocked true)}}
+          <div class="item unlocked">
+            <a><i class="fa-fw fas fa-magic"></i> {{capitalize key}} : UNLOCKED</a>
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+    <div class="item-container">
+      {{#each system.spellcasting.artistries as |value key|}}
+        {{#if (eq value.unlocked false)}}
+          <div class="item locked">
+            <a><i class="fa-fw fas fa-lock"></i> {{capitalize key}}</a>
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+  </fieldset>
+
   <fieldset class="item-set" data-item="{{item.id}}">
     {{#if isPlay}}
       <legend>{{localize "UTOPIA.Actors.Items.Spells"}} <i class="fas fa-magic"></i></legend>
@@ -17,4 +40,5 @@
       {{/each}}
     </div>
   </fieldset>
+
 </section>

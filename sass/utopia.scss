@@ -123,6 +123,10 @@
   --utopia-capacity-background-color: oklch(62% 0.05 246);
   --utopia-capacity-border-color: oklch(91% 0.044 252.5);
   --utopia-capacity-text-color: oklch(95% 0 0);
+
+  --utopia-table-hover-color: #ffffff50;
+  --utopia-table-color: #ffffff20;
+  --utopia-table-alternate-color: #ffffff10;
 }
 
 @import "components/tagify.scss";
@@ -150,7 +154,6 @@
   }
 }
 
-
 .chat-message {
   @import "components/chat.scss";
 }
@@ -165,6 +168,7 @@
     @import "general/forms";
     @import "components/character-sheet.scss";
     @import "components/talent-tree.scss";
+    @import "components/paper-doll.scss";
   }
 
   &.talent-browser {
@@ -181,6 +185,10 @@
     @import "components/feature-builder.scss";
   }
 
+  &.forage-and-crafting {
+    @import "components/forage-and-crafting.scss";
+  }
+
   &.gear-sheet, 
   &.artifice {
     border-radius: 0 25px 0 25px ;
@@ -195,6 +203,12 @@
 
     @import "components/spells.scss";
     @import "components/spellcraft.scss";
+  }
+
+  &.compendium-browser {
+    border-radius: 0 25px 0 25px ;
+
+    @import "components/compendium-browser.scss";
   }
 
   &.advancement-sheet {

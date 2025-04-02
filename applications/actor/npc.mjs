@@ -12,6 +12,9 @@ export class NPC extends DragDropActorV2 {
     attributes: {
       template: "systems/utopia/templates/actor/attributes.hbs",
     },
+    spellbook: {
+      template: "systems/utopia/templates/actor/spellbook.hbs",
+    },
     background: {
       template: "systems/utopia/templates/actor/background.hbs",
     },
@@ -19,6 +22,13 @@ export class NPC extends DragDropActorV2 {
       template: "systems/utopia/templates/effects.hbs",
     }
   }
+
+  static MODES = {
+    PLAY: 0,
+    EDIT: 1,
+  }
+
+  _mode = this.constructor.MODES.PLAY;
 
   static DEFAULT_OPTIONS = foundry.utils.mergeObject(DragDropActorV2.DEFAULT_OPTIONS, {
     classes: ["utopia", "actor-sheet", "character"],
@@ -33,7 +43,7 @@ export class NPC extends DragDropActorV2 {
 
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    options.parts = ["header", "tabs", "attributes", "background", "effects"];
+    options.parts = ["header", "tabs", "attributes", "spellbook", "background", "effects"];
   }
 
   async _prepareContext(options) {
@@ -41,7 +51,7 @@ export class NPC extends DragDropActorV2 {
 
     context.tabs = super._getTabs(options.parts);
     context.position = options.position;
-    context.isPlay = false;
+    context.isPlay = this.constructor.MODES.EDIT;
       
     console.log(context);
 

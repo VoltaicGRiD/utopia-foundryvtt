@@ -5,14 +5,15 @@
     {{#each subtraits as |subtrait|}}
     {{#if subtrait.gifted}}
       <div class="subtrait gifted">
-        <i class="fas fa-gift"></i>
-        <span class="subtrait-gifted">{{localize 'UTOPIA.Actor.Points.gifted'}}</span>
     {{else}}
       <div class="subtrait" data-value="subtrait.value">
     {{/if}}
         <a class="subtrait-decrease" data-action="decrease" data-key="{{subtrait.short}}"><i class="fas fa-fw fa-minus"></i></a>
         <label class="subtrait-name" for="subtrait-{{subtrait.short}}">{{localize subtrait.label}}</label>
         <a class="subtrait-increase" data-action="increase" data-key="{{subtrait.short}}"><i class="fas fa-fw fa-plus"></i></a>
+        {{#if (gt ../giftPoints 0)}}
+          <a class="subtrait-gift" data-action="gift" data-key="{{subtrait.short}}"><i class="fas fa-fw fa-gift"></i></a>
+        {{/if}}
         <span class="subtrait-value" data-key="{{subtrait.short}}">{{subtrait.value}}</span>
         <span class="subtrait-arrow"><i class="fas fa-arrow-right"></i></span>
         <span class="subtrait-new-value {{#if (gt subtrait.newValue subtrait.value)}}greater{{else if (lt subtrait.newValue subtrait.value)}}lesser{{/if}}" data-key="{{subtrait.short}}">{{subtrait.newValue}}</span>

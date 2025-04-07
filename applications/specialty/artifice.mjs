@@ -162,7 +162,6 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     
     // Gather gear features.
     const features = await gatherItems({ type: "gearFeature", gatherFromActor: false, gatherFolders: false });
-    this.features = features;
 
     // Build localized choice objects.
     const fields = CONFIG.Item.dataModels.gear.schema.fields;
@@ -234,8 +233,8 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     }
 
     // Process available features: assign attributes (merge shared for weapons).
-    for (const feature of Object.values(this.features)) {
-      this._assignAttributes(feature, relevantKey, { mergeShared: (this.type === "weapon") });
+    for (const feature of filteredFeatures) {
+      this._assignAttributes(feature, relevantKey, { mergeShared: true });
     }
     
     // Process stacks for each selected feature.
@@ -249,11 +248,13 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     const gear = await this.updateGear();
 
     // Process non-selected features: assign attributes.
-    for (const feature of Object.values(this.features)) {
+    for (const feature of filteredFeatures) {
       if (!this.selected[feature.uuid]) {
         this._assignAttributes(feature, relevantKey);
       }
     }
+
+    this.features = filteredFeatures;
 
     // Build type data for the context.
     const typeData = {

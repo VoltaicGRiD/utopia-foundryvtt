@@ -1,18 +1,28 @@
 <div class="compendium-browser-header">
-  <select name="type" id="type">
-    {{#each types}}
-      <option value="{{this}}" {{#if (eq this ../type)}}selected{{/if}}>{{this}}</option>
-    {{/each}}
-  </select>
+  <div class="form-group-stacked">
+    <label for="type">{{localize "UTOPIA.CompendiumBrowser.Type"}}</label>
+    <select name="type" id="type">
+      {{#each types}}
+        <option value="{{this}}" {{#if (eq this ../type)}}selected{{/if}}>{{this}}</option>
+      {{/each}}
+    </select>
+  </div>
 
-  <label for="world">{{localize "UTOPIA.CompendiumBrowser.ViewWorldItems"}}</label>
-  <input type="checkbox" id="world" name="world" {{#if includeWorld}}checked{{/if}}>
+  <div class="form-group">
+    <label for="world">{{localize "UTOPIA.CompendiumBrowser.ViewWorldItems"}}</label>
+    <input type="checkbox" id="world" name="world" {{#if includeWorld}}checked{{/if}}>
+  </div>
 
   {{#if isGM}}
-    <label for="actor">{{localize "UTOPIA.CompendiumBrowser.ViewActorItems"}}</label>
-    <input type="checkbox" id="actor" name="actor" {{#if includeActor}}checked{{/if}}>
+    <div class="form-group">
+      <label for="actor">{{localize "UTOPIA.CompendiumBrowser.ViewActorItems"}}</label>
+      <input type="checkbox" id="actor" name="actor" {{#if includeActor}}checked{{/if}}>
+    </div>
   {{/if}}
 
-  <label for="search">{{localize "UTOPIA.CompendiumBrowser.Search"}}</label>
-  <input type="text" id="search" name="search" value="{{search}}">
+  <div class="form-group-stacked search-group">
+    <label for="search">{{localize "UTOPIA.CompendiumBrowser.Search"}}</label>
+    <input type="text" id="search" name="search" value="{{search}}">
+    <button class="search-button" type="button" id="search-button"><i class="fas fa-search"></i></button>
+  </div>
 </div>

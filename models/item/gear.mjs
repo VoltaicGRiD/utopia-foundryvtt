@@ -145,6 +145,9 @@ export class Gear extends UtopiaItemBase {
           }
         });
       }
+
+      this.attributes ??= [];
+      this.attributes.push(parsedFeature.system.final);
     }
 
     // this.damage = this.damage ?? "N/A";
@@ -192,8 +195,10 @@ export class Gear extends UtopiaItemBase {
       cost,
     };
 
-    for (const [key, value] of Object.entries(attributes)) {
-      if (value && value.length > 0) {
+    const flattenedAttributes = foundry.utils.flattenObject(attributes);
+
+    for (const [key, value] of Object.entries(flattenedAttributes)) {
+      if (value && (!Array.isArray(value) || value.length > 0)) {
         if (isNumeric(value)) {
           simulation[key] = parseFloat(value) * stackCount;
         } else if (typeof value === "string" && value !== "\u0000" && !isNumeric(value)) {

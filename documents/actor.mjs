@@ -473,7 +473,8 @@ export class UtopiaActor extends Actor {
     await this.resetResources('rest');
     await this.update({
       "system.hitpoints.surface.value": this.system.hitpoints.surface.max,
-      "system.stamina.value": this.system.stamina.max
+      "system.stamina.value": this.system.stamina.max,
+      "system.hitpoints.deep.value": this.type === "creature" ? this.system.hitpoints.deep.max : this.system.hitpoints.deep.value,
     });
   }
 

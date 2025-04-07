@@ -28,16 +28,16 @@ export function registerHooks() {
         // their Turn Actions
         if (to.combatantId === combatant._id) {
           await actor.update({
-            ["system.actions.turn.value"]: actor.system.actions.turn.max,
-            ["system.actions.interrupt.value"]: 0,
+            ["system.turnActions.value"]: actor.system.turnActions.max,
+            ["system.interruptActions.value"]: 0,
           });
         }
         // If the combatant is not the current combatant, we have to restore 
         // their Interrupt Actions
         else {
           await actor.update({
-            ["system.actions.interrupt.value"]: actor.system.actions.interrupt.max,
-            ["system.actions.turn.value"]: 0,
+            ["system.interruptActions.value"]: actor.system.interruptActions.max,
+            ["system.turnActions.value"]: 0,
           });
         }
 
@@ -57,8 +57,8 @@ export function registerHooks() {
       combat.combatants.forEach((combatant) => {
         let actor = game.actors.get(combatant.actorId);
         actor.update({
-          ["system.actions.turn.value"]: actor.system.actions.turn.max,
-          ["system.actions.interrupt.value"]: actor.system.actions.interrupt.max,
+          ["system.turnActions.value"]: actor.system.turnActions.max,
+          ["system.interruptActions.value"]: actor.system.interruptActions.max,
         });
       });
     });

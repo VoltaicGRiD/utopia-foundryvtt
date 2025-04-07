@@ -1,0 +1,148 @@
+<div class="actor-header">
+  <input class="actor-name" name='name' type='text' value='{{actor.name}}' placeholder='Name'/>
+
+  <div class="actor-actions">
+    <div class="turn-actions">
+      {{#for system.turnActions.value}}
+        <svg class="action-icon" data-action="roll" data-roll="{{action}}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" fill="green" stroke="black" />
+        </svg>  
+      {{/for}}
+    </div>
+
+    <div class="interrupt-actions">
+      {{#for system.interruptActions.value}}
+        <svg class="action-icon" data-action="roll" data-roll="{{action}}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" fill="yellow" stroke="black" />
+        </svg>  
+      {{/for}}
+    </div>
+  </div>
+
+  <img class='actor-icon' src='{{actor.img}}' data-edit='img' data-action="image" data-image="icon" title='{{actor.name}}' height="60"/>
+
+  <div class="creature-stats">
+    <div class="stat">
+      <div class="stat-label">{{localize "UTOPIA.Actors.Attributes.DifficultyRating"}}</div>
+      <div class="stat-value">{{system.dr}}</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">{{localize "UTOPIA.Actors.Attributes.Body"}}</div>
+      <div class="stat-value">{{system._bodyData.name}}</div>
+    </div>
+  </div>
+
+  <div class="creature-attribute-container">
+    <div class="attribute">
+      <input type="number" class="attribute-value" name="system.hitpoints.surface.value" value="{{system.hitpoints.surface.value}}" placeholder="0"/>
+      <div class="attribute-label">{{localize "UTOPIA.Actors.Attributes.SurfaceHitpoints"}}</div>
+      {{#if isPlay}}
+        <input type="number" class="attribute-maximum" value="{{system.hitpoints.surface.max}}" placeholder="0" readonly/>
+      {{else}}
+        <input type="number" class="attribute-maximum" name="system.hitpoints.surface.max" value="{{systemSource.hitpoints.surface.max}}" placeholder="0"/>
+      {{/if}}
+    </div>
+
+    <div class="attribute">
+      <input type="number" class="attribute-value" name="system.hitpoints.deep.value" value="{{system.hitpoints.deep.value}}" placeholder="0"/>
+      <div class="attribute-label">{{localize "UTOPIA.Actors.Attributes.DeepHitpoints"}}</div>
+      {{#if isPlay}}
+        <input type="number" class="attribute-maximum" value="{{system.hitpoints.deep.max}}" placeholder="0" readonly/>
+      {{else}}
+        <input type="number" class="attribute-maximum" name="system.hitpoints.deep.max" value="{{systemSource.hitpoints.deep.max}}" placeholder="0"/>
+      {{/if}}
+    </div>
+
+    <div class="attribute">
+      <input type="number" class="attribute-value" name="system.stamina.value" value="{{system.stamina.value}}" placeholder="0"/>
+      <div class="attribute-label">{{localize "UTOPIA.Actors.Attributes.Stamina"}}</div>
+      {{#if isPlay}}
+        <input type="number" class="attribute-maximum" value="{{system.stamina.max}}" placeholder="0" readonly/>
+      {{else}}
+        <input type="number" class="attribute-maximum" name="system.stamina.max" value="{{systemSource.stamina.max}}" placeholder="0"/>
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="actions">
+    <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="body"><i class="fa-fw fas fa-person"></i> {{localize "UTOPIA.Actors.Actions.ChangeBody"}}</a>
+    <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="class"><i class="fa-fw fas fa-chess-pawn"></i> {{localize "UTOPIA.Actors.Actions.AddClass"}}</a>
+    <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="kit"><i class="fa-fw fas fa-sword"></i> {{localize "UTOPIA.Actors.Actions.AddKit"}}</a>
+  </div>
+
+  {{!-- <details>
+    <summary>{{localize "UTOPIA.Actors.Classes.Summary"}}</summary>
+    {{#if (gt actor.system._classData.length 0)}}
+      {{#each actor.system._classData}}
+        <a data-action="viewDocument" data-document-id="{{class.id}}">{{class.name}}</a>
+      {{/each}}
+    {{/if}}
+  </details>
+
+  <details>
+    <summary>{{localize "UTOPIA.Actors.Kits.Summary"}}</summary>
+    {{#if (gt actor.system._kitData.length 0)}}
+      {{#each actor.system._kitData as |kit|}}
+        <a data-action="viewDocument" data-document-id="{{kit.id}}">{{kit.name}}</a>
+        <a data-action="deleteDocument" data-document-id="{{kit.id}}"><i class="fa-fw fas fa-trash"></i></a>
+      {{/each}}
+    {{/if}}
+  </details> --}}
+
+  <div class="actions">
+    <a class="action-button" data-action="roll" data-roll="block"><i class="fa-fw fas fa-shield"></i> {{localize "UTOPIA.Actors.Actions.Block"}}</a>
+    <a class="action-button" data-action="roll" data-roll="dodge"><i class="fa-fw fas fa-person-walking-dashed-line-arrow-right"></i> {{localize "UTOPIA.Actors.Actions.Dodge"}}</a>
+    <a class="action-button" data-action="roll" data-roll="rest"><i class="fa-fw fas fa-bed-pulse"></i> {{localize "UTOPIA.Actors.Actions.Reset"}}</a>
+  </div>
+
+  <details>
+    <summary>{{localize "UTOPIA.Actors.Travel.Summary"}}</summary>
+    <div class="details">
+
+      {{> "actor-header-field" isPlay=isPlay
+        localePath="UTOPIA.Actors.FIELDS.travel.land.speed.label"name="system.travel.land.speed" 
+        value=system.travel.land.speed editValue=systemSource.travel.land.speed}}
+
+      {{> "actor-header-field" isPlay=isPlay
+        localePath="UTOPIA.Actors.FIELDS.travel.water.speed.label"name="system.travel.water.speed" 
+        value=system.travel.water.speed editValue=systemSource.travel.water.speed}}
+      
+      {{> "actor-header-field" isPlay=isPlay
+        localePath="UTOPIA.Actors.FIELDS.travel.air.speed.label"name="system.travel.air.speed" 
+        value=system.travel.air.speed editValue=systemSource.travel.air.speed}}
+
+    </div>
+  </details>  
+
+  <details>
+    <summary>{{localize "UTOPIA.Actors.Defenses.Summary"}}</summary>
+    <div class="details">
+      
+      {{> "actor-header-field" isPlay=isPlay
+        localePath="UTOPIA.Actors.FIELDS.defenses.physical.label" name="system.innateDefenses.physical" 
+        value=system.defenses.physical editValue=systemSource.innateDefenses.physical}}
+
+      {{> "actor-header-field" isPlay=isPlay
+        localePath="UTOPIA.Actors.FIELDS.defenses.energy.label" name="system.innateDefenses.energy" 
+        value=system.defenses.energy editValue=systemSource.innateDefenses.energy}}
+
+      {{> "actor-header-field" isPlay=isPlay
+        localePath="UTOPIA.Actors.FIELDS.defenses.heat.label" name="system.innateDefenses.heat" 
+        value=system.defenses.heat editValue=systemSource.innateDefenses.heat}}
+
+      {{> "actor-header-field" isPlay=isPlay
+        localePath="UTOPIA.Actors.FIELDS.defenses.chill.label" name="system.innateDefenses.chill" 
+        value=system.defenses.chill editValue=systemSource.innateDefenses.chill}}
+
+      {{> "actor-header-field" isPlay=isPlay
+        localePath="UTOPIA.Actors.FIELDS.defenses.psyche.label" name="system.innateDefenses.psyche" 
+        value=system.defenses.psyche editValue=systemSource.innateDefenses.psyche}}
+
+    </div>
+  </details>  
+
+  <a class="convert-button action-button" data-action="convert"><i class="fa-fw fas fa-arrow-right-arrow-left"></i> {{localize "UTOPIA.Actors.Actions.Convert"}}</a>
+</div>
+
+  

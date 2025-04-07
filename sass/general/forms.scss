@@ -195,7 +195,17 @@
     .schema-set-inputs {
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      align-content: flex-end;
       gap: 5px;
+
+      .schema-set-input {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        justify-content: flex-start;
+      }
     }
 
     .tags {
@@ -238,18 +248,24 @@
       }
 
       &.flex-sm {
+        flex: 1 0 100%;
+
         .form-group {
           flex: 1 0 100%;
         }
       }
 
       &.flex-md {
+        flex: 1 0 41%;
+
         .form-group {
           flex: 1 0 41%;
         }
       }
 
       &.flex-lg {
+        flex: 1 0 32%;
+
         .form-group {
           flex: 1 0 32%;
         }

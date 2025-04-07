@@ -1,7 +1,6 @@
 <!-- <div class="tab attributes {{tab.cssClass}}" data-group="primary" data-tab="attributes" style="height: calc({{position.height}}px - var(--header-height) - var(--utopia-header-border-width))"> -->
 <div class="tab attributes {{tab.cssClass}} {{#if (lt position.width 501)}}flex-sm{{else}}flex-md{{/if}}" data-group="primary" data-tab="attributes">
   {{#each attributeFields as |field|}}
-    
-    {{formGroup field.field customClasses=field.classes value=field.value stacked=field.stacked localize=true options=field.options columns=field.columns flex=field.flex}}
+    {{formGroup field.field classes=field.classes value=field.value stacked=field.stacked localize=true options=field.options columns=field.columns flex=field.flex}}
   {{/each}}
 </div>

@@ -45,7 +45,8 @@
   "documentTypes": {
     "Actor": {
       "character": {},
-      "npc": {}
+      "npc": {},
+      "creature": {}
     },
     "Item": {
       "body": {},
@@ -273,6 +274,58 @@
         "ASSISTANT": "OWNER"
       },
       "flags": {}
+    },
+    {
+      "name": "bodies",
+      "label": "SRD Bodies",
+      "banner": "systems/utopia/assets/Utopia-Background.webp",
+      "path": "",
+      "type": "Item",
+      "system": "utopia",
+      "ownership": {
+        "PLAYER": "LIMITED",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "classes",
+      "label": "SRD Classes",
+      "banner": "systems/utopia/assets/Utopia-Background.webp",
+      "path": "",
+      "type": "Item",
+      "system": "utopia",
+      "ownership": {
+        "PLAYER": "LIMITED",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "kits",
+      "label": "SRD Kits",
+      "banner": "systems/utopia/assets/Utopia-Background.webp",
+      "path": "",
+      "type": "Item",
+      "system": "utopia",
+      "ownership": {
+        "PLAYER": "LIMITED",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "creatures",
+      "label": "SRD Creatures",
+      "banner": "systems/utopia/assets/Utopia-Background.webp",
+      "path": "",
+      "type": "Actor",
+      "system": "utopia",
+      "ownership": {
+        "PLAYER": "LIMITED",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
     }
   ],
   "flags": {},
@@ -322,6 +375,13 @@
           "sorting": "a",
           "color": "string",
           "packs": ["spells", "spellFeatures"],
+          "folders": []
+        },
+        {
+          "name": "Creatures Etc.",
+          "sorting": "a",
+          "color": "string",
+          "packs": ["bodies", "classes", "kits", "creatures"],
           "folders": []
         }
       ]

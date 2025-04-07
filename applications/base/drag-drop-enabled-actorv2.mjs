@@ -270,6 +270,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     context.actions = this.actor.items.filter(i => i.type === 'action');
     context.generic = this.actor.items.filter(i => i.type === 'generic');
     context.specialist = this.actor.items.filter(i => i.type === 'specialistTalent');
+    context.kits = this.actor.items.filter(i => i.type === 'kit');
+    context.classes = this.actor.items.filter(i => i.type === 'class');
     
     return context;
   }
@@ -699,8 +701,46 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
    */
   async _onDropItem(event, data) {
     if (!this.actor.isOwner) return false;
-    const item = await Item.fromDropData(data);
-    await this.actor.createEmbeddedDocuments("Item", [item]);
+    const item = (await Item.fromDropData(data)).toObject();
+    
+    if (["kit", "class"].includes(item.type)) {
+      const selectedChoices = {};
+      
+      const attributes = item.system.attributes;
+      
+      // Iterate through attributes based on their 'choiceSet' propery
+      const choiceSets = [...new Set(attributes.map(a => a.choiceSet))];
+
+      for (const choiceSet of choiceSets) {
+        if (choiceSet === "none" || choiceSet === undefined) continue;
+
+        const matchingAttributes = attributes.filter(a => a.choiceSet === choiceSet).map(a => {
+          return {
+        label: `${a.name}: ${(a.value < 0 ? "-" : "+") + a.value}`,
+        value: a.key,
+          };
+        });
+        const input = foundry.applications.fields.createSelectInput({ options: matchingAttributes });
+
+        await foundry.applications.api.DialogV2.prompt({
+          title: game.i18n.localize("UTOPIA.Items.Kit.FIELDS.attributes.DialogTitle"),
+          content: input.outerHTML,
+          render: true,
+        }).then((result) => {
+          if (result === "ok") {
+        selectedChoices[choiceSet] = input.selectedOptions[0].value;
+          }
+        }).catch(err => {
+          console.error("Error updating item attributes:", err);
+        });
+      }
+
+      item.system.selectedChoices = selectedChoices;
+    }
+
+    await this.actor.addItem(item, true, true);
+
+    console.log(`Item added: ${item.name}`);
   }
 
   /* -------------------------------------------- */

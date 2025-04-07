@@ -22,7 +22,6 @@ export class UtopiaSchemaField extends foundry.data.fields.SchemaField {
     if ( groupConfig.units ) lbl.insertAdjacentHTML("beforeend", ` <span class="units">(${game.i18n.localize(units)})</span>`);
     group.prepend(lbl);
 
-
     const container = document.createElement("div");
     container.classList.add("schema-inputs");
     container.dataset.field = this.name;
@@ -39,7 +38,7 @@ export class UtopiaSchemaField extends foundry.data.fields.SchemaField {
         };
       });
       else inputConfig.options = undefined;
-      const input = field.toFormGroup({ ...groupConfig }, { ...inputConfig, value: value });
+      const input = field.toFormGroup({ ...groupConfig }, { ...inputConfig, value: value, parentName: field.constructor.name === "SchemaArrayField" ? this.name : undefined });
       input.classList.add("schema-input");
       container.append(input);
     }

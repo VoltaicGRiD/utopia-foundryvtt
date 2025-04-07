@@ -66,7 +66,7 @@
 
     <div class="crafting-requirements">
       <span class="crafting-requirements-title">{{localize "UTOPIA.ForageAndCrafting.Requirements"}}</span>
-      {{#each crafting.requirements as |requirement|}}
+      {{#each crafting.requirementsOutput as |requirement|}}
         <span class="crafting-requirements-value">{{requirement}}</span>
       {{/each}}
     </div>
@@ -77,7 +77,7 @@
       <span class="crafting-returns-value">{{crafting.time}}</span>
     </div>
 
-    <button class="crafting-button" data-action="forage">
+    <button class="crafting-button" data-action="craft">
       {{localize "UTOPIA.ForageAndCrafting.Craft"}}
     </button>
   </div>

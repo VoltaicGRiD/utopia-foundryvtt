@@ -33,10 +33,17 @@ export class ItemSheet extends DragDropItemV2 {
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
     options.parts = ["header", "tabs", "attributes", "description", "effects"];
-    if (this.item.type === "favor") {
+    if (["favor"].includes(this.item.type)) {
       options.parts = ["header", "tabs", "attributes"];
       options.position= {
         width: 500,
+        height: 400
+      };
+    }
+    if (["kit"].includes(this.item.type)) {
+      options.parts = ["header", "tabs", "attributes"];
+      options.position= {
+        width: 1000,
         height: 400
       };
     }

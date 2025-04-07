@@ -4,6 +4,9 @@ const requiredInteger = { required: true, nullable: false, initial: 0 }
 import { BiographyField as TextareaField } from "./fields/biography-field.mjs";
 import { SchemaArrayField } from "./fields/schema-set-field.mjs";
 import { getPaperDollContext } from "./utility/paper-doll-utils.mjs";
+import { prepareSpeciesData } from "./utility/species-utils.mjs";
+import { prepareGearData } from "./utility/gear-utils.mjs";
+import { prepareBodyData, prepareClassData, prepareKitData } from "./utility/pawn-utils.mjs";
 
 export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
   // Extended from Foundry's TypeDataModel to represent base data logic for Utopia Actors.
@@ -83,11 +86,16 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     });
 
     schema.innateDefenses = new fields.SchemaField({
-      energy: new fields.NumberField({ ...requiredInteger, initial: 1 }),
-      heat: new fields.NumberField({ ...requiredInteger, initial: 1 }),
-      chill: new fields.NumberField({ ...requiredInteger, initial: 1 }),
-      physical: new fields.NumberField({ ...requiredInteger, initial: 1 }),
-      psyche: new fields.NumberField({ ...requiredInteger, initial: 1 }),
+      ...Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, key) => {
+        acc[key] = new fields.NumberField({ ...requiredInteger, initial: 0 });
+        return acc;
+      }, {}),
+    });
+    schema.armorDefenses = new fields.SchemaField({
+      ...Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, key) => {
+        acc[key] = new fields.NumberField({ ...requiredInteger, initial: 0 });
+        return acc;
+      }, {}),
     });
 
     schema.weaponlessAttacks = new fields.SchemaField({
@@ -98,6 +106,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       range: new fields.StringField({ ...requiredInteger, initial: "0/0" }),
       traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: [] }),
       stamina: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      actionCost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
     });
 
     const siphon = () => {
@@ -174,7 +183,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         deepBreath: new fields.NumberField({ ...requiredInteger, initial: 0 }),
         consumeComponent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
         consumable: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      })
+      }),
+      disabled: new fields.BooleanField({ required: true, nullable: false, initial: false }),
     });
 
     schema.initiative = new fields.SchemaField({
@@ -507,5 +517,192 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     });    
 
     return schema;
+  }
+
+  /**
+   * Main function to process derived data after the base data is ready.
+   * Invokes multiple preparation methods for traits, species, defenses, etc.
+   */
+  prepareDerivedData() {
+    try { prepareGearData(this) } catch (e) { console.error(e); }
+    if (["character", "npc"].includes(this.parent.type)) {
+      try { this._prepareTraits() } catch (e) { console.error(e) }
+      try { prepareSpeciesData(this); } catch (e) { console.error(e); }
+    }
+    else {
+      try { prepareBodyData(this); } catch (e) { console.error(e); }
+      try { prepareClassData(this); } catch (e) { console.error(e); }
+      try { prepareKitData(this); } catch (e) { console.error(e); }
+    }
+    try { this._prepareDefenses() } catch (e) { console.error(e) }
+    try { this._prepareTalents() } catch (e) { console.error(e) }
+    if (["character", "npc"].includes(this.parent.type)) {
+      try { this._preparePoints(); } catch (e) { console.error(e); }
+      try { this._prepareAttributes(); } catch (e) { console.error(e); }
+    }
+    //try { this._prepareAutomation(); } catch (e) { console.error(e); }
+  }
+  
+  /**
+   * Adjust the actor's attributes (hitpoints, stamina) based on stats and current level.
+   * Helps enforce minimum/maximum values.
+   */
+  _prepareAttributes() {
+    this.hitpoints.surface.max += (this.body * this.constitution) + this.level;
+    this.hitpoints.deep.max += (this.soul * this.effervescence) + this.level;
+    this.stamina.max += (this.mind * this.endurance) + this.level;
+
+    this.hitpoints.surface.value = Math.min(this.hitpoints.surface.value, this.hitpoints.surface.max);
+    this.hitpoints.deep.value = Math.min(this.hitpoints.deep.value, this.hitpoints.deep.max);
+    this.stamina.value = Math.min(this.stamina.value, this.stamina.max);
+
+    this.canLevel = this.experience >= this.level * 100;
+  }
+
+  /**
+   * Handle the initialization and tracking of point pools (talents, specialists).
+   */
+  _preparePoints() {
+    this.points = {
+      body: 0,
+      mind: 0,
+      soul: 0
+    };
+
+    for (const item of this.parent.items.filter(i => i.type === "talent")) {
+      this.points.body += item.system.body;
+      this.points.mind += item.system.mind;
+      this.points.soul += item.system.soul;
+    };
+    
+    this.talentPoints.spent = this.points.body + this.points.mind + this.points.soul;
+    this.talentPoints.available = this.level - this.talentPoints.spent + this.talentPoints.bonus;
+    
+    this.specialistPoints.spent = this.parent.items.filter(i => i.type === "specialist").length;
+    this.specialistPoints.available = Math.floor(this.level / 10) - this.specialistPoints.spent + this.specialistPoints.bonus;
+
+    Object.keys(this.subtraits).forEach(k =>{
+      this.subtraitPoints.spent += (this.subtraits[k].value - 1);
+      this.subtraitPoints.available = 5 + this.level - this.subtraitPoints.spent + this.subtraitPoints.bonus;
+    })
+  }
+
+  /**
+   * Process talents by iterating over talent trees, checking highest tiers acquired, and summing stats.
+   */
+  async _prepareTalents() {
+    this.body = 0;
+    this.mind = 0;
+    this.soul = 0;
+
+    const talents = this.parent.items.filter(i => i.type === "talent");
+    for (const talent of talents) {
+      this.body += talent.system.body;
+      this.mind += talent.system.mind;
+      this.soul += talent.system.soul;
+
+      if (talent.system.selectedOption.length !== 0) {
+        const category = talent.system.options.category;
+        this._talentOptions[category] ??= [];
+        this._talentOptions[category].push(talent.system.selectedOption);
+      }
+    }
+    
+    if (this._speciesData === undefined) return;
+
+    const species = this._speciesData.system.branches;
+    for (const branch of species) {
+      var highestTier = -1;
+      
+      for (var t = 0; t < branch.talents.length; t++) {
+        const branchTalent = await fromUuid(branch.talents[t].uuid);
+        
+        // We can compare points, name, and other properties, but can't compare
+        // the entire object because it's a different instance
+        for (const talent of talents) {
+          var match = true;
+          
+          if (talent.name !== branchTalent.name) match = false;
+          if (foundry.utils.objectsEqual(talent.system.toObject(), branchTalent.system.toObject()) === false) match = false;
+          
+          if (match) {
+            if (t > highestTier) highestTier = t;
+            break;
+          }
+        }
+      }
+    }
+
+
+    this.trees = treeTiers;
+    console.log(this);
+  }
+
+  /**
+   * Aggregate innate and armor-based defenses for this actor.
+   */
+  _prepareDefenses() {
+    for (const item of this.parent.items) {
+      if (item.system.defenses) {
+        for (const [key, value] of Object.entries(item.system.defenses)) {
+          if (this.armorDefenses[key] === undefined) this.armorDefenses[key] = 0;
+          this.armorDefenses[key] += value;
+        }
+      }
+    }
+
+    this.defenses = {
+      energy:    this.innateDefenses.energy    + this.armorDefenses?.energy ?? 0,
+      heat:      this.innateDefenses.heat      + this.armorDefenses?.heat ?? 0,
+      chill:     this.innateDefenses.chill     + this.armorDefenses?.chill ?? 0,
+      physical:  this.innateDefenses.physical  + this.armorDefenses?.physical ?? 0,
+      psyche:    this.innateDefenses.psyche    + this.armorDefenses?.psyche ?? 0,
+    }
+  }
+
+  /**
+   * Compile trait values (including bonuses and mods) into final totals for calculations.
+   */
+  _prepareTraits() {
+    console.log(this);
+
+    for (const [key, trait] of Object.entries(this.traits)) {
+      trait.total = trait.value + trait.bonus;
+    }
+
+    for (const [key, subtrait] of Object.entries(this.subtraits)) {
+      subtrait.total = subtrait.value + subtrait.bonus;
+      if (subtrait.total === 0) subtrait.value = 1;
+      subtrait.total = subtrait.value + subtrait.bonus;
+      if (subtrait.gifted) {
+        this.giftPoints.available -= 1;
+        this.giftPoints.spent += 1;
+        subtrait.mod = Math.max(subtrait.total - 4, 0);
+      }
+      else subtrait.mod = subtrait.total - 4;
+      this.traits[subtrait.parent].total += subtrait.total;
+      //this.traits[subtrait.parent].mod = this.traits[subtrait.parent].total - 4;
+    }
+
+    for (const [key, trait] of Object.entries(this.traits)) {
+      trait.mod += trait.total;
+      trait.mod = trait.mod - 4;
+    }
+
+    // Slot capacity is calculated from size and strength
+    const str = this.traits.str.total;
+    switch (this.size) {
+      case "sm": 
+        this.slotCapacity.total = this.slotCapacity.bonus + (2 * str);
+        break;
+      case "med":
+        this.slotCapacity.total = this.slotCapacity.bonus + (5 * str);
+        break;
+      case "lg":
+        this.slotCapacity.total = this.slotCapacity.bonus + (15* str);
+        break;
+    }
+
+    this.spellcasting.spellcap = this.subtraits.res.total;
   }
 }

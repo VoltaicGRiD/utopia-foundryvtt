@@ -1,3 +1,5 @@
+import { UtopiaChatMessage } from "../../documents/chat-message.mjs";
+
 const { api, sheets } = foundry.applications;
 
 export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.ApplicationV2) {
@@ -24,6 +26,8 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
       height: "auto",
     },
     actions: {
+      forage: this._forage,
+      craft: this._craft,
     },
     window: {
       title: "UTOPIA.SheetLabels.ForageAndCrafting",
@@ -81,6 +85,7 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
     }
 
     foraging.difficulty = components[foraging.component].foraging[foraging.rarity].test;
+    foraging.returnsFormula = components[foraging.component].foraging[foraging.rarity].harvest;
     foraging.returns = `${components[foraging.component].foraging[foraging.rarity].harvest} ${game.i18n.localize(rarities[foraging.rarity].label)} ${game.i18n.localize(components[foraging.component].label)} Components`;
 
     const foragingTrait = this.actor.system.artifice.components[foraging.component].foragingTrait;
@@ -88,6 +93,8 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
       this.actor.system.subtraits[foragingTrait]?.mod ?? 0;
     foraging.formula = new Roll(`3d6 + ${foragingTraitModifier}`).alter(1, foragingTimes[foraging.time].favor).formula;
     
+    this.foraging = foraging;
+
     const crafting = {
       component: this.crafting.component ?? Object.keys(components)[0],
       rarity: this.crafting.rarity ?? Object.keys(rarities)[0],
@@ -98,9 +105,12 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
       const craftingTrait = this.actor.system.artifice.components[crafting.component].craftingTrait;
       const craftingTraitModifier = this.actor.system.traits[craftingTrait]?.mod ??
         this.actor.system.subtraits[craftingTrait]?.mod ?? 0;
-      crafting.difficulty = `${new Roll(`3d6 + ${craftingTraitModifier}`).formula} >= ${crafting.requirements.difficulty}`;
+      const netFavor = await this.actor.checkForFavor(craftingTrait);
+      const roll = new Roll(`3d6 + ${craftingTraitModifier}`).alter(1, netFavor);
+      crafting.difficulty = `${roll.formula} >= ${crafting.requirements.difficulty}`;
+      crafting.formula = roll.formula;
 
-      crafting.requirements = (() => {
+      crafting.requirementsOutput = (() => {
         const reqData = components[crafting.component].crafting[crafting.rarity];
         const output = [];
         for (const [reqKey, reqValue] of Object.entries(reqData)) {
@@ -120,6 +130,8 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
     const craftingTime = rarities[crafting.rarity].times.component;
     crafting.time = crafting.time >= 60 ? `in ${Math.floor(craftingTime / 60)} ${game.i18n.localize("UTOPIA.TIME.Hours")}` : `in ${craftingTime} ${game.i18n.localize("UTOPIA.TIME.Minutes")}`;
     crafting.returns = `1 ${game.i18n.localize(rarities[crafting.rarity].label)} ${game.i18n.localize(components[crafting.component].label)} Component`;
+
+    this.crafting = crafting;
 
     const context = {
       components,
@@ -170,5 +182,110 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
       this.crafting.rarity = event.target.value;
       this.render(false);
     });
+  }
+
+  static async _forage(event, target) {
+    const foraging = this.foraging;
+    const components = JSON.parse(game.settings.get('utopia', 'advancedSettings.components'));
+    const rarities = JSON.parse(game.settings.get('utopia', 'advancedSettings.rarities'));
+
+    const difficultyRoll = await new Roll(foraging.difficulty).evaluate();
+    const testRoll = await new Roll(foraging.formula).evaluate();
+   
+    // For every multiple of the difficulty roll that the test roll exceeds, the level of success increases by 1
+    // For example, if the difficulty roll is 10 and the test roll is 20, the level of success is 2
+    // If the test roll is less than the difficulty roll, the level of success is 0
+    var levelOfSuccess = 0;
+    if (testRoll.total > difficultyRoll.total * 2) 
+      levelOfSuccess = Math.floor((testRoll.total - difficultyRoll.total) / difficultyRoll.total);
+    
+    else if (testRoll.total > difficultyRoll.total) 
+      levelOfSuccess = 1;
+
+    else 
+      levelOfSuccess = 0;
+
+    // Convert the time to minutes, and divide by the level of success
+    const timeDivision = Math.floor(foraging.time * 60 / levelOfSuccess);
+    if (timeDivision === Infinity) 
+      timeDivision = foraging.time * 60;
+
+    const result = levelOfSuccess > 0 ? game.i18n.localize("UTOPIA.COMMON.success") : game.i18n.localize("UTOPIA.COMMON.failure");
+    var returns = 0;
+    if (result) 
+      returns = await new Roll(foraging.returnsFormula).evaluate();
+    returns = `${returns.total} ${game.i18n.localize(rarities[foraging.rarity].label)} ${game.i18n.localize(components[foraging.component].label)} Components`;
+
+    var timeOutput = timeDivision >= 60 ? `${Math.floor(timeDivision / 60)} ${game.i18n.localize("UTOPIA.TIME.Hours")}` : `${timeDivision} ${game.i18n.localize("UTOPIA.TIME.Minutes")}`;
+
+    UtopiaChatMessage.create({
+      content: `<h2>${game.i18n.localize("UTOPIA.ForageAndCrafting.Foraging")}</h2>` +
+        `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.ForagingResult", { result })} (${testRoll.total} vs ${difficultyRoll.total})</p>` + 
+        (levelOfSuccess > 0 ? 
+          `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.ForagingReturns", { returns })}` :
+          `<p>${game.i18n.localize("UTOPIA.ForageAndCrafting.ForagingNoReturns")}`) + 
+        `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.ForagingTimeTaken", { time: timeOutput })}</p>`,
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+    });
+
+    const actorComponents = this.actor.system.components;
+    const newValue = actorComponents[foraging.component][foraging.rarity] + returns.total;
+
+    await this.actor.update({
+      [`system.components.${foraging.component}.${foraging.rarity}.available`]: newValue,
+    });
+  }
+
+  static async _craft(event, target) {
+    const crafting = this.crafting;
+
+    const requirements = crafting.requirements;
+    const difficulty = crafting.requirements.difficulty;
+    const formula = await new Roll(crafting.formula).evaluate();
+
+    // First find out if the actor has the required components
+    const actorComponents = this.actor.system.components;
+    for (const [component, rarity] of Object.entries(requirements)) {
+      for (const [rarityKey, quantity] of Object.entries(rarity)) {
+        const actorComponent = actorComponents[component][rarityKey].available;
+        if (actorComponent < quantity) {
+          ui.notifications.error(game.i18n.localize("UTOPIA.ForageAndCrafting.CraftingNotEnoughComponents"));
+          return;
+        }
+      }
+    }
+
+    var success = formula.total >= difficulty;
+  
+    if (success) { 
+      // If the roll is successful, remove the components from the actor
+      for (const [component, rarity] of Object.entries(requirements)) {
+        for (const [rarityKey, quantity] of Object.entries(rarity)) {
+          const actorComponent = actorComponents[component][rarityKey].available;
+          await this.actor.update({
+            [`system.components.${component}.${rarityKey}.available`]: actorComponent - quantity,
+          });
+        }
+      }
+
+      // Add the crafted component to the actor
+      const actorCraftedComponent = actorComponents[crafting.component][crafting.rarity].available ?? 0;
+      await this.actor.update({
+        [`system.components.${crafting.component}.${crafting.rarity}.available`]: actorCraftedComponent + 1,
+      });
+    }
+
+    const result = success ? game.i18n.localize("UTOPIA.COMMON.success") : game.i18n.localize("UTOPIA.COMMON.failure");
+    const returns = success ? crafting.returns : game.i18n.localize("UTOPIA.ForageAndCrafting.CraftingNoReturns");
+    const time = crafting.time;
+
+    UtopiaChatMessage.create({
+      content: `<h2>${game.i18n.localize("UTOPIA.ForageAndCrafting.Crafting")}</h2>` +
+        `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.CraftingResult", { result })} (${formula.total} >= ${difficulty})</p>` + 
+        `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.CraftingReturns", { returns })}` +
+        `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.CraftingTimeTaken", { time })}</p>`,
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+    });
+    
   }
 }

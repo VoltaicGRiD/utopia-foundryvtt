@@ -46,6 +46,12 @@ export class DragDropItemV2 extends api.HandlebarsApplicationMixin(sheets.ItemSh
 
     var attributeFields = this.item.system.attributeFields || [];
     attributeFields.forEach((field) => {
+      if (field.field.fields && Object.keys(field.field.fields).length > 0) {
+        for (const [key, subField] of Object.entries(field.field.fields)) {
+          const value = foundry.utils.getProperty(this.item, subField.fieldPath);
+          subField.value = value;
+        }
+    }
       const value = foundry.utils.getProperty(this.item, field.field.fieldPath);
       field.value = value;
     });
@@ -229,7 +235,12 @@ export class DragDropItemV2 extends api.HandlebarsApplicationMixin(sheets.ItemSh
       if (input instanceof HTMLSelectElement) {
         value[key] = input.selectedOptions[0].value;
       } else if (input instanceof HTMLInputElement) {
-        value[key] = input.value;
+        if (input.type === "checkbox") {
+          value[key] = input.checked;
+        }
+        else {
+          value[key] = input.value;
+        }
       }
     }
 

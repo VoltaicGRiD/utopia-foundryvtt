@@ -55,11 +55,15 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
   }
 
   async _prepareContext(options) {
+    if (options.isFirstRender) {
+      this.type = options.type ?? this.type ?? "action";
+    }
+
     const types = [
-      "action", "quirk", "favor", "generic", "gear", "species", "talentTree", "talent", "spell", "gearFeature"
+      "action", "quirk", "favor", "generic", "gear", "species", "talentTree", "talent", "spell", "gearFeature", "body", "class", "kit"
     ]
 
-    const type = options.type ?? this.type ?? "action";
+    const type = this.type ?? "action";
     const search = this.search;
     const includeWorld = this.includeWorld;
     const includeActor = this.includeActor;
@@ -68,20 +72,24 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
     
     // Group items by folder, with each folder having its data and an items array.
     const folders = items.reduce((acc, item) => {
-    // Use the folder data if available; otherwise, create a default "Uncategorized" folder.
-    const folderData = item._folder || { id: "Uncategorized", name: "Uncategorized" };
-    const folderId = folderData.id;
-    
-    // If the folder hasn't been added yet, add it with its metadata and an empty items array.
-    if (!acc[folderId]) {
-      acc[folderId] = { ...folderData, items: [] };
-    }
-    
-    // Add the current item to the folder's items array.
-    acc[folderId].items.push(item);
-    
-    return acc;
-  }, {});
+      // Use the folder data if available; otherwise, create a default "Uncategorized" folder.
+      const folderData = item._folder || { id: "Uncategorized", name: "Uncategorized" };
+      const folderId = folderData.id;
+      
+      // If the folder hasn't been added yet, add it with its metadata and an empty items array.
+      if (!acc[folderId]) {
+        acc[folderId] = { ...folderData, items: [] };
+      }
+      
+      // Add the current item to the folder's items array.
+      acc[folderId].items.push(item);
+      
+      // Remove all items that don't match the search term.
+      if (search && search.length > 0 && !item.name.toLowerCase().includes(search.toLowerCase())) {
+        acc[folderId].items.pop();
+      }
+      return acc;
+    }, {});
 
     const context = {
       isGM: game.user.isGM,
@@ -105,13 +113,14 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
     this.element.querySelector('select[name="type"]').addEventListener('change', (event) => {
       event.preventDefault();
       const type = event.target.selectedOptions[0].value;
-      this.render({ type });
+      this.type = type;
+      this.render();
     })
 
     this.element.querySelector('input[name="world"]').addEventListener('change', (event) => {
       event.preventDefault();
       const world = event.target.checked;
-      this.world = world;
+      this.includeWorld = world;
       this.render();
     })
 
@@ -121,6 +130,13 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
       this.search = search;
       this.render();
     })
+
+    this.element.querySelector('#search-button').addEventListener('click', (event) => {
+      event.preventDefault();
+      const search = this.element.querySelector('input[name="search"]').value;
+      this.search = search;
+      this.render();
+    });
 
     this.element.querySelector('input[type="checkbox"]').addEventListener('change', (event) => {
       event.preventDefault();

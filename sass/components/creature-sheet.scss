@@ -1,0 +1,59 @@
+.creature-stats {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: space-evenly;
+  width: 100%;
+
+  .stat {
+    color: var(--utopia-color-black);
+    
+    .stat-label {
+      font-size: var(--font-size-16);
+      font-weight: 900;
+    }
+
+    .stat-value {
+      font-size: var(--font-size-14);
+    }
+  }
+}
+
+.creature-attribute-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+
+  .attribute {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--utopia-color-black);
+    padding: 5px;
+    background-color: var(--utopia-table-color);
+    border-radius: 5px;
+
+    .attribute-label {
+      font-size: var(--font-size-16);
+      font-weight: 900;
+    }
+
+    .attribute-value,
+    .attribute-maximum {
+      border: none;
+      background: transparent;
+      font-size: var(--font-size-14);
+      width: 40px;
+      color: var(--utopia-color-black);
+      text-align: center;
+
+      &:focus, &:hover {
+        border: none;
+        background: transparent;
+      }
+    }
+  }
+}

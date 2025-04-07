@@ -914,7 +914,16 @@
 .utopia.item-sheet.item-sheet .schema-set .schema-set-inputs, .utopia.actor-sheet.item-sheet .schema-set .schema-set-inputs {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  align-content: flex-end;
   gap: 5px;
+}
+.utopia.item-sheet.item-sheet .schema-set .schema-set-inputs .schema-set-input, .utopia.actor-sheet.item-sheet .schema-set .schema-set-inputs .schema-set-input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: flex-start;
 }
 .utopia.item-sheet.item-sheet .schema-set .tags, .utopia.actor-sheet.item-sheet .schema-set .tags {
   display: flex;
@@ -950,11 +959,20 @@
 .utopia.item-sheet.item-sheet .tab.attributes > *, .utopia.actor-sheet.item-sheet .tab.attributes > * {
   flex: 1 0 100%;
 }
+.utopia.item-sheet.item-sheet .tab.attributes.flex-sm, .utopia.actor-sheet.item-sheet .tab.attributes.flex-sm {
+  flex: 1 0 100%;
+}
 .utopia.item-sheet.item-sheet .tab.attributes.flex-sm .form-group, .utopia.actor-sheet.item-sheet .tab.attributes.flex-sm .form-group {
   flex: 1 0 100%;
 }
+.utopia.item-sheet.item-sheet .tab.attributes.flex-md, .utopia.actor-sheet.item-sheet .tab.attributes.flex-md {
+  flex: 1 0 41%;
+}
 .utopia.item-sheet.item-sheet .tab.attributes.flex-md .form-group, .utopia.actor-sheet.item-sheet .tab.attributes.flex-md .form-group {
   flex: 1 0 41%;
+}
+.utopia.item-sheet.item-sheet .tab.attributes.flex-lg, .utopia.actor-sheet.item-sheet .tab.attributes.flex-lg {
+  flex: 1 0 32%;
 }
 .utopia.item-sheet.item-sheet .tab.attributes.flex-lg .form-group, .utopia.actor-sheet.item-sheet .tab.attributes.flex-lg .form-group {
   flex: 1 0 32%;
@@ -1878,6 +1896,62 @@
   left: 50%;
   transform: translateX(-50%);
   width: 90px;
+}
+.utopia.item-sheet.creature .creature-stats, .utopia.actor-sheet.creature .creature-stats {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: space-evenly;
+  width: 100%;
+}
+.utopia.item-sheet.creature .creature-stats .stat, .utopia.actor-sheet.creature .creature-stats .stat {
+  color: var(--utopia-color-black);
+}
+.utopia.item-sheet.creature .creature-stats .stat .stat-label, .utopia.actor-sheet.creature .creature-stats .stat .stat-label {
+  font-size: var(--font-size-16);
+  font-weight: 900;
+}
+.utopia.item-sheet.creature .creature-stats .stat .stat-value, .utopia.actor-sheet.creature .creature-stats .stat .stat-value {
+  font-size: var(--font-size-14);
+}
+.utopia.item-sheet.creature .creature-attribute-container, .utopia.actor-sheet.creature .creature-attribute-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+.utopia.item-sheet.creature .creature-attribute-container .attribute, .utopia.actor-sheet.creature .creature-attribute-container .attribute {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--utopia-color-black);
+  padding: 5px;
+  background-color: var(--utopia-table-color);
+  border-radius: 5px;
+}
+.utopia.item-sheet.creature .creature-attribute-container .attribute .attribute-label, .utopia.actor-sheet.creature .creature-attribute-container .attribute .attribute-label {
+  font-size: var(--font-size-16);
+  font-weight: 900;
+}
+.utopia.item-sheet.creature .creature-attribute-container .attribute .attribute-value,
+.utopia.item-sheet.creature .creature-attribute-container .attribute .attribute-maximum, .utopia.actor-sheet.creature .creature-attribute-container .attribute .attribute-value,
+.utopia.actor-sheet.creature .creature-attribute-container .attribute .attribute-maximum {
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-14);
+  width: 40px;
+  color: var(--utopia-color-black);
+  text-align: center;
+}
+.utopia.item-sheet.creature .creature-attribute-container .attribute .attribute-value:focus, .utopia.item-sheet.creature .creature-attribute-container .attribute .attribute-value:hover,
+.utopia.item-sheet.creature .creature-attribute-container .attribute .attribute-maximum:focus,
+.utopia.item-sheet.creature .creature-attribute-container .attribute .attribute-maximum:hover, .utopia.actor-sheet.creature .creature-attribute-container .attribute .attribute-value:focus, .utopia.actor-sheet.creature .creature-attribute-container .attribute .attribute-value:hover,
+.utopia.actor-sheet.creature .creature-attribute-container .attribute .attribute-maximum:focus,
+.utopia.actor-sheet.creature .creature-attribute-container .attribute .attribute-maximum:hover {
+  border: none;
+  background: transparent;
 }
 .utopia.talent-browser {
   width: 100%;
@@ -3588,6 +3662,23 @@
 }
 .utopia.compendium-browser .window-content {
   backdrop-filter: blur(2px);
+}
+.utopia.compendium-browser .compendium-browser-header {
+  display: flex;
+  flex-direction: column;
+}
+.utopia.compendium-browser .compendium-browser-header .form-group-stacked {
+  gap: 5px;
+}
+.utopia.compendium-browser .compendium-browser-header .search-group {
+  position: relative;
+}
+.utopia.compendium-browser .compendium-browser-header .search-group .search-button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  height: 32px;
 }
 .utopia.compendium-browser .compendium-browser-content {
   height: 710px;

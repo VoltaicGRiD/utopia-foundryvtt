@@ -60,18 +60,26 @@ export class Body extends UtopiaItemBase {
       }, {}),
     }
 
+    const components = {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components"))).reduce((acc, [key, value]) => {
+        acc[key] = { ...value, group: "UTOPIA.COMPONENTS.GroupName" };
+        return acc;
+      }
+      , {}),
+    }
+
     schema.harvest = new UtopiaSchemaField({
+      alwaysHarvestable: new SchemaArrayField(new fields.SchemaField({
+        component: new fields.StringField({ required: true, nullable: false, choices: components }),
+        quantity: new fields.StringField({ required: true, nullable: false, initial: "0" }),
+      })),
       testTrait: new fields.StringField({ required: true, nullable: false, initial: "agi", choices: allOptions }),
       // TD is calculated by a formula, typically 1/5 or 1/10 of the body's DR
       testDifficulty: new fields.StringField({ required: true, nullable: false, initial: "ceil(@baseDR/5)"}),
-      componentFormula: new fields.StringField({ required: true, nullable: false, initial: "1d4" }),
-      componentRarity: new fields.StringField({ required: true, nullable: false, initial: "common", choices: rarities }),
-      componentType: new fields.StringField({ required: true, nullable: false, initial: "material", choices: {
-        material: "UTOPIA.Resource.Type.Material",
-        refinement: "UTOPIA.Resource.Type.Refinement",
-        power: "UTOPIA.Resource.Type.Power",
-      } }),
-
+      testHarvestable: new SchemaArrayField(new fields.SchemaField({
+        component: new fields.StringField({ required: true, nullable: false, choices: components }),
+        quantity: new fields.StringField({ required: true, nullable: false, initial: "0" }),
+      })),
     });
     
     return schema;
@@ -120,13 +128,13 @@ export class Body extends UtopiaItemBase {
 
   get attributeFields() {
     return [
-      {
-        field: this.schema.fields.defenses,
-        stacked: true,
-        editable: true,
-        columns: 5,
-        classes: ["flex-lg"] 
-      },
+      // {
+      //   field: this.schema.fields.defenses,
+      //   stacked: true,
+      //   editable: true,
+      //   columns: 5,
+      //   classes: ["flex-lg"] 
+      // },
       {
         field: this.schema.fields.traits,
         stacked: true,

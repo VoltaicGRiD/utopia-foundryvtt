@@ -25,6 +25,27 @@
   backdrop-filter: blur(2px);
 }
 
+.compendium-browser-header {
+  display: flex;
+  flex-direction: column;
+
+  .form-group-stacked {
+    gap: 5px;
+  }
+
+  .search-group {
+    position: relative;
+
+    .search-button {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+
 .compendium-browser-content {
   height: 710px;
 }

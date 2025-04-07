@@ -24,6 +24,77 @@
       "Language": "Language",
       "GroupName": "Subtraits"
     },
+    "SPECIALTY_CHECKS": {
+      "WindowTitle": "Specialty Check Description",
+      
+      "GroupName": "Specialty Checks",
+      "Stealth": {
+        "noun": "Stealth",
+        "verb": "to Sneak",
+        "label": "Stealth",
+        "description": "Stealth is the ability to move silently and avoid detection."
+      },
+      "Disguise": {
+        "noun": "Disguise",
+        "verb": "to Disguise",
+        "label": "Disguise",
+        "description": "Disguise is the ability to alter one's appearance to avoid recognition."
+      },
+      "Mimic": {
+        "noun": "Mimic",
+        "verb": "to Mimic",
+        "label": "Mimic",
+        "description": "Mimic is the ability to imitate the voice or mannerisms of another."
+      },
+      "Insight": {
+        "noun": "Insight",
+        "verb": "to Discern",
+        "label": "Insight",
+        "description": "Insight is the ability to read and understand the emotions and intentions of others."
+      },
+      "ComprehendLanguages": {
+        "noun": "Comprehend Languages",
+        "verb": "to Comprehend Languages",
+        "label": "Comprehend Languages",
+        "description": "Comprehend Languages is the ability to understand and interpret languages."
+      },
+      "Perception": {
+        "noun": "Perception",
+        "verb": "to Notice",
+        "label": "Perception",
+        "description": "Perception is the ability to notice and interpret sensory information."
+      },
+      "Persuasion": {
+        "noun": "Persuasion",
+        "verb": "to Persuade",
+        "label": "Persuasion",
+        "description": "Persuasion is the ability to convince others to accept your point of view."
+      },
+      "ResistInfluence": {
+        "noun": "Resist Influence",
+        "verb": "to Resist Influence",
+        "label": "Resist Influence",
+        "description": "Resist Influence is the ability to withstand attempts to manipulate or control your mind."
+      },
+      "Forage": {
+        "noun": "Forage",
+        "verb": "to Forage",
+        "label": "Forage",
+        "description": "Forage is the ability to search for and gather components and other resources."
+      },
+      "MaintainFocus": {
+        "noun": "Maintain Focus",
+        "verb": "to Maintain Focus",
+        "label": "Maintain Focus",
+        "description": "Maintain Focus is the ability to maintain focus on spells when taking damage."
+      },
+      "MaintainConcentration": {
+        "noun": "Maintain Concentration",
+        "verb": "to Maintain Concentration",
+        "label": "Maintain Concentration",
+        "description": "Maintain Concentration is the ability to maintain concentration on spells when taking damage."
+      }
+    },
     "COMMON": {
       "consolidate": "Consolidate sheet",
       "description": "Description",
@@ -32,7 +103,9 @@
       "accept": "Accept",
       "save": "Save",
       "saveFinal": "Save (You cannot undo this action)",
-      "gmCraftItem": "No actor owns this item. As the GM you can craft it.<br/>This will not create a new item, but will mark this item as crafted.<br/>Craft anyways?"
+      "gmCraftItem": "No actor owns this item. As the GM you can craft it.<br/>This will not create a new item, but will mark this item as crafted.<br/>Craft anyways?",
+      "success": "Success",
+      "failure": "Failure"
     },
     "RARITIES": {
       "Crude": "Crude",
@@ -119,8 +192,10 @@
     "CompendiumBrowser": {
       "Title": "Utopia Compendium Browser",
       "Take": "Take Item",
+      "Type": "Type",
       "TakeAndClose": "Take Item and Close",
-      "ViewWorldItems": "Include World Items in Search",
+      "ViewWorldItems": "Include World Items",
+      "ViewActorItems": "Include Actor Items",
       "Search": "Search"
     },
     "ForageAndCrafting": {
@@ -132,6 +207,14 @@
       "Formula": "Formula",
       "Returns": "Returns",
       "Requirements": "Requirements",
+      "ForagingResult": "<b>Foraging Result:</b> {result}",
+      "ForagingReturns": "<b>Foraging Returns:</b> {returns}",
+      "ForagingTimeTaken": "<b>Time Taken:</b> {time}",
+      "ForagingNoReturns": "<b>No Returns</b>",
+      "CraftingResult": "<b>Crafting Result:</b> {result}",
+      "CraftingReturns": "<b>Crafting Returns:</b> {returns}",
+      "CraftingTimeTaken": "<b>Time Taken:</b> {time}",
+      "CraftingNotEnoughComponents": "You don't have enough components to craft this component.",
       "ForagingTimes": {
         "1": "1 Hour",
         "4": "4 Hours",
@@ -197,19 +280,27 @@
         "Block": "Block",
         "Dodge": "Dodge",
         "Rest": "Rest",
+        "Reset": "Reset",
         "OpenTalentTree": "Open Talent Tree",
+        "OpenCompendiumBrowser": "Open Compendium Browser",
         "OpenSpellcraft": "Open Spellcraft",
         "NewArtifice": "New Gear Item",
         "NewGeneric": "New Generic Item",
         "NoSpecies": "No Species, Click to Select",
         "Perform": "Perform",
         "LevelUp": "Level Up",
-        "Forage": "Forage"
+        "ForageAndCrafting": "Forage and Crafting", 
+        "ChangeBody": "Change Body",
+        "AddKit": "Add Kit",
+        "AddClass": "Add Class",
+        "Convert": "Convert to NPC"
       },
       "Items": {
         "Talents": "Talents",
         "Actions": "Actions",
         "Gear": "Gear",
+        "Kits": "Creature Kits",
+        "Classes": "Creature Classes",
         "Consumables": "Consumables",
         "Components": "Components",
         "Artistries": "Artistries",
@@ -386,7 +477,12 @@
         }        
       },
       "Attributes": {
-        "Summary": "Attributes"
+        "Summary": "Attributes",
+        "SurfaceHitpoints": "Surface",
+        "DeepHitpoints": "Deep",
+        "Stamina": "Stamina",
+        "Body": "Body",
+        "DifficultyRating": "DR"
       },
       "SpecialtyChecks": {
         "Summary": "Specialty Checks"
@@ -396,6 +492,12 @@
       },
       "Defenses": {
         "Summary": "Defenses"
+      },
+      "Classes": {
+        "Summary": "Creature Classes"
+      },
+      "Kits": {
+        "Summary": "Creature Kits"
       },
       "PaperDoll": "Blue slots are augment slots | Drag equipment to a slot to fill it | Right-click to clear a slot"
     },
@@ -599,7 +701,74 @@
           "harvest.componentType": {
             "label": "Harvest Type",
             "hint": "The type of the harvested components."
+          },
+          "harvest.alwaysHarvestable": {
+            "label": "Always Harvestable",
+            "hint": "The amount of components harvested when harvesting, regardless of the test."
+          },
+          "harvest.testHarvestable": {
+            "label": "Test Harvestable",
+            "hint": "The <b>additional</b> amount of components harvested, if the test is successful."
           }
+        }
+      },
+      "Kit": {
+        "FIELDS": {
+          "points": {
+            "label": "DR Points",
+            "hint": "The number of DR points this kit provides. Can be negative."
+          },
+          "attributes": {
+            "label": "Kit Attributes",
+            "hint": "The attributes this kit provides. In the format that ActiveEffects use. (eg. 'system.hitpoints.surface.max', '+5')",
+            "FIELDS": {
+              "key": {
+                "label": "Key"
+              },
+              "value": {
+                "label": "Value"
+              },
+              "name": {
+                "label": "Name (for this choice)"
+              },
+              "hasChoices": {
+                "label": "Choices"
+              },
+              "choiceSet": {
+                "label": "Choice Set"
+              }
+            }
+          }
+        }
+      },
+      "Class": {
+        "FIELDS": {
+          "points": {
+            "label": "DR Points",
+            "hint": "The number of DR points this kit provides. Can be negative."
+          },
+          "type": {
+            "label": "Type",
+            "hint": "The type of category this class belongs to. Only a certain amount of certain classes can be given to a creature."
+          },
+          "attributes": {
+            "label": "Class Attributes",
+            "hint": "The attributes this class provides. In the format that ActiveEffects use. (eg. 'system.hitpoints.surface.max', '+5')",
+            "FIELDS": {
+              "key": {
+                "label": "Key"
+              },
+              "value": {
+                "label": "Value"
+              }
+            }
+          }
+        },
+        "Type": {
+          "Arcane": "Arcane",
+          "Martial": "Martial",
+          "Support": "Support",
+          "Innate": "Innate"
         }
       },
       "Gear": {
@@ -1081,77 +1250,6 @@
         }
       }
     },
-    "SPECIALTY_CHECKS": {
-      "WindowTitle": "Specialty Check Description",
-      
-      "GroupName": "Specialty Checks",
-      "Stealth": {
-        "noun": "Stealth",
-        "verb": "to Sneak",
-        "label": "Stealth",
-        "description": "Stealth is the ability to move silently and avoid detection."
-      },
-      "Disguise": {
-        "noun": "Disguise",
-        "verb": "to Disguise",
-        "label": "Disguise",
-        "description": "Disguise is the ability to alter one's appearance to avoid recognition."
-      },
-      "Mimic": {
-        "noun": "Mimic",
-        "verb": "to Mimic",
-        "label": "Mimic",
-        "description": "Mimic is the ability to imitate the voice or mannerisms of another."
-      },
-      "Insight": {
-        "noun": "Insight",
-        "verb": "to Discern",
-        "label": "Insight",
-        "description": "Insight is the ability to read and understand the emotions and intentions of others."
-      },
-      "ComprehendLanguages": {
-        "noun": "Comprehend Languages",
-        "verb": "to Comprehend Languages",
-        "label": "Comprehend Languages",
-        "description": "Comprehend Languages is the ability to understand and interpret languages."
-      },
-      "Perception": {
-        "noun": "Perception",
-        "verb": "to Notice",
-        "label": "Perception",
-        "description": "Perception is the ability to notice and interpret sensory information."
-      },
-      "Persuasion": {
-        "noun": "Persuasion",
-        "verb": "to Persuade",
-        "label": "Persuasion",
-        "description": "Persuasion is the ability to convince others to accept your point of view."
-      },
-      "ResistInfluence": {
-        "noun": "Resist Influence",
-        "verb": "to Resist Influence",
-        "label": "Resist Influence",
-        "description": "Resist Influence is the ability to withstand attempts to manipulate or control your mind."
-      },
-      "Forage": {
-        "noun": "Forage",
-        "verb": "to Forage",
-        "label": "Forage",
-        "description": "Forage is the ability to search for and gather components and other resources."
-      },
-      "MaintainFocus": {
-        "noun": "Maintain Focus",
-        "verb": "to Maintain Focus",
-        "label": "Maintain Focus",
-        "description": "Maintain Focus is the ability to maintain focus on spells when taking damage."
-      },
-      "MaintainConcentration": {
-        "noun": "Maintain Concentration",
-        "verb": "to Maintain Concentration",
-        "label": "Maintain Concentration",
-        "description": "Maintain Concentration is the ability to maintain concentration on spells when taking damage."
-      }
-    },
     "Macros": {
       "FIELDS": {
         "select": {
@@ -1225,9 +1323,9 @@
   },
   "TYPES": {
     "Actor": {
-      "character": "Playable Character",
-      "npc": "Non-Playable Character",
-      "pawn": "Pawn / Creature"
+      "character": "Character",
+      "npc": "NPC",
+      "creature": "Creature"
     },
     "Item": {
       "action": "Action",

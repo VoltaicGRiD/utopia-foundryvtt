@@ -29,6 +29,7 @@ export function registerItemDataModels() {
 export function registerActorDataModels() {
   CONFIG.Actor.dataModels = {
     character: ActorModels.Character,
-    npc: ActorModels.NPC
+    npc: ActorModels.NPC,
+    creature: ActorModels.Creature,
   }
 }

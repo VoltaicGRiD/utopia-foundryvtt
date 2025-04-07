@@ -1,6 +1,6 @@
 export class SchemaArrayField extends foundry.data.fields.ArrayField {
   /** @override */
-  _toInput(config) {
+  _toInput(config, parentName = undefined) {
     console.log(this);
 
     const e = this.element;
@@ -17,17 +17,29 @@ export class SchemaArrayField extends foundry.data.fields.ArrayField {
       const inputs = [];
 
       for (const [key, field] of Object.entries(e.fields)) {
+        const individualInputContainer = document.createElement("div");
+        const lbl = document.createElement("label");
+        lbl.innerText = game.i18n.localize(field.label);
+        individualInputContainer.prepend(lbl);
+
         const inputConfig = { ...config };
         if (field.choices) inputConfig.choices = field.choices;
-        if (field.options.options) inputConfig.options = Object.values(field.options.options);  
+        if (field.options.options) inputConfig.options = Object.values(field.options.options);
+        if (field.label.length === 0) field.label = game.i18n.localize()
         inputConfig.value = config.value.map(v => v[key]);
         const input = field._toInput(inputConfig);
         input.classList.add("schema-set-input");
         input.dataset.field = key;
+        input.defaultChecked = false;
         if (input.type === "text") 
           input.setAttribute("value", "");
+        if (input.type === "checkbox") 
+          input.checked = false;
         input.name = undefined;
-        inputs.push(input);
+        input.style.flex = "1 0 49%";
+        individualInputContainer.append(input);
+
+        inputs.push(individualInputContainer);
       }
 
       inputContainer.append(...inputs);
@@ -37,7 +49,8 @@ export class SchemaArrayField extends foundry.data.fields.ArrayField {
       button.dataset.action = "schemaSetAdd";
       
       inputContainer.append(button);
-      inputContainer.dataset.name = this.name;
+      if (config.parentName) inputContainer.dataset.name = `${config.parentName}.${this.name}`;
+      else inputContainer.dataset.name = this.name;
 
       container.append(inputContainer);
       

@@ -1,4 +1,68 @@
 <section class="tab attributes {{tab.cssClass}}" data-group="primary" data-tab="attributes">
+  {{#if (eq actor.type "creature")}}
+    <fieldset class="item-set" data-item="{{item.id}}">
+      {{#if isPlay}}
+        <legend>{{localize "UTOPIA.Actors.Items.Kits"}} <i class="fas fa-splotch"></i></legend>
+      {{else}}
+        <legend data-action="createDocument" data-document-type="talent" title="{{localize "UTOPIA.Kits.New"}}">{{localize "DOCUMENT.Create" type="Kit"}} <i class="fas fa-plus"></i></legend>
+      {{/if}}
+      <a data-action="openApplication" data-application="browser" data-document-type="kit"><i class="fas fa-search"></i> {{localize "UTOPIA.Actors.Actions.OpenCompendiumBrowser"}}</a>
+      <div class="item-container">
+        {{#each kits as |item|}} 
+          {{#if ../isPlay}}
+            <div class="item">
+              <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+          {{else}}
+            <div class="item-edit">
+              <div class="item">
+                <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
+                  <span class="item-name">{{item.name}}</span>
+                </a>
+              </div>
+              <div class="item-actions">
+                <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+              </div>        
+            </div>
+          {{/if}}
+        {{/each}}
+      </div>
+    </fieldset>
+
+    <fieldset class="item-set" data-item="{{item.id}}">
+      {{#if isPlay}}
+        <legend>{{localize "UTOPIA.Actors.Items.Classes"}} <i class="fas fa-splotch"></i></legend>
+      {{else}}
+        <legend data-action="createDocument" data-document-type="talent" title="{{localize "UTOPIA.Classes.New"}}">{{localize "DOCUMENT.Create" type="Class"}} <i class="fas fa-plus"></i></legend>
+      {{/if}}
+      <a data-action="openApplication" data-application="browser" data-document-type="class"><i class="fas fa-search"></i> {{localize "UTOPIA.Actors.Actions.OpenCompendiumBrowser"}}</a>
+      <div class="item-container">
+        {{#each classes as |item|}} 
+          {{#if ../isPlay}}
+            <div class="item">
+              <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+          {{else}}
+            <div class="item-edit">
+              <div class="item">
+                <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
+                  <span class="item-name">{{item.name}}</span>
+                </a>
+              </div>
+              <div class="item-actions">
+                <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+              </div>        
+            </div>
+          {{/if}}
+        {{/each}}
+      </div>
+    </fieldset>
+  {{/if}}
+
   <fieldset class="item-set" data-item="{{item.id}}">
     {{#if isPlay}}
       <legend>{{localize "UTOPIA.Actors.Items.Talents"}} <i class="fas fa-splotch"></i></legend>
@@ -142,8 +206,7 @@
 
   <fieldset class="item-set components-container">
     <legend>{{localize "UTOPIA.Actors.Items.Components"}} <i class="fas fa-cogs"></i></legend>
-    <a class="action-button" data-action="roll" data-roll="forage"><i class="fa-fw fas fa-person-digging"></i> {{localize "UTOPIA.Actors.Actions.Forage"}}</a>
-    <a class="action-button" data-action="roll" data-roll="craft"><i class="fa-fw fas fa-person-digging"></i> {{localize "UTOPIA.Actors.Actions.Forage"}}</a>
+    <a class="action-button" data-action="roll" data-roll="forage"><i class="fa-fw fas fa-person-digging"></i> {{localize "UTOPIA.Actors.Actions.ForageAndCrafting"}}</a>
     <div class="item-container">
       {{#if isPlay}}
         {{#each components as |component key|}}

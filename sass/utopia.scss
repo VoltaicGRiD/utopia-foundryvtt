@@ -165,10 +165,14 @@
 
   &.item-sheet,
   &.actor-sheet {
-    @import "general/forms";
+    @import "general/forms.scss";
     @import "components/character-sheet.scss";
     @import "components/talent-tree.scss";
     @import "components/paper-doll.scss";
+
+    &.creature {
+      @import "components/creature-sheet.scss";
+    }
   }
 
   &.talent-browser {

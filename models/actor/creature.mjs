@@ -35,6 +35,7 @@ export class Creature extends UtopiaActorBase {
     });
 
     schema.difficulty = new fields.NumberField({ ...required, initial: 1 });
+    schema.exp = new fields.NumberField({ ...required });
 
     return schema;
   }

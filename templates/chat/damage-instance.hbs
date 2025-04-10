@@ -1,23 +1,37 @@
-<div class="damage-instance">
-  <div class="damage-shp">
-    <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.SHP"}}</span>
-    <span class="damage-value">{{shpDamageDealt}}</span>
+<div class="damage-instance-card">
+  {{log this}}
+  <div class="damage-instance-data">
+    {{#if (gt shpDamageDealt 0)}}
+      <div class="damage-shp">
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.SHP"}}</span>
+        <span class="damage-value">{{final.shpDamageDealt}}</span>
+      </div>
+    {{/if}}
+    {{#if (gt dhpDamageDealt 0)}}
+      <div class="damage-dhp">
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.DHP"}}</span>
+        <span class="damage-value">{{final.dhpDamageDealt}}</span>
+      </div>
+    {{/if}}
+    {{#if (gt staminaDamageDealt 0)}}
+      <div class="damage-stamina">
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.STAMINA"}}</span>
+        <span class="damage-value">{{final.staminaDamageDealt}}</span>
+      </div>
+    {{/if}}
+    <div class="damage-total">
+      <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.TOTAL"}}</span>
+      <span class="damage-value">{{final.total}}</span>
+    </div>
+    <div class="damage-type">
+      <span class="damage-label"><i class="fa-fw {{type.icon}}"></i></span>
+      <span class="damage-value">{{localize type.label}}</span>
+    </div>
   </div>
-  <div class="damage-dhp">
-    <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.DHP"}}</span>
-    <span class="damage-value">{{dhpDamageDealt}}</span>
-  </div>
-  <div class="damage-stamina">
-    <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.STAMINA"}}</span>
-    <span class="damage-value">{{staminaDamageDealt}}</span>
-  </div>
-  <div class="damage-total">
-    <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.TOTAL"}}</span>
-    <span class="damage-value">{{totalDamageDealt}}</span>
-  </div>
-  <div class="damage-type">
-    
-    <span class="damage-label"><i class="fa-fw {{type.icon}}"></i></span>
-    <span class="damage-value">{{localize type.label}}</span>
+  <div data-visibility="gm" class="damage-instance-buttons">
+    <a data-action="dealDamage" data-instance="{{this}}" data-target="target" data-percent="100"><i class="fa-fw fas fa-sword"></i> Full Damage</a>
+    {{!-- <a data-action="dealDamage" data-instance="{{this}}" data-target="target" data-percent="50"><i class="fa-fw fas fa-divide"></i> 1/2 Damage</a>
+    <a data-action="dealDamage" data-instance="{{this}}" data-target="target" data-percent="200"><i class="fa-fw fas fa-bomb"></i> Double Damage</a> --}}
+    <a data-action="dealDamage" data-instance="{{this}}" data-target="owner" data-percent="100"><i class="fa-fw fas fa-user"></i> Damage Owner</a>
   </div>
 </div>

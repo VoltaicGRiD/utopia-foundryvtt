@@ -169,7 +169,9 @@
       "NotEnoughStamina": "<p>You don't have enough stamina to cast this spell.<br/>However, you can spend Deep Hitpoints (DHP) to in place of the remaining stamina, if you wish.<br/>Cast this spell for <b>{dhp}</b> DHP?</p>",
       "ReplaceSpeciesTitle": "Replace Species",
       "ReplaceSpecies": "You must be a GM to replace the species of an actor.",
-      "ReplaceSpeciesGM": "As the GM, you can replace the species of this actor.<br>This will remove the existing species features and talents.<br/>Are you sure you want to do this? (Talent points will be returned)"
+      "ReplaceSpeciesGM": "As the GM, you can replace the species of this actor.<br>This will remove the existing species features and talents.<br/>Are you sure you want to do this? (Talent points will be returned)",
+      "NoTargetsSelected": "The game rule \"Target Required\" is enabled, you must target at least one token to perform this action.",
+      "NoTargetsSelectedInfo": "No tokens are targeted. Defense calculations will need to be performed manually."
     },
     "StatusEffects": {
       "deafened": "Deafened",
@@ -482,7 +484,8 @@
         "DeepHitpoints": "Deep",
         "Stamina": "Stamina",
         "Body": "Body",
-        "DifficultyRating": "DR"
+        "DifficultyRating": "DR",
+        "ExperiencePoints": "EXP"
       },
       "SpecialtyChecks": {
         "Summary": "Specialty Checks"
@@ -559,6 +562,10 @@
             "label": "Affected Actor(s)",
             "hint": "The actor(s) affected by the action."
           },
+          "range": {
+            "label": "Range",
+            "hint": "The range of the action. This is represented in the format \"close/far\". i.e \"20/40\" for 20M close range, 40M far range."
+          },
           "template": {
             "label": "Damage and Effect Template",
             "hint": "The template to use for the damage and effects of the action."
@@ -606,6 +613,42 @@
           "validityCheck.difficulty": {
             "label": "Difficulty",
             "hint": "The difficulty of the check."
+          },
+          "passive.type": {
+            "label": "Type",
+            "hint": "The type of passive effect."
+          },
+          "passive.scaling.enabled": {
+            "label": "Scaling Enabled",
+            "hint": "If enabled, apply a prompted scaling ratio on use."
+          },
+          "passive.scaling.resource": {
+            "label": "Scaling Resource",
+            "hint": "The resource to scale the passive effect with."
+          },
+          "passive.scaling.ratio": {
+            "label": "Scaling Ratio",
+            "hint": "Using a [resource]/[amount] format, e.g. '1/2' to scale the passive effect.<br>If only one value is present, no prompting will occur, and scaling will not apply."
+          },
+          "passive.equipment.enabled": {
+            "label": "Automatically Roll Equipment",
+            "hint": "If enabled, will automatically roll (or prompt if multiple) the specified equipment"
+          },
+          "passive.equipment.mustBeEquipped": {
+            "label": "Must be Equipped",
+            "hint": "Will only roll (or prompt if enabled) of equipment that is equipped."
+          },
+          "passive.equipment.type": {
+            "label": "Equipment Type",
+            "hint": "The type of equipment required for the action."
+          },
+          "passive.equipment.reduceActionCost": {
+            "label": "Reduce Action Cost",
+            "hint": "How should the equipment's action cost be modified by this action?"
+          },
+          "passive.equipment.reduceActionCostFlat": {
+            "label": "Flat Action Cost Reduction",
+            "hint": "The flat amount to reduce the action cost by.<br>Only used if 'Reduce Action Cost' is set to 'Flat'."
           }
         },
         "Actor": {
@@ -620,6 +663,8 @@
         "Category": {
           "damage": "Damage / Healing",
           "test": "Check / Test",
+          "formula": "Formula",
+          "passive": "Passive",
           "macro": "Macro"
         },
         "Template": {
@@ -630,6 +675,28 @@
           "xbt": "Extra Large Blast (8M)",
           "cone": "Cone (2M)",  
           "line": "Line (2M)"
+        },
+        "PassiveType": {
+          "meleeRedirect": "Redirect Overflow Melee Damage - Redirect damage past 0 DHP to another creature in range",
+          "rangedRedirect": "Redirect Overflow Ranged Damage - Redirect damage past 0 DHP to another creature in range",
+          "travelPlusStunt": "Travel + Stunt Score - Add stunt score to travel speed",
+          "blockWithWeapon": "Block with Weapon - Use weapon's attack roll instead of creatures block rating",
+          "respondWithAttack": "Respond with Attack - When sensing another creature attack, respond with an attack action",
+          "attackAllInRange": "Attack All in Range - When attacking, roll to attack all creatures in range as a single action",
+          "reduceActionCost": "Reduce Attack Cost - Reduce the action cost of equipment attack actions"
+        },
+        "ScaleResource": {
+          "cost": "Based on this action's TA / IA cost",
+          "stamina": "Based on this action's stamina cost"
+        },
+        "EquipmentType": {
+          "weapon": "Weapon",
+          "armor": "Armor",
+          "shield": "Shield"
+        },
+        "ReduceActionCost": {
+          "scalingRatio": "Use Scaling Ratio",
+          "flat": "Use flat reduction"
         }
       },
       "Body": {
@@ -834,6 +901,10 @@
           "ring": "Ring",
           "feet": "Feet"
         }
+      },
+      "GearFeature": {
+        "UneditableWarning": "You cannot edit this feature directly. Please open the item in the Artifice Feature Builder to edit it.",
+        "OpenInBuilder": "Open in Feature Builder"
       },
       "Generic": {
         "Categories": {

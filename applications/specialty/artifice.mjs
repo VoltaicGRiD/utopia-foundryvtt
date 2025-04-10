@@ -731,8 +731,13 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
           simulation[key] = parseFloat(value) * stackCount;
         } else if (typeof value === "string" && value !== "\u0000" && !isNumeric(value)) {
           try {
-            const extraRoll = await new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0).evaluate({ async: true });
-            simulation[key] = extraRoll.formula;
+            if (Roll.validate(value)) {
+              const extraRoll = await new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0).evaluate({ async: true });
+              simulation[key] = extraRoll.formula;
+            }
+            else {
+              simulation[key] = value;
+            }
           } catch (error) {
             this._error(`Error evaluating roll for attribute ${key}:`, error);
             const extraRoll = await new Roll(value, { ...attributes, ...costs }).evaluate({ async: true });

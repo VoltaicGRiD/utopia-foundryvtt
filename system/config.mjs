@@ -264,6 +264,14 @@ export function registerConfig() {
       description: "UTOPIA.SPECIALTY_CHECKS.MaintainConcentration.description",
       icon: "fas fa-crosshairs"
     },
+    grapple: {
+      defaultAttribute: "str",
+      formula: "3d6 + @str.mod",
+      tags: ["strength", "grapple", "grappling", "wrestle", "wrestling"],
+      label: "UTOPIA.SPECIALTY_CHECKS.Grapple.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Grapple.description",
+      icon: "fas fa-fist-raised"
+    }
     // appealAgainstHostile: {
     //   defaultAttribute: "app",
     //   formula: "3d6 + @app.mod",

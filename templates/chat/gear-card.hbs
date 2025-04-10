@@ -21,8 +21,6 @@
   <div class="gear-features">
     <ol class="selected-feature-list flexcol">
       {{#each features as |feature key|}}
-        
-
         <li class="feature" 
           style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
           data-id="{{feature.uuid}}">
@@ -50,11 +48,16 @@
   </div>
 
   {{#if template}}
-    <button data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></button>
+    <a data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></button>
   {{/if}}
 
   <div class="card-content">
     {{{item.system.flavor}}}
+    <div class="card-buttons">
+      {{#each item.redistributions}}
+          <a data-action="performStrike" data-formula="{{this}}">Strike - {{this}}</a>
+      {{/each}}
+    </div>
   </div>
 
   <!-- <footer data-visibility="gm">

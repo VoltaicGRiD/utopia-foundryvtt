@@ -46,12 +46,12 @@ export class DragDropItemV2 extends api.HandlebarsApplicationMixin(sheets.ItemSh
 
     var attributeFields = this.item.system.attributeFields || [];
     attributeFields.forEach((field) => {
-      if (field.field.fields && Object.keys(field.field.fields).length > 0) {
+      if (field.field.fields) {
         for (const [key, subField] of Object.entries(field.field.fields)) {
           const value = foundry.utils.getProperty(this.item, subField.fieldPath);
           subField.value = value;
         }
-    }
+      }
       const value = foundry.utils.getProperty(this.item, field.field.fieldPath);
       field.value = value;
     });

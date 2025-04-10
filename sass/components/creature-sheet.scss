@@ -4,10 +4,16 @@
   gap: 5px;
   justify-content: space-evenly;
   width: 100%;
+  margin-top: 10px;
 
   .stat {
+    background-color: var(--utopia-table-color);
+    border-radius: 5px;
+    padding: 5px;
+    width: 70px;
     color: var(--utopia-color-black);
-    
+    text-align: center;
+
     .stat-label {
       font-size: var(--font-size-16);
       font-weight: 900;

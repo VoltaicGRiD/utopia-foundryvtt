@@ -68,7 +68,7 @@
 
     {{#each attributes as |value classification|}}
     
-      {{#unless (eq classification 'classification')}}  
+      {{#unless (or (eq classification 'classification') (eq classification 'shared'))}}  
         <div class="attribute-group" data-drop="{{classification}}">
           <fieldset>
             <legend>{{localize (concat "UTOPIA.FeatureBuilder.Classifications." classification)}}</legend>

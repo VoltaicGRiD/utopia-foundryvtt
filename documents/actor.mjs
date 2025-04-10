@@ -43,7 +43,7 @@ export class UtopiaActor extends Actor {
    *
    * @returns {object} The roll data for this actor.
    */
-  getRollData() {
+  getRollData(ignoreTarget = false) {
     const rollData = { ...this.system };
 
     // Merge in traits and subtraits
@@ -54,12 +54,16 @@ export class UtopiaActor extends Actor {
       rollData[key] = subtrait;
     }
 
-    // If the owner has any targets, use the first target's roll data.
-    const owner = game.users.find(u => u.character?.name === this.name);
-    if (owner && owner.targets.size > 0) {
-      rollData.target = owner.targets.values().next().value.actor.getRollData();
-    } else if (game.user.targets.size > 0) {
-      rollData.target = game.user.targets.values().next().value.actor.getRollData();
+    if (!ignoreTarget) {
+      // If the owner has any targets, use the first target's roll data.
+      const owner = game.users.find(u => u.character?.name === this.name);
+      if (owner && owner.targets.size > 0) {
+        rollData.target = owner.targets.values().next().value.actor.getRollData(true);
+      } else if (game.user.targets.size > 0 && game.user.targets.size < 2) {
+        rollData.target = game.user.targets.values().next().value.actor.getRollData(true);
+      } else {
+        rollData.target = "multiple";
+      }
     }
 
     // Add paper doll data.
@@ -252,6 +256,12 @@ export class UtopiaActor extends Actor {
       for (const grantedUuid of Array.from(item.system.grants)) {
         const grantedItem = await fromUuid(grantedUuid);
         this.addItem(grantedItem, showNotification, true, newItems[0]);
+      }
+    }
+    else if (item.type === "class" && item.system.grantedEquipment) {
+      for (const grantedItem of item.system.grantedEquipment) {
+        const itemData = await fromUuid(grantedItem.itemUuid);
+        this.addItem(itemData, showNotification, true, newItems[0]);
       }
     }
   }
@@ -475,6 +485,8 @@ export class UtopiaActor extends Actor {
       "system.hitpoints.surface.value": this.system.hitpoints.surface.max,
       "system.stamina.value": this.system.stamina.max,
       "system.hitpoints.deep.value": this.type === "creature" ? this.system.hitpoints.deep.max : this.system.hitpoints.deep.value,
+      "system.turnActions.value": this.system.turnActions.max,
+      "system.interruptActions.value": this.system.interruptActions.max, 
     });
   }
 

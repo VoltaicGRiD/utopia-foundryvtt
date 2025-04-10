@@ -1,3 +1,5 @@
-2025/04/06-15:10:25.123 23ac Recovering log #5
-2025/04/06-15:10:25.128 23ac Delete type=0 #5
-2025/04/06-15:10:25.129 23ac Delete type=3 #4
+2025/04/10-08:41:08.937 8c9c Recovering log #12
+2025/04/10-08:41:08.937 8c9c Level-0 table #14: started
+2025/04/10-08:41:08.945 8c9c Level-0 table #14: 2142 bytes OK
+2025/04/10-08:41:08.950 8c9c Delete type=0 #12
+2025/04/10-08:41:08.951 8c9c Delete type=3 #10

@@ -19,6 +19,21 @@ export class Class extends UtopiaItemBase {
     }});
 
     schema.grants = new fields.SetField(new fields.DocumentUUIDField({ type: "Item" }), { initial: [] });
+    schema.specialtyPassives = new fields.SetField(new fields.StringField({ // TODO - Finish implementation
+      required: false,
+      nullable: true,
+      initial: null,
+      choices: {
+        "dhpZeroRetarget": "UTOPIA.Items.Class.Passives.DHPZeroRetarget", // Allows retargeting remaining damage to a different target
+        "meleeTargetsAllInRange": "UTOPIA.Items.Class.Passives.MeleeTargetsAllInRange", // Deals half damage to all targets in range
+        "stuntIncreasesTravel": "UTOPIA.Items.Class.Passives.StuntIncreasesTravel", // Spend 3 stamina to increase travel distance by stunt score
+      }
+    }), { initial: [] });
+
+    schema.grantedEquipment = new SchemaArrayField(new fields.SchemaField({
+      itemUuid: new fields.DocumentUUIDField({ type: "Item", required: true, nullable: false, label: "UTOPIA.Items.Class.FIELDS.grantedEquipment.FIELDS.itemUuid.label" }),
+      xpLoss: new fields.NumberField({ required: true, nullable: false, initial: 0, label: "UTOPIA.Items.Class.FIELDS.grantedEquipment.FIELDS.xpLoss.label" }),
+    }));
 
     // TODO - Look into changing this
     // In theory, we want the passives to be ActiveEffects, but there may be reason

@@ -17,6 +17,15 @@
     <button data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></button>
   {{/if}}
 
+  <div data-visibility="gm" class="card-buttons">
+    {{#if (gt (length instances) 1)}}
+      <a data-action="dealAllDamage" data-target="target" data-percent="100"><i class="fa-fw fas fa-sword"></i> Full Damage</a>
+      {{!-- <a data-action="dealAllDamage" data-target="target" data-percent="50"><i class="fa-fw fas fa-divide"></i> 1/2 Damage</a>
+      <a data-action="dealAllDamage" data-target="target" data-percent="200"><i class="fa-fw fas fa-bomb"></i> Double Damage</a> --}}
+      <a data-action="dealAllDamage" data-target="owner" data-percent="100"><i class="fa-fw fas fa-user"></i> Damage Owner</a>
+    {{/if}}
+  </div>
+
   <footer data-visibility="gm">
     <div class="targets">
       {{#each targets as |target|}}

@@ -11,7 +11,10 @@ export default class UtopiaItemBase extends foundry.abstract.TypeDataModel {
     schema.formula = new fields.StringField({ required: true, nullable: true, initial: "", validate: (v) => Roll.validate(v) });
     schema.tags = new fields.SetField(new fields.StringField({ required: true, nullable: false, initial: "" }), { initial: [] });
     schema.favors = new fields.ObjectField({ required: true, nullable: false, initial: {} });
-
+    schema.material = new fields.NumberField({ required: true, nullable: false, initial: 0 });
+    schema.refinement = new fields.NumberField({ required: true, nullable: false, initial: 0 });
+    schema.power = new fields.NumberField({ required: true, nullable: false, initial: 0 });
+    
     return schema;
   }
 

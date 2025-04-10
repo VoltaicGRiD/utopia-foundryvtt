@@ -1,3 +1,6 @@
+import { UtopiaActor } from "../documents/actor.mjs";
+import { UtopiaChatMessage } from "../documents/chat-message.mjs";
+
 export class DamageInstance {
   /**
    * Constructs a DamageInstance.
@@ -21,29 +24,31 @@ export class DamageInstance {
     }
     this.value = value ?? 0;
     this.source = source ?? null;
-    this.target = target;
+    this.target = typeof(target) === "object" ? new UtopiaActor(target) : target; // TODO - Convert target and source to use UUIDs
     // If no target is provided, use an "Unknown" actor or create a default target.
     if (target === null || target === undefined) {
       if (game.actors.getName("Unknown"))
         this.target = game.actors.getName("Unknown");
-      else {
+      else { // TODO - Implement tracking of configurable damage types
         this.target = {};
         foundry.utils.setProperty(this.target, "system.hitpoints.surface.value", 0);
         foundry.utils.setProperty(this.target, "system.hitpoints.deep.value", 0);
-        foundry.utils.setProperty(this.target, "system.defenses.energy", 1);
-        foundry.utils.setProperty(this.target, "system.defenses.heat", 1);
-        foundry.utils.setProperty(this.target, "system.defenses.chill", 1);
-        foundry.utils.setProperty(this.target, "system.defenses.physical", 1);
-        foundry.utils.setProperty(this.target, "system.defenses.psyche", 1);
+        foundry.utils.setProperty(this.target, "system.defenses.energy", 0);
+        foundry.utils.setProperty(this.target, "system.defenses.heat", 0);
+        foundry.utils.setProperty(this.target, "system.defenses.chill", 0);
+        foundry.utils.setProperty(this.target, "system.defenses.physical", 0);
+        foundry.utils.setProperty(this.target, "system.defenses.psyche", 0);
         // Assume target has a stamina value as well.
         foundry.utils.setProperty(this.target, "system.stamina.value", 10);
       }
     }
+    // Find out if the source item is non-lethal
+    this.nonLethal = source?.system.nonLethal ?? false;
     // Get percentage values for surface and deep hitpoints adjustments.
-    this.shpPercent = source.getFlag("utopia", "shpPercent") ?? 1;
-    this.dhpPercent = source.getFlag("utopia", "dhpPercent") ?? 1;
+    this.shpPercent = 1;
+    this.dhpPercent = 1;
     // Check if the damage should bypass defenses.
-    this.penetrate = source.getFlag("utopia", "penetrative") ?? false;
+    this.penetrate = false;
     this.finalized = false;
   }
 
@@ -100,7 +105,7 @@ export class DamageInstance {
    * Getter for adjusted deep hitpoints (dhp) if surface hitpoints drop below zero.
    */
   get dhp() {
-    if (this.shp > 0) return this.target.system.hitpoints.deep.value;;
+    if (this.shp > 0) return this.target.system.hitpoints.deep.value;
 
     const remaining = Math.abs(this.shp) * this.dhpPercent;
     return this.target.system.hitpoints.deep.value - remaining;
@@ -146,7 +151,7 @@ export class DamageInstance {
    * Getter for actual stamina damage dealt.
    */
   get staminaDamageDealt() {
-    this.target.system.stamina.value - this.stamina;
+    return this.target.system.stamina.value - this.stamina;
   }
 
   /**
@@ -163,9 +168,22 @@ export class DamageInstance {
       stamina: this.stamina < 0 ? 0 : this.stamina,
       staminaDamageDealt: this.staminaDamageDealt,
       deepDamageFromStamina: this.deepDamageFromStamina,
-      total: this.damage,
+      total: this.shpDamageDealt + this.dhpDamageDealt + this.staminaDamageDealt ?? 0 + this.deepDamageFromStamina ?? 0,
       type: JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[this.type]
     }
+  }
+
+  async toMessage() {
+    const content = await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [this], item: this.source, targets: this.targets });
+    return UtopiaChatMessage.create({
+      content,
+      speaker: {
+        user: game.user._id,
+        speaker: ChatMessage.getSpeaker(),
+        content: content
+      },
+      system: { instance: this, source: this.source, target: this.target }
+    });
   }
 
   /**

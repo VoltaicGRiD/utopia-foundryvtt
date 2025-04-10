@@ -1,5 +1,7 @@
+import { DamageInstance } from "../system/damage.mjs";
 import { UtopiaUserVisibility } from "../system/helpers/userVisibility.mjs";
 import { UtopiaTemplates } from "../system/init/measuredTemplates.mjs";
+import { UtopiaActor } from "./actor.mjs";
 import { UtopiaItem } from "./item.mjs";
 
 const { api } = foundry.applications
@@ -20,18 +22,15 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
-    let strikeButtons = html.querySelectorAll('button[data-action="performStrike"]');
+    let strikeButtons = html.querySelectorAll('[data-action="performStrike"]');
     for (let button of strikeButtons) {
       button.addEventListener('click', async (event) => {
-        const actor = this.getActor();
-        const item = actor.items.get(this.getFlag('utopia', 'item'));
-        const strike = this.system.item.system.strikes[button.dataset.index] ?? null;
-        const user = game.user;
-        item.performStrike(strike, this, user);        
+        const item = await new UtopiaItem(this.system.item);
+        await item.performStrike(this);
       });
     }
 
-    let actionButtons = html.querySelectorAll('button[data-action="performAction"]');
+    let actionButtons = html.querySelectorAll('[data-action="performAction"]');
     for (let button of actionButtons) {
       button.addEventListener('click', async (event) => {
         const actor = this.getActor();
@@ -41,7 +40,7 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
-    let templateButtons = html.querySelectorAll('button[data-action="template"]'); 
+    let templateButtons = html.querySelectorAll('[data-action="template"]'); 
     for (let button of templateButtons) {
       button.addEventListener('click', async (event) => {
         if (this.system.template) {
@@ -69,7 +68,7 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
-    let deleteTemplateButtons = html.querySelectorAll('button[data-action="deleteTemplate"]');
+    let deleteTemplateButtons = html.querySelectorAll('[data-action="deleteTemplate"]');
     for (let button of deleteTemplateButtons) {
       button.addEventListener('click', async (event) => {
         const actor = this.getActor();
@@ -82,7 +81,7 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
-    let damageDialog = html.querySelectorAll('button[data-action="damageDialog"]');
+    let damageDialog = html.querySelectorAll('[data-action="damageDialog"]');
     for (let button of damageDialog) {
       button.addEventListener('click', async (event) => {
         const actor = this.getActor();
@@ -159,7 +158,7 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
-    let responseButtons = html.querySelectorAll('button[data-action="responseAction"]');
+    let responseButtons = html.querySelectorAll('[data-action="responseAction"]');
     for (let button of responseButtons) {
       button.addEventListener('click', async (event) => {
         const response = button.dataset.response;
@@ -169,7 +168,7 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
-    let quickDamage = html.querySelectorAll('button[data-action="quickDamage"]');
+    let quickDamage = html.querySelectorAll('[data-action="quickDamage"]');
     for (let button of quickDamage) {
       button.addEventListener('click', async (event) => {
         const actor = this.getActor();
@@ -229,7 +228,7 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
-    let damageButtons = html.querySelectorAll('button[data-action="damage"]');
+    let damageButtons = html.querySelectorAll('[data-action="damage"]');
     for (let button of damageButtons) {
       button.addEventListener('click', async (event) => {
         let targets = game.user.targets;
@@ -248,6 +247,52 @@ export class UtopiaChatMessage extends ChatMessage {
 
             await actor.applyDamage(damage, source, type);
           }
+        }
+      });
+    }
+
+    let dealDamageButtons = html.querySelectorAll('[data-action="dealDamage"]');
+    let dealAllDamageButtons = html.querySelectorAll('[data-action="dealAllDamage"]');
+    for (let button of dealDamageButtons) {
+      button.addEventListener('click', async (event) => {
+        var target = undefined;
+        if (button.dataset.target === "target") {
+          target = await new UtopiaActor(this.system.target);
+        }
+        else {
+          if (this.system.source.constructor.name === "UtopiaItem") {
+            const item = await new UtopiaItem(this.system.source);
+            target = item.parent;
+          }
+          else {
+            target = this.source;
+          }
+        }        
+        const percent = button.dataset.percent ?? 100;
+        const instance = new DamageInstance(this.system.instance);
+        target.applyDamage(instance) // TODO - Implement damage percentages
+      });
+    }
+
+    for (let button of dealAllDamageButtons) {
+      button.addEventListener('click', async (event) => {
+        var target = undefined;
+        if (button.dataset.target === "target") {
+          target = await new UtopiaActor(this.system.target);
+        }
+        else {
+          if (this.system.source.constructor.name === "UtopiaItem") {
+            const item = await new UtopiaItem(this.system.source);
+            target = item.parent;
+          }
+          else {
+            target = this.source;
+          }
+        }
+        const percent = button.dataset.percent ?? 100;
+        const instances = this.system.instances;
+        for (const instance of instances) {
+          target.applyDamage(instance, true) // TODO - Implement damage percentages
         }
       });
     }

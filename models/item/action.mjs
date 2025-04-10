@@ -20,7 +20,8 @@ export class Action extends UtopiaItemBase {
     schema.category = new fields.StringField({ required: false, nullable: false, initial: "damage", choices: {
       "damage": "UTOPIA.Items.Action.Category.damage",
       "test": "UTOPIA.Items.Action.Category.test",
-      "formula": "UTOPIA.Items.Action.Category.flat",
+      "formula": "UTOPIA.Items.Action.Category.formula",
+      "passive": "UTOPIA.Items.Action.Category.passive",
       "macro": "UTOPIA.Items.Action.Category.macro",
     }});
 
@@ -74,10 +75,9 @@ export class Action extends UtopiaItemBase {
       "self": "UTOPIA.Items.Action.Actor.self",
       "target": "UTOPIA.Items.Action.Actor.target",
     }});
+    schema.range = new fields.StringField({ required: false, nullable: false, initial: "0/0" });
     schema.template = new fields.StringField({ required: false, nullable: false, initial: "none", choices: {
       "none": "UTOPIA.Items.Action.Template.none",
-      "self": "UTOPIA.Items.Action.Targets.self",
-      "target": "UTOPIA.Items.Action.Targets.target",
       "sbt": "UTOPIA.Items.Action.Template.sbt",
       "mbt": "UTOPIA.Items.Action.Template.mbt",
       "lbt": "UTOPIA.Items.Action.Template.lbt",
@@ -89,7 +89,41 @@ export class Action extends UtopiaItemBase {
     schema.cost = new fields.StringField({ required: false, nullable: true, initial: "1" });
     schema.stamina = new fields.NumberField({ required: false, nullable: false, initial: 0 });
     schema.secret = new fields.BooleanField({ required: true, initial: false });
-    
+
+    schema.passive = new fields.SchemaField({
+      type: new fields.StringField({ required: true, nullable: false, choices: {
+        "meleeRedirect": "UTOPIA.Items.Action.PassiveType.meleeRedirect",
+        "rangedRedirect": "UTOPIA.Items.Action.PassiveType.rangedRedirect",
+        "travelPlusStunt": "UTOPIA.Items.Action.PassiveType.travelPlusStunt",
+        "blockWithWeapon": "UTOPIA.Items.Action.PassiveType.blockWithWeapon", 
+        "respondWithAttack": "UTOPIA.Items.Action.PassiveType.respondWithAttack", // Sensed creature attacks + 8 stamina = attack action for interrupt cost
+        "attackAllInRange": "UTOPIA.Items.Action.PassiveType.attackAllInRange",
+        "reduceAttackActionCost": "UTOPIA.Items.Action.PassiveType.reduceActionCost", // 3 -> min 4; 5 -> min 2; 7 -> min 1
+      }, initial: "meleeRedirect" }),
+      scaling: new fields.SchemaField({
+        enabled: new fields.BooleanField({ required: true, initial: false }),
+        resource: new fields.StringField({ required: false, nullable: true, choices: {
+          "cost": "UTOPIA.Items.Action.ScaleResource.cost",
+          "stamina": "UTOPIA.Items.Action.ScaleResource.stamina",
+        }, initial: "stamina" }),
+        ratio: new fields.SetField(new fields.StringField({ required: false, nullable: true }), { initial: [] }),
+      }),
+      equipment: new fields.SchemaField({
+        enabled: new fields.BooleanField({ required: true, initial: false }),
+        mustBeEquipped: new fields.BooleanField({ required: true, initial: true }),
+        type: new fields.StringField({ required: true, initial: "weapon", choices: {
+          "weapon": "UTOPIA.Items.Action.EquipmentType.weapon",
+          "armor": "UTOPIA.Items.Action.EquipmentType.armor",
+          "shield": "UTOPIA.Items.Action.EquipmentType.shield",
+        }}),
+        reduceActionCost: new fields.StringField({ required: true, nullable: false, choices: {
+          "scalingRatio": "UTOPIA.Items.Action.ReduceActionCost.scalingRatio",
+          "flat": "UTOPIA.Items.Action.ReduceActionCost.flat",
+        }, initial: "scalingRatio" }),
+        reduceActionCostFlat: new fields.NumberField({ required: false, nullable: true, initial: 0 }),
+      })
+    })
+
     return schema;
   }
 
@@ -146,6 +180,11 @@ export class Action extends UtopiaItemBase {
           editable: true,
         })
         fields.push({
+          field: this.schema.fields.range,
+          stacked: true,
+          editable: true,
+        })
+        fields.push({
           field: this.schema.fields.template,
           stacked: true,
           editable: true,
@@ -197,6 +236,59 @@ export class Action extends UtopiaItemBase {
           stacked: true,
           editable: true,
         })
+        break;
+      case "passive": 
+        fields.push({
+          field: this.schema.fields.passive.fields.type,
+          stacked: true,
+          editable: true,
+        });
+        fields.push({
+          field: this.schema.fields.passive.fields.scaling.fields.enabled,
+          stacked: true,
+          editable: true,
+        });
+        if (this.passive.scaling.enabled) {
+          fields.push({
+            field: this.schema.fields.passive.fields.scaling.fields.resource,
+            stacked: true,
+            editable: true,
+          });
+          fields.push({
+            field: this.schema.fields.passive.fields.scaling.fields.ratio,
+            stacked: true,
+            editable: true,
+          });
+        }
+        fields.push({
+          field: this.schema.fields.passive.fields.equipment.fields.enabled,
+          stacked: true,
+          editable: true,
+        });
+        if (this.passive.equipment.enabled) {
+          fields.push({
+            field: this.schema.fields.passive.fields.equipment.fields.mustBeEquipped,
+            stacked: true,
+            editable: true,
+          });
+          fields.push({
+            field: this.schema.fields.passive.fields.equipment.fields.type,
+            stacked: true,
+            editable: true,
+          });
+          fields.push({
+            field: this.schema.fields.passive.fields.equipment.fields.reduceActionCost,
+            stacked: true,
+            editable: true,
+          });
+          if (this.passive.equipment.reduceActionCost === "flat") {
+            fields.push({
+              field: this.schema.fields.passive.fields.equipment.fields.reduceActionCostFlat,
+              stacked: true,
+              editable: true,
+            });
+          }
+        }
         break;
     }
     return fields;

@@ -25,7 +25,6 @@ export class SchemaArrayField extends foundry.data.fields.ArrayField {
         const inputConfig = { ...config };
         if (field.choices) inputConfig.choices = field.choices;
         if (field.options.options) inputConfig.options = Object.values(field.options.options);
-        if (field.label.length === 0) field.label = game.i18n.localize()
         inputConfig.value = config.value.map(v => v[key]);
         const input = field._toInput(inputConfig);
         input.classList.add("schema-set-input");

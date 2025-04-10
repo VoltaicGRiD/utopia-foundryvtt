@@ -1,6 +1,6 @@
-import UtopiaItemBase from "../../base-item.mjs";
+import { FeatureBase } from "./base-feature.mjs";
 
-export class ArmorFeatureOptions extends UtopiaItemBase {
+export class ArmorFeatureOptions extends FeatureBase {
   static defineSchema() {
     const fields = foundry.data.fields;
     const schema = super.defineSchema();

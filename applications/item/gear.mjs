@@ -18,6 +18,7 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
     position: { width: 500, height: 600 },
     actions: {
       image: this._image,
+      use: this._use,
       craft: this._craft,
       edit: this._edit,
       save: this._save,
@@ -258,11 +259,11 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
   }
 
   /**
-   * Casts the gear (activates its use).
+   * Uses the gear.
    * @param {Event} event - The triggering event.
    * @param {HTMLElement} target - The target element.
    */
-  static async _cast(event, target) {
+  static async _use(event, target) {
     await this.item.use();
   }
 }

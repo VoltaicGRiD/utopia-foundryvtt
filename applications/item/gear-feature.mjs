@@ -1,8 +1,5 @@
-import { gatherItems } from "../../system/helpers/gatherItems.mjs";
-import { isNumeric } from "../../system/helpers/isNumeric.mjs";
 import { DragDropItemV2 } from "../base/drag-drop-enabled-itemv2.mjs";
-
-const { api } = foundry.applications;
+import { FeatureBuilder } from "../specialty/feature-builder.mjs";
 
 export class GearFeatureSheet extends DragDropItemV2 {
   constructor(options = {}) {
@@ -19,18 +16,13 @@ export class GearFeatureSheet extends DragDropItemV2 {
   }
 
   static DEFAULT_OPTIONS = {
-    classes: ["utopia", "feature-builder"],
+    classes: ["utopia", "gear-feature-sheet"],
     position: {
       width: 1300,
       height: 800,
     },
     actions: {
-      toggleAdvanced: () => this.advanced = !this.advanced,
-      toggleAttribute: this._toggleAttribute,
-      shareAttribute: this._shareAttribute,
-      removeAttribute: this._removeAttribute,
-      removeSharedAttribute: this._unshareAttribute,
-      saveFeature: this._saveFeature,
+      openBuilder: this._openBuilder,
     },
     window: {
       title: "UTOPIA.SheetLabels.featureBuilder",
@@ -39,7 +31,7 @@ export class GearFeatureSheet extends DragDropItemV2 {
 
   static PARTS = {
     content: {
-      template: "systems/utopia/templates/specialty/feature-builder/builder.hbs",
+      template: "systems/utopia/templates/item/special/gear-feature.hbs",
       scrollable: [".options-display", ".classification-container"],
     },
   };
@@ -50,105 +42,19 @@ export class GearFeatureSheet extends DragDropItemV2 {
   }
 
   async _prepareContext(options) {
-    const existing = await gatherItems({ type: "gearFeature", gatherFolders: true, gatherFromActor: false });
-
-    const featureOptions = {};
-    
-    if (this.attributes && Object.keys(this.attributes).length > 0) {
-      for (const c in this.attributes) {
-        let fields = [];
-        switch (c) {
-          case "fastWeapon":
-          case "moderateWeapon":
-          case "slowWeapon":
-            fields = new CONFIG.Item.dataModels.weaponFeature().schema.fields;
-            break;
-          case "headArmor":
-          case "chestArmor":
-          case "waistArmor":
-          case "handsArmor":
-          case "feetArmor":
-            fields = new CONFIG.Item.dataModels.armorFeature().schema.fields;
-            break;
-          case "equippableArtifact": 
-          case "handheldArtifact":
-          case "ammunitionArtifact":
-            fields = new CONFIG.Item.dataModels.artifactFeature().schema.fields;
-            break;
-          case "consumable":
-            fields = new CONFIG.Item.dataModels.consumableFeature().schema.fields;
-            break;
-          case "shields": 
-            fields = new CONFIG.Item.dataModels.shieldFeature().schema.fields;
-            break;
-          default:
-            break;
-        }
-
-        for (const fieldName in fields) {
-          const fieldObj = fields[fieldName];
-          const fieldType = fieldObj.constructor.name;
-        
-          // If it's a SchemaField, process all subfields recursively.
-          if (fieldType === "SchemaField") {
-            processSchemaField(fieldName, fieldObj, c, featureOptions);
-          }
-          // Otherwise, do the original logic.
-          else if (["StringField", "NumberField", "BooleanField"].includes(fieldType)) {
-            if (!featureOptions[fieldName]) {
-              featureOptions[fieldName] = {
-                field: fieldObj,
-                type: fieldType,
-                classifications: [c],
-              };
-              if (
-                fieldType === "StringField" &&
-                fieldObj.choices &&
-                fieldObj.choices.length > 0
-              ) {
-                featureOptions[fieldName].choices = fieldObj.choices;
-              }
-            } else {
-              featureOptions[fieldName].classifications.push(c);
-            }
-          }
-        }
-      }
-    }
-
-    Object.keys(this.attributes).forEach(c => {
-      const priorityOrder = ["maxStacks", "material", "refinement", "power", "costFormula", "componentsPerStack"];
-      const sortedKeys = Object.keys(this.attributes[c]).sort((a, b) => {
-      if (priorityOrder.includes(a) && priorityOrder.includes(b)) {
-        return priorityOrder.indexOf(a) - priorityOrder.indexOf(b);
-      } else if (priorityOrder.includes(a)) {
-        return -1;
-      } else if (priorityOrder.includes(b)) {
-        return 1;
-      } else {
-        return a.localeCompare(b);
-      }
-      });
-
-      const sortedAttributes = {};
-      sortedKeys.forEach(key => {
-      sortedAttributes[key] = this.attributes[c][key];
-      });
-
-      this.attributes[c] = sortedAttributes;
-    });
-
-    const simulation = await this.simulateData();
+    this.attributes = this.item.system.builderClassifications ?? {};
+    this.shared = this.attributes.shared ?? {};
 
     const context = {
-      existing: existing,
-      advanced: this.advanced,
-      editable: game.user.isGM,
       attributes: this.attributes,
       shared: this.shared,
-      featureOptions: featureOptions,
-      simulation: simulation,
-      name: this.name,
+      simulation: await this.simulateData(),
+      editable: this.isEditable,
+      owner: this.document.isOwner,
+      limited: this.document.limited,
+      item: this.item,
+      system: this.item.system,
+      config: CONFIG.UTOPIA,
     }
 
     console.log(context);
@@ -158,310 +64,18 @@ export class GearFeatureSheet extends DragDropItemV2 {
 
   _onRender(context, options) {
     super._onRender(context, options);
-    
-    const editables = this.element.querySelectorAll("[data-editable]");
-    editables.forEach(editable => {
-      editable.addEventListener("blur", (event) => {
-        const target = event.currentTarget;
-        const value = target.innerText.trim();
-        const type = target.dataset.type;
-        const attribute = target.dataset.attribute;
-        if (type === "shared") {
-          if (!this.shared[attribute])
-            this.shared[attribute] = {};
-          this.shared[attribute] = value;
-        }
-        else {
-          if (!this.attributes[type])
-            this.attributes[type] = {};
-
-          if (["maxStacks", "material", "refinement", "power", "costFormula", "componentsPerStack"].includes(attribute)) {
-            this.attributes[type][attribute] = value;
-          }
-          else {
-            this.attributes[type][attribute] = value;
-          }
-        }
-  
-        this.render(true);
-      });      
-    });
-
-    const editableContainers = this.element.querySelectorAll(".attribute-input-group");
-    editableContainers.forEach(container => {
-      container.addEventListener("mousedown", (event) => {
-        event.stopPropagation();
-        if (event.ctrlKey) {
-          const dataset = event.currentTarget.dataset;
-          if (dataset.type === "classification" || dataset.locked === "true" || !dataset.type || dataset.type.length === 0) 
-            return;
-          if (dataset.type === "shared")  {
-            const attribute = dataset.attribute;
-    
-            Object.keys(this.attributes).forEach(c => {
-              this.attributes[c][attribute] = this.shared[attribute];
-            });
-        
-            delete this.shared[attribute]; 
-        
-            this.render(true);
-          } else {
-            const attribute = dataset.attribute;
-            const classification = dataset.type;
-            
-            this.shared[attribute] = this.attributes[classification][attribute];
-            Object.keys(this.attributes).forEach(c => {
-              delete this.attributes[c][attribute];
-            });
-            
-            this.render(true);
-          }
-        }
-        else if (event.button === 2) {
-          const dataset = event.currentTarget.dataset;
-          if (dataset.type === "classification" || dataset.locked === "true" || !dataset.type || dataset.type.length === 0) 
-            return;
-          if (["maxStacks", "material", "refinement", "power", "costFormula", "componentsPerStack"].includes(dataset.attribute)) 
-            return;
-
-          if (dataset.type === "shared")  {
-            const attribute = dataset.attribute;
-            delete this.shared[attribute]; 
-            this.render(true);
-          } else {
-            const attribute = dataset.attribute;
-            const classification = dataset.type;   
-            delete this.attributes[classification][attribute]; 
-            this.render(true);
-          }
-        }
-      });
-    });
-      
-
-    const stringTags = this.element.querySelectorAll("string-tags[data-editable]");
-    stringTags.forEach(stringTag => {
-      var observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.type === "childList") {
-            const tags = stringTag.querySelectorAll(".tag");
-            // now "this" refers to the class instance
-            const tagsArray = Array.from(tags).map(tag => tag.attributes["data-key"].value);
-            const type = stringTag.dataset.type;
-            const attribute = stringTag.dataset.attribute;
-
-            if (type === "shared") {
-              if (!this.shared[attribute])
-                this.shared[attribute] = [];
-              this.shared[attribute] = tagsArray;
-            }
-            else {
-              if (!this.attributes[type])
-                this.attributes[type] = {};
-              if (!this.attributes[type][attribute])
-                this.attributes[type][attribute] = [];
-              this.attributes[type][attribute] = tagsArray;
-            }
-
-            this.render(true);
-          }
-        });    
-      });
-
-      const target = stringTag.querySelector(".tags");
-      observer.observe(target, { attributes: false, childList: true, subtree: false });
-    })
-
-    const draggables = this.element.querySelectorAll("[draggable=true]");
-    draggables.forEach(draggable => { 
-      draggable.addEventListener("dragstart", (event) => {
-        const type = draggable.dataset.type;
-        const id = draggable.dataset.id;
-        const value = draggable.dataset.attribute;
-        const inputType = draggable.dataset.input;
-        event.dataTransfer.setData("text/plain", JSON.stringify({ type, id, value, inputType }));
-      });
-    });
-
-    const dropPoints = this.element.querySelectorAll("[data-drop]");
-    dropPoints.forEach(dropPoint => {
-      const type = dropPoint.dataset.drop;
-      dropPoint.addEventListener("dragover", (event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = "copy";
-      });
-      dropPoint.addEventListener("drop", async (event) => {
-        event.preventDefault();
-        const data = JSON.parse(event.dataTransfer.getData("text/plain"));
-        const dataTypes = Array.from(data.type.split(','));
-        if (dataTypes.includes(type) || type === "shared") {
-          let value = undefined;
-          switch (data.inputType) {
-            case "BooleanField":
-              value = true;
-              break;
-            case "StringField":
-              value = "\0";
-              break;
-            case "NumberField":
-              value = 1;
-              break;
-            default: 
-              break;
-          }
-
-          if (type === "shared") {
-            if (!this.shared[data.value])
-              this.shared[data.value] = value;
-            else {
-              // Create a copy with a number added to the end of the name
-              let newName = _getUniqueName(data.value, this.shared);
-              this.shared[newName] = value;
-            }
-          }
-          else {
-            if (event.ctrlKey) {
-              for (const c in this.attributes) {
-                if (!this.attributes[c])
-                  this.attributes[c] = {};
-                if (!this.attributes[c][data.value]) {
-                  this.attributes[c][data.value] = value;
-                }
-                else {
-                  // Create a copy with a number added to the end of the name
-                  let newName = _getUniqueName(data.value, this.attributes[c]);
-                  this.attributes[c][newName] = value;
-                }
-              }
-            }
-            else if (event.altKey) {
-              if (!this.attributes[type])
-                this.attributes[type] = {};
-              if (!this.attributes[type][data.value]) {
-                this.attributes[type][data.value] = value;
-              }
-              else {
-                // Create a copy with a number added to the end of the name
-                let newName = _getUniqueName(data.value, this.attributes[type]);
-                this.attributes[type][newName] = value;
-              }
-            } 
-            else {
-              const proceed = await foundry.applications.api.DialogV2.confirm({
-                content: game.i18n.localize("UTOPIA.FeatureBuilder.dropToAll"),
-                rejectClose: true,
-                modal: true
-              });
-
-              if (proceed) {
-                for (const c in this.attributes) {
-                  if (!this.attributes[c])
-                    this.attributes[c] = {};
-                  if (!this.attributes[c][data.value]) {
-                    this.attributes[c][data.value] = value;
-                  }
-                  else {
-                    // Create a copy with a number added to the end of the name
-                    let newName = _getUniqueName(data.value, this.attributes[c]);
-                    this.attributes[c][newName] = value;
-                  }
-                }
-              } else {
-                if (!this.attributes[type])
-                  this.attributes[type] = {};
-                if (!this.attributes[type][data.value]) {
-                  this.attributes[type][data.value] = value;
-                }
-                else {
-                  // Create a copy with a number added to the end of the name
-                  let newName = _getUniqueName(data.value, this.attributes[c]);
-                  this.attributes[c][newName] = value;
-                }
-              }
-            }
-          }
-
-          await this.render(true);
-        }
-      });
-    });
-
-    const name = this.element.querySelector("#feature-name");
-    name.addEventListener("blur", (event) => {
-      this.name = name.value.trim();
-    });
   }
 
-  static async _toggleAttribute(event, target) {
-    const attribute = target.dataset.attribute;
-    const classification = target.dataset.type;
-    if (classification === "classification") {
-      if (!this.attributes[attribute]) {
-        this.attributes[attribute] = {
-            maxStacks: 1,
-            material: 0,
-            refinement: 0,
-            power: 0,
-            componentsPerStack: true,
-            costFormula: "0"
-        };
-      } else {
-        // Remove it from the attributes object
-        delete this.attributes[attribute]; 
-      }
-    }
-    else {
-      if (!this.attributes[classification])
-        this.attributes[classification] = {};
-
-              this.attributes[classification][attribute] = !this.attributes[classification][attribute] ?? true; 
-          }
-
-    this.render(true);
-  }
-
-  static async _shareAttribute(event, target) {
-    const attribute = target.dataset.attribute;
-    const classification = target.dataset.type;
-    
-    this.shared[attribute] = this.attributes[classification][attribute];
-    const classifications = Object.keys(this.attributes).forEach(c => {
-      delete this.attributes[c][attribute];
-    });
-    
-    this.render(true);
-  }
-
-  static async _unshareAttribute(event, target) {
-    const attribute = target.dataset.attribute;
-    
-    const classifications = Object.keys(this.attributes).forEach(c => {
-      this.attributes[c][attribute] = this.shared[attribute];
+  static async _openBuilder(event, target) {
+    const sheet = new FeatureBuilder({ 
+      editingFeature: this.item,
+      attributes: this.attributes,
+      shared: this.shared,
+      name: this.item.name,
     });
 
-    delete this.shared[attribute]; 
-
-    this.render(true);
-  }
-
-  static async _removeAttribute(event, target) {
-    const attribute = target.dataset.attribute;
-    const classification = target.dataset.type;   
-
-    delete this.attributes[classification][attribute]; 
-
-    this.render(true);
-  }
-
-  async simulateAmmunition(attributes) {
-    const stackCount = parseFloat(attributes.maxStacks) ?? parseFloat(this.shared.maxStacks) ?? 0;
-    const cost = await new Roll(attributes.costFormula ?? this.shared.costFormula ?? "0", {...this.attributes.ammunitionArtifact, ...this.shared}).evaluate({async: true}) * 6;
-    return {
-      material: (attributes.material ?? this.shared.material ?? 0) * stackCount,
-      refinement: (attributes.refinement ?? this.shared.refinement ?? 0) * stackCount,
-      power: (attributes.power ?? this.shared.power ?? 0) * stackCount,
-      cost: cost
-    }
+    await sheet.render(true);
+    this.close();
   }
 
   async simulateData() {
@@ -482,9 +96,18 @@ export class GearFeatureSheet extends DragDropItemV2 {
           stackCount = 10;
         }
 
-        const material = (attributes.material ?? this.shared.material ?? 0) * stackCount;
-        const refinement = (attributes.refinement ?? this.shared.refinement ?? 0) * stackCount;
-        const power = (attributes.power ?? this.shared.power ?? 0) * stackCount;
+        var material, refinement, power = 0;
+
+        const componentsPerStack = (attributes.componentsPerStack ?? this.shared.componentsPerStack ?? true);
+        if (componentsPerStack) {
+          material = (attributes.material ?? this.shared.material ?? 0) * stackCount;
+          refinement = (attributes.refinement ?? this.shared.refinement ?? 0) * stackCount;
+          power = (attributes.power ?? this.shared.power ?? 0) * stackCount;
+        } else {
+          material = attributes.material ?? this.shared.material ?? 0;
+          refinement = attributes.refinement ?? this.shared.refinement ?? 0;
+          power = attributes.power ?? this.shared.power ?? 0;
+        }
         const costFormula = await new Roll(attributes.costFormula ?? this.shared.costFormula ?? "0", {...this.attributes[c], ...this.shared}).evaluate({async: true});
         const cost = costFormula.total * stackCount;
 
@@ -555,144 +178,5 @@ export class GearFeatureSheet extends DragDropItemV2 {
     }
   
     return simulation;
-  }
-
-  static async _saveFeature(event, target) {
-    const name = this.element.querySelector("#feature-name").value.trim();
-    await api.DialogV2.prompt({
-      window: { title: game.i18n.localize("UTOPIA.SheetLabels.featureBuilder.description") },
-      content: `<textarea name="description" id="description" rows="10" cols="50"></textarea>`,
-      ok: {
-        label: "Save Description",
-        icon: "fas fa-check",
-        callback: async (event, button, dialog) => {
-          const description = button.form.elements.description.value;
-
-          let itemFolderId = "";
-          itemFolderId = game.items.folders.find(f => f.name === "Gear Features")?.id ?? "";
-          if (itemFolderId.length === 0) {
-            await Folder.create({name: "Gear Features", type: "Item"});
-            itemFolderId = game.items.folders.find(f => f.name === "Gear Features")?.id ?? "";
-          }
-
-          // Add all attributes that are the same between classifications to the shared attributes
-          // and remove them from the classification attributes
-          const attributeKeys = [];
-
-          Object.keys(this.attributes).forEach(classification => {
-            Object.keys(this.attributes[classification]).forEach(attribute => {
-              if (!attributeKeys.includes(attribute)) {
-                attributeKeys.push(attribute);
-              }
-            });
-          });
-
-          attributeKeys.forEach(attribute => {
-            const values = Object.keys(this.attributes).map(classification => {
-              return this.attributes[classification][attribute];
-            });
-
-            if (values.every(value => value === values[0])) {
-              this.shared[attribute] = values[0];
-              Object.keys(this.attributes).forEach(classification => {
-                delete this.attributes[classification][attribute];
-              });
-            }
-          });
-          
-
-          const attributes = {}
-          attributes.shared = this.shared;
-          Object.keys(this.attributes).forEach(c => {
-            attributes[c] = this.attributes[c];
-          });
-
-          if (this.document !== undefined) {
-            const data = {
-              ["name"]: name,
-              ["folder"]: itemFolderId,
-              ["system.description"]: description,
-              ["system.classifications"]: attributes,
-            }
-
-            await this.document.update(data);
-          } 
-          else {
-            const feature = {
-              name: name,
-              type: "gearFeature",
-              folder: itemFolderId,
-              system: {
-                classifications: attributes
-              }
-            };
-
-            await Item.create(feature);
-          }
-        }
-      }
-    });
-
-    this.render(true);
-  }
-}
-
-function _getUniqueName(baseName, collection) {
-  let newName = baseName;
-  let i = 1;
-  while (Object.hasOwn(collection, newName)) {
-    newName = `${baseName}_${i}`;
-    i++;
-  }
-  return newName;
-}
-
-/**
- * Generate a random dark-mode friendly color (e.g., a lighter HSL).
- */
-function getRandomDarkModeColor() {
-  const hue = Math.floor(Math.random() * 360);
-  const saturation = 70 + Math.floor(Math.random() * 30); // 70-100%
-  const lightness = 70 + Math.floor(Math.random() * 15);  // 70-85%
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-}
-
-/**
- * Recursively process a SchemaField object and populate the featureOptions.
- * @param {string} prefix - Key path so far (e.g. "damage").
- * @param {object} schemaField - The SchemaField instance with subfields.
- * @param {string} classification - The classification key (e.g. "fastWeapon").
- * @param {object} featureOptions - The object to populate.
- */
-function processSchemaField(prefix, schemaField, classification, featureOptions) {
-  for (const subField in schemaField.fields) {
-    const subFieldObj = schemaField.fields[subField];
-    const subFieldType = subFieldObj.constructor.name;
-    // Full key path, e.g. "damage.formula", "damage.save", etc.
-    const fullKey = `${prefix}.${subField}`;
-
-    if (subFieldType === "SchemaField") {
-      // Recurse deeper into nested SchemaFields
-      processSchemaField(fullKey, subFieldObj, classification, featureOptions);
-    } else if (["StringField", "NumberField", "BooleanField"].includes(subFieldType)) {
-      // Normal logic
-      if (!featureOptions[fullKey]) {
-        featureOptions[fullKey] = {
-          field: subFieldObj,
-          type: subFieldType,
-          classifications: [classification],
-          color: getRandomDarkModeColor()
-        };
-        if (
-          subFieldType === "StringField" &&
-          subFieldObj.choices &&
-          subFieldObj.choices.length > 0
-        ) {
-          featureOptions[fullKey].choices = subFieldObj.choices;
-        }
-      } else {
-        featureOptions[fullKey].classifications.push(classification);
-      }
-    }
   }
 }

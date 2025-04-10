@@ -7,10 +7,10 @@ export class FeatureBuilder extends api.HandlebarsApplicationMixin(api.Applicati
   constructor(options = {}) {
     super(options);
     this.advanced = false;
-    this.editingFeature = undefined;
-    this.attributes = {};
-    this.name = undefined;
-    this.shared = {
+    this.editingFeature = options.editingFeature ?? undefined;
+    this.attributes = options.attributes ?? {};
+    this.name = options.name ?? undefined;
+    this.shared = options.shared ?? {
       incompatibleWith: [],
       requires: []
     };
@@ -599,6 +599,22 @@ export class FeatureBuilder extends api.HandlebarsApplicationMixin(api.Applicati
 
   static async _saveFeature(event, target) {
     const name = this.element.querySelector("#feature-name").value.trim();
+
+    if (this.existingFeature) {
+      const attributes = {}
+      attributes.shared = this.shared;
+      Object.keys(this.attributes).forEach(c => {
+        attributes[c] = this.attributes[c];
+      });
+
+      return await this.existingFeature.update({
+        name: name,
+        system: {
+          classifications: this.attributes,
+        }
+      });
+    }
+
     await api.DialogV2.prompt({
       window: { title: game.i18n.localize("UTOPIA.SheetLabels.featureBuilder.description") },
       content: `<textarea name="description" id="description" rows="10" cols="50"></textarea>`,

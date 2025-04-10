@@ -84,13 +84,25 @@ export async function prepareClassData(pawn) {
     for (const attribute of item.system.attributes) {
       const key = attribute.key.replace("system.", "");
       var value = attribute.value;
+      var addValue = true;
       
       if (isNumeric(value)) {
         value = parseFloat(value);
       }
-
+      // Check if the value starts with an '='
+      else if (value.startsWith("=")) {
+        addValue = false;
+        value = parseFloat(value.substring(1));
+      }
+      else if (value.startsWith("+") || value.startsWith("-")) {
+        addValue = true;
+        value = parseFloat(value.substring(1));
+      }
+      
       const originalValue = foundry.utils.getProperty(pawn, key);
-      foundry.utils.setProperty(pawn, key, originalValue + value);
+      foundry.utils.setProperty(pawn, key, 
+        addValue ? originalValue + value : value
+      );
     }
   }
 }

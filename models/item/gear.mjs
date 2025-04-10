@@ -114,9 +114,13 @@ export class Gear extends UtopiaItemBase {
         // Merge attributes.
         Object.entries(final).forEach(([key, value]) => {
           if (this[key] !== undefined) {
-            // If both values are strings, join them with a plus operator.
-            if (typeof this[key] === "string" && typeof value === "string") {
+            // If both values are strings and are a valid roll formula, join them with a plus operator.
+            if (typeof this[key] === "string" && typeof value === "string" && Roll.validate(value)) {
               this[key] = `${this[key]} + ${value}`;
+            }
+            // If both values are strings, and are not a valid roll formula, create an array.
+            else if (typeof this[key] === "string" && typeof value === "string") {
+              this[key] = [...this[key], value];
             }
             // If both values are numbers, add them.
             else if (typeof this[key] === "number" && typeof value === "number") {
@@ -203,8 +207,13 @@ export class Gear extends UtopiaItemBase {
           simulation[key] = parseFloat(value) * stackCount;
         } else if (typeof value === "string" && value !== "\u0000" && !isNumeric(value)) {
           try {
-            const extraRoll = new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0).evaluateSync({ strict: false });
-            simulation[key] = extraRoll.formula;
+            if (Roll.validate(value)) {
+              const extraRoll = new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0).evaluate({ async: true });
+              simulation[key] = extraRoll.formula;
+            }
+            else {
+              simulation[key] = value;
+            }
           } catch (error) {
             this._error(`Error evaluating roll for attribute ${key}:`, error);
             const extraRoll = new Roll(value, { ...attributes, ...costs }).evaluateSync({ strict: false });

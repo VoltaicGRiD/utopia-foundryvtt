@@ -1,6 +1,6 @@
-import UtopiaItemBase from "../../base-item.mjs";
+import { FeatureBase } from "./base-feature.mjs";
 
-export class WeaponFeatureOptions extends UtopiaItemBase {
+export class WeaponFeatureOptions extends FeatureBase {
   static defineSchema() {
     const fields = foundry.data.fields;
     const schema = super.defineSchema();
@@ -16,6 +16,7 @@ export class WeaponFeatureOptions extends UtopiaItemBase {
     schema.damage = new fields.StringField({ ...requiredString, validate: (value) => {
       return Roll.validate(value);
     }})
+    schema.damageType = new fields.StringField({ ...requiredString, initial: "physical" });
     schema.meleeDamageModifierTrait = new fields.StringField({ ...requiredString, initial: "none" })
     schema.meleeDamageModifierTraitChoice = new fields.BooleanField({ required: true, nullable: false, initial: true });
     schema.rangedDamageModifierTrait = new fields.StringField({ ...requiredString, initial: "none" })
@@ -48,7 +49,7 @@ export class WeaponFeatureOptions extends UtopiaItemBase {
     schema.rechargeAfter = new fields.NumberField({ ...requiredInteger, initial: 0 });
     schema.rechargeTrait = new fields.StringField({ ...requiredString, initial: "none" });
     schema.rechargeActions = new fields.NumberField({ ...requiredInteger, initial: 0 });
-    schema.returnDamage = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    schema.returnDamage = new fields.StringField({ ...requiredInteger, initial: "0" });
     schema.returnDamageType = new fields.StringField({ ...requiredString, initial: "physical" });
     schema.nonLethal = new fields.BooleanField({ required: true, nullable: false, initial: false });
 

@@ -155,7 +155,7 @@
 }
 
 .chat-message {
-  @import "components/chat.scss";
+  @import "general/chat.scss";
 }
 
 .utopia {
@@ -199,6 +199,12 @@
 
     @import "components/gear.scss";
     @import "components/artifice.scss";
+  }
+
+  &.gear-feature-sheet {
+    border-radius: 0 25px 0 25px ;
+
+    @import "components/gear-feature-sheet.scss";
   }
 
   &.spell-sheet,

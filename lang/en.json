@@ -173,6 +173,10 @@
       "NoTargetsSelected": "The game rule \"Target Required\" is enabled, you must target at least one token to perform this action.",
       "NoTargetsSelectedInfo": "No tokens are targeted. Defense calculations will need to be performed manually."
     },
+    "CHAT": {
+      "Block": "Block",
+      "Dodge": "Dodge"
+    },
     "StatusEffects": {
       "deafened": "Deafened",
       "blinded": "Blinded",
@@ -185,11 +189,48 @@
       "dead": "Dead"
     },
     "Settings": {
-      "AdvancedSettingsMenu": "Advanced Settings",
+      "advancedSettingsMenu": "Advanced Settings (Homebrew)",
       "Buttons": {
         "CompendiumBrowser": "Compendium Browser",
         "FeatureBuilder": "Artifice Feature Builder"
-      }
+      },
+      "targetRequired": "Require Targeting for Attacks",
+      "targetRequiredHint": "When enabled, you must target at least one token to perform attacks and actions that require a target.",
+      "highlightTemplate": "Highlight Placeable Templates",
+      "highlightTemplateHint": "Highlight currently-placing template for attacks and actions that have templates assigned to them.",
+      "autoRollAttacks": "Automatically Roll Attacks",
+      "autoRollAttacksHint": "When enabled, attack rolls for gear and spells will be automatically rolled when the action is performed.",
+      "autoRollContests": "Automatically Roll Tests and Checks",
+      "autoRollContestsHint": "When enabled, tests and checks for all item types will be automatically rolled when the action is performed.",
+      "displayDamage": "Display Damage on Cards",
+      "displayDamageHint": "When enabled, damage for strikes will either be displayed accurately, with an estimate, or not at all. The formula will always be displayed regardless of this setting.",
+      "displayDamageEstimate": "Estimate damage",
+      "displayDamageExact": "Exact damage",
+      "displayDamageNone": "Do not display damage",
+      "estimateDamageSimulations": "Rolls for Damage Estimates",
+      "estimateDamageSimulationsHint": "The number of simulations to run for damage estimates. Higher numbers will result in more accurate estimates, but will take longer to calculate.",
+      "diceRedistribution": "Allow Dice Redistribution",
+      "diceRedistributionHint": "By default, Utopia allows attack rolls to be redistributed to standard RPG dice sets based on the maximum possible output of a roll from the default formula. For example: 5d4 can be redistributed to 2d10 or 1d20. Players can customize this option with the \"Dice Redistribution Size\" setting themselves.",
+      "autoMaxDice": "Dice Redistribution Size (Individual Setting)",
+      "autoMaxDiceHint": "Set the preferred dice redistribution size.",
+      "diceRedistributionNone": "Use default size",
+      "diceRedistributionSmallest": "Use smallest dice size (higher average, lower maximums)",
+      "diceRedistributionLargest": "Use largest dice size (higher maximums, lower average)",
+      "turnActionsMax": "Turn Actions",
+      "turnActionsMaxHint": "Only applies to Character and NPC type actors only. This setting only applies to newly created actors. Action maximums can still be set with ActiveEffects.",
+      "interruptActionsMax": "Interrupt Actions",
+      "interruptActionsMaxHint": "Only applies to Character and NPC type actors only. This setting only applies to newly created actors. Action maximums can still be set with ActiveEffects.",
+      "displayActionsOnToken": "Display Actions on Tokens",
+      "displayActionsOnTokenHint": "When enabled, turn and interrupt actions will appear on tokens on the map. This is enabled by default.",
+      "displayActionsOption": "How Should Actions be Displayed?",
+      "displayActionsOptionHint": "Choose how actions should be displayed on tokens on the map.",
+      "displayActionsOptionCircle": "Display as circle",
+      "displayActionsOptionVertical": "Display vertically",
+      "displayActionsOptionHorizontal": "Display horizontally",
+      "restOnLevelUp": "[Homebrew] Rest on Level Up",
+      "restOnLevelUpHint": "When enabled, and a character or NPC levels up, the rest action will be performed automatically. Resting sets Surface HP and Stamina to their maximums, and resets turn and interrupt actions to their maximums.",
+      "diceRedistributionDiceSizes": "Dice Redistribution Sizes",
+      "diceRedistributionDiceSizesHint": "Comma separated list of the face counts of dice available for redistribution. By default, uses the the standard TTRPG dice set (d100, d20, d12, d10, d8, d6, d4). <b>Do not include the 'd' when listing dice</b>."
     },
     "CompendiumBrowser": {
       "Title": "Utopia Compendium Browser",
@@ -295,7 +336,8 @@
         "ChangeBody": "Change Body",
         "AddKit": "Add Kit",
         "AddClass": "Add Class",
-        "Convert": "Convert to NPC"
+        "Convert": "Convert to NPC",
+        "CreatureTalentsInfo": "Drag-and-Drop talents to use them on creatures."
       },
       "Items": {
         "Talents": "Talents",
@@ -509,7 +551,13 @@
         "SHP": "SHP",
         "DHP": "DHP",
         "STAMINA": "STA",
-        "TOTAL": "TOT"
+        "TOTAL": "TOT",
+        "PENDING": "PENDING",
+        "ESTIMATED": "ESTIMATED",
+        "EXACT": "EXACTLY",
+        "DODGED": "DODGED",
+        "BLOCKED": "BLOCKED",
+        "DAMAGE": "DAMAGE"
       }
     },
     "Items": {

@@ -7,9 +7,6 @@ import { UtopiaChatMessage } from "./chat-message.mjs";
  * and various in-game actions specific to the Utopia system.
  */
 export class UtopiaActor extends Actor {
-  constructor(...args) {
-    super(...args);
-  }
 
   /* -------------------------------------------- */
   /*  Logging Methods                             */
@@ -541,6 +538,22 @@ export class UtopiaActor extends Actor {
   /*  Action & Macro Methods                      */
   /* -------------------------------------------- */
 
+  async blockDamageInstance(damageInstance ) {
+    const formula = this.system.block.formula;
+    const roll = await new Roll(formula, this.getRollData()).evaluate();
+    await damageInstance.handle({ block: roll.total, blockRoll: roll });
+    damageInstance.finalize();
+    return damageInstance;
+  }
+
+  async dodgeDamageInstance(damageInstance) {
+    const formula = this.system.dodge.formula;
+    const roll = await new Roll(formula, this.getRollData()).evaluate();
+    await damageInstance.handle({ dodge: roll.total, dodgeRoll: roll });
+    damageInstance.finalize();
+    return damageInstance;
+  }
+
   /**
    * Performs a forage action (implementation pending).
    */
@@ -655,19 +668,13 @@ export class UtopiaActor extends Actor {
    * @param {DamageInstance} damage - The damage instance.
    * @returns {Promise<UtopiaChatMessage>} The created chat message.
    */
-  async applyDamage(damage) {
-    await this.update({
-      "system.hitpoints.surface.value": damage.final.shp,
-      "system.hitpoints.deep.value": damage.final.dhp - damage.final.deepDamageFromStamina,
-      "system.stamina.value": damage.final.stamina,
-    });
+  async applyDamage(damage, chatMessage = undefined) {
+    const handledDamage = damage.finalized ? damage.final : await damage.handle();
 
-    const content = await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [damage] });
-    this._log(`Actor {${this.name}} took damage:`, damage.final);
-    return UtopiaChatMessage.create({
-      user: game.user._id,
-      speaker: ChatMessage.getSpeaker(),
-      content: content,
+    await this.update({
+      "system.hitpoints.surface.value": this.system.hitpoints.surface.value - handledDamage.shpDamage,
+      "system.hitpoints.deep.value": this.system.hitpoints.deep.value - handledDamage.dhpDamage,
+      "system.stamina.value": this.system.stamina.value - handledDamage.staminaDamage,
     });
   }
 

@@ -10,7 +10,7 @@ export class DamageInstance {
    * @param {Object} param0.source - The source actor.
    * @param {Object} param0.target - The target actor.
    */
-  constructor({ type, value, source, target }) {
+  constructor({ type, value, source, target, block, dodged, roll, finalized = false }) {
     if (typeof type === "string") {
       this.type = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[type];
       this.typeKey = type;
@@ -24,7 +24,8 @@ export class DamageInstance {
     }
     this.value = value ?? 0;
     this.source = source ?? null;
-    this.target = typeof(target) === "object" ? new UtopiaActor(target) : target; // TODO - Convert target and source to use UUIDs
+    this.target = target ?? null;
+    //this.target = typeof(target) === "object" ? new UtopiaActor(target) : target; // TODO - Convert target and source to use UUIDs
     // If no target is provided, use an "Unknown" actor or create a default target.
     if (target === null || target === undefined) {
       if (game.actors.getName("Unknown"))
@@ -42,6 +43,8 @@ export class DamageInstance {
         foundry.utils.setProperty(this.target, "system.stamina.value", 10);
       }
     }
+    // Add the formula for displaying on chat cards
+    this.roll = roll ?? new Roll(`${this.value}`).evaluateSync({strict: false});
     // Find out if the source item is non-lethal
     this.nonLethal = source?.system.nonLethal ?? false;
     // Get percentage values for surface and deep hitpoints adjustments.
@@ -49,7 +52,13 @@ export class DamageInstance {
     this.dhpPercent = 1;
     // Check if the damage should bypass defenses.
     this.penetrate = false;
-    this.finalized = false;
+    this.finalized = finalized;
+    // Handle blocking
+    this.blockTotal = block ?? 0;
+    this.dodged = dodged ?? false;
+
+    this.dodgable = this.type.dodge ?? false;
+    this.blockable = this.type.block ?? 0 > 0 ? true : false;
   }
 
   /**
@@ -64,118 +73,132 @@ export class DamageInstance {
     }
   }
 
-  /**
-   * Getter for the target's defenses based on damage type.
-   * Some damage types bypass defenses.
-   */
-  get defenses() {
+  async defenses() {
+    const target = await fromUuid(this.target);
     const typeKey = this.typeKey;
     if (this.type.armor === false || this.penetrate === true)
       return 0;
     else 
-      return this.target.system.defenses[typeKey];
+      return target.system.defenses[typeKey];
   }
 
-  /**
-   * Getter for the raw damage after subtracting defenses.
-   */
-  get damage() {
-    return this.value - this.defenses;
-  }
+  async handle(options = {}) {
+    if (this.finalized) return this.final;
 
-  /**
-   * Getter for adjusted surface hitpoints (shp) after damage is applied.
-   */
-  get shp() {
-    const typeKey = this.typeKey;
-    // For specific damage types, compute new surface hitpoints.
-    if (["stamina", "restoreStamina", "kinetic", "dhp"].includes(typeKey))
-      return 0;
-    return (this.target.system.hitpoints.surface.value - this.damage) * this.shpPercent;
-  }
-
-  /**
-   * Getter for the amount of damage dealt to surface hitpoints.
-   */
-  get shpDamageDealt() {
-    return this.target.system.hitpoints.surface.value - this.shp;
-  }
-
-  /**
-   * Getter for adjusted deep hitpoints (dhp) if surface hitpoints drop below zero.
-   */
-  get dhp() {
-    if (this.shp > 0) return this.target.system.hitpoints.deep.value;
-
-    const remaining = Math.abs(this.shp) * this.dhpPercent;
-    return this.target.system.hitpoints.deep.value - remaining;
-  }
-
-  /**
-   * Getter for the amount of damage dealt to deep hitpoints.
-   */
-  get dhpDamageDealt() {
-    return this.target.system.hitpoints.deep.value - this.dhp;
-  }
-
-  /**
-   * Getter for stamina damage.
-   * For stamina damage type, only remove what the target currently has.
-   * Otherwise, if the source is "exhausting", combine surface and deep damage.
-   */
-  get stamina() {
-    const currentStamina = this.target.system.stamina.value || 0;
-    if (this.typeKey === "stamina") {
-      // Apply only as much stamina damage as possible.
-      return Math.max(currentStamina - this.damage, 0);
+    const target = await fromUuid(this.target);
+    const targetData = {
+      shp: target.system.hitpoints.surface.value,
+      dhp: target.system.hitpoints.deep.value,
+      stamina: target.system.stamina.value,
+      defenses: target.system.defenses,
     }
-    return currentStamina;
-  }
 
-  /**
-   * Getter for overflow damage that passes from stamina to deep hitpoints.
-   * If stamina damage exceeds the target's stamina, the overflow goes to deep hitpoints.
-   */
-  get deepDamageFromStamina() {
-    const currentStamina = this.target.system.stamina.value || 0;
-    if (this.typeKey === "stamina") {
-      if (currentStamina - this.damage < 0) {
-        const overflow = Math.abs(currentStamina - this.damage);
-        return overflow * this.dhpPercent;
+    const appliesTo = this.type.appliesTo ?? "shp";
+
+    if (!(this.roll instanceof Roll)) 
+      this.roll = Roll.fromData(this.roll);
+    this.rollTooltip = await this.roll.getTooltip();
+
+    // Check if our damage type can be blocked or dodged
+    const dodgable = this.type.dodge ?? false;
+    const blockPercent = this.type.block ?? 1;
+
+    if (Object.keys(options).includes("block")) {
+      const blockRoll = options.blockRoll;
+      this.blockTooltip = await blockRoll.getTooltip();
+      this.blocked = true;
+    }
+    
+    if (Object.keys(options).includes("dodge")) {  
+      const dodgeRoll = options.dodgeRoll;
+      this.dodgeTooltip = await dodgeRoll.getTooltip();
+      this.dodged = true;
+    }
+
+    // If the damage type applies to "shp", we will apply the damage to surface HP.
+    if (appliesTo === "shp") {
+      // Take the damage (this.value) and apply it to the target's surface HP, any overflow goes to deep HP.
+      // When damage overflows, we track the overflow, but also set the surface damage dealt to the maximum possible.
+      let overflow = 0;
+      let shpDamage = (this.value - await this.defenses() - ((options.block ?? 0) * blockPercent)) * this.shpPercent;
+      
+      // Check if our damage was dodged. If so, no damage is taken.
+      if (dodgable && Object.keys(options).includes("dodged") && options.dodged >= shpDamage) {
+        shpDamage = 0;
       }
-    }
-    return 0;
-  }
 
-  /**
-   * Getter for actual stamina damage dealt.
-   */
-  get staminaDamageDealt() {
-    return this.target.system.stamina.value - this.stamina;
-  }
+      // We dealt more damage than the target has surface HP
+      if (shpDamage > targetData.shp) {
+        overflow = Math.abs(targetData.shp - shpDamage);
+        shpDamage = targetData.shp;
+      }
 
-  /**
-   * Getter for the final damage object formatted for chat output.
-   * For stamina damage, returns both stamina reduction and deep overflow.
-   * For other types, returns the respective damage values.
-   */
-  get final() {
-    return {
-      shp: this.shp < 0 ? 0 : this.shp,
-      shpDamageDealt: this.shpDamageDealt,
-      dhp: this.dhp < 0 ? 0 : this.dhp,
-      dhpDamageDealt: this.dhpDamageDealt,
-      stamina: this.stamina < 0 ? 0 : this.stamina,
-      staminaDamageDealt: this.staminaDamageDealt,
-      deepDamageFromStamina: this.deepDamageFromStamina,
-      total: this.shpDamageDealt + this.dhpDamageDealt + this.staminaDamageDealt ?? 0 + this.deepDamageFromStamina ?? 0,
-      type: JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[this.type]
+      // Apply overflow to deep HP
+      const dhpDamage = overflow * this.dhpPercent;
+
+      this.final = { shpDamage, dhpDamage, staminaDamage: 0, total: this.value };
+      return this.final;
     }
+
+    // If the damage type applies to "dhp", we will apply the damage to deep HP.
+    if (appliesTo === "dhp") {
+      // Deep HP damage is applied directly, we don't have to worry about any overflow
+      let dhpDamage = (this.value - await this.defenses() - ((options.block ?? 0) * blockPercent)) * this.dhpPercent;
+
+      // Check if our damage was dodged. If so, no damage is taken.
+      if (dodgable && Object.keys(options).includes("dodged") && options.dodged >= dhpDamage) {
+        dhpDamage = 0;
+      }
+
+      // We dealt more damage than the target has deep HP
+      if (dhpDamage > targetData.dhp) {
+        dhpDamage = targetData.dhp;
+      }
+
+      this.final = { shpDamage: 0, dhpDamage, staminaDamage: 0, total: this.value };
+      return this.final;
+    }
+
+    // If the damage type applies to "stamina", we will apply the damage to stamina.
+    if (appliesTo === "stamina") {
+      // Take the damage (this.value) and apply it to the target's stamina, any overflow goes to deep HP.
+      // When damage overflows, we track the overflow, but also set the stamina damage dealt to the maximum possible.
+      let overflow = 0;
+      let staminaDamage = (this.value);
+
+      // Check if our damage was dodged. If so, no damage is taken.
+      // Typically, stamina damage is not dodgable, but we can check for it for homebrew.
+      if (dodgable && Object.keys(options).includes("dodged") && options.dodged >= staminaDamage) {
+        staminaDamage = 0;
+      }
+
+      // We dealt more damage than the target has stamina
+      if (staminaDamage > targetData.stamina) {
+        overflow = Math.abs(targetData.stamina - staminaDamage);
+        staminaDamage = targetData.stamina;
+      }
+
+      // Apply overflow to deep HP
+      const dhpDamage = overflow * this.dhpPercent;
+      this.final = { shpDamage: 0, dhpDamage, staminaDamage, total: this.value };
+      return this.final;
+    } 
   }
 
   async toMessage() {
+    // We have to allow the target to block or dodge before displaying the damage dealt
+    this.damageDisplay = game.settings.get("utopia", "displayDamage");
+
+    // If set to 1 - we estimate the damage
+    if (this.damageDisplay === 1) {
+      const simulation = await Roll.simulate(this.roll._formula, game.settings.get("utopia", "estimateDamageSimulations"));
+      // Simulations produce an array of numbers, we add them together, then divide by the number of simulations to get the average
+      const total = Math.round(simulation.reduce((a, b) => a + b, 0) / simulation.length);
+      this.simulationResult = total;
+    }
     const content = await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [this], item: this.source, targets: this.targets });
-    return UtopiaChatMessage.create({
+
+    this.messageInstance = UtopiaChatMessage.create({
       content,
       speaker: {
         user: game.user._id,
@@ -184,6 +207,48 @@ export class DamageInstance {
       },
       system: { instance: this, source: this.source, target: this.target }
     });
+
+    return this.messageInstance;
+  }
+
+  applyBlock(block) {
+    this.blockTotal += block;
+
+    if (this.messageInstance) {
+      this.messageInstance.update({
+        "system.instance.blockedDamage": this.blockTotal
+      });
+    }
+
+    this.finalized = true;
+  }
+
+  applyDodge(dodge) {
+    if (dodge > this.damage) {
+      this.dodged = true;
+    }
+
+    if (this.messageInstance) {
+      this.messageInstance.update({
+        "system.instance.dodged": this.dodged
+      });
+    }
+
+    this.finalized = true;
+  }
+
+  finalize() {
+    this.finalized = true;
+  }
+
+  static fromObject(data) {
+    const instance = new DamageInstance(data);
+
+    for (const [key, value] of Object.entries(data)) {
+      instance[key] = value;
+    }
+
+    return instance;
   }
 
   /**

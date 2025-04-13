@@ -133,7 +133,9 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
       this.actor = this.options.actor;
     }
 
-    let actorSpecies = this.actor.system._speciesData.name;
+    if (this.actor.type !== "creature") {
+      let actorSpecies = this.actor.system._speciesData.name;
+    }
     
     const trees = await gatherItems({ type: 'talentTree', gatherFolders: false, gatherFromWorld: true, gatherFromActor: false });
     const species = await gatherItems({ type: 'species', gatherFolders: false, gatherFromWorld: true, gatherFromActor: false });
@@ -260,6 +262,11 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
     // Remove all empty branches
     for (const tree of allTrees) {
       tree.system.branches = tree.system.branches.filter(branch => branch.talents.length > 0);
+    }
+
+    // If the actor is a creature, remove all species branches
+    if (this.actor.type === "creature") {
+      allTrees = allTrees.filter(tree => tree.type !== 'species' && tree.type !== 'subspecies');
     }
 
     // Remove all empty trees

@@ -195,12 +195,13 @@
   flex-wrap: wrap;
   justify-content: space-evenly;
   width: 100%;
+  gap: 5px;
 }
 .chat-message .card-buttons a {
   flex: 1 0 49%;
   text-align: center;
   padding: 0.25em 0;
-  background: var(--utopia-color-blue-white);
+  background: white;
 }
 .chat-message .damage-instance-card {
   display: flex;

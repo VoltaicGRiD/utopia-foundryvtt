@@ -1,3 +1,4 @@
+import { isNumeric } from "../../system/helpers/isNumeric.mjs";
 import { DragDropItemV2 } from "../base/drag-drop-enabled-itemv2.mjs";
 import { FeatureBuilder } from "../specialty/feature-builder.mjs";
 
@@ -108,7 +109,7 @@ export class GearFeatureSheet extends DragDropItemV2 {
           refinement = attributes.refinement ?? this.shared.refinement ?? 0;
           power = attributes.power ?? this.shared.power ?? 0;
         }
-        const costFormula = await new Roll(attributes.costFormula ?? this.shared.costFormula ?? "0", {...this.attributes[c], ...this.shared}).evaluate({async: true});
+        const costFormula = await new Roll(attributes.costFormula ?? this.shared.costFormula ?? "0", {...this.attributes[c], ...this.shared}).evaluate();
         const cost = costFormula.total * stackCount;
 
         simulation[c] = {
@@ -128,11 +129,16 @@ export class GearFeatureSheet extends DragDropItemV2 {
             } 
             else if (typeof extraValue === "string" && extraValue.length > 0 && extraValue !== "\u0000" && !isNumeric(extraValue)) {
               try {
-                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).alter(stackCount, 0).evaluate({async: true});
-                simulation[c][extra] = extraRoll.formula;
+                if (Roll.validate(extraValue)) {
+                  const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).alter(stackCount, 0);
+                  simulation[c][extra] = extraRoll.formula;
+                }
+                else {
+                  simulation[c][extra] = extraValue;
+                }
               } catch (error) {
                 console.error(`Error evaluating roll for ${extra}:`, error);
-                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).evaluate({async: true});
+                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared});
                 const terms = extraRoll.terms.map(term => {
                   if (term.constructor.name === "UtopiaDie") 
                     return `${term.number * stackCount}d${term.faces}`;
@@ -156,11 +162,11 @@ export class GearFeatureSheet extends DragDropItemV2 {
             } 
             else if (typeof extraValue === "string" && extraValue.length > 0 && extraValue !== "\u0000" && !isNumeric(extraValue)) {
               try {
-                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).alter(stackCount, 0).evaluate({async: true});
+                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).alter(stackCount, 0);
                 simulation[c][extra] = extraRoll.formula;
               } catch (error) {
                 console.error(`Error evaluating roll for ${extra}:`, error);
-                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).evaluate({async: true});
+                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared});
                 const terms = extraRoll.terms.map(term => {
                   if (term.constructor.name === "UtopiaDie") 
                     return `${term.number * stackCount}d${term.faces}`;

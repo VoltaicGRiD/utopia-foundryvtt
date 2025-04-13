@@ -26,7 +26,8 @@ export class UtopiaChatMessage extends ChatMessage {
     for (let button of strikeButtons) {
       button.addEventListener('click', async (event) => {
         const item = await new UtopiaItem(this.system.item);
-        await item.performStrike(this);
+        const formula = button.dataset.formula;
+        await item.performStrike(this, {formula});
       });
     }
 
@@ -52,21 +53,42 @@ export class UtopiaChatMessage extends ChatMessage {
           const measuredTemplate = new UtopiaTemplates(template);
           measuredTemplate.drawPreview();
         }
-
-        // if (!game.user.isGM) {
-        //   const actor = this.getActor();
-        //   const item = actor.items.get(this.getFlag('utopia', 'item')) ?? undefined;
-        //   const template = button.dataset.template;
-        //   UtopiaTemplates.fromPreset(template, item);
-        //   button.disabled = false;
-        //   return null;
-        // }
-        // else {
-        //   const template = button.dataset.template;
-        //   UtopiaTemplates.fromPreset(template);
-        // }
       });
     }
+
+    let blockButton = html.querySelector('[data-action="block"]');
+    blockButton?.addEventListener('click', async (event) => {
+      const target = await fromUuid(this.system.target);
+      const instance = DamageInstance.fromObject(this.system.instance);
+      const newInstance = await target.blockDamageInstance(instance);
+      const newMessage = UtopiaChatMessage.create({
+        content: await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [newInstance], item: this.system.source, targets: [target] }),
+        speaker: {
+          user: game.user._id,
+          speaker: ChatMessage.getSpeaker(),
+          content: this.content
+        },
+        system: { instance: newInstance, source: this.system.source, target: this.system.target }
+      });
+      await this.delete();
+    });
+
+    let dodgeButton = html.querySelector('[data-action="dodge"]');  
+    dodgeButton?.addEventListener('click', async (event) => {
+      const target = await fromUuid(this.system.target);
+      const instance = DamageInstance.fromObject(this.system.instance);
+      const newInstance = await target.dodgeDamageInstance(instance);
+      const newMessage = UtopiaChatMessage.create({
+        content: await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [newInstance], item: this.system.source, targets: [target] }),
+        speaker: {
+          user: game.user._id,
+          speaker: ChatMessage.getSpeaker(),
+          content: this.content
+        },
+        system: { instance: newInstance, source: this.system.source, target: this.system.target }
+      });
+      await this.delete();
+    });          
 
     let deleteTemplateButtons = html.querySelectorAll('[data-action="deleteTemplate"]');
     for (let button of deleteTemplateButtons) {
@@ -257,7 +279,7 @@ export class UtopiaChatMessage extends ChatMessage {
       button.addEventListener('click', async (event) => {
         var target = undefined;
         if (button.dataset.target === "target") {
-          target = await new UtopiaActor(this.system.target);
+          target = await fromUuid(this.system.target);
         }
         else {
           if (this.system.source.constructor.name === "UtopiaItem") {
@@ -269,7 +291,7 @@ export class UtopiaChatMessage extends ChatMessage {
           }
         }        
         const percent = button.dataset.percent ?? 100;
-        const instance = new DamageInstance(this.system.instance);
+        const instance = DamageInstance.fromObject(this.system.instance);
         target.applyDamage(instance) // TODO - Implement damage percentages
       });
     }
@@ -278,7 +300,7 @@ export class UtopiaChatMessage extends ChatMessage {
       button.addEventListener('click', async (event) => {
         var target = undefined;
         if (button.dataset.target === "target") {
-          target = await new UtopiaActor(this.system.target);
+          target = await fromUuid(this.system.target);
         }
         else {
           if (this.system.source.constructor.name === "UtopiaItem") {
@@ -292,7 +314,8 @@ export class UtopiaChatMessage extends ChatMessage {
         const percent = button.dataset.percent ?? 100;
         const instances = this.system.instances;
         for (const instance of instances) {
-          target.applyDamage(instance, true) // TODO - Implement damage percentages
+          const damageInstance = DamageInstance.fromObject(instance); // Convert to DamageInstance
+          target.applyDamage(damageInstance, true) // TODO - Implement damage percentages
         }
       });
     }
@@ -344,5 +367,23 @@ export class UtopiaChatMessage extends ChatMessage {
   getRollData() {
     const { actor, item } = this;
     return { ...actor?.getRollData(), ...item?.getRollData() };
+  }
+
+  async removeStrikeButtons() {
+    const html = await this.getHTML();
+    const strikeButtons = html[0].querySelectorAll('[data-action="performStrike"]');
+    for (let button of strikeButtons) {
+      button.remove();
+    }
+    this.render();
+  }
+
+  async removeDamageButtons() {
+    const html = await this.getHTML();
+    const damageButtons = html[0].querySelectorAll('[data-action="damage"]');
+    for (let button of damageButtons) {
+      button.remove();
+    }
+    this.render();
   }
 }

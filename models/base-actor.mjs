@@ -540,8 +540,18 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       try { this._preparePoints(); } catch (e) { console.error(e); }
       try { this._prepareAttributes(); } catch (e) { console.error(e); }
     }
-    //try { this._prepareAutomation(); } catch (e) { console.error(e); }
+    try { this._prepareAutomation(); } catch (e) { console.error(e); }
   }
+
+  /**
+   * Currently only used to output the formula for blocks and dodges 
+   *
+   */
+  _prepareAutomation() {
+    this.block.formula = `${this.block.quantity}d${this.block.size}`;
+    this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
+  }
+
   
   /**
    * Adjust the actor's attributes (hitpoints, stamina) based on stats and current level.
@@ -651,6 +661,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }
     }
 
+    // TODO - Convert to using the parsed damage types from `game.settings.get("utopia", "advancedSettings.damageTypes")`
     this.defenses = {
       energy:    this.innateDefenses.energy    + this.armorDefenses?.energy ?? 0,
       heat:      this.innateDefenses.heat      + this.armorDefenses?.heat ?? 0,

@@ -441,7 +441,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     const app = target.dataset.application;
     switch (app) {
       case "talent-browser":
-        if (this.actor.system._speciesData.name === "No Species") {
+        const speciesName = this.actor.system?._speciesData?.name ?? "No Species";
+        if (speciesName === "No Species" && this.actor.type !== "creature") {
           return ui.notifications.warn(game.i18n.localize("UTOPIA.NoSpeciesWarning"));
         }
         return new TalentBrowser({ actor: this.actor }).render(true);

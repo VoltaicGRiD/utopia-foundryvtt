@@ -2,6 +2,17 @@ import { DamageInstance } from "../system/damage.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
 
 export class UtopiaItem extends Item {
+
+  async getRollData() {
+    const owner = this.actor ?? this.parent ?? game.user.character ?? game.user;
+    if (owner instanceof Actor) {
+      const rollData = owner.getRollData() ?? {};
+      rollData.item = this;
+      return rollData;
+    }
+    return {};
+  }
+
   /**
    * Only used for 'gear' type items.
    * Calculates which component amounts are still needed after subtracting contributions,
@@ -203,7 +214,7 @@ export class UtopiaItem extends Item {
       features: this.system.features,
     });
 
-    UtopiaChatMessage.create({
+    const chatMessage = await UtopiaChatMessage.create({
       user: game.user._id,
       speaker: ChatMessage.getSpeaker(),
       content: html,
@@ -212,9 +223,18 @@ export class UtopiaItem extends Item {
 
     // TODO - Remove
     console.warn(this);
+
+    // Perform automatic attacks if necessary
+    this._autoRollAttacks(chatMessage);
   }
 
-  async performStrike() {
+  async performStrike(chatMessage = undefined, options = {}) {
+    // Remove strike buttons from the chat message
+    if (chatMessage instanceof UtopiaChatMessage)
+      chatMessage.removeStrikeButtons();
+
+    const formula = options.formula ?? this.redistributions[0];
+
     const targets = [...game.user.targets.map(t => t.actor)] || [];
     if (targets.length == 0) { // No targets selected
       if (game.settings.get("utopia", "targetRequired")) {
@@ -225,14 +245,17 @@ export class UtopiaItem extends Item {
       }
     } 
 
-    const damageValue = await new Roll(this.system.damage ?? "0").evaluate();
+    const damageRoll = new Roll(formula ?? "0", this.getRollData())
+    const damageValue = await damageRoll.evaluate();
     for (const target of targets) {
       const damage = new DamageInstance({
         type: this.system.damageType ?? "physical",
         value: damageValue.total,
-        target: target,
+        target: target.uuid,
         source: this,
+        roll: damageRoll,
       });
+      const handledDamage = await damage.handle();
       const damageMessage = await damage.toMessage();
       console.warn(damage);
       console.warn(damageMessage);
@@ -240,71 +263,20 @@ export class UtopiaItem extends Item {
 
     if (this.system.returnDamage && new Roll(this.system.returnDamage).formula > 0) {
       const owner = this.actor ?? this.parent ?? game.user.character ?? game.user; 
-      const returnValue = await new Roll(this.system.returnDamage ?? "0").evaluate();
+      const returnRoll = new Roll(this.system.returnDamage);
+      const returnValue = await returnRoll.evaluate();
       const returnDamage = new DamageInstance({
         type: this.system.damageType ?? "physical",
         value: returnValue.total,
-        target: owner,
+        target: owner.uuid,
         source: this,
+        roll: returnRoll,
       });
+      const handledDamage = await returnDamage.handle();
       const returnDamageMessage = await returnDamage.toMessage();
       console.warn(returnDamageMessage);
     }
-  }
-
-  /**
-   * Getter for damage dice redistribution
-   */
-  get redistributions() {
-    if (game.settings.get("utopia", "diceRedistribution")) {
-      return this._redistributions();
-    }
-    
-    // Prioritize 'this.system.damage'
-    if (this.system.damage && this.system.damage.length > 0) {
-      return [ this.system.damage ];
-    }
-    else if (this.system.formula && this.system.formula.length > 0) {
-      return [ this.system.formula ];
-    }
-  }
-
-  _redistributions() {
-    const redistributions = [];
-
-    const diceSizes = [100, 20, 12, 10, 8, 6, 4];
-
-    // Prioritize 'this.system.damage'
-    if (this.system.damage && this.system.damage.length > 0) {
-      redistributions.push(this.system.damage);
-
-      const roll = new Roll(this.system.damage);
-      for (const die of roll.dice.filter(d => d.constructor.name === "Die")) {
-        const max = die.faces * die.number;
-        for (const size of diceSizes.filter(s => s != die.faces)) {
-          if (max % size === 0) {
-            redistributions.push(`${Math.floor(max / size)}d${size}`);
-          }
-        }
-      }
-    }
-
-    else if (item.system.formula && item.system.formula.length > 0) {
-      redistributions.push(this.system.formula);
-
-      const roll = new Roll(this.system.formula);
-      for (const die of roll.dice.filter(d => d.constructor.name === "Die")) {
-        const max = die.faces * die.number;
-        for (const size of diceSizes.filter(s => s != die.faces)) {
-          if (max % size === 0) {
-            redistributions.push(`${Math.floor(max / size)}d${size}`);
-          }
-        }
-      }
-    }
-    
-    return redistributions;
-  }
+  } 
 
   async _castSpell() {
     const featureSettings = this.system.featureSettings;
@@ -357,10 +329,10 @@ export class UtopiaItem extends Item {
         type: "stamina",
         source: this,
         value: cost,
-        target: owner
+        target: owner.uuid,
       });
-      
-      owner.applyDamage(damage);
+      const handledDamage = await damage.handle();
+      const damageMessage = await damage.toMessage();
     }
 
     const template = await this.system.getTemplate(this);
@@ -373,7 +345,7 @@ export class UtopiaItem extends Item {
       template: template
     });
 
-    return UtopiaChatMessage.create({
+    const chatMessage = await UtopiaChatMessage.create({
       user: game.user._id,
       speaker: ChatMessage.getSpeaker(),
       content: content,
@@ -383,24 +355,90 @@ export class UtopiaItem extends Item {
       }
     });
 
-    // features.forEach(async (feature) => {
-    //   if (feature.system.formula.length > 0) {
-    //     const roll = await new Roll(feature.system.formula).evaluate();
-    //     const keys = ["type", "damage", "damagetype", "damage type"];
-    //     for (const [key, value] of Object.entries(feature.variables)) {
-    //       if (keys.includes(key.toLowerCase())) {
-    //         const type = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[value] ?? JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes")).energy;
-    //         const damage = DamageInstance.create({
-    //           type: type,
-    //           value: roll.total,
-    //           target: this.actor
-    //         });
+    // Perform automatic attacks if necessary
+    this._autoRollAttacks(chatMessage);
+  }
 
-    //         owner.applyDamage(damage);
-    //       }
-    //     }
-    //   }      
-    // })
+  // *****************************************************
+  // Item Exclusive getters and helpers
+  // *****************************************************
+  async _autoRollAttacks(chatMessage = undefined) {
+    // Check if the world "AutoRollAttacks" setting is enabled
+    if (game.settings.get("utopia", "autoRollAttacks")) {
+      var formula = this.system.damage ?? this.system.formula ?? "0";
+      // Check if we should automatically redistribute dice
+      if (game.settings.get("utopia", "diceRedistribution")) {
+
+        switch (game.settings.get("utopia", "diceRedistributionSize")) {
+          case 0: // Use the default formula
+            break;
+          case 1: // Use the smallest redistribution (smallest dice size)
+            formula = this.redistributions[0] ?? this.redistributions[0];
+            break;
+          case 2: // Use the largest redistribution (largest dice size)
+            formula = this.redistributions.at(-1) ?? this.redistributions[0];
+            break;
+        }
+
+        this.performStrike(chatMessage, {formula: formula});
+      }
+      // We roll based on the default formula
+      else {       
+        this.performStrike(chatMessage, {formula: roll.formula});
+      }
+    }
+  }
+
+  /**
+   * Getter for damage dice redistribution
+   */
+  get redistributions() {
+    if (game.settings.get("utopia", "diceRedistribution")) {
+      return this._redistributions();
+    }
+    
+    // Prioritize 'this.system.damage'
+    if (this.system.damage && this.system.damage.length > 0) {
+      return [ this.system.damage ];
+    }
+    else if (this.system.formula && this.system.formula.length > 0) {
+      return [ this.system.formula ];
+    }
+  }
+
+  _redistributions() {
+    const redistributions = [];
+
+    const diceSizes = game.settings.get("utopia", "diceRedistributionDiceSizes").split(",").map(s => parseInt(s)).sort((a, b) => a - b);
+
+    // Prioritize 'this.system.damage'
+    if (this.system.damage && this.system.damage.length > 0) {
+      const roll = new Roll(this.system.damage);
+      for (const die of roll.dice.filter(d => d.constructor.name === "Die")) {
+        const max = die.faces * die.number;
+        for (const size of diceSizes) {
+          if (max % size === 0) {
+            redistributions.push(`${Math.floor(max / size)}d${size}`);
+          }
+        }
+      }
+    }
+
+    else if (this.system.formula && this.system.formula.length > 0) {
+      redistributions.push(this.system.formula);
+
+      const roll = new Roll(this.system.formula);
+      for (const die of roll.dice.filter(d => d.constructor.name === "Die")) {
+        const max = die.faces * die.number;
+        for (const size of diceSizes) {
+          if (max % size === 0) {
+            redistributions.push(`${Math.floor(max / size)}d${size}`);
+          }
+        }
+      }
+    }
+    
+    return redistributions;
   }
 
   static GM_SPELLCASTING = () => {
@@ -456,4 +494,5 @@ export class UtopiaItem extends Item {
 
     return categories; 
   }
+
 }

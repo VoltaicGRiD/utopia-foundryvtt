@@ -1,33 +1,77 @@
 <div class="damage-instance-card">
   {{log this}}
+  {{#if (eq finalized true)}}
+    {{#if (eq blocked true)}}
+      <div class="damage-formula blocked">
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.BLOCKED"}}</span>
+        {{{blockTooltip}}}
+      </div>
+    {{else if (eq dodged true)}}
+      <div class="damage-formula dodged">
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.DODGED"}}</span>
+        {{{dodgeTooltip}}}
+      </div>
+    {{/if}}
+    <div class="damage-formula">
+      <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.DAMAGE"}}</span>
+      {{{rollTooltip}}}
+    </div>
+  {{else}}
+    <div class="damage-formula pending">
+      {{#if (eq damageDisplay 0)}}
+        {{!-- Damage should not be displayed --}}
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.PENDING"}}</span>
+      {{else if (eq damageDisplay 1)}}
+        {{!-- Damage should be displayed as an estimate --}}
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.ESTIMATED"}} ~{{simulationResult}}</span>
+      {{else if (eq damageDisplay 2)}}
+        {{!-- Damage should be displayed as its exact value --}}
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.EXACT"}} {{value}}</span>
+      {{/if}}
+    </div>
+  {{/if}}
   <div class="damage-instance-data">
-    {{#if (gt shpDamageDealt 0)}}
-      <div class="damage-shp">
-        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.SHP"}}</span>
-        <span class="damage-value">{{final.shpDamageDealt}}</span>
+    {{#if (eq finalized true)}}
+      {{#if (gt final.shpDamage 0)}}
+        <div class="damage-shp">
+          <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.SHP"}}</span>
+          <span class="damage-value">{{final.shpDamage}}</span>
+        </div>
+      {{/if}}
+      {{#if (gt final.dhpDamage 0)}}
+        <div class="damage-dhp">
+          <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.DHP"}}</span>
+          <span class="damage-value">{{final.dhpDamage}}</span>
+        </div>
+      {{/if}}
+      {{#if (gt final.staminaDamage 0)}}
+        <div class="damage-stamina">
+          <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.STAMINA"}}</span>
+          <span class="damage-value">{{final.staminaDamage}}</span>
+        </div>
+      {{/if}}
+      <div class="damage-total">
+        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.TOTAL"}}</span>
+        <span class="damage-value">{{final.total}}</span>
+      </div>
+      <div class="damage-type">
+        <span class="damage-label"><i class="fa-fw {{type.icon}}"></i></span>
+        <span class="damage-value">{{localize type.label}}</span>
       </div>
     {{/if}}
-    {{#if (gt dhpDamageDealt 0)}}
-      <div class="damage-dhp">
-        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.DHP"}}</span>
-        <span class="damage-value">{{final.dhpDamageDealt}}</span>
-      </div>
-    {{/if}}
-    {{#if (gt staminaDamageDealt 0)}}
-      <div class="damage-stamina">
-        <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.STAMINA"}}</span>
-        <span class="damage-value">{{final.staminaDamageDealt}}</span>
-      </div>
-    {{/if}}
-    <div class="damage-total">
-      <span class="damage-label">{{localize "UTOPIA.Chats.DamageInstance.TOTAL"}}</span>
-      <span class="damage-value">{{final.total}}</span>
-    </div>
-    <div class="damage-type">
-      <span class="damage-label"><i class="fa-fw {{type.icon}}"></i></span>
-      <span class="damage-value">{{localize type.label}}</span>
-    </div>
   </div>
+
+  {{#if (eq finalized false)}}
+    <div data-visibility="owner" class="card-buttons">
+      {{#if (eq dodgable true)}}
+        <a data-action="dodge"><i class="fa-fw fas fa-person-walking-arrow-loop-left"></i> {{localize "UTOPIA.CHAT.Dodge"}}</a>
+      {{/if}}
+      {{#if (eq blockable true)}}
+        <a data-action="block"><i class="fa-fw fas fa-shield"></i> {{localize "UTOPIA.CHAT.Block"}}</a>
+      {{/if}}
+    </div>
+  {{/if}}
+
   <div data-visibility="gm" class="damage-instance-buttons">
     <a data-action="dealDamage" data-instance="{{this}}" data-target="target" data-percent="100"><i class="fa-fw fas fa-sword"></i> Full Damage</a>
     {{!-- <a data-action="dealDamage" data-instance="{{this}}" data-target="target" data-percent="50"><i class="fa-fw fas fa-divide"></i> 1/2 Damage</a>

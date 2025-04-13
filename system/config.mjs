@@ -289,6 +289,7 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Energy',
+      appliesTo: 'shp'
     },
     heat: {
       name: 'Heat',
@@ -297,6 +298,7 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Heat',
+      appliesTo: 'shp'
     },
     chill: {
       name: 'Chill',
@@ -305,6 +307,7 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Chill',
+      appliesTo: 'shp'
     },
     physical: {
       name: 'Physical',
@@ -313,6 +316,7 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Physical',
+      appliesTo: 'shp'
     },
     pysche: {
       name: 'Psyche',
@@ -321,6 +325,7 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Psyche',
+      appliesTo: 'shp'
     },
     kinetic: {
       name: 'Kinetic',
@@ -329,6 +334,7 @@ export function registerConfig() {
       dodge: false,
       armor: false,
       label: 'UTOPIA.DAMAGE_TYPES.Kinetic',
+      appliesTo: 'dhp'
     },
     stamina: {
       name: 'Stamina',
@@ -337,6 +343,7 @@ export function registerConfig() {
       dodge: false,
       armor: false,
       label: 'UTOPIA.DAMAGE_TYPES.Stamina',
+      appliesTo: 'stamina'
     },
     healing: {
       name: 'Healing',
@@ -345,6 +352,7 @@ export function registerConfig() {
       dodge: false,
       armor: false,
       label: 'UTOPIA.DAMAGE_TYPES.Healing',
+      appliesTo: 'shp'
     },
     restoreStamina: {
       name: 'Restore Stamina',
@@ -353,6 +361,7 @@ export function registerConfig() {
       dodge: false,
       armor: false,
       label: 'UTOPIA.DAMAGE_TYPES.RestoreStamina',
+      appliesTo: 'stamina'
     }
   }
 

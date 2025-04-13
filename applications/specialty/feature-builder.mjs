@@ -131,7 +131,7 @@ export class FeatureBuilder extends api.HandlebarsApplicationMixin(api.Applicati
 
       const sortedAttributes = {};
       sortedKeys.forEach(key => {
-      sortedAttributes[key] = this.attributes[c][key];
+        sortedAttributes[key] = this.attributes[c][key];
       });
 
       this.attributes[c] = sortedAttributes;
@@ -573,11 +573,16 @@ export class FeatureBuilder extends api.HandlebarsApplicationMixin(api.Applicati
             } 
             else if (typeof extraValue === "string" && extraValue.length > 0 && extraValue !== "\u0000" && !isNumeric(extraValue)) {
               try {
-                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).alter(stackCount, 0).evaluate({async: true});
-                simulation[c][extra] = extraRoll.formula;
+                if (Roll.validate(extraValue)) {
+                  const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).alter(stackCount, 0);
+                  simulation[c][extra] = extraRoll.formula;
+                }
+                else {
+                  simulation[c][extra] = extraValue;
+                }
               } catch (error) {
                 console.error(`Error evaluating roll for ${extra}:`, error);
-                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared}).evaluate({async: true});
+                const extraRoll = await new Roll(extraValue, {...this.attributes[c], ...this.shared});
                 const terms = extraRoll.terms.map(term => {
                   if (term.constructor.name === "UtopiaDie") 
                     return `${term.number * stackCount}d${term.faces}`;
@@ -659,7 +664,7 @@ export class FeatureBuilder extends api.HandlebarsApplicationMixin(api.Applicati
 
           const attributes = {}
           attributes.shared = this.shared;
-          Object.keys(this.attributes).forEach(c => {
+          Object.keys(this.attributes).filter(k => k != "shared").forEach(c => {
             attributes[c] = this.attributes[c];
           });
 

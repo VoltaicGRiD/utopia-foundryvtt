@@ -85,7 +85,7 @@ export function registerGameSettings() {
     name: "UTOPIA.Settings.activeMeasuredTemplatePreview",
     hint: "UTOPIA.Settings.activeMeasuredTemplatePreviewHint",
     scope: "client",
-    config: true,
+    config: false,
     type: Boolean,
     default: true,
   })
@@ -115,7 +115,7 @@ export function registerGameSettings() {
     scope: "world",
     config: true,
     type: Boolean,
-    default: true,
+    default: false,
   });
 
   game.settings.register("utopia", "autoRollContests", {
@@ -123,13 +123,8 @@ export function registerGameSettings() {
     hint: "UTOPIA.Settings.autoRollContestsHint",
     scope: "world",
     config: true,
-    type: Number,
-    choices: {
-      0: "UTOPIA.Settings.autoRollContestsNone",
-      1: "UTOPIA.Settings.autoRollContestsPrompt",
-      2: "UTOPIA.Settings.autoRollContestsAuto",
-    },
-    default: 1,
+    type: Boolean,
+    default: false
   });
 
   game.settings.register("utopia", "displayDamage", {
@@ -147,6 +142,15 @@ export function registerGameSettings() {
     default: 1,
   });
 
+  game.settings.register("utopia", "estimateDamageSimulations", {
+    name: "UTOPIA.Settings.estimateDamageSimulations",
+    hint: "UTOPIA.Settings.estimateDamageSimulationsHint",
+    scope: "world",
+    config: true,
+    type: Number,
+    default: 100,
+  })
+
   game.settings.register("utopia", "diceRedistribution", {
     name: "UTOPIA.Settings.diceRedistribution",
     hint: "UTOPIA.Settings.diceRedistributionHint",
@@ -157,10 +161,20 @@ export function registerGameSettings() {
     default: true,
   });
 
+  
+  game.settings.register('utopia', 'diceRedistributionDiceSizes', {
+    name: "UTOPIA.Settings.diceRedistributionDiceSizes",
+    hint: "UTOPIA.Settings.diceRedistributionDiceSizesHint",
+    scope: "world",
+    config: game.settings.get("utopia", "diceRedistribution"),
+    type: String,
+    default: "100,20,12,10,8,6,4",
+  })
+
   game.settings.register("utopia", "diceRedistributionSize", {
     name: "UTOPIA.Settings.autoMaxDice",
     hint: "UTOPIA.Settings.autoMaxDiceHint",
-    scope: "user",
+    scope: "client",
     config: game.settings.get("utopia", "diceRedistribution"),
     type: Number,
     choices: {
@@ -225,33 +239,10 @@ export function registerGameSettings() {
     name: "UTOPIA.Settings.enableTwitchIntegration",
     hint: "UTOPIA.Settings.enableTwitchIntegrationHint",
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: false,
   });
-
-  // game.settings.register('utopia', 'allowPlayerArchetypeEdit', {
-  //   name: "UTOPIA.Settings.allowPlayerArchetypeEdit",
-  //   hint: "UTOPIA.Settings.allowPlayerArchetypeEditHint",
-  //   scope: "world",
-  //   config: true,
-  //   type: Boolean,
-  //   default: false,
-  // })
-  
-  game.settings.register('utopia', 'dockedWindowPosition', {
-    name: "UTOPIA.Settings.dockedWindowPosition",
-    hint: "UTOPIA.Settings.dockedWindowPositionHint",
-    scope: "client",
-    config: true,
-    type: Number,
-    default: 0,
-    choices: {
-      0: "UTOPIA.Settings.DockedWindowPosition.right",
-      1: "UTOPIA.Settings.DockedWindowPosition.left",
-      2: "UTOPIA.Settings.DockedWindowPosition.disabled",
-    }
-  })
 
   game.settings.register('utopia', 'restOnLevelUp', {
     name: "UTOPIA.Settings.restOnLevelUp",
@@ -260,14 +251,5 @@ export function registerGameSettings() {
     config: true,
     type: Boolean,
     default: false,
-  })
-
-  game.settings.register('utopia', 'speciesCustomQuirks', {
-    name: "UTOPIA.Settings.speciesCustomQuirks",
-    hint: "UTOPIA.Settings.speciesCustomQuirksHint",
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: false,
-  })
+  });
 }

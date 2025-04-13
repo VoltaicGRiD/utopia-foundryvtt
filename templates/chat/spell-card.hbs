@@ -52,11 +52,17 @@
   </div>
 
   {{#if template}}
-    <button data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></button>
+    <a data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></a>
   {{/if}}
 
   <div class="card-content">
     {{{item.system.flavor}}}
+  </div>
+
+  <div class="card-actions">
+    {{#each item.redistributions}}
+      <a data-action="performStrike" data-target="target" data-percent="100" data-formula="{{this}}"></a>
+    {{/each}}
   </div>
 
   <!-- <footer data-visibility="gm">

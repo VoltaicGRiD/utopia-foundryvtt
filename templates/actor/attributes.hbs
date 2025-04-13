@@ -69,7 +69,11 @@
     {{else}}
       <legend data-action="createDocument" data-document-type="talent" title="{{localize "UTOPIA.Talents.New"}}">{{localize "DOCUMENT.Create" type="Talent"}} <i class="fas fa-plus"></i></legend>
     {{/if}}
-    <a data-action="openApplication" data-application="talent-browser"><i class="fas fa-search"></i> {{localize "UTOPIA.Actors.Actions.OpenTalentTree"}}</a>
+    {{#if (ne actor.type "creature")}}
+      <a data-action="openApplication" data-application="talent-browser"><i class="fas fa-search"></i> {{localize "UTOPIA.Actors.Actions.OpenTalentTree"}}</a>
+    {{else}}
+      <p>{{localize "UTOPIA.Actors.Actions.CreatureTalentsInfo"}}</p>
+    {{/if}}
     <div class="item-container">
       {{#each talents as |item|}} 
         {{#if ../isPlay}}
@@ -204,50 +208,52 @@
     </div>
   </fieldset>
 
-  <fieldset class="item-set components-container">
-    <legend>{{localize "UTOPIA.Actors.Items.Components"}} <i class="fas fa-cogs"></i></legend>
-    <a class="action-button" data-action="roll" data-roll="forage"><i class="fa-fw fas fa-person-digging"></i> {{localize "UTOPIA.Actors.Actions.ForageAndCrafting"}}</a>
-    <div class="item-container">
-      {{#if isPlay}}
-        {{#each components as |component key|}}
-          {{#each component.rarities as |rarity key|}}
-            {{#if (gt rarity.value 0)}}
-              <div class="item">
-                <span class="item-name">{{localize component.label}}</span>
-                <span class="item-rarity">{{localize rarity.label}}</span>
-                <span class="item-value">{{numberFormat rarity.value}}</span>
-              </div>
-            {{/if}}
+  {{#if (ne actor.type "creature")}}
+    <fieldset class="item-set components-container">
+      <legend>{{localize "UTOPIA.Actors.Items.Components"}} <i class="fas fa-cogs"></i></legend>
+      <a class="action-button" data-action="roll" data-roll="forage"><i class="fa-fw fas fa-person-digging"></i> {{localize "UTOPIA.Actors.Actions.ForageAndCrafting"}}</a>
+      <div class="item-container">
+        {{#if isPlay}}
+          {{#each components as |component key|}}
+            {{#each component.rarities as |rarity key|}}
+              {{#if (gt rarity.value 0)}}
+                <div class="item">
+                  <span class="item-name">{{localize component.label}}</span>
+                  <span class="item-rarity">{{localize rarity.label}}</span>
+                  <span class="item-value">{{numberFormat rarity.value}}</span>
+                </div>
+              {{/if}}
+            {{/each}}
           {{/each}}
-        {{/each}}
-      {{else}}
-        <table class="components-table">
-          <thead>
-            <tr>
-              <th></th>
-              {{#each components as |component key|}}
-                {{#if @first}}
-                  {{#each component.rarities as |rarity key|}}
-                    <th>{{localize rarity.label}}</th>
-                  {{/each}}
-                {{/if}}
-              {{/each}}
-            </tr>
-          </thead>
-          <tbody>
-            {{#each components as |component key|}}
+        {{else}}
+          <table class="components-table">
+            <thead>
               <tr>
-                <th>{{localize component.label}}</th>
-                {{#each component.rarities as |rarity key|}}
-                  <td>
-                    <input type="number" name={{rarity.name}} value="{{rarity.value}}" />
-                  </td>
+                <th></th>
+                {{#each components as |component key|}}
+                  {{#if @first}}
+                    {{#each component.rarities as |rarity key|}}
+                      <th>{{localize rarity.label}}</th>
+                    {{/each}}
+                  {{/if}}
                 {{/each}}
               </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      {{/if}}
-    </div>
-  </fieldset>
+            </thead>
+            <tbody>
+              {{#each components as |component key|}}
+                <tr>
+                  <th>{{localize component.label}}</th>
+                  {{#each component.rarities as |rarity key|}}
+                    <td>
+                      <input type="number" name={{rarity.name}} value="{{rarity.value}}" />
+                    </td>
+                  {{/each}}
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        {{/if}}
+      </div>
+    </fieldset>
+  {{/if}}
 </section>

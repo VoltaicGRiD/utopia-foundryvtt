@@ -208,7 +208,7 @@ export class Gear extends UtopiaItemBase {
         } else if (typeof value === "string" && value !== "\u0000" && !isNumeric(value)) {
           try {
             if (Roll.validate(value)) {
-              const extraRoll = new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0).evaluate({ async: true });
+              const extraRoll = new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0);
               simulation[key] = extraRoll.formula;
             }
             else {

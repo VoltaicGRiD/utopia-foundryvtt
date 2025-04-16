@@ -31,10 +31,9 @@
   },
   "esmodules": [
     "system/utopia.mjs", 
-    "lib/tagify/tagify.esm.js",
     "lib/ace/src/ace.js"
   ],
-  "styles": ["css/utopia.css", "lib/tagify/tagify.css", "lib/ace/css/ace.css"],
+  "styles": ["css/utopia.css", "lib/ace/css/ace.css"],
   "languages": [
     {
       "lang": "en",
@@ -388,12 +387,12 @@
     }
   ],
   "socket": true,
-  "manifest": "https://github.com/VoltaicGRiD/utopia-foundryvtt-v1/edit/rewrite/system.json",
-  "download": "https://github.com/VoltaicGRiD/utopia-foundryvtt-v1/archive/refs/tags/Beta-1.zip",
+  "manifest": "https://github.com/VoltaicGRiD/utopia-foundryvtt-v1/releases/latest/download/system.json",
+  "download": "https://github.com/VoltaicGRiD/utopia-foundryvtt-v1/releases/latest/download/utopia.zip",
   "background": "systems/utopia/assets/Utopia-Background.webp",
   "grid": {
     "distance": 1,
-    "unites": "m"
+    "units": "m"
   },
   "primaryTokenAttribute": "shp",
   "secondaryTokenAttribute": "dhp"

@@ -519,6 +519,32 @@
   transform: translateX(-50%);
   width: 90px;
 }
+.utopia .handheld-slots {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-content: center;
+  justify-content: center;
+}
+.utopia .handheld-slots .handheld-slot {
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+}
+.utopia .handheld-slots .handheld-slot > * {
+  pointer-events: none;
+}
+.utopia .handheld-slots .handheld-slot {
+  border: 2px dashed white;
+}
+.utopia .handheld-slots .handheld-slot.filled {
+  border: 2px solid white;
+}
+.utopia .handheld-slots .handheld-slot.locked {
+  border: 2px solid #9d3a2a;
+  background-color: #511e16;
+}
 .utopia .grid,
 .utopia .grid-2col {
   display: grid;
@@ -1130,13 +1156,43 @@
 .utopia.item-sheet .item-set .item, .utopia.actor-sheet .item-set .item {
   flex: 0 0 32%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 2px;
   align-items: center;
   justify-content: space-around;
   padding: 5px;
   border: 1px solid var(--utopia-color-blue-white);
   border-radius: 5px 5px 0 0;
+}
+.utopia.item-sheet .item-set .item-details, .utopia.actor-sheet .item-set .item-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 5px;
+  font-size: var(--font-size-10);
+}
+.utopia.item-sheet .item-set .item-play, .utopia.actor-sheet .item-set .item-play {
+  flex: 0 0 32%;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: center;
+  justify-content: space-around;
+}
+.utopia.item-sheet .item-set .item-play .item, .utopia.actor-sheet .item-set .item-play .item {
+  border-radius: 5px 0 0 5px;
+  flex: 20;
+}
+.utopia.item-sheet .item-set .item-play .item-actions, .utopia.actor-sheet .item-set .item-play .item-actions {
+  border: 1px solid var(--utopia-color-blue-white);
+  border-left: 0;
+  background: var(--utopia-color-maroon);
+  border-radius: 0 5px 5px 0;
+  padding: 5px 5px;
+  height: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 .utopia.item-sheet .item-set .item-edit, .utopia.actor-sheet .item-set .item-edit {
   flex: 0 0 32%;
@@ -1157,7 +1213,15 @@
   background: var(--utopia-color-maroon);
   border-radius: 0 5px 5px 0;
   padding: 5px 5px;
+  height: 100%;
   flex: 1;
+  display: flex;
+  align-items: center;
+}
+.utopia.item-sheet .item-set .prototype, .utopia.actor-sheet .item-set .prototype {
+  border: 1px dashed var(--utopia-color-maroon);
+  background: var(--utopia-color-blue-white);
+  color: var(--utopia-color-black);
 }
 .utopia.item-sheet .components-container .components-table, .utopia.actor-sheet .components-container .components-table {
   margin: 0;
@@ -1938,6 +2002,32 @@
   transform: translateX(-50%);
   width: 90px;
 }
+.utopia.item-sheet .handheld-slots, .utopia.actor-sheet .handheld-slots {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-content: center;
+  justify-content: center;
+}
+.utopia.item-sheet .handheld-slots .handheld-slot, .utopia.actor-sheet .handheld-slots .handheld-slot {
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+}
+.utopia.item-sheet .handheld-slots .handheld-slot > *, .utopia.actor-sheet .handheld-slots .handheld-slot > * {
+  pointer-events: none;
+}
+.utopia.item-sheet .handheld-slots .handheld-slot, .utopia.actor-sheet .handheld-slots .handheld-slot {
+  border: 2px dashed white;
+}
+.utopia.item-sheet .handheld-slots .handheld-slot.filled, .utopia.actor-sheet .handheld-slots .handheld-slot.filled {
+  border: 2px solid white;
+}
+.utopia.item-sheet .handheld-slots .handheld-slot.locked, .utopia.actor-sheet .handheld-slots .handheld-slot.locked {
+  border: 2px solid #9d3a2a;
+  background-color: #511e16;
+}
 .utopia.item-sheet.creature .creature-stats, .utopia.actor-sheet.creature .creature-stats {
   display: flex;
   flex-direction: row;
@@ -2711,6 +2801,11 @@
 }
 .utopia.gear-sheet, .utopia.artifice {
   border-radius: 0 25px 0 25px;
+}
+.utopia.gear-sheet .gear-img, .utopia.artifice .gear-img {
+  border: none;
+  width: 60px;
+  height: 60px;
 }
 .utopia.gear-sheet .variable, .utopia.artifice .variable {
   margin: 0;

@@ -64,14 +64,14 @@ export class UtopiaActor extends Actor {
     }
 
     // Add paper doll data.
-    const paperDoll = this.system.getPaperDoll();
-    rollData.paperdoll ??= {};
-    for (const [slot, obj] of Object.entries(paperDoll)) {
-      rollData.paperdoll[slot] = obj;
-    }
+    // const paperDoll = this.system.getPaperDoll();
+    // rollData.paperdoll ??= {};
+    // for (const [slot, obj] of Object.entries(paperDoll)) {
+    //   rollData.paperdoll[slot] = obj;
+    // }
 
     // Count filled augments.
-    rollData.filledAugments = Object.values(this.system.augments).filter(a => a !== null).length;
+    // rollData.filledAugments = Object.values(this.system.augments).filter(a => a !== null).length;
     // rollData.filledEquipment = Object.values(this.system.equipment).filter(e => e !== null).length;
 
     return rollData;

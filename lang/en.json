@@ -93,6 +93,12 @@
         "verb": "to Maintain Concentration",
         "label": "Maintain Concentration",
         "description": "Maintain Concentration is the ability to maintain concentration on spells when taking damage."
+      },
+      "Grapple": {
+        "noun": "Grapple",
+        "verb": "to Grapple",
+        "label": "Grapple",
+        "description": "Grapple is the ability to seize and hold onto a creature in combat."
       }
     },
     "COMMON": {
@@ -170,8 +176,9 @@
       "ReplaceSpeciesTitle": "Replace Species",
       "ReplaceSpecies": "You must be a GM to replace the species of an actor.",
       "ReplaceSpeciesGM": "As the GM, you can replace the species of this actor.<br>This will remove the existing species features and talents.<br/>Are you sure you want to do this? (Talent points will be returned)",
-      "NoTargetsSelected": "The game rule \"Target Required\" is enabled, you must target at least one token to perform this action.",
-      "NoTargetsSelectedInfo": "No tokens are targeted. Defense calculations will need to be performed manually."
+      "NoTargetsSelected": "The game rule \"Target Required\" is enabledj, you must target at least one token to perform this action.",
+      "NoTargetsSelectedInfo": "No tokens are targeted. Defense calculations will need to be performed manually.",
+      "NoSpeciesWarning": "There is no species assigned to this actor. A species is required to browse talents."
     },
     "CHAT": {
       "Block": "Block",

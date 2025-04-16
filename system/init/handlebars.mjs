@@ -41,11 +41,4 @@ export function registerHandlebarsSettings() {
   Handlebars.registerHelper("length", function (value) {
     return value.length;
   })
-
-  Handlebars.registerHelper("for", function (n, block) {
-    var accum = '';
-    for(var i = 0; i < n; ++i)
-        accum += block.fn(i);
-    return accum;
-  });
 }

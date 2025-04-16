@@ -1,5 +1,4 @@
 
-import Tagify from '../../lib/tagify/tagify.esm.js';
 import { DragDropItemV2 } from '../base/drag-drop-enabled-itemv2.mjs';
 
 export class SpellFeatureSheet extends DragDropItemV2 {
@@ -145,31 +144,7 @@ export class SpellFeatureSheet extends DragDropItemV2 {
     console.log(this.document.system.variables[variableKey].options);
     const options = this.document.system.variables[variableKey].options;
     option.value = options;
-    
-    const tagify = new Tagify(option, {
-      originalInputValueFormat: valuesArr => valuesArr.map(item => item.value)
-    }).on("add", (e) => {
-      let current = this.document.system.variables[variableKey].options;
-      if (typeof current === "string") {
-        current = current.split(",");
-      } else if (typeof current === "undefined") {
-        current = [];
-      }
-      if (current.some(c => c === '' || c.length === 0)) {
-        current.splice(current.indexOf(''), 1);
-      }
-      current.push(e.detail.data.value);
-      this.document.update({
-        [`system.variables.${variableKey}.options`]: current,
-      });
-    }).on("remove", (e) => {
-      const option = e.detail.data.value;
-      const index = options.indexOf(option);
-      options.splice(index, 1);
-      this.document.update({
-        [`system.variables.${variableKey}.options`]: options,
-      });
-    });
+
   }
 
   static async _newVariable(event) {

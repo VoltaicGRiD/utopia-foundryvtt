@@ -109,6 +109,13 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
     specialtyChecks = game.i18n.sortObjects(Object.values(specialtyChecks), "label");
 
+    const handheldSlotsEquipped = this.actor.system.handheldSlots.equipped.map(i => this.actor.items.get(i) ?? null);
+
+    // for (var i = 0; i < handheldSlotsCapacity; i++) {
+    //   const item = this.actor.items.get(handheldSlotsEquipped[i]) ?? null;
+    //   handheldSlotsEquipped[i] = item;
+    // }
+
     return {
       // Ownership
       editable: this.isEditable,
@@ -124,6 +131,9 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       // Actor's system data
       system: this.actor.system,
       systemSource: this.actor.system._source,
+
+      // Slot data
+      handheldSlotsEquipped: handheldSlotsEquipped,
 
       // Actor flags
       flags: this.actor.flags,
@@ -285,6 +295,125 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       });
     });
 
+    // Enable the drag-drop function for equipment
+    const equipmentItems = this.element.querySelectorAll("div[data-drag][data-draggable='gear']");
+    equipmentItems.forEach(item => {
+      item.addEventListener('dragstart', (event) => {
+        const id = item.dataset.documentId;
+        event.dataTransfer.setData('text/plain', id);
+      });
+    });
+
+    const equipmentSlots = this.element.querySelectorAll(".item-slot");
+    const augmentSlots = this.element.querySelectorAll(".augment-slot");
+
+    equipmentSlots.forEach((slot) => {
+      slot.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+      slot.addEventListener('drop', async (event) => {
+        event.preventDefault();
+        const droppedSlot = slot.dataset.slot;
+        const type = "equipmentSlots";
+        const data = event.dataTransfer.getData('text/plain');
+        const item = this.actor.items.get(data);
+        if (this.checkGearSlot(item, droppedSlot) && this.checkCanEquip(item, droppedSlot, type)) {
+          const equippedItems = this.actor.system[type].equipped[droppedSlot] || [];
+          const capacity = this.actor.system[type].capacity[droppedSlot] || 1;
+          if (equippedItems.length >= capacity) {
+            // Remove the oldest item
+            equippedItems.shift();
+          }
+          await this.actor.update({
+            [`system.${type}.equipped.${droppedSlot}`]: item ? [...equippedItems, data] : [...equippedItems]
+          })
+        }
+      });
+      slot.addEventListener('contextmenu', async (event) => {
+        event.preventDefault();
+        const droppedSlot = slot.dataset.slot;
+        const type = "equipmentSlots";
+        const id = slot.dataset.id;
+        const equippedItems = this.actor.system[type].equipped[droppedSlot] || [];
+        const filtered = equippedItems.filter((itemId) => itemId !== id);
+        await this.actor.update({
+          [`system.${type}.equipped.${droppedSlot}`]: filtered
+        });
+      });
+    });
+
+    augmentSlots.forEach((slot) => {
+      slot.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+      slot.addEventListener('drop', async (event) => {
+        event.preventDefault();
+        const droppedSlot = slot.dataset.slot;
+        const type = "augmentSlots";
+        const data = event.dataTransfer.getData('text/plain');
+        const item = this.actor.items.get(data);
+        if (this.checkGearSlot(item, droppedSlot) && this.checkCanEquip(item, droppedSlot, type)) {
+          const equippedItems = this.actor.system[type].equipped[droppedSlot] || [];
+          const capacity = this.actor.system[type].capacity[droppedSlot] || 1;
+          if (equippedItems.length >= capacity) {
+            // Remove the oldest item
+            equippedItems.shift();
+          }
+          await this.actor.update({
+            [`system.${type}.equipped.${droppedSlot}`]: item ? [...equippedItems, data] : [...equippedItems]
+          })
+        }
+      });
+      slot.addEventListener('contextmenu', async (event) => {
+        event.preventDefault();
+        const droppedSlot = slot.dataset.slot;
+        const type = "augmentSlots";
+        const id = slot.dataset.id;
+        const equippedItems = this.actor.system[type].equipped[droppedSlot] || [];
+        const filtered = equippedItems.filter((itemId) => itemId !== id);
+        await this.actor.update({
+          [`system.${type}.equipped.${droppedSlot}`]: filtered
+        });
+      });
+    });
+
+    const handheldSlots = this.element.querySelectorAll(".handheld-slot");
+    handheldSlots.forEach((slot) => {
+      slot.addEventListener('dragover', (event) => {
+        event.preventDefault();
+      });
+      slot.addEventListener('drop', async (event) => {
+        event.preventDefault();
+        const droppedSlot = parseInt(slot.dataset.slot);
+        const type = "handheldSlots";
+        const data = event.dataTransfer.getData('text/plain');
+        const item = this.actor.items.get(data);
+        if (this.checkGearSlot(item, droppedSlot, type) && this.checkCanEquip(item, droppedSlot, type)) {
+          const equippedItems = this.actor.system[type].equipped || [];
+          const capacity = this.actor.system[type].capacity || 1;
+          if (equippedItems.length > capacity) {
+            // Remove the oldest item
+            ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.HandheldSlotCapacityWarning"));
+          }
+          equippedItems[droppedSlot] = item ? data : null;
+          await this.actor.update({
+            [`system.${type}.equipped`]: equippedItems
+          })
+        }
+      });
+      slot.addEventListener('contextmenu', async (event) => {
+        event.preventDefault();
+        const droppedSlot = parseInt(slot.dataset.slot);
+        const type = "handheldSlots";
+        const id = slot.dataset.id;
+        const equippedItems = this.actor.system[type].equipped || [];
+        equippedItems[droppedSlot] = null;
+        await this.actor.update({
+          [`system.${type}.equipped`]: equippedItems
+        });
+      });
+    });
+
     // Move the tabs element from within the 'window-content' to the 'window' itself
     const tabs = this.element.querySelector(".tabs");
     if (tabs) this.element.prepend(tabs);
@@ -384,7 +513,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       case "forage": 
         return this.actor.forage();
       case "craft": 
-        return this.actor.craft();
+        const itemToCraft = this.actor.items.get(target.dataset.item);
+        return itemToCraft.craft();
       case "check": 
         const check = target.dataset.check;
         const specification = target.dataset.specification ?? "always";
@@ -443,7 +573,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       case "talent-browser":
         const speciesName = this.actor.system?._speciesData?.name ?? "No Species";
         if (speciesName === "No Species" && this.actor.type !== "creature") {
-          return ui.notifications.warn(game.i18n.localize("UTOPIA.NoSpeciesWarning"));
+          return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.NoSpeciesWarning"));
         }
         return new TalentBrowser({ actor: this.actor }).render(true);
       case "spellcraft": 
@@ -452,6 +582,40 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         return new AdvancementSheet({ actor: this.actor }).render(true);
       case "browser": 
         return new CompendiumBrowser({ actor: this.actor, type: target.dataset.documentType }).render(true);
+    }
+  }
+
+  checkGearSlot(item, slot, slotType) {
+    const type = item.system.type;
+    if ((type === "weapon" || type === "shield") && slotType.includes("handheld")) return true;
+    if (type === "armor") {
+      const armorSlot = item.system.armorType.replace("Armor", "");
+      if (slot === armorSlot.toLowerCase()) return true;
+    }
+    if (type === "artifact") {
+      const artifactType = item.system.artifactType.replace("Artifact", "");
+      if (artifactType === "handheld" && slot.includes("handheld")) return true;
+      if (artifactType === "equippable" && slot === item.system.equippableArtifactSlot) return true;
+      if (artifactType === "ammunition" && (slot === "waist" || slot === "back")) return true;
+    }
+
+    return false;
+  }
+
+  checkCanEquip(item, slot, slotType) {
+    const type = item.system.type;
+    const equippable = item.system.equippable ?? true;
+    const augmentable = item.system.augmentable ?? true;
+    switch (slotType) {
+      case "equipmentSlots":
+        const slotEquippable = !this.actor.system.getPaperDoll()[slot].unequippable;
+        return equippable && slotEquippable;
+      case "augmentSlots": 
+        const slotAugmentable = !this.actor.system.getPaperDoll()[slot].unaugmentable;
+        return augmentable && slotAugmentable;
+      case "handheldSlots":
+        const slotHandheldEquippable = !this.actor.system.getPaperDoll()["hands"].unequippable;
+        return equippable && slotHandheldEquippable;
     }
   }
 

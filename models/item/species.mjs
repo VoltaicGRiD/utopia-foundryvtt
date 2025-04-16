@@ -46,9 +46,9 @@ export class Species extends UtopiaItemBase {
       back: new fields.NumberField({ ...required, initial: 1 }),
       chest: new fields.NumberField({ ...required, initial: 1 }),
       waist: new fields.NumberField({ ...required, initial: 1 }),
-      hands: new fields.NumberField({ ...required, initial: 1 }),
+      hands: new fields.NumberField({ ...required, initial: 2 }),
       ring: new fields.NumberField({ ...required, initial: 1 }),
-      feet: new fields.NumberField({ ...required, initial: 1 }),
+      feet: new fields.NumberField({ ...required, initial: 2 }),
     });
     const armors = () => new fields.SchemaField({
       count: new fields.NumberField({ ...required, initial: 0 }),

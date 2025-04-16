@@ -131,7 +131,7 @@ export class UtopiaTemplates extends MeasuredTemplate {
   }
 
   destroy(...args) {
-    game.settings.get("utopia", "activeMeasuredTemplatePreview") = null;
+    game.settings.set("utopia", "activeMeasuredTemplatePreview", null);
     this._removeListenersFromCanvas();
     return super.destroy(...args);
   }

@@ -68,9 +68,9 @@ export async function prepareSpeciesData(character) {
   character.endurance = character._speciesData.system.endurance;
   character.effervescence = character._speciesData.system.effervescence;
 
-  character.evolution.head = Math.max(species.evolution.head, 1);
-  character.evolution.feet = species.evolution.feet;
-  character.evolution.hands = species.evolution.hands;
+  character.evolution.head = Math.max(species.system.evolution.head, 1);
+  character.evolution.feet = species.system.evolution.feet;
+  character.evolution.hands = species.system.evolution.hands;
 
   character.equipmentSlots.capacity = {};
   character.equipmentSlots.capacity.head = character.evolution.head;
@@ -82,15 +82,21 @@ export async function prepareSpeciesData(character) {
   character.equipmentSlots.capacity.hands = character.evolution.hands / 2;
   character.equipmentSlots.capacity.ring = character.evolution.hands / 2;
 
-  character.augments.capacity = {};
-  character.augments.capacity.head = character.augments.capacity.all ?? 0 + character.evolution.head;
-  character.augments.capacity.neck = character.augments.capacity.all ?? 0 + character.evolution.head;
-  character.augments.capacity.back = character.augments.capacity.all ?? 0 + 1;
-  character.augments.capacity.chest = character.augments.capacity.all ?? 0 + 1;
-  character.augments.capacity.waist = character.augments.capacity.all ?? 0 + 1;
-  character.augments.capacity.feet = character.augments.capacity.all ?? 0 + character.evolution.feet / 2;
-  character.augments.capacity.hands = character.augments.capacity.all ?? 0 + character.evolution.hands / 2;
-  character.augments.capacity.ring = character.augments.capacity.all ?? 0 + character.evolution.hands / 2;
+  character.augmentSlots.capacity = {};
+  character.augmentSlots.capacity.head = character.evolution.head;
+  character.augmentSlots.capacity.neck = character.evolution.head;
+  character.augmentSlots.capacity.back = 1;
+  character.augmentSlots.capacity.chest = 1;
+  character.augmentSlots.capacity.waist = 1;
+  character.augmentSlots.capacity.feet = character.evolution.feet / 2;
+  character.augmentSlots.capacity.hands = character.evolution.hands / 2;
+  character.augmentSlots.capacity.ring = character.evolution.hands / 2;
+
+  character.handheldSlots.capacity = character.evolution.hands;
+  character.handheldSlots.equipped = character.handheldSlots.equipped || [];
+  for (let i = 0; i < character.handheldSlots.capacity; i++) {
+    if (!character.handheldSlots.equipped[i]) character.handheldSlots.equipped[i] = null;
+  }
 }
 
 export async function prepareSpeciesDefault(character) {

@@ -33,6 +33,20 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
     details: { template: "systems/utopia/templates/item/special/gear.hbs" },
   };
 
+    
+  static async _image(event) {
+    event.preventDefault();
+    let file = await new FilePicker({
+      type: "image",
+      current: this.document.img,
+      callback: (path) => {
+        this.document.update({
+          img: path,
+        });
+      },
+    }).browse();
+  }
+
   /**
    * Configures render options for the sheet.
    * @param {object} options - Render options.

@@ -39,6 +39,17 @@ export class Gear extends UtopiaItemBase {
       "ammunitionArtifact": "UTOPIA.Items.Gear.FIELDS.ArtifactType.Ammunition",
     }});
 
+    schema.equippableArtifactSlot = new fields.StringField({ required: false, nullable: true, initial: "head", choices: {
+      "head": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Head",
+      "neck": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Neck",
+      "chest": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Chest",
+      "back": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Back",
+      "waist": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Waist",
+      "ring": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Ring",
+      "hands": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Hands",
+      "feet": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Feet",
+    }});
+
     schema.value = new fields.NumberField({ required: true, nullable: false, initial: 0 });
     schema.features = new fields.ObjectField();
     schema.featureSettings = new fields.ObjectField();
@@ -126,6 +137,10 @@ export class Gear extends UtopiaItemBase {
             else if (typeof this[key] === "number" && typeof value === "number") {
               this[key] += value;
             }
+            // If the value is a boolean, set it.
+            else if (typeof value === "boolean") {
+              this[key] = value;
+            }
             // Otherwise, default to the new value.
             else {
               this[key] = value;
@@ -202,7 +217,7 @@ export class Gear extends UtopiaItemBase {
     const flattenedAttributes = foundry.utils.flattenObject(attributes);
 
     for (const [key, value] of Object.entries(flattenedAttributes)) {
-      if (value && (!Array.isArray(value) || value.length > 0)) {
+      if (value && (!Array.isArray(value) || value.length > 0 || value === true || value === false)) {
         if (isNumeric(value)) {
           simulation[key] = parseFloat(value) * stackCount;
         } else if (typeof value === "string" && value !== "\u0000" && !isNumeric(value)) {
@@ -221,7 +236,11 @@ export class Gear extends UtopiaItemBase {
           }
         } else if (typeof value === "number" && !isNaN(value)) {
           simulation[key] = value * stackCount;
+        } else if (value === true || value === false) {
+          simulation[key] = value;
         }
+      } else if (value === true || value === false) {
+        simulation[key] = value;
       }
     }
   

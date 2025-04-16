@@ -286,27 +286,41 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       specialty: armors(),
     });
 
-    schema.augments = new fields.SchemaField({
-      head: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      neck: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      back: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      chest: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      waist: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      hands: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      ring: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      feet: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-    });
+    const slots = ["head", "neck", "back", "chest", "waist", "hands", "ring", "feet"];
 
     schema.equipmentSlots = new fields.SchemaField({
-      head: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      neck: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      back: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      chest: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      waist: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      hands: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      ring: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
-      feet: new fields.ArrayField(new fields.DocumentIdField(), { initial: [] }),
+      capacity: new fields.SchemaField({
+        ...slots.map(slot => [slot, new fields.NumberField({ ...requiredInteger, initial: 1 })]).reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {}),
+      }),
+      equipped: new fields.SchemaField({
+        ...slots.map(slot => [slot, new fields.ArrayField(new fields.StringField({ required: true, nullable: false }))]).reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {}),
+      }),
     });
+    schema.augmentSlots = new fields.SchemaField({
+      capacity: new fields.SchemaField({
+        ...slots.map(slot => [slot, new fields.NumberField({ ...requiredInteger, initial: 1 })]).reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {}),
+      }),
+      equipped: new fields.SchemaField({
+        ...slots.map(slot => [slot, new fields.ArrayField(new fields.StringField({ required: true, nullable: false }))]).reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {}),
+      }),
+    });
+    schema.handheldSlots = new fields.SchemaField({
+      capacity: new fields.NumberField({ ...requiredInteger, initial: 2 }),
+      equipped: new fields.ArrayField(new fields.StringField({ required: true, nullable: false })),
+    });
+
     schema.slotCapacity = new fields.SchemaField({
       bonus: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       total: new fields.NumberField({ ...requiredInteger, initial: 0 }),

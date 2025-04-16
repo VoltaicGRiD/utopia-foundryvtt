@@ -200,3 +200,35 @@
     width: 90px;
   }
 }
+
+.handheld-slots {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-content: center;
+  justify-content: center;
+
+  .handheld-slot {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+  }
+  
+  .handheld-slot > * {
+    pointer-events: none;
+  }
+
+  .handheld-slot {
+    border: 2px dashed white;
+  }
+
+  .handheld-slot.filled {
+    border: 2px solid white;
+  }
+
+  .handheld-slot.locked {
+    border: 2px solid #9d3a2a;
+    background-color: #511e16;
+  }
+}

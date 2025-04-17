@@ -656,10 +656,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         }
       }
     }
-
-
-    this.trees = treeTiers;
-    console.log(this);
   }
 
   /**

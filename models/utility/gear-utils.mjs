@@ -20,6 +20,9 @@ export async function prepareGearData(actor) {
   for (const gear of gearItems) {
     const features = gear.system.attributes;
 
+    if (!features || features.length === 0) {
+      continue;
+    }
     for (const feature of features) {
       for (const [attribute, value] of Object.entries(feature)) {
         const lookup = foundry.utils.getProperty(lookupTable, attribute) ?? attribute;

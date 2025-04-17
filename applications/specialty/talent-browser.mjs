@@ -133,8 +133,9 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
       this.actor = this.options.actor;
     }
 
+    let actorSpecies = "No Species";
     if (this.actor.type !== "creature") {
-      let actorSpecies = this.actor.system._speciesData.name;
+      actorSpecies = this.actor.system._speciesData.name;
     }
     
     const trees = await gatherItems({ type: 'talentTree', gatherFolders: false, gatherFromWorld: true, gatherFromActor: false });

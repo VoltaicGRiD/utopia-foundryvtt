@@ -244,7 +244,7 @@ export class UtopiaActor extends Actor {
     }
     
     // Run the macro if it exists
-    this.runItemMacro(item);
+    this.runItemMacro(newItems[0]);
 
     // Iterate over the granted items and add them to the actor as well
     // This is a recursive function, so we need to check if the item has any granted items
@@ -261,6 +261,8 @@ export class UtopiaActor extends Actor {
         this.addItem(itemData, showNotification, true, newItems[0]);
       }
     }
+
+    return newItems;
   }
 
   /**
@@ -271,7 +273,10 @@ export class UtopiaActor extends Actor {
     if (item.system.macro) {
       const macro = await fromUuid(item.system.macro);
       if (macro) {
-        await macro.execute({ actor: this, item: item });
+        // Return the item's toObject() data to the macro, and append the item's UUID
+        const macroItem = item.toObject();
+        macroItem.uuid = item.uuid;
+        await macro.execute({ actor: this, item: macroItem });
       } else {
         this._error(`Macro not found for item ${item.name}`);
       }
@@ -355,14 +360,14 @@ export class UtopiaActor extends Actor {
       itemData.system.selectedOption = selectedOption;
     }
 
-    await this.addItem(itemData, true, false, undefined);
+    const newItems = await this.addItem(itemData, true, false, undefined);
     
     const tracker = this.system._talentTracking;
     tracker.push({
       tree: talentTree.uuid,
       branch: branchIndex,
       tier: talentIndex,
-      talent: talent.uuid,
+      talent: newItems[0].uuid,
     });
 
     if (itemData.system.flexibility.enabled) {
@@ -599,31 +604,44 @@ export class UtopiaActor extends Actor {
   async _damageAction(item) {
     const instances = [];
     const targets = [];
-    if (["self", "none"].includes(item.system.template)) {
+
+    if (["self"].includes(item.system.template)) {
       targets.push(this);
-    } else if (item.system.template === "target") {
-      targets.push([...game.user.targets]);
+    } else if (["target"].includes(item.system.template)) {
+      if (Array.from(game.user.targets).length === 0) {
+        if (game.settings.get("utopia", "targetRequired")) {
+          return ui.notifications.error(game.i18n.localize("UTOPIA.Errors.NoTargetsSelected"));
+        }
+        else {
+          return ui.notifications.warn(game.i18n.localize("UTOPIA.Errors.NoTargetsSelectedInfo"));
+        }
+      }
+      targets.push(...Array.from(game.user.targets).map(t => t.actor));
     }
+
     for (const damageData of item.system.damages) {
       const roll = await new Roll(damageData.formula).evaluate();
       const total = roll.total;
       roll.toMessage();
+
       if (targets.length === 0) {
-        const instance = await this.createDamageInstance(damageType, total);
+        const instance = await this.createDamageInstance(damageData.type, total);
         instances.push(instance);
       }
+
       for (const target of targets) {
         const instance = await this.createDamageInstance(damageData.type, total, target, item);
         instances.push(instance);
       }
     }
+
     // Additional data can be passed for chat messages if needed.
     const data = { item: item, instances: instances };
     if (!["self", "none", "target"].includes(item.system.template))
       data.template = item.system.template;
     
     for (const instance of instances) {
-      instance.target.applyDamage(instance);
+      await instance.target.applyDamage(instance);
     }
   }
 

@@ -78,6 +78,8 @@ export class Action extends UtopiaItemBase {
     schema.range = new fields.StringField({ required: false, nullable: false, initial: "0/0" });
     schema.template = new fields.StringField({ required: false, nullable: false, initial: "none", choices: {
       "none": "UTOPIA.Items.Action.Template.none",
+      "self": "UTOPIA.Items.Action.Template.self",
+      "target": "UTOPIA.Items.Action.Template.target",
       "sbt": "UTOPIA.Items.Action.Template.sbt",
       "mbt": "UTOPIA.Items.Action.Template.mbt",
       "lbt": "UTOPIA.Items.Action.Template.lbt",

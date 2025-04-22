@@ -16,15 +16,11 @@ export async function prepareSpeciesData(character) {
     air: { speed: 0, stamina: 0 }
   }
 
-  character.block = {
-    size: character._speciesData.system.block.size,
-    quantity: character._speciesData.system.block.quantity
-  }
+  character.block.size += character._speciesData.system.block.size;
+  character.block.quantity += character._speciesData.system.block.quantity;
 
-  character.dodge = {
-    size: character._speciesData.system.dodge.size,
-    quantity: character._speciesData.system.dodge.quantity
-  }
+  character.dodge.size += character._speciesData.system.dodge.size;
+  character.dodge.quantity += character._speciesData.system.dodge.quantity;
 
   const traits = JSON.parse(game.settings.get("utopia", "advancedSettings.traits"));
   const subtraits = JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"));
@@ -64,9 +60,9 @@ export async function prepareSpeciesData(character) {
     character.travel[key].speed += speciesRoll.total;
   }
 
-  character.constitution = character._speciesData.system.constitution;
-  character.endurance = character._speciesData.system.endurance;
-  character.effervescence = character._speciesData.system.effervescence;
+  character.constitution += character._speciesData.system.constitution;
+  character.endurance += character._speciesData.system.endurance;
+  character.effervescence += character._speciesData.system.effervescence;
 
   character.evolution.head = Math.max(species.system.evolution.head, 1);
   character.evolution.feet = species.system.evolution.feet;

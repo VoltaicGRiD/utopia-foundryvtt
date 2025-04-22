@@ -1223,6 +1223,9 @@
   background: var(--utopia-color-blue-white);
   color: var(--utopia-color-black);
 }
+.utopia.item-sheet .item-set .specialistTalent, .utopia.actor-sheet .item-set .specialistTalent {
+  background: linear-gradient(to right, var(#aa733a) 0%, var(#752182) 50%, var(#265f1d) 70%, rgba(0, 0, 0, 0) 100%);
+}
 .utopia.item-sheet .components-container .components-table, .utopia.actor-sheet .components-container .components-table {
   margin: 0;
 }

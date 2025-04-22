@@ -176,7 +176,7 @@
       "ReplaceSpeciesTitle": "Replace Species",
       "ReplaceSpecies": "You must be a GM to replace the species of an actor.",
       "ReplaceSpeciesGM": "As the GM, you can replace the species of this actor.<br>This will remove the existing species features and talents.<br/>Are you sure you want to do this? (Talent points will be returned)",
-      "NoTargetsSelected": "The game rule \"Target Required\" is enabledj, you must target at least one token to perform this action.",
+      "NoTargetsSelected": "The game rule \"Target Required\" is enabled, you must target at least one token to perform this action.",
       "NoTargetsSelectedInfo": "No tokens are targeted. Defense calculations will need to be performed manually.",
       "NoSpeciesWarning": "There is no species assigned to this actor. A species is required to browse talents."
     },
@@ -344,7 +344,8 @@
         "AddKit": "Add Kit",
         "AddClass": "Add Class",
         "Convert": "Convert to NPC",
-        "CreatureTalentsInfo": "Drag-and-Drop talents to use them on creatures."
+        "CreatureTalentsInfo": "Drag-and-Drop talents to use them on creatures.",
+        "ViewSpecialist": "View Specialist Talents"
       },
       "Items": {
         "Talents": "Talents",
@@ -1392,6 +1393,12 @@
         "save": {
           "label": "Save"
         }
+      },
+      "DodgeRating": {
+        "label": "Dodge Rating"
+      },
+      "BlockRating": {
+        "label": "Block Rating"
       }
     },
     "Biography": {
@@ -1444,7 +1451,8 @@
     },
     "SheetLabels": {
       "Advancement": "Advancement",
-      "forageAndCrafting": "Foraging and Crafting"
+      "forageAndCrafting": "Foraging and Crafting",
+      "talent-tree-selector": "Talent Browser"
     }
   },
   "TYPES": {

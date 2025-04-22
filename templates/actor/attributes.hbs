@@ -71,6 +71,7 @@
     {{/if}}
     {{#if (ne actor.type "creature")}}
       <a data-action="openApplication" data-application="talent-browser"><i class="fas fa-search"></i> {{localize "UTOPIA.Actors.Actions.OpenTalentTree"}}</a>
+      <a data-action="openApplication" data-application="browser" data-document-type="specialistTalent"><i class="fas fa-search"></i> {{localize "UTOPIA.Actors.Actions.ViewSpecialist"}}</a>
     {{else}}
       <p>{{localize "UTOPIA.Actors.Actions.CreatureTalentsInfo"}}</p>
     {{/if}}
@@ -86,6 +87,27 @@
           <div class="item-edit">
             <div class="item">
               <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+            <div class="item-actions">
+              <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+            </div>        
+          </div>
+        {{/if}}
+      {{/each}}
+
+      {{#each specialist as |item|}} 
+        {{#if ../isPlay}}
+          <div class="item">
+            <a class="specialistTalent" data-action="viewDocument" data-document-id="{{item.id}}">
+              <span class="item-name">{{item.name}}</span>
+            </a>
+          </div>
+        {{else}}
+          <div class="item-edit">
+            <div class="item">
+              <a class="specialistTalent" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
             </div>
@@ -160,12 +182,26 @@
     {{/if}}
     <div class="item-container">
       {{#each actions as |item|}} 
-        <div class="item">
-          <a data-action="roll" data-roll="item" data-item="{{item.id}}"><i class="fa-fw fas fa-dice"></i> {{localize "UTOPIA.Actors.Actions.Perform"}}</a>
-          <a class="action" data-action="viewDocument" data-document-id="{{item.id}}">
-            <span class="item-name">{{item.name}}</span>
-          </a>
-        </div>
+        {{#if ../isPlay}}
+          <div class="item">
+            <a data-action="roll" data-roll="item" data-item="{{item.id}}"><i class="fa-fw fas fa-dice"></i> {{localize "UTOPIA.Actors.Actions.Perform"}}</a>
+            <a class="action" data-action="viewDocument" data-document-id="{{item.id}}">
+              <span class="item-name">{{item.name}}</span>
+            </a>
+          </div>
+        {{else}}
+          <div class="item-edit">
+            <div class="item">
+              <a data-action="roll" data-roll="item" data-item="{{item.id}}"><i class="fa-fw fas fa-dice"></i> {{localize "UTOPIA.Actors.Actions.Perform"}}</a>
+              <a class="action" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+            <div class="item-actions">
+              <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+            </div>        
+          </div>
+        {{/if}}
       {{/each}}
     </div>
   </fieldset>
@@ -178,11 +214,24 @@
     {{/if}}
     <div class="item-container">
       {{#each consumables as |item|}} 
-        <div class="item">
-          <a class="consumable" data-action="viewDocument" data-document-id="{{item.id}}">
-            <span class="item-name">{{item.name}}</span>
-          </a>
-        </div>
+        {{#if ../isPlay}}
+          <div class="item">
+            <a class="consumable" data-action="viewDocument" data-document-id="{{item.id}}">
+              <span class="item-name">{{item.name}}</span>
+            </a>
+          </div>
+        {{else}}
+          <div class="item-edit">
+            <div class="item">
+              <a class="consumable" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+            <div class="item-actions">
+              <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+            </div>        
+          </div>
+        {{/if}}
       {{/each}}
     </div>
   </fieldset>

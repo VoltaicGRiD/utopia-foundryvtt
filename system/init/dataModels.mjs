@@ -16,8 +16,8 @@ export function registerItemDataModels() {
     talent: ItemModels.Talent,
     spell: ItemModels.Spell,
     spellFeature: ItemModels.SpellFeature,
+    specialistTalent: ItemModels.SpecialistTalent,
     gearFeature: ItemModels.GearFeature,
-    
     weaponFeature: ItemModels.WeaponFeature,
     armorFeature: ItemModels.ArmorFeature,
     shieldFeature: ItemModels.ShieldFeature,

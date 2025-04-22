@@ -12,6 +12,7 @@ export { SpellFeature } from "./spell-feature.mjs";
 export { GearFeature } from "./gear-feature.mjs";
 export { TalentTree } from "./talent-tree.mjs";
 export { Talent } from "./talent.mjs";
+export { SpecialistTalent } from "./specialist-talent.mjs";
 export { Spell } from "./spell.mjs";
 
 export { ArmorFeatureOptions as ArmorFeature } from "./feature-options/armor.mjs";

@@ -60,7 +60,7 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
     }
 
     const types = [
-      "action", "quirk", "favor", "generic", "gear", "species", "talentTree", "talent", "spell", "gearFeature", "body", "class", "kit"
+      "action", "quirk", "favor", "generic", "gear", "species", "talentTree", "talent", "specialistTalent", "spell", "gearFeature", "body", "class", "kit"
     ]
 
     const type = this.type ?? "action";

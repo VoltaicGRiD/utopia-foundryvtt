@@ -13,11 +13,28 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
   static LOCALIZATION_PREFIXES = [...super.LOCALIZATION_PREFIXES, "UTOPIA.Actors"];
 
-  /**
-   * Prepare base data, such as establishing default action values.
-   */
   prepareBaseData() {
+    this.body = 0;
+    this.mind = 0;
+    this.soul = 0;
 
+    this.block.quantity = 0;
+    this.block.size = 0;
+
+    this.dodge.quantity = 0;
+    this.dodge.size = 0;
+
+    this.constitution = 0;
+    this.endurance = 0;
+    this.effervescence = 0;
+
+    this.subtraitPoints = {};
+    this.subtraitPoints.spent = 0;
+    this.subtraitPoints.bonus = 0;
+    this.subtraitPoints.available = 0;
+
+    this.experience = 1000;
+    this.level = 10;
   }
 
   /**
@@ -390,6 +407,10 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       grantedName: new fields.StringField({ required: true, nullable: false }), 
     }));
 
+    schema.body = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    schema.mind = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    schema.soul = new fields.NumberField({ ...requiredInteger, initial: 0 });
+
     UtopiaActorBase.getBiography(schema);
     
     return schema;
@@ -555,6 +576,45 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       try { this._prepareAttributes(); } catch (e) { console.error(e); }
     }
     try { this._prepareAutomation(); } catch (e) { console.error(e); }
+    try { this._prepareBaseItems(); } catch (e) { console.error(e); }
+  }
+
+  _prepareBaseItems() {
+    /*
+    schema.weaponlessAttacks = new fields.SchemaField({
+      formula: new fields.StringField({ ...requiredInteger, initial: "1d6" }),
+      type: new fields.StringField({ ...requiredInteger, initial: "physical", choices: {
+        ...JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))
+      } }),
+      range: new fields.StringField({ ...requiredInteger, initial: "0/0" }),
+      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: [] }),
+      stamina: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      actionCost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+    });
+    */
+
+    // Ensure the actor has a weaponless attack item
+    // TODO - Implement a way to configure traits with weaponless attacks
+    const weaponlessAttacks = this.parent.items.filter(i => i.type === "action" && i.system.category === "damage" && i.name.toLowerCase().includes("weaponless attack"));
+    if (weaponlessAttacks.length === 0) {
+      this.parent.createEmbeddedDocuments("Item", [{
+        name: "Weaponless Attack",
+        type: "action",
+        system: {
+          category: "damage",
+          damages: [
+            {
+              formula: this.weaponlessAttacks.formula,
+              type: this.weaponlessAttacks.type,
+            }
+          ],
+          cost: this.weaponlessAttacks.actionCost,
+          stamina: this.weaponlessAttacks.stamina,
+          range: this.weaponlessAttacks.range,
+          template: "target"
+        }
+      }]); 
+    }
   }
 
   /**
@@ -587,19 +647,13 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
    * Handle the initialization and tracking of point pools (talents, specialists).
    */
   _preparePoints() {
-    this.points = {
-      body: 0,
-      mind: 0,
-      soul: 0
-    };
-
     for (const item of this.parent.items.filter(i => i.type === "talent")) {
-      this.points.body += item.system.body;
-      this.points.mind += item.system.mind;
-      this.points.soul += item.system.soul;
+      this.body += item.system.body;
+      this.mind += item.system.mind;
+      this.soul += item.system.soul;
     };
     
-    this.talentPoints.spent = this.points.body + this.points.mind + this.points.soul;
+    this.talentPoints.spent = this.body + this.mind + this.soul;
     this.talentPoints.available = this.level - this.talentPoints.spent + this.talentPoints.bonus;
     
     this.specialistPoints.spent = this.parent.items.filter(i => i.type === "specialist").length;
@@ -615,10 +669,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
    * Process talents by iterating over talent trees, checking highest tiers acquired, and summing stats.
    */
   async _prepareTalents() {
-    this.body = 0;
-    this.mind = 0;
-    this.soul = 0;
-
     const talents = this.parent.items.filter(i => i.type === "talent");
     for (const talent of talents) {
       this.body += talent.system.body;
@@ -635,23 +685,25 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     if (this._speciesData === undefined) return;
 
     const species = this._speciesData.system.branches;
-    for (const branch of species) {
-      var highestTier = -1;
-      
-      for (var t = 0; t < branch.talents.length; t++) {
-        const branchTalent = await fromUuid(branch.talents[t].uuid);
+    if (species) {
+      for (const branch of species) {
+        var highestTier = -1;
         
-        // We can compare points, name, and other properties, but can't compare
-        // the entire object because it's a different instance
-        for (const talent of talents) {
-          var match = true;
+        for (var t = 0; t < branch.talents.length; t++) {
+          const branchTalent = await fromUuid(branch.talents[t].uuid);
           
-          if (talent.name !== branchTalent.name) match = false;
-          if (foundry.utils.objectsEqual(talent.system.toObject(), branchTalent.system.toObject()) === false) match = false;
-          
-          if (match) {
-            if (t > highestTier) highestTier = t;
-            break;
+          // We can compare points, name, and other properties, but can't compare
+          // the entire object because it's a different instance
+          for (const talent of talents) {
+            var match = true;
+            
+            if (talent.name !== branchTalent.name) match = false;
+            if (foundry.utils.objectsEqual(talent.system.toObject(), branchTalent.system.toObject()) === false) match = false;
+            
+            if (match) {
+              if (t > highestTier) highestTier = t;
+              break;
+            }
           }
         }
       }

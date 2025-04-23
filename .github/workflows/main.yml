@@ -17,15 +17,18 @@ jobs:
         uses: actions/checkout@v2
       - name: Compress
         run: |
-          zip -r utopia.zip . -i utopia-foundryvtt         
+          cd ../
+          rm -rf utopia-foundryvtt.zip
+          rm -rf utopia.zip
+          zip -r utopia.zip utopia-foundryvtt -x ".git/*" ".github/*"
       - name: Add Build to Release
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ inputs.tag }}
           tag_name: ${{ inputs.tag}}
           files: |
-            utopia.zip
-            utopia-foundrytt/system.json
+            ../utopia.zip
+            ../utopia-foundryvtt/system.json
           generate_release_notes: true
           draft: false
       - name: Deploy

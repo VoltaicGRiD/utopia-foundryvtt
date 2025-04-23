@@ -27,7 +27,7 @@ jobs:
             utopia.zip
             utopia-foundrytt/system.json
           generate_release_notes: true
-          draft: true
+          draft: false
       - name: Deploy
         uses: fjogeleit/http-request-action@v1
         with:

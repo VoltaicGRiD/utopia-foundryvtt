@@ -9,6 +9,7 @@ on:
         type: string
 jobs: 
   publish:
+    permissions: write-all
     name: Publish to FoundryVTT
     runs-on: ubuntu-latest
     steps:
@@ -26,4 +27,10 @@ jobs:
             utopia-foundrytt/system.json
           generate_release_notes: true
           draft: true
-          
+      - name: Deploy
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: "https://api.foundryvtt.com/_api/packages/release_version/"
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json", "Authorization": ${{ secrets.FoundryVTT_API_Key }}'
+          data: '{ "id": "utopia", "dry-run": true, "release": { "version": ${{ inputs.tag }}, "manifest": "https://github.com/VoltaicGRiD/utopia-foundryvtt/releases/download/${{ inputs.tag }}/system.json", "notes": "https://github.com/VoltaicGRiD/utopia-foundryvtt/releases/tag/${{ inputs.tag }}", "compatibility": { "minimum": "12", "verified": "12.133", "maximum": "12" } } }'

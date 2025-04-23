@@ -1,0 +1,29 @@
+name: Publish to FoundryVTT
+on: 
+  workflow_call:
+    inputs: 
+      tag: 
+        description: "The release tag to create"
+        default: "latest"
+        required: true
+        type: string
+jobs: 
+  publish:
+    name: Publish to FoundryVTT
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Compress
+        run: |
+          zip -r utopia.zip utopia-foundryvtt          
+      - name: Add Build to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag}}
+          files: |
+            utopia.zip
+            utopia-foundrytt/system.json
+          generate_release_notes: true
+          draft: true
+          

@@ -1,6 +1,6 @@
 name: Publish to FoundryVTT
 on: 
-  workflow_call:
+  workflow_dispatch:
     inputs: 
       tag: 
         description: "The release tag to create"

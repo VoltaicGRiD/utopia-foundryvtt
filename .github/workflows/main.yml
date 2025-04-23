@@ -21,6 +21,9 @@ jobs:
           rm -rf utopia-foundryvtt.zip
           rm -rf utopia.zip
           zip -r utopia.zip utopia-foundryvtt -x ".git/*" ".github/*"
+      - name: Echo location
+        run: |
+          ls | echo
       - name: Add Build to Release
         uses: softprops/action-gh-release@v2
         with:

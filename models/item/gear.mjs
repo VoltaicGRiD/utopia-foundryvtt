@@ -4,6 +4,11 @@ import UtopiaItemBase from "../base-item.mjs";
 const fields = foundry.data.fields;
 
 export class Gear extends UtopiaItemBase {
+  prepareBaseData() {
+    this.equippable = true;
+    this.augmentable = true;
+  }
+
   /** @override */
   static defineSchema() {
     const schema = super.defineSchema();
@@ -71,7 +76,9 @@ export class Gear extends UtopiaItemBase {
       for (const [rarity, rarityValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")))) {
         schema.contributedComponents[component][rarity] = new fields.NumberField({required: true, nullable: false, initial: 0});
       }
-    }   
+    }  
+    
+    schema.quantity = new fields.NumberField({ required: true, nullable: false, initial: 1 });
 
     return schema;
   }  
@@ -86,6 +93,8 @@ export class Gear extends UtopiaItemBase {
   }
 
   prepareDerivedData() {
+    super.prepareDerivedData();
+
     try { this._prepareFeatures(); } catch (err) { console.error(err); }
   }
 

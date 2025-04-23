@@ -1,5 +1,5 @@
-2025/04/21-13:09:00.470 c514 Recovering log #120
-2025/04/21-13:09:00.470 c514 Level-0 table #122: started
-2025/04/21-13:09:00.471 c514 Level-0 table #122: 4695 bytes OK
-2025/04/21-13:09:00.475 c514 Delete type=0 #120
-2025/04/21-13:09:00.476 c514 Delete type=3 #118
+2025/04/22-22:18:27.724 47ac Recovering log #123
+2025/04/22-22:18:27.724 47ac Level-0 table #125: started
+2025/04/22-22:18:27.730 47ac Level-0 table #125: 1735 bytes OK
+2025/04/22-22:18:27.734 47ac Delete type=0 #123
+2025/04/22-22:18:27.735 47ac Delete type=3 #121

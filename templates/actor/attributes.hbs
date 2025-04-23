@@ -181,6 +181,14 @@
       <legend data-action="createDocument" data-document-type="action" title="{{localize "UTOPIA.Actions.New"}}">{{localize "DOCUMENT.Create" type="Action"}} <i class="fas fa-plus"></i></legend>
     {{/if}}
     <div class="item-container">
+
+      <div class="item">
+        <a data-action="roll" data-roll="weaponless"><i class="fa-fw fas fa-dice"></i> {{localize "UTOPIA.Actors.Actions.Perform"}}</a>
+        <a class="action">
+          <span class="item-name">Weaponless Attack</span>
+        </a>
+      </div>
+
       {{#each actions as |item|}} 
         {{#if ../isPlay}}
           <div class="item">

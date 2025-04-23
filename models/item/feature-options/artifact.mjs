@@ -15,6 +15,7 @@ export class ArtifactFeatureOptions extends FeatureBase {
       save: new fields.StringField({ required: true, nullable: false, initial: "none" }),
       template: new fields.StringField({ required: true, nullable: false, initial: "none" }),
     });
+    schema.spelltech = new fields.BooleanField({ required: true, nullable: false, initial: false });
     schema.activation = new fields.SchemaField({
       cost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       duration: new fields.NumberField({ ...requiredInteger, initial: 0 }),

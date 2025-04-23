@@ -33,6 +33,33 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.subtraitPoints.bonus = 0;
     this.subtraitPoints.available = 0;
 
+    const systemDefenses = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
+    this.innateDefenses = {};
+    this.armorDefenses = {};
+
+    for (const [key, value] of Object.entries(systemDefenses)) {
+      if (value.initialDefense) {
+        this.innateDefenses[key] = value.initialDefense;
+        this.armorDefenses[key] = 0;
+      }
+      else {
+        this.innateDefenses[key] = 0;
+        this.armorDefenses[key] = 0;
+      }
+    }
+
+    this.innateTravel = {
+      land: { speed: "@spd.total", stamina: 0 },
+      water: { speed: "0", stamina: 0 },
+      air: { speed: "0", stamina: 0 },
+    }
+
+    this.speciesTravel = {
+      land: { speed: 0, stamina: 0 },
+      water: { speed: 0, stamina: 0 },
+      air: { speed: 0, stamina: 0 },
+    }
+
     this.experience = 1000;
     this.level = 10;
   }
@@ -235,7 +262,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     schema.innateTravel = new fields.SchemaField({
       land: new fields.SchemaField({
-        speed: new fields.StringField({ required: true, nullable: false, initial: "0" }),
+        speed: new fields.StringField({ required: true, nullable: false, initial: "@spd.total" }),
         stamina: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
       }),
       water: new fields.SchemaField({
@@ -570,51 +597,13 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       try { prepareKitData(this); } catch (e) { console.error(e); }
     }
     try { this._prepareDefenses() } catch (e) { console.error(e) }
+    try { this._prepareTravel() } catch (e) { console.error(e); }
     try { this._prepareTalents() } catch (e) { console.error(e) }
     if (["character", "npc"].includes(this.parent.type)) {
       try { this._preparePoints(); } catch (e) { console.error(e); }
       try { this._prepareAttributes(); } catch (e) { console.error(e); }
     }
     try { this._prepareAutomation(); } catch (e) { console.error(e); }
-    try { this._prepareBaseItems(); } catch (e) { console.error(e); }
-  }
-
-  _prepareBaseItems() {
-    /*
-    schema.weaponlessAttacks = new fields.SchemaField({
-      formula: new fields.StringField({ ...requiredInteger, initial: "1d6" }),
-      type: new fields.StringField({ ...requiredInteger, initial: "physical", choices: {
-        ...JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))
-      } }),
-      range: new fields.StringField({ ...requiredInteger, initial: "0/0" }),
-      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: [] }),
-      stamina: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      actionCost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-    });
-    */
-
-    // Ensure the actor has a weaponless attack item
-    // TODO - Implement a way to configure traits with weaponless attacks
-    const weaponlessAttacks = this.parent.items.filter(i => i.type === "action" && i.system.category === "damage" && i.name.toLowerCase().includes("weaponless attack"));
-    if (weaponlessAttacks.length === 0) {
-      this.parent.createEmbeddedDocuments("Item", [{
-        name: "Weaponless Attack",
-        type: "action",
-        system: {
-          category: "damage",
-          damages: [
-            {
-              formula: this.weaponlessAttacks.formula,
-              type: this.weaponlessAttacks.type,
-            }
-          ],
-          cost: this.weaponlessAttacks.actionCost,
-          stamina: this.weaponlessAttacks.stamina,
-          range: this.weaponlessAttacks.range,
-          template: "target"
-        }
-      }]); 
-    }
   }
 
   /**
@@ -626,6 +615,30 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
   }
 
+  /**
+   * Prepare travel data, including innate travel speeds and stamina costs.
+   * This method is called during the preparation of derived data.
+   */
+  _prepareTravel() {
+    this.travel = {}
+    
+    const landRoll = new Roll(this.innateTravel.land.speed, this.parent.getRollData()).evaluateSync().total;
+    const waterRoll = new Roll(this.innateTravel.water.speed, this.parent.getRollData()).evaluateSync().total;
+    const airRoll = new Roll(this.innateTravel.air.speed, this.parent.getRollData()).evaluateSync().total;
+
+    this.travel.land = {
+      speed: landRoll + (this.speciesTravel?.land?.speed ?? 0),
+      stamina: this.innateTravel.land.stamina + (this.speciesTravel?.land?.stamina ?? 0),
+    }
+    this.travel.water = {
+      speed: waterRoll + (this.speciesTravel?.water?.speed ?? 0),
+      stamina: this.innateTravel.water.stamina + (this.speciesTravel?.water?.stamina ?? 0),
+    }
+    this.travel.air = {
+      speed: airRoll + (this.speciesTravel?.air?.speed ?? 0),
+      stamina: this.innateTravel.air.stamina + (this.speciesTravel?.air?.stamina ?? 0),
+    }
+  }
   
   /**
    * Adjust the actor's attributes (hitpoints, stamina) based on stats and current level.
@@ -647,12 +660,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
    * Handle the initialization and tracking of point pools (talents, specialists).
    */
   _preparePoints() {
-    for (const item of this.parent.items.filter(i => i.type === "talent")) {
-      this.body += item.system.body;
-      this.mind += item.system.mind;
-      this.soul += item.system.soul;
-    };
-    
     this.talentPoints.spent = this.body + this.mind + this.soul;
     this.talentPoints.available = this.level - this.talentPoints.spent + this.talentPoints.bonus;
     

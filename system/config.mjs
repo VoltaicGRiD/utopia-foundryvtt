@@ -285,6 +285,7 @@ export function registerConfig() {
     energy: {
       name: 'Energy',
       icon: 'fas fa-bolt',
+      initialDefense: 1,
       block: 1.0,
       dodge: true,
       armor: true,
@@ -294,6 +295,7 @@ export function registerConfig() {
     heat: {
       name: 'Heat',
       icon: 'fas fa-fire',
+      initialDefense: 1,
       block: 1.0,
       dodge: true,
       armor: true,
@@ -303,6 +305,7 @@ export function registerConfig() {
     chill: {
       name: 'Chill',
       icon: 'fas fa-snowflake',
+      initialDefense: 1,
       block: 1.0,
       dodge: true,
       armor: true,
@@ -312,15 +315,17 @@ export function registerConfig() {
     physical: {
       name: 'Physical',
       icon: 'fas fa-fist-raised',
+      initialDefense: 1,
       block: 1.0,
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Physical',
       appliesTo: 'shp'
     },
-    pysche: {
+    psyche: {
       name: 'Psyche',
       icon: 'fas fa-brain',
+      initialDefense: 1,
       block: 1.0,
       dodge: true,
       armor: true,
@@ -528,7 +533,7 @@ export function registerConfig() {
       name: "Dwarven",
       label: "UTOPIA.LANGUAGES.Dwarven"
     },
-    oxtan: { 
+    oxtan: {
       name: "Oxtan",
       label: "UTOPIA.LANGUAGES.Oxtan"
     },
@@ -785,7 +790,7 @@ export function registerConfig() {
       name: "UTOPIA.StatusEffects.fatigue",
     },
     {
-      id: "stasis", 
+      id: "stasis",
       img: "icons/svg/aura.svg",
       name: "UTOPIA.StatusEffects.stasis",
     },
@@ -797,7 +802,7 @@ export function registerConfig() {
   ]
 
   CONFIG.Dice.functions = {
-    gt: (a, b) => { 
+    gt: (a, b) => {
       return a > b;
     },
     lt: (a, b) => {

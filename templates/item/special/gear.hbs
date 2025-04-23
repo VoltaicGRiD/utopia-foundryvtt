@@ -124,11 +124,12 @@
     <textarea name="system.flavor" placeholder="{{localize 'UTOPIA.Item.flavor'}}"></textarea>
   </div>
   <div class="gear-controls">
-    {{#if (eq system.prototype true)}}
+    {{#if (or (eq system.prototype true) (eq type "consumable") (eq type "artifact"))}}
       <a type="button" data-action="craft"><i class="fa-solid fa-hammer"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Craft"}}</a>
-    {{else}}
+    {{/if}}
+    {{#if (or (and (eq type "consumable") (gt quantity 0)) (eq system.prototype false))}}
       <a type="button" data-action="use"><i class="fa-solid fa-sword"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Use"}}</a>
-      <a type="button" data-action="use"><i class="fa-solid fa-person-circle-plus"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Equip"}}</a>
+      <a type="button" data-action="equip"><i class="fa-solid fa-person-circle-plus"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Equip"}}</a>
     {{/if}}
     <a type="button" data-action="edit"><i class="fa-solid fa-puzzle-piece"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Artifice"}}</a>
   </div>

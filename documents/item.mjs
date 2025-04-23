@@ -19,6 +19,22 @@ export class UtopiaItem extends Item {
    * and determines if any excess components should be returned.
    */
   async craft(iterations = 0) {
+    // First and foremost, we need to check if the item has a crafting macro associated with it.
+    // The macro could either be a single UUID or an array of UUIDs.
+    if (this.system.craftingMacro && this.system.craftingMacro.length > 0) {
+      // If the crafting macro is a single UUID, we convert it to an array.
+      const macros = Array.isArray(this.system.craftingMacro) ? this.system.craftingMacro : [this.system.craftingMacro];
+      // We need to check if the macro exists in the game.
+      const macro = macros.map(uuid => fromUuidSync(uuid)).find(m => m);
+      if (macro) {
+        // If the macro exists, we execute
+        // it and return the result.
+        return await macro.execute({item: this, actor: this.parent ?? game.user.character});
+      }
+      // If no macro was found, we return an error.
+      return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.CraftingMacroNotFound'));
+    }
+
     // Prevent infinite loops by limiting the number of iterations.
     iterations++;
 
@@ -124,9 +140,19 @@ export class UtopiaItem extends Item {
 
     // If there are no needed components and no excess components, we can mark the item as complete.
     if (!anyNeeded && !anyExcess) {
+      if (!this.system.prototype) {
+        // The item isn't a prototype, so we increase the quantity
+        return await this.update({
+          [`system.quantity`]: this.system.quantity + 1,
+          [`system.prototype`]: false
+        });
+      }
+
+      // The item is a prototype, so we mark it as not a prototype (quantity is 1 by default).
       return await this.update({
+        [`system.quantity`]: 1,
         [`system.prototype`]: false
-      })
+      });
     }
     
     // Create variables to hold the remaining components and actor contributions.
@@ -203,12 +229,91 @@ export class UtopiaItem extends Item {
         return this.parent?._performAction({ item: this }) ?? this._performAction();
     }
   }
+
+  async equip() {
+    // We require the parent actor to be defined.
+    if (!this.parent) {
+      return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.NoParentActor'));
+    }
+
+    if (this.type === "gear") {
+      // We need to validate whether this item can even be equipped
+      if (!this.system.equippable) {
+        return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.ItemNotEquippable'));
+      }
+
+      const type = this.system.type;
+      switch (type) {
+        case "weapon": 
+          this.parent.equip({ 
+            item: this, 
+            slot: {
+              slot: this.parent.system.handheldSlots,
+              hands: this.system.hands ?? 1,
+            },
+            override: true
+          });
+          break;
+        case "armor":
+          this.parent.equip({
+            item: this,
+            slot: {
+              slot: this.parent.system.equipmentSlots,
+              type: this.system.armorType.replace("Armor", "").toLowerCase(),
+            },
+            override: true
+          });
+          break;
+        case "shield": 
+          this.parent.equip({
+            item: this,
+            slot: {
+              slot: this.parent.system.handheldSlots,
+              hands: this.system.hands ?? 1,
+            },
+            override: true
+          });
+          break;
+        case "artifact":
+          switch (this.system.artifactType) {
+            case "handheldArtifact": 
+              this.parent.equip({
+                item: this,
+                slot: {
+                  slot: this.parent.system.handheldSlots,
+                  hands: this.system.hands ?? 1,
+                },
+                override: true
+              });
+              break;
+            case "equippableArtifact":
+              this.parent.equip({
+                item: this,
+                slot: {
+                  slot: this.parent.system.equipmentSlots,
+                  type: this.system.equippableArtifactSlot.toLowerCase(),
+                },
+                override: true
+              });
+              break;
+            case "ammunitionArtifact": 
+              break;
+          }
+          break;
+      }
+    }
+  }
   
   async roll() {
     this.use();
   }
 
   async _useGear() {
+    // First, check if its a consumable, and if we have a quantity greater than 0.
+    if (this.system.type === "consumable" && this.system.quantity <= 0) {
+      return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.NoConsumableQuantity'));
+    }
+
     const html = await renderTemplate("systems/utopia/templates/chat/gear-card.hbs", {
       item: this,
       features: this.system.features,
@@ -224,6 +329,17 @@ export class UtopiaItem extends Item {
     // TODO - Remove
     console.warn(this);
 
+    // We should only perform attacks if the item has 'system.damage' or 'system.formula' populated
+    if ((!this.system.damage && !this.system.formula) || (!this.system.damage.length === 0 && !this.system.formula.length === 0)) {
+      // Otherwise, we return the chat message
+      // If the item is a consumable, we should remove one of its quantities
+      if (this.system.type === "consumable" && this.system.quantity > 0) {
+        await this.update({ "system.quantity": this.system.quantity - 1 });
+      }
+
+      return chatMessage;
+    }
+    
     // Perform automatic attacks if necessary
     this._autoRollAttacks(chatMessage);
   }
@@ -360,7 +476,7 @@ export class UtopiaItem extends Item {
   }
 
   // *****************************************************
-  // Item Exclusive getters and helpers
+  // Item exclusive getters and helpers
   // *****************************************************
   async _autoRollAttacks(chatMessage = undefined) {
     // Check if the world "AutoRollAttacks" setting is enabled

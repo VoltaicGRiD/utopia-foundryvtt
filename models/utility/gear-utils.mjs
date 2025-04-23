@@ -9,8 +9,15 @@ const lookupTable = {
   "traitBonusAmount": "{traitBonusTrait}.{value}.bonus",
   "preventSpellcasting": "spellcasting.disabled",
   "spellDiscount": "spellcasting.discount",
-  
+  "block": "block.quantity",
+  "dodge": "dodge.quantity",
 }
+
+const specialAttributes = [
+  "preventSpellcasting",
+  "grantsFlight",
+  
+]
 
 export async function prepareGearData(actor) {
   const gearItems = actor.parent.items.filter(item => item.type === "gear" && item.isOwned);
@@ -25,6 +32,12 @@ export async function prepareGearData(actor) {
     }
     for (const feature of features) {
       for (const [attribute, value] of Object.entries(feature)) {
+        // If the attribute is a special attribute, we handle it differently
+        if (specialAttributes.includes(attribute)) {
+          handleSpecialAttribute(actor, attribute, value);
+          continue;
+        }
+
         const lookup = foundry.utils.getProperty(lookupTable, attribute) ?? attribute;
         let regexPattern = /{([a-zA-Z]+)}/g;
         let match;
@@ -41,9 +54,38 @@ export async function prepareGearData(actor) {
         }
 
         const parsedValue = foundry.utils.getProperty(actor, lookup);
-        const newValue = parsedValue + value;
-        foundry.utils.setProperty(actor, lookup, newValue);
+        // We need to modify the behavior based on the data type of the value
+        const isNumber = typeof value === "number" || value instanceof Number;
+        const isString = typeof value === "string" || value instanceof String;
+        const isBoolean = typeof value === "boolean" || value instanceof Boolean;
+
+        // If the property doesn't exist, we set it to the value directly
+        if (parsedValue === undefined) {
+          foundry.utils.setProperty(actor, lookup, value);
+          continue;
+        }
+
+        else if (isNumber) {
+          const newValue = parsedValue + value;
+          foundry.utils.setProperty(actor, lookup, newValue);
+        }
+
+        else if (isString || isBoolean) {
+          const newValue = parsedValue;
+          foundry.utils.setProperty(actor, lookup, newValue);
+        }
       }
     }
+  }
+}
+
+function handleSpecialAttribute(actor, attribute, value) {
+  switch (attribute) {
+    case "preventSpellcasting":
+      foundry.utils.setProperty(actor, "spellcasting.disabled", value);
+      break;
+    case "grantsFlight": 
+      foundry.utils.setProperty(actor, "movement.flight", value);
+      break;
   }
 }

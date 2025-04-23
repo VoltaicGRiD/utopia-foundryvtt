@@ -12,6 +12,8 @@ export class FeatureBase extends UtopiaItemBase {
       return schema[c] = new fields.NumberField({ ...requiredInteger });
     })
 
+    schema.craftMacro = new fields.DocumentUUIDField({ required: true, nullable: false, initial: "" });
+
     return schema;
   }
 

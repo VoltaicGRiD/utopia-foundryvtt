@@ -20,6 +20,7 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
       image: this._image,
       use: this._use,
       craft: this._craft,
+      equip: this._equip,
       edit: this._edit,
       save: this._save,
     },
@@ -131,6 +132,7 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
       systemFields: CONFIG.Item.dataModels.gear.schema.fields,
       ...typeData,
       system: this.item.system,
+      quantity: this.item.system.quantity,
       item: this.item,
       actor: this.item.parent || null,
     };
@@ -279,5 +281,15 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
    */
   static async _use(event, target) {
     await this.item.use();
+  }
+
+  /**
+   * Equips the gear.
+   * @param {Event} event - The triggering event.
+   * @param {HTMLElement} target - The target element.
+   */
+  static async _equip(event, target) {
+    await this.item.equip();
+    this.render(true);
   }
 }

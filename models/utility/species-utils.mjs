@@ -10,7 +10,7 @@ export async function prepareSpeciesData(character) {
   if (character.communication) character.communication.telepathy = character._speciesData.system.communication.telepathy;
   character.size = character._speciesData.system.size;
 
-  character.travel = {
+  character.speciesTravel = {
     land: { speed: 0, stamina: 0 },
     water: { speed: 0, stamina: 0 },
     air: { speed: 0, stamina: 0 }
@@ -52,12 +52,12 @@ export async function prepareSpeciesData(character) {
   for (const [key, value] of Object.entries(character._speciesData.system.travel)) {
     const rolldata = await character.parent.getRollData();
     const innateRoll = new Roll(String(character.innateTravel[key].speed), rolldata);
-    await innateRoll.evaluate();  
-    character.travel[key].speed = innateRoll.total;
+    innateRoll.evaluateSync();  
+    character.speciesTravel[key].speed = innateRoll.total;
 
     const speciesRoll = new Roll(String(value.speed), rolldata);
-    await speciesRoll.evaluate();
-    character.travel[key].speed += speciesRoll.total;
+    speciesRoll.evaluateSync();
+    character.speciesTravel[key].speed += speciesRoll.total;
   }
 
   character.constitution += character._speciesData.system.constitution;
@@ -116,14 +116,14 @@ export async function prepareSpeciesDefault(character) {
   if (character.communication) character.communication.telepathy = character._speciesData.system.communication.telepathy;
   character.size = character._speciesData.system.size;
   
-  character.travel = {
+  character.speciesTravel = {
     land: { speed: 0, stamina: 0 },
     water: { speed: 0, stamina: 0 },
     air: { speed: 0, stamina: 0 }
   }
 
   for (const [key, value] of Object.entries(character._speciesData.system.travel)) {
-    character.travel[key].speed = await new Roll(String(character.innateTravel[key].speed), character.parent.getRollData()).evaluate().total;
-    character.travel[key].speed += await new Roll(String(value.speed), character.parent.getRollData()).evaluate().total;
+    character.speciesTravel[key].speed = await new Roll(String(character.innateTravel[key].speed), character.parent.getRollData()).evaluate().total;
+    character.speciesTravel[key].speed += await new Roll(String(value.speed), character.parent.getRollData()).evaluate().total;
   }
 }

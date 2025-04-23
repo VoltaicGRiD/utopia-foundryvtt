@@ -522,6 +522,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       case "item": 
         const item = this.actor.items.get(target.dataset.item);
         return await item.roll();
+      case "weaponless": 
+        return this.actor.weaponlessStrike();
       default: 
         const formula = target.dataset.formula || roll;
         return await new Roll(formula, this.actor.getRollData()).toMessage();

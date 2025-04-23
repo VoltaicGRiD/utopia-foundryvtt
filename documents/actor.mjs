@@ -492,6 +492,10 @@ export class UtopiaActor extends Actor {
     });
   }
 
+  async equip({item, slot, override = false}) {
+
+  }
+
   /**
    * Resets resources (implementation pending).
    * @param {string} type - The type of rest.
@@ -522,21 +526,39 @@ export class UtopiaActor extends Actor {
    *
    * @returns {Array<Promise<DamageInstance>>} Array of damage instances.
    */
-  weaponlessStrike() {
-    const formula = this.weaponless.formula;
-    const damageType = this.weaponless.type;
-    const bonus = this.weaponless.bonus ?? 0;
-    let targets = Array.from(game.user.targets) || [];
-    if (!targets || targets.length === 0) {
-      targets = [game.user.character ?? game.canvas.tokens.controlled[0]?.actor];
+  async weaponlessStrike() {
+    const formula = this.system.weaponlessAttacks.formula;
+    const damageType = this.system.weaponlessAttacks.type;
+    const bonus = this.system.weaponlessAttacks.bonus ?? 0;
+
+    const damageRoll = new Roll(`${formula} + ${bonus}` ?? "0", this.getRollData());
+    const damageValue = await damageRoll.evaluate();
+    const targets = [];
+
+    if (Array.from(game.user.targets).length === 0) {
+      if (game.settings.get("utopia", "targetRequired")) {
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NoTargetsSelected"));
+      }
+      else {
+        return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.NoTargetsSelectedInfo"));
+      }
     }
-    const totalDamage = new Roll(formula).evaluateSync().total + bonus;
-    const instances = [];
+    
+    targets.push(...Array.from(game.user.targets).map(t => t.actor)) || [];
+
     for (const target of targets) {
-      instances.push(this.createDamageInstance(damageType, totalDamage, target));
-      // TODO: Deal damage to target
+      const damage = new DamageInstance({
+        type: damageType ?? "physical",
+        value: damageValue.total,
+        target: target.uuid,
+        source: this,
+        roll: damageRoll,
+      });
+      const handledDamage = await damage.handle();
+      const damageMessage = await damage.toMessage();
+      console.warn(damage);
+      console.warn(damageMessage);
     }
-    return instances;
   }
 
   /* -------------------------------------------- */
@@ -610,10 +632,10 @@ export class UtopiaActor extends Actor {
     } else if (["target"].includes(item.system.template)) {
       if (Array.from(game.user.targets).length === 0) {
         if (game.settings.get("utopia", "targetRequired")) {
-          return ui.notifications.error(game.i18n.localize("UTOPIA.Errors.NoTargetsSelected"));
+          return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NoTargetsSelected"));
         }
         else {
-          return ui.notifications.warn(game.i18n.localize("UTOPIA.Errors.NoTargetsSelectedInfo"));
+          return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.NoTargetsSelectedInfo"));
         }
       }
       targets.push(...Array.from(game.user.targets).map(t => t.actor));
@@ -659,7 +681,7 @@ export class UtopiaActor extends Actor {
     const damageValue = (await new Roll(formula).evaluate()).total;
     const instances = [];
     if (!targets || targets.length === 0 || (targets.length === 1 && !targets[0])) {
-      return ui.notifications.error(game.i18n.localize("UTOPIA.Errors.NoTargets"));
+      return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NoTargets"));
     }
     for (const target of targets) {
       instances.push(this.createDamageInstance("kinetic", damageValue, target));
@@ -755,4 +777,36 @@ export class UtopiaActor extends Actor {
     }
     return netFavor;
   }
+
+  
+  // *****************************************************
+  // Actor exclusive getters and helpers
+  // *****************************************************
+  // TODO - Finish this method - was taken from 'item.mjs'
+  // async _autoRollAttacks(chatMessage = undefined) {
+  //   // Check if the world "AutoRollAttacks" setting is enabled
+  //   if (game.settings.get("utopia", "autoRollAttacks")) {
+  //     var formula = this.system.damage ?? this.system.formula ?? "0";
+  //     // Check if we should automatically redistribute dice
+  //     if (game.settings.get("utopia", "diceRedistribution")) {
+
+  //       switch (game.settings.get("utopia", "diceRedistributionSize")) {
+  //         case 0: // Use the default formula
+  //           break;
+  //         case 1: // Use the smallest redistribution (smallest dice size)
+  //           formula = this.redistributions[0] ?? this.redistributions[0];
+  //           break;
+  //         case 2: // Use the largest redistribution (largest dice size)
+  //           formula = this.redistributions.at(-1) ?? this.redistributions[0];
+  //           break;
+  //       }
+
+  //       this.performStrike(chatMessage, {formula: formula});
+  //     }
+  //     // We roll based on the default formula
+  //     else {       
+  //       this.performStrike(chatMessage, {formula: roll.formula});
+  //     }
+  //   }
+  // }
 }

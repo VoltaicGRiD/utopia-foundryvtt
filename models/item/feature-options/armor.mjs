@@ -38,13 +38,11 @@ export class ArmorFeatureOptions extends FeatureBase {
       actionCost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
     });
     schema.shroudedBuff = new fields.BooleanField({ required: true, nullable: false, initial: false });
-    schema.travel = new fields.SchemaField({
-      vertical: new fields.BooleanField({ required: true, nullable: false, initial: false }),
-      landSpeedBoost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      waterSpeedBoost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      airSpeedBoost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      grantsFlight: new fields.BooleanField({ required: true, nullable: false, initial: false }),
-    });
+    schema.vertical = new fields.BooleanField({ required: true, nullable: false, initial: false });
+    schema.landSpeedBoost = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    schema.waterSpeedBoost = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    schema.airSpeedBoost = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    schema.grantsFlight = new fields.BooleanField({ required: true, nullable: false, initial: false });
     schema.traitBonusAmount = new fields.NumberField({ ...requiredInteger, initial: 0 });
     schema.traitBonusTrait = new fields.StringField({ ...requiredString, initial: "none" });
     schema.spellDiscount = new fields.NumberField({ ...requiredInteger, initial: 0 });

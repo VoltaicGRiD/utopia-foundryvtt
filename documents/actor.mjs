@@ -493,7 +493,97 @@ export class UtopiaActor extends Actor {
   }
 
   async equip({item, slot, override = false}) {
+    const capacityData = (foundry.utils.getProperty(this, slot.slot)).capacity;
+    var capacity = 0;
+    
+    const equippedData = (foundry.utils.getProperty(this, slot.slot)).equipped;
+    if (equippedData.length >= capacity && !override) {
+      return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
+    }
 
+    if (slot.hands) { // Uses a handheld slot
+      capacity = capacityData;
+      const hands = slot.hands ?? 1; // Default to 1 hand if not specified
+
+      const nullSlots = equippedData.filter(id => id === null || id === undefined);
+      const indexOfNull = equippedData.indexOf(null);
+      if (nullSlots.length >= hands) { // If there are enough empty slots, just equip the item
+        // Pop the null slots, and take their place        
+        for (var i = 0; i < hands; i++) {
+          nullSlots.splice(i, 1, item.id);
+        }
+
+        // Update the equipped data with the new item
+        // Replacing the null slots with the new item
+        equippedData.splice(indexOfNull, hands, ...nullSlots);
+        
+        // Update the item to reflect that it is now equipped
+        await item.update({
+          "system.equipped": true,
+        })
+
+        // Update the actor with the new equipped data
+        return await this.update({
+          [`${slot.slot}.equipped`]: equippedData
+        });
+      }
+
+      for (var i = 0; i < hands; i++) {
+        if (override) { // Remove the item at the end of the equipped items
+          equippedData.pop();
+        }
+        else if (equippedData.length + hands >= capacity) {
+          return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
+        }
+
+        equippedData.push(item.id);
+      }
+
+      // Ensure we do not exceed the capacity
+      if (equippedData.length > capacity) {
+        equippedData.splice(0, equippedData.length - capacity); // Keep only the first 'capacity' items
+      }
+
+      await this.update({
+        [`${slot.slot}.equipped`]: equippedData
+      });
+    }
+    else if (slot.type) {
+      capacity = capacityData[slot.type];
+      if (capacity === undefined || capacity === 0) {
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresInvalidSlot"));
+      }
+
+      if (equippedData.length < capacity) {
+        // Add the new item to the equipped items
+        equippedData.push(item.id);
+
+        // await item.update({
+        //   "system.equipped": true,
+        // })
+
+        return await this.update({
+          [`${slot.slot}.equipped`]: equippedData
+        });
+      }
+      else if (equippedData.length >= capacity && !override) {
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
+      }
+      else if (equippedData.length >= capacity && override) {
+        // Remove the last item in the equipped items
+        equippedData.splice(0, 1);
+        // Add the new item to the equipped items
+        equippedData.push(item.id);
+
+        // await item.update({
+        //   "system.equipped": true,
+        // })
+
+        return await this.update({
+          [`${slot.slot}.equipped`]: equippedData
+        });
+      }
+    }
   }
 
   /**
@@ -502,6 +592,9 @@ export class UtopiaActor extends Actor {
    */
   async resetResources(type) {
     // TODO: Implement resource reset logic
+    const restResources = Object.entries(this.system).filter(([key, value]) => {
+      
+    });
   }
 
   /**

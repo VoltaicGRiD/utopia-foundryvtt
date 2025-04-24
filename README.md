@@ -43,7 +43,7 @@ This repository is **open source**, allowing you to review, learn from, and exte
 
 - **Community macro/module development is encouraged.**  
 
-- **Forking for personal use is absolutpely fine.**  
+- **Forking for personal use is absolutely fine.**  
 
 - **Official merges of third-party changes won’t be accepted** under this contract.
 
@@ -94,11 +94,13 @@ Although the code here is open source, the actual **Utopia TTRPG** intellectual 
 
 **Licensing Terms**  
 
-- This repository is released under [LICENSE](LICENSE) (insert your specific license text or link here).  
+- This repository is released under an [MIT License](LICENSE).  
 
 - **Modifying or redistributing** this system must not violate the proprietary content and trademark rights owned by Oridont @ Myramyth.  
 
 - **External Pull Requests** are not accepted for the official codebase, in accordance with the contracted development agreement.
+
+- **Game rules, lore, art, and trademarks** are not covered by the [MIT License](LICENSE) in this repository. The license concerns the code only.
 
   
 

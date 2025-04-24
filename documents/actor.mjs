@@ -493,7 +493,83 @@ export class UtopiaActor extends Actor {
   }
 
   async equip({item, slot, override = false}) {
+    const capacityData = (foundry.utils.getProperty(this, slot.slot)).capacity;
+    var capacity = 0;
+    
+    const equippedData = (foundry.utils.getProperty(this, slot.slot)).equipped;
+    if (equippedData.length >= capacity && !override) {
+      return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
+    }
 
+    if (slot.type) { // Uses a specific slot type
+      capacity = capacityData[slot.type];
+      if (capacity === undefined || capacity === 0) {
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresInvalidSlot"));
+      }
+    }
+
+    if (slot.hands) { // Uses a handheld slot
+      const hands = slot.hands;
+      capacity = this.system.handheldSlots.capacity;
+      if (hands > capacity) {
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresMoreHands"));
+      }
+
+      if (hands > equippedData.length) { // If the item requires more hands than currently equipped (2 hands required, 0-1 item equipped)
+        // Check if the item can be equipped in the current slot
+        const currentHands = equippedData.reduce((sum, itemId) => {
+          const item = this.items.get(itemId);
+          return sum + (item?.system.hands || 1); // If the item does not have hands defined, it takes up 1 hand
+        }, 0);
+
+        if (currentHands + hands > capacity && !override) {
+          return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresMoreHandsThanEquipped"));
+        }
+
+        // Unequip the last items in the stack to make room for the new item
+        while (currentHands + hands > capacity && equippedData.length > 0) {
+          const existingItem = equippedData.pop();
+          await this.unequip(existingItem);
+        }
+      }
+
+      // Fill a new array with existing equipped items, and the new item, filling up to the number of hands required
+      const newHandsArray = [...equippedData, ...Array.from({ length: hands }).map(() => item.id)];
+
+      return await this.update({
+        [`${slot.slot}.equipped`]: newHandsArray
+      });
+    }
+
+    if (override || equippedData.length < capacity) {
+      if (override && equippedData.length >= capacity) {
+        // If override is true, we can replace the existing item in the slot
+        equippedData = equippedData.slice(0, capacity - 1); // Keep only the first 'capacity - 1' items
+      }
+
+      // Add the new item to the equipped items
+      equippedData.push(item.id);
+
+      // Ensure we do not exceed the capacity
+      if (equippedData.length > capacity) {
+        equippedData = equippedData.slice(0, capacity);
+      }
+
+      await this.update({
+        [`${slot.slot}.equipped`]: equippedData
+      });
+    }
+  }
+
+  async unequip(item, slot) {
+    const equippedData = foundry.utils.getProperty(this, slot.slot).equipped;
+    const itemIndex = equippedData.indexOf(item.id);
+    if (itemIndex !== -1) {
+      equippedData.splice(itemIndex, 1);
+      await this.update({
+        [`${slot.slot}.equipped`]: equippedData
+      });
+    }
   }
 
   /**
@@ -502,6 +578,9 @@ export class UtopiaActor extends Actor {
    */
   async resetResources(type) {
     // TODO: Implement resource reset logic
+    const restResources = Object.entries(this.system).filter(([key, value]) => {
+      
+    });
   }
 
   /**

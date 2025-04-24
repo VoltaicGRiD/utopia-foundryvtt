@@ -24,10 +24,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.dodge.quantity = 0;
     this.dodge.size = 0;
 
-    this.constitution = 0;
-    this.endurance = 0;
-    this.effervescence = 0;
-
     this.subtraitPoints = {};
     this.subtraitPoints.spent = 0;
     this.subtraitPoints.bonus = 0;
@@ -88,7 +84,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     const ResourceField = () => new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       max: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
+      //rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
     });
 
     schema.traits = new fields.SchemaField({});
@@ -297,12 +293,12 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     schema.turnActions = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
       max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
-      rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
+      //rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
     })
     schema.interruptActions = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "interruptActionsMax") }),
       max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "interruptActionsMax") }),
-      rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
+      //rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
     })
 
     schema.evolution = new fields.SchemaField({
@@ -721,11 +717,38 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
    * Aggregate innate and armor-based defenses for this actor.
    */
   _prepareDefenses() {
-    for (const item of this.parent.items) {
-      if (item.system.defenses) {
-        for (const [key, value] of Object.entries(item.system.defenses)) {
-          if (this.armorDefenses[key] === undefined) this.armorDefenses[key] = 0;
-          this.armorDefenses[key] += value;
+    for (const [key, value] of Object.entries(this.equipmentSlots.equipped)) {
+      if (value && value.length > 0) {
+
+        for (const itemId of value) {
+          const item = this.parent.items.filter(i => i.id === itemId)[0];
+          if (!item) continue;
+          
+          const defenses = item.system.defenses;
+          if (defenses) {
+            for (const [defenseKey, defenseValue] of Object.entries(defenses)) {
+              if (this.armorDefenses[defenseKey] === undefined) this.armorDefenses[defenseKey] = 0;
+              this.armorDefenses[defenseKey] += defenseValue;
+            }
+          }
+        }
+      }
+    }
+
+    for (const [key, value] of Object.entries(this.augmentSlots.equipped)) {
+      if (value && value.length > 0) {
+
+        for (const itemId of value) {
+          const item = this.parent.items.filter(i => i.id === itemId)[0];
+          if (!item) continue;
+          
+          const defenses = item.system.defenses;
+          if (defenses) {
+            for (const [defenseKey, defenseValue] of Object.entries(defenses)) {
+              if (this.armorDefenses[defenseKey] === undefined) this.armorDefenses[defenseKey] = 0;
+              this.armorDefenses[defenseKey] += defenseValue;
+            }
+          }
         }
       }
     }
@@ -785,4 +808,3 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     this.spellcasting.spellcap = this.subtraits.res.total;
   }
-}

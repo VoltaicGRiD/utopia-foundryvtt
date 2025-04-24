@@ -248,7 +248,7 @@ export class UtopiaItem extends Item {
           this.parent.equip({ 
             item: this, 
             slot: {
-              slot: this.parent.system.handheldSlots,
+              slot: "system.handheldSlots",
               hands: this.system.hands ?? 1,
             },
             override: true
@@ -258,7 +258,7 @@ export class UtopiaItem extends Item {
           this.parent.equip({
             item: this,
             slot: {
-              slot: this.parent.system.equipmentSlots,
+              slot: "system.equipmentSlots",
               type: this.system.armorType.replace("Armor", "").toLowerCase(),
             },
             override: true
@@ -268,7 +268,7 @@ export class UtopiaItem extends Item {
           this.parent.equip({
             item: this,
             slot: {
-              slot: this.parent.system.handheldSlots,
+              slot: "system.handheldSlots",
               hands: this.system.hands ?? 1,
             },
             override: true
@@ -280,7 +280,7 @@ export class UtopiaItem extends Item {
               this.parent.equip({
                 item: this,
                 slot: {
-                  slot: this.parent.system.handheldSlots,
+                  slot: "system.handheldSlots",
                   hands: this.system.hands ?? 1,
                 },
                 override: true
@@ -290,7 +290,7 @@ export class UtopiaItem extends Item {
               this.parent.equip({
                 item: this,
                 slot: {
-                  slot: this.parent.system.equipmentSlots,
+                  slot: "system.equipmentSlots",
                   type: this.system.equippableArtifactSlot.toLowerCase(),
                 },
                 override: true
@@ -611,4 +611,3 @@ export class UtopiaItem extends Item {
     return categories; 
   }
 
-}

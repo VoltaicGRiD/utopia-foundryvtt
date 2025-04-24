@@ -501,74 +501,88 @@ export class UtopiaActor extends Actor {
       return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
     }
 
-    if (slot.type) { // Uses a specific slot type
+    if (slot.hands) { // Uses a handheld slot
+      capacity = capacityData;
+      const hands = slot.hands ?? 1; // Default to 1 hand if not specified
+
+      const nullSlots = equippedData.filter(id => id === null || id === undefined);
+      const indexOfNull = equippedData.indexOf(null);
+      if (nullSlots.length >= hands) { // If there are enough empty slots, just equip the item
+        // Pop the null slots, and take their place        
+        for (var i = 0; i < hands; i++) {
+          nullSlots.splice(i, 1, item.id);
+        }
+
+        // Update the equipped data with the new item
+        // Replacing the null slots with the new item
+        equippedData.splice(indexOfNull, hands, ...nullSlots);
+        
+        // Update the item to reflect that it is now equipped
+        await item.update({
+          "system.equipped": true,
+        })
+
+        // Update the actor with the new equipped data
+        return await this.update({
+          [`${slot.slot}.equipped`]: equippedData
+        });
+      }
+
+      for (var i = 0; i < hands; i++) {
+        if (override) { // Remove the item at the end of the equipped items
+          equippedData.pop();
+        }
+        else if (equippedData.length + hands >= capacity) {
+          return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
+        }
+
+        equippedData.push(item.id);
+      }
+
+      // Ensure we do not exceed the capacity
+      if (equippedData.length > capacity) {
+        equippedData.splice(0, equippedData.length - capacity); // Keep only the first 'capacity' items
+      }
+
+      await this.update({
+        [`${slot.slot}.equipped`]: equippedData
+      });
+    }
+    else if (slot.type) {
       capacity = capacityData[slot.type];
       if (capacity === undefined || capacity === 0) {
         return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresInvalidSlot"));
       }
-    }
 
-    if (slot.hands) { // Uses a handheld slot
-      const hands = slot.hands;
-      capacity = this.system.handheldSlots.capacity;
-      if (hands > capacity) {
-        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresMoreHands"));
+      if (equippedData.length < capacity) {
+        // Add the new item to the equipped items
+        equippedData.push(item.id);
+
+        // await item.update({
+        //   "system.equipped": true,
+        // })
+
+        return await this.update({
+          [`${slot.slot}.equipped`]: equippedData
+        });
       }
-
-      if (hands > equippedData.length) { // If the item requires more hands than currently equipped (2 hands required, 0-1 item equipped)
-        // Check if the item can be equipped in the current slot
-        const currentHands = equippedData.reduce((sum, itemId) => {
-          const item = this.items.get(itemId);
-          return sum + (item?.system.hands || 1); // If the item does not have hands defined, it takes up 1 hand
-        }, 0);
-
-        if (currentHands + hands > capacity && !override) {
-          return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresMoreHandsThanEquipped"));
-        }
-
-        // Unequip the last items in the stack to make room for the new item
-        while (currentHands + hands > capacity && equippedData.length > 0) {
-          const existingItem = equippedData.pop();
-          await this.unequip(existingItem);
-        }
+      else if (equippedData.length >= capacity && !override) {
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
       }
+      else if (equippedData.length >= capacity && override) {
+        // Remove the last item in the equipped items
+        equippedData.splice(0, 1);
+        // Add the new item to the equipped items
+        equippedData.push(item.id);
 
-      // Fill a new array with existing equipped items, and the new item, filling up to the number of hands required
-      const newHandsArray = [...equippedData, ...Array.from({ length: hands }).map(() => item.id)];
+        // await item.update({
+        //   "system.equipped": true,
+        // })
 
-      return await this.update({
-        [`${slot.slot}.equipped`]: newHandsArray
-      });
-    }
-
-    if (override || equippedData.length < capacity) {
-      if (override && equippedData.length >= capacity) {
-        // If override is true, we can replace the existing item in the slot
-        equippedData = equippedData.slice(0, capacity - 1); // Keep only the first 'capacity - 1' items
+        return await this.update({
+          [`${slot.slot}.equipped`]: equippedData
+        });
       }
-
-      // Add the new item to the equipped items
-      equippedData.push(item.id);
-
-      // Ensure we do not exceed the capacity
-      if (equippedData.length > capacity) {
-        equippedData = equippedData.slice(0, capacity);
-      }
-
-      await this.update({
-        [`${slot.slot}.equipped`]: equippedData
-      });
-    }
-  }
-
-  async unequip(item, slot) {
-    const equippedData = foundry.utils.getProperty(this, slot.slot).equipped;
-    const itemIndex = equippedData.indexOf(item.id);
-    if (itemIndex !== -1) {
-      equippedData.splice(itemIndex, 1);
-      await this.update({
-        [`${slot.slot}.equipped`]: equippedData
-      });
     }
   }
 

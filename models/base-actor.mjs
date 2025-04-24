@@ -808,3 +808,4 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     this.spellcasting.spellcap = this.subtraits.res.total;
   }
+}

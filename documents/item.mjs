@@ -610,4 +610,4 @@ export class UtopiaItem extends Item {
 
     return categories; 
   }
-
+}

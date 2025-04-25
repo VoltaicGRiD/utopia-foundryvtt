@@ -1,0 +1,68 @@
+<div class="chat-card">
+  
+  <div class="card-header">
+    <img class="card-header-icon" src="systems/utopia/assets/damage.svg" title="Damage" width="30" height="30" />
+    <h3>Damage</h3>
+  </div>
+
+  <div class="dice-roll" data-tooltip-class="utopia">
+    {{#if damage.roll}}
+      {{#if damage.roll.flavor~}}
+        <div class="dice-flavor">
+          {{damage.roll.flavor}}
+        </div>
+      {{~/if}}  
+      {{#if damage.roll.formula}}
+        <div class="dice-result">
+          <div class="dice-formula">{{damage.roll.formula}}</div>
+          {{{damage.roll.tooltip}}}
+          <h4 class="dice-total">{{damage.roll.total}}</h4>
+        </div>
+      {{/if}}
+    {{/if}}
+  </div>
+
+  <div class="card-content">
+    <span class="damage-shp">{{handledDamage.shpDamage}} {{{localize "UTOPIA.CHAT.SHPTaken"}}}</span>
+
+    {{#if (gt handledDamage.dhpDamage 0)}}
+      <span class="damage-dhp">{{handledDamage.dhpDamage}} {{{localize "UTOPIA.CHAT.DHPTaken"}}}</span>
+    {{/if}}
+
+    {{#if (gt handledDamage.staminaDamage 0)}}
+      <span class="damage-stamina">{{handledDamage.staminaDamage}} {{{localize "UTOPIA.CHAT.STATaken"}}}</span>
+    {{/if}}
+    
+    {{#if handledDamage.absorbedEntirely}}
+      <span class="damage-absorbed-message"><i>{{{localize "UTOPIA.CHAT.Absorbed"}}}</i></span>
+    {{else}}
+      <span class="damage-absorbed">{{handledDamage.absorbed}} {{{localize "UTOPIA.CHAT.DamageAbsorbed"}}}</span>
+      <span class="damage-absorbed-message"><i>{{{localize "UTOPIA.CHAT.NotAbsorbed"}}}</i></span>
+    {{/if}}
+  </div>
+
+  {{!-- {{#each rolls}}
+    <div class="dice-roll" data-tooltip-class="utopia">
+      {{#if this.flavor~}}
+        <div class="dice-flavor">
+          {{this.flavor}}
+        </div>
+      {{~/if}}  
+      {{#if this.formula}}
+        <div class="dice-result">
+          <div class="dice-formula">{{this.formula}}</div>
+          {{{this.tooltip}}}
+          <h4 class="dice-total">{{this.total}}</h4>
+        </div>
+      {{/if}}
+    </div>
+  {{/each}} --}}
+
+  <footer data-visibility="gm">
+    <div class="targets">
+      {{#each targets as |target|}}
+        <img src="{{target.img}}" alt="{{target.name}}" width="40" height="40" data-tooltip="{{target.name}}" />
+      {{/each}}
+    </div>
+  </footer>
+</div>

@@ -175,6 +175,10 @@
     }
   }
 
+  &.placeable-hud {
+    @import "components/token-hud.scss";
+  }
+
   &.talent-browser {
     @import "components/talent-browser.scss";
   }

@@ -24,8 +24,14 @@
     <a data-action="dodge"><i class="fa-fw fas fa-person-walking-arrow-loop-left"></i> {{localize "UTOPIA.CHAT.Dodge"}}</a>
   </div>
 
+  {{#if (eq system.damageDealt true)}}
+    <div class="card-content">
+      <p>{{localize "UTOPIA.Chats.DamageResponse.DamageDealt"}}</p>
+    </div>
+  {{/if}}
+
   <div data-visibility="gm" class="card-buttons">
-    {{#if (gt (length instances) 1)}}
+    {{#if (and (gt (length instances) 1) (eq system.damageDealt false))}}
       <a data-action="dealAllDamage" data-target="target" data-percent="100"><i class="fa-fw fas fa-sword"></i> Full Damage</a>
       {{!-- <a data-action="dealAllDamage" data-target="target" data-percent="50"><i class="fa-fw fas fa-divide"></i> 1/2 Damage</a>
       <a data-action="dealAllDamage" data-target="target" data-percent="200"><i class="fa-fw fas fa-bomb"></i> Double Damage</a> --}}
@@ -36,7 +42,7 @@
   <footer data-visibility="gm">
     <div class="targets">
       {{#each targets as |target|}}
-        <img src="{{target.img}}" alt="{{target.name}}" data-tooltip="{{target.name}}" />
+        <img src="{{target.img}}" alt="{{target.name}}" width="40" height="40" data-tooltip="{{target.name}}" />
       {{/each}}
     </div>
   </footer>

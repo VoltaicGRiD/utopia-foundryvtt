@@ -136,7 +136,10 @@ export class DamageInstance {
       // Apply overflow to deep HP
       const dhpDamage = overflow * this.dhpPercent;
 
-      this.final = { shpDamage, dhpDamage, staminaDamage: 0, total: this.value };
+      const absorbedEntirely = shpDamage + dhpDamage <= 0 ? true : false;
+      const absorbed = await this.defenses();
+
+      this.final = { shpDamage, dhpDamage, staminaDamage: 0, total: this.value, absorbedEntirely, absorbed };
       return this.final;
     }
 
@@ -155,7 +158,10 @@ export class DamageInstance {
         dhpDamage = targetData.dhp;
       }
 
-      this.final = { shpDamage: 0, dhpDamage, staminaDamage: 0, total: this.value };
+      const absorbedEntirely = dhpDamage <= 0 ? true : false;
+      const absorbed = await this.defenses();
+
+      this.final = { shpDamage: 0, dhpDamage, staminaDamage: 0, total: this.value, absorbedEntirely, absorbed };
       return this.final;
     }
 
@@ -180,7 +186,11 @@ export class DamageInstance {
 
       // Apply overflow to deep HP
       const dhpDamage = overflow * this.dhpPercent;
-      this.final = { shpDamage: 0, dhpDamage, staminaDamage, total: this.value };
+
+      const absorbedEntirely = dhpDamage + staminaDamage <= 0 ? true : false;
+      const absorbed = await this.defenses();
+
+      this.final = { shpDamage: 0, dhpDamage, staminaDamage, total: this.value, absorbedEntirely, absorbed };
       return this.final;
     } 
   }
@@ -200,6 +210,7 @@ export class DamageInstance {
 
     this.messageInstance = UtopiaChatMessage.create({
       content,
+      rolls: [ this.roll ],
       speaker: {
         user: game.user._id,
         speaker: ChatMessage.getSpeaker(),

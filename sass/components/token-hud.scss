@@ -1,0 +1,38 @@
+.attributes {
+  position: absolute;
+  left: -12.5%;
+  top: -45px;
+  align-items: start;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  width: 125%;
+  color: white;
+
+  .shpBar {
+    background-color: rgba(0, 150, 25, 0.5);
+  }
+
+  .dhpBar {
+    background-color: rgba(150, 0, 25, 0.5);
+  }
+
+  .staminaBar {
+    background-color: rgba(0, 0, 150, 0.5);
+  }
+
+  input[type="number"] {
+    font-size: 1em;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 0;
+    color: white;
+    pointer-events: all;
+  }
+}
+
+.control-icon {
+  margin: 0;
+  border-radius: 0;
+}
+

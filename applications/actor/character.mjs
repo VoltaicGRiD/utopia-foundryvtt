@@ -84,6 +84,7 @@ export class Character extends DragDropActorV2 {
       const headerContainer = this.element.querySelector("header.window-header");
       const spliceLocation = headerContainer.querySelector("h1.window-title");
       const editButton = document.createElement("button");
+      editButton.type = "button";
       editButton.classList.add("edit-mode-button");
       switch (this._mode) {
         case this.constructor.MODES.PLAY:

@@ -292,7 +292,7 @@ export class UtopiaChatMessage extends ChatMessage {
         }        
         const percent = button.dataset.percent ?? 100;
         const instance = DamageInstance.fromObject(this.system.instance);
-        target.applyDamage(instance) // TODO - Implement damage percentages
+        target.applyDamage(instance, this) // TODO - Implement damage percentages
       });
     }
 
@@ -315,7 +315,7 @@ export class UtopiaChatMessage extends ChatMessage {
         const instances = this.system.instances;
         for (const instance of instances) {
           const damageInstance = DamageInstance.fromObject(instance); // Convert to DamageInstance
-          target.applyDamage(damageInstance, true) // TODO - Implement damage percentages
+          target.applyDamage(damageInstance, this) // TODO - Implement damage percentages
         }
       });
     }
@@ -385,5 +385,18 @@ export class UtopiaChatMessage extends ChatMessage {
       button.remove();
     }
     this.render();
+  }
+
+  async setComplete(value) {
+    if (value) {
+      this.setFlag("utopia", "complete", true);
+    } else {
+      this.unsetFlag("utopia", "complete");
+    }
+    await this.updateSource();
+
+    this.removeDamageButtons();
+    this.removeStrikeButtons();
+    this.render(true);
   }
 }

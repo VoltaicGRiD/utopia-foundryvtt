@@ -142,11 +142,9 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     schema.stamina = ResourceField();
 
     schema.block = new fields.SchemaField({
-      quantity: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       size: new fields.NumberField({ ...requiredInteger, initial: 4 }),
     });
     schema.dodge = new fields.SchemaField({
-      quantity: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       size: new fields.NumberField({ ...requiredInteger, initial: 12 }),
     });
 

@@ -328,7 +328,6 @@
 }
 
 &.actor-sheet {
-  
   div.tag {
     color: var(--utopia-color-blue-white);
   }
@@ -351,6 +350,13 @@
         justify-self: flex-end;
         margin-top: auto;
       }
+    }
+
+    &.spellbook {
+      display: flex;
+      flex-direction: column;
+      align-content: flex-start;
+      gap: 0.5rem;      
     }
 
     &.background {

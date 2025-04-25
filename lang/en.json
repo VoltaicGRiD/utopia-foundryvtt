@@ -346,7 +346,7 @@
         "OpenSpellcraft": "Open Spellcraft",
         "NewArtifice": "New Gear Item",
         "NewGeneric": "New Generic Item",
-        "NoSpecies": "No Species, Click to Select",
+        "NoSpecies": "Select a Species",
         "Perform": "Perform",
         "LevelUp": "Level Up",
         "ForageAndCrafting": "Forage and Crafting", 
@@ -355,7 +355,8 @@
         "AddClass": "Add Class",
         "Convert": "Convert to NPC",
         "CreatureTalentsInfo": "Drag-and-Drop talents to use them on creatures.",
-        "ViewSpecialist": "View Specialist Talents"
+        "ViewSpecialist": "View Specialist Talents",
+        "UnlockArtistry": "Unlock Artistry"
       },
       "Items": {
         "Talents": "Talents",
@@ -366,7 +367,8 @@
         "Consumables": "Consumables",
         "Components": "Components",
         "Artistries": "Artistries",
-        "Favors": "Favors"
+        "Favors": "Favors",
+        "Spells": "Spellbook"
       },
       "Points": {
         "subtraits": "Subtraits",

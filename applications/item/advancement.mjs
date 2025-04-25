@@ -53,7 +53,7 @@ export class AdvancementSheet extends DragDropAppV2 {
       actor: this.actor,
       subtraits: this.subtraits,
       giftPoints: this.actor.system.giftPoints.available,
-      points: this.actor.system.subtraitPoints.available - this.subtraits.reduce((acc, subtrait) => acc + subtrait.newValue - subtrait.value, 0)
+      points: this.actor.system.subtraitPoints.available - this.subtraits.reduce((acc, subtrait) => acc + subtrait.newValue - subtrait.value, 0) + (this.actor.system.experience >= this.actor.system.level * 100 ? 1 : 0),
     };
 
     return context;
@@ -66,7 +66,7 @@ export class AdvancementSheet extends DragDropAppV2 {
   }
 
   static async _increase(event, target) {
-    const points = this.actor.system.subtraitPoints.available - this.subtraits.reduce((acc, subtrait) => acc + subtrait.newValue - subtrait.value, 0);
+    const points = this.actor.system.subtraitPoints.available - this.subtraits.reduce((acc, subtrait) => acc + subtrait.newValue - subtrait.value, 0) + (this.actor.system.experience >= this.actor.system.level * 100 ? 1 : 0);
     if (points <= 0) return;
 
     const key = target.dataset.key;
@@ -105,6 +105,8 @@ export class AdvancementSheet extends DragDropAppV2 {
       await this.actor.update({
         [`system.subtraits.${subtrait.short}.value`]: subtrait.newValue,
         [`system.subtraits.${subtrait.short}.gifted`]: subtrait.gifted,
+        [`system.level`]: this.actor.system.experience >= this.actor.system.level * 100 ? this.actor.system.level + 1 : this.actor.system.level,
+        [`system.experience`]: this.actor.system.experience >= this.actor.system.level * 100 ? this.actor.system.experience - this.actor.system.level * 100 : this.actor.system.experience,
       });
     }
 

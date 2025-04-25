@@ -14,58 +14,75 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
   static LOCALIZATION_PREFIXES = [...super.LOCALIZATION_PREFIXES, "UTOPIA.Actors"];
 
   prepareBaseData() {
-    this.body = 0;
-    this.mind = 0;
-    this.soul = 0;
-
-    this.block.quantity = 0;
-    this.block.size = 0;
-
-    this.dodge.quantity = 0;
-    this.dodge.size = 0;
-
-    this.subtraitPoints = {};
-    this.subtraitPoints.spent = 0;
-    this.subtraitPoints.bonus = 0;
-    this.subtraitPoints.available = 0;
+    super.prepareBaseData();
 
     const systemDefenses = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
-    this.innateDefenses = {};
-    this.armorDefenses = {};
-
     for (const [key, value] of Object.entries(systemDefenses)) {
       if (value.initialDefense) {
-        this.innateDefenses[key] = value.initialDefense;
-        this.armorDefenses[key] = 0;
+        this.innateDefenses[key] += value.initialDefense;
       }
       else {
         this.innateDefenses[key] = 0;
-        this.armorDefenses[key] = 0;
       }
     }
 
-    this.innateTravel = {
-      land: { speed: "@spd.total", stamina: 0 },
-      water: { speed: "0", stamina: 0 },
-      air: { speed: "0", stamina: 0 },
-    }
+    // console.log(this);
+    // console.log(this.source);
 
-    this.speciesTravel = {
-      land: { speed: 0, stamina: 0 },
-      water: { speed: 0, stamina: 0 },
-      air: { speed: 0, stamina: 0 },
-    }
+    // this = this._source;
 
-    this.hitpoints.deep.max = 0;
-    this.hitpoints.surface.max = 0;
-    this.stamina.max = 0;
+    // this.body = 0;
+    // this.mind = 0;
+    // this.soul = 0;
+
+    // this.block.quantity = 0;
+    // this.block.size = 0;
+
+    // this.dodge.quantity = 0;
+    // this.dodge.size = 0;
+
+    // this.subtraitPoints = {};
+    // this.subtraitPoints.spent = 0;
+    // this.subtraitPoints.bonus = 0;
+    // this.subtraitPoints.available = 0;
+
+    // const systemDefenses = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
+    // this.innateDefenses = {};
+    // this.armorDefenses = {};
+
+    // for (const [key, value] of Object.entries(systemDefenses)) {
+    //   if (value.initialDefense) {
+    //     this.innateDefenses[key] = value.initialDefense;
+    //     this.armorDefenses[key] = 0;
+    //   }
+    //   else {
+    //     this.innateDefenses[key] = 0;
+    //     this.armorDefenses[key] = 0;
+    //   }
+    // }
+
+    // this.innateTravel = {
+    //   land: { speed: "@spd.total", stamina: 0 },
+    //   water: { speed: "0", stamina: 0 },
+    //   air: { speed: "0", stamina: 0 },
+    // }
+
+    // this.speciesTravel = {
+    //   land: { speed: 0, stamina: 0 },
+    //   water: { speed: 0, stamina: 0 },
+    //   air: { speed: 0, stamina: 0 },
+    // }
+
+    // this.hitpoints.deep.max = 0;
+    // this.hitpoints.surface.max = 0;
+    // this.stamina.max = 0;
     
-    this.constitution = 0;
-    this.endurance = 0;
-    this.effervescence = 0;
+    // this.constitution = 0;
+    // this.endurance = 0;
+    // this.effervescence = 0;
 
-    this.experience = 1000;
-    this.level = 10;
+    // this.experience = 1000;
+    // this.level = 10;
   }
 
   /**

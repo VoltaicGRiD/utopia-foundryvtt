@@ -56,6 +56,14 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       air: { speed: 0, stamina: 0 },
     }
 
+    this.hitpoints.deep.max = 0;
+    this.hitpoints.surface.max = 0;
+    this.stamina.max = 0;
+    
+    this.constitution = 0;
+    this.endurance = 0;
+    this.effervescence = 0;
+
     this.experience = 1000;
     this.level = 10;
   }
@@ -367,8 +375,9 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     });
     schema.slots = new fields.NumberField({ ...requiredInteger, initial: 0 });
 
-    schema.turnOrder = new fields.SchemaField({
-      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['spd'] }),
+    schema.turnOrder = new fields.StringField({ required: true, nullable: false, initial: "spd.mod" })
+    schema.turnOrderOptions = new fields.StringField({
+      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['spd.mod'] }),
     })
 
     const returns = {};
@@ -609,6 +618,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
   _prepareAutomation() {
     this.block.formula = `${this.block.quantity}d${this.block.size}`;
     this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
+
+    this.turnOrder = foundry.utils.getProperty(this.parent.getRollData(), this.turnOrder)
   }
 
   /**

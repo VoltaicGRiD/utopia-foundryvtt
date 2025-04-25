@@ -74,6 +74,7 @@
 .damage-dhp,
 .damage-stamina,
 .damage-total,
+.damage-absorbed,
 .damage-type {
   display: flex;
   width: 100%;
@@ -105,6 +106,11 @@
   color: white;
 }
 
+.damage-absorbed {
+  background-color: #961279;
+  color: white;
+}
+
 .damage-type {
   background-color: #000000;
   color: white;
@@ -117,6 +123,10 @@
 
 .damage-value {
   font-size: var(--font-size-16);
+}
+
+.damage-absorbed-message {
+  margin-top: 5px;
 }
 
 .spell-card,

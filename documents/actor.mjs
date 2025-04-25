@@ -809,6 +809,28 @@ export class UtopiaActor extends Actor {
       "system.hitpoints.deep.value": this.system.hitpoints.deep.value - handledDamage.dhpDamage,
       "system.stamina.value": this.system.stamina.value - handledDamage.staminaDamage,
     });
+
+    if (chatMessage) {
+      chatMessage.delete();
+
+      console.warn(damage);
+
+      const roll = damage.roll;
+      const tooltip = await roll.getTooltip();
+      roll.tooltip = tooltip;
+
+      const template = await renderTemplate("systems/utopia/templates/chat/damage-final.hbs", {
+        actor: this,
+        damage: damage,
+        handledDamage: handledDamage
+      });
+
+      return await UtopiaChatMessage.create({
+        content: template,
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        flavor: game.i18n.localize("UTOPIA.CHAT.DamageAppliedFlavor"),
+      });
+    }    
   }
 
   /* -------------------------------------------- */

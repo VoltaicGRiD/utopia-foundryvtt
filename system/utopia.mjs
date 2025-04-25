@@ -5,6 +5,9 @@ import { SpellcraftSheet } from "../applications/specialty/spellcraft.mjs";
 import { TalentBrowser } from "../applications/specialty/talent-browser.mjs";
 import { UtopiaActor } from "../documents/actor.mjs";
 import { UtopiaChatMessage } from "../documents/chat-message.mjs";
+import { UtopiaTokenDocument } from "../documents/hud/token-document.mjs";
+import { UtopiaTokenHUD } from "../documents/hud/token-hud.mjs";
+import { UtopiaToken } from "../documents/hud/token.mjs";
 import { UtopiaItem } from "../documents/item.mjs";
 import { registerConfig } from "./config.mjs";
 import * as init from "./init/_init.mjs";
@@ -39,6 +42,10 @@ Hooks.once("init", function () {
     formula: `3d6 + @turnOrder`,
     decimals: 2,
   };
+
+  CONFIG.Token.objectClass = UtopiaToken;
+  CONFIG.Token.documentClass = UtopiaTokenDocument;
+  CONFIG.Token.hudClass = UtopiaTokenHUD;
 
   CONFIG.Actor.documentClass = UtopiaActor;
   CONFIG.Item.documentClass = UtopiaItem;

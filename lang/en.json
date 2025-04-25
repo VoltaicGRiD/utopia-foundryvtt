@@ -185,7 +185,14 @@
     },
     "CHAT": {
       "Block": "Block",
-      "Dodge": "Dodge"
+      "Dodge": "Dodge",
+      "DamageAppliedFlavor": "Damage Applied",
+      "SHPTaken": "SHP damage taken",
+      "DHPTaken": "DHP damage taken",
+      "STATaken": "STA removed",
+      "DamageAbsorbed": "Damage absorbed by defenses",
+      "Absorbed": "Damage <b>absorbed entirely</b> by defenses!",
+      "NotAbsorbed": "Damage <b>not</b> entirely absorbed by defenses!"
     },
     "StatusEffects": {
       "deafened": "Deafened",

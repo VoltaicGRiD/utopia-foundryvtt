@@ -238,6 +238,7 @@
 .chat-message .damage-dhp,
 .chat-message .damage-stamina,
 .chat-message .damage-total,
+.chat-message .damage-absorbed,
 .chat-message .damage-type {
   display: flex;
   width: 100%;
@@ -264,6 +265,10 @@
   background-color: #961279;
   color: white;
 }
+.chat-message .damage-absorbed {
+  background-color: #961279;
+  color: white;
+}
 .chat-message .damage-type {
   background-color: #000000;
   color: white;
@@ -274,6 +279,9 @@
 }
 .chat-message .damage-value {
   font-size: var(--font-size-16);
+}
+.chat-message .damage-absorbed-message {
+  margin-top: 5px;
 }
 .chat-message .spell-card .spell-attributes,
 .chat-message .spell-card .gear-attributes,
@@ -2092,6 +2100,38 @@
 .utopia.actor-sheet.creature .creature-attribute-container .attribute .attribute-maximum:hover {
   border: none;
   background: transparent;
+}
+.utopia.placeable-hud .attributes {
+  position: absolute;
+  left: -12.5%;
+  top: -45px;
+  align-items: start;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  width: 125%;
+  color: white;
+}
+.utopia.placeable-hud .attributes .shpBar {
+  background-color: rgba(0, 150, 25, 0.5);
+}
+.utopia.placeable-hud .attributes .dhpBar {
+  background-color: rgba(150, 0, 25, 0.5);
+}
+.utopia.placeable-hud .attributes .staminaBar {
+  background-color: rgba(0, 0, 150, 0.5);
+}
+.utopia.placeable-hud .attributes input[type=number] {
+  font-size: 1em;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 0;
+  color: white;
+  pointer-events: all;
+}
+.utopia.placeable-hud .control-icon {
+  margin: 0;
+  border-radius: 0;
 }
 .utopia.talent-browser {
   width: 100%;

@@ -347,8 +347,43 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
     const talent = this.talents[talentUuid];
     const tree = await fromUuid(treeUuid);
 
-    if (available === "available")
-      await this.options.actor.addTalent(talent, tree, branch, tier);
+    if (available === "available") {
+      new foundry.applications.api.DialogV2({
+        window: { title: `Take Talent: ${talent.item.name}` },
+        content: `<p>Are you sure you want to take the talent <strong>${talent.item.name}</strong>? It will cost ${talent.item.system.cost} points, of your ${this.actor.system.talentPoints.available} available points.</p>`,
+        options: {
+          width: 400,
+          height: 200,
+        },
+        buttons: [
+          {
+            action: "confirm",
+            label: `Take ${talent.item.name}`,
+            default: true,
+            callback: () => "confirm",
+          },
+          {
+            action: "cancel",
+            label: "Cancel",
+            callback: () => "cancel"
+          }
+        ],
+        submit: async result => {
+          if (result === "cancel") {
+            return;
+          }
+          else {
+            await this.actor.addTalent(
+              talent,
+              tree,
+              branch,
+              tier,
+            );
+            this.render({ force: true });
+          }
+        }
+      }).render({ force: true });
+    }
 
     this.render();
   }

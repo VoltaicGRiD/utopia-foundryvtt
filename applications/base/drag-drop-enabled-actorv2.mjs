@@ -33,6 +33,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       createEffect: this._createEffect,
       deleteEffect: this._deleteEffect,
       toggleEffect: this._toggleEffect,      
+      unlockArtistry: this._unlockArtistry,
       viewActor: this._viewActor,
       tab: this._tab,
       roll: this._roll
@@ -585,6 +586,41 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       case "browser": 
         return new CompendiumBrowser({ actor: this.actor, type: target.dataset.documentType }).render(true);
     }
+  }
+
+  static async _unlockArtistry(event, target) {
+    const artistry = target.dataset.artistry;
+
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("UTOPIA.Actors.Actions.UnlockArtistry"), }, // TODO - Localize content
+      content: `<p>Unlocking a spellcasting artistry manually is not recommended.<br/>Artistries are unlocked via <b>Artifacts</b>, or via <b>Talents</b>.<br/>Use this as a fallback in cases where those items don't unlock an artistry properly. Where necessary, <b>please file a bug report</b> for those instances.</bp>`,
+      options: {
+        width: 400,
+        height: 200,
+      },
+      buttons: [
+        {
+          action: "confirm",
+          label: `Unlock`,
+          default: true,
+          callback: () => "confirm",
+        },
+        {
+          action: "cancel",
+          label: "Cancel",
+          callback: () => "cancel"
+        }
+      ],
+      submit: async result => {
+        if (result === "cancel") {
+          return;
+        } else {
+          await this.actor.update({
+            [`system.spellcasting.artistries.${artistry}.unlocked`]: true
+          })
+        }
+      }
+    }).render({ force: true });
   }
 
   checkGearSlot(item, slot, slotType) {

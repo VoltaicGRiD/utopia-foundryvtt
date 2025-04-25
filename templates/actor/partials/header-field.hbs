@@ -1,8 +1,6 @@
-<!-- Field -->
-
 <label class="detail-name">{{localize localePath}}</label>
 {{#if isPlay}}
-  <input type="text" class="detail-formula" value="{{value}}" readonly>
+  <span class="detail-formula">{{value}}</span>
 {{else}}
   <input type="text" class="detail-formula" name="{{name}}" value="{{editValue}}">
 {{/if}}

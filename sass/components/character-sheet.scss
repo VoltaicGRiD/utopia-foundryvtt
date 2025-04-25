@@ -49,6 +49,16 @@
     font-size: var(--font-size-10);
   }
 
+  .locked {
+    background-color: var(--utopia-color-maroon);
+    color: var(--utopia-color-blue-white);
+  }
+
+  .unlocked {
+    background-color: var(--utopia-color-character-setup);
+    color: var(--utopia-color-black);
+  }
+
   .item-play {
     flex: 0 0 32%;
     display: flex;

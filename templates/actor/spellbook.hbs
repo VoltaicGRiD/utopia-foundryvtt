@@ -6,7 +6,7 @@
       {{#each system.spellcasting.artistries as |value key|}}
         {{#if (eq value.unlocked true)}}
           <div class="item unlocked">
-            <a><i class="fa-fw fas fa-magic"></i> {{capitalize key}} : UNLOCKED</a>
+            <a><i class="fa-fw fas fa-magic"></i> {{capitalize key}}</a>
           </div>
         {{/if}}
       {{/each}}
@@ -15,7 +15,11 @@
       {{#each system.spellcasting.artistries as |value key|}}
         {{#if (eq value.unlocked false)}}
           <div class="item locked">
-            <a><i class="fa-fw fas fa-lock"></i> {{capitalize key}}</a>
+            {{#if ../isPlay}}
+              <a><i class="fa-fw fas fa-lock"></i> {{capitalize key}}</a>
+            {{else}}
+              <a data-action="unlockArtistry" data-artistry="{{key}}"><i class="fa-fw fas fa-lock"></i> {{capitalize key}}</a>
+            {{/if}}
           </div>
         {{/if}}
       {{/each}}

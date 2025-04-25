@@ -1167,6 +1167,12 @@
   justify-self: flex-end;
   margin-top: auto;
 }
+.utopia.item-sheet.actor-sheet .tab.spellbook, .utopia.actor-sheet.actor-sheet .tab.spellbook {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  gap: 0.5rem;
+}
 .utopia.item-sheet.actor-sheet .tab.background, .utopia.actor-sheet.actor-sheet .tab.background {
   display: flex;
   flex-direction: column;
@@ -1230,6 +1236,14 @@
   justify-content: center;
   gap: 5px;
   font-size: var(--font-size-10);
+}
+.utopia.item-sheet .item-set .locked, .utopia.actor-sheet .item-set .locked {
+  background-color: var(--utopia-color-maroon);
+  color: var(--utopia-color-blue-white);
+}
+.utopia.item-sheet .item-set .unlocked, .utopia.actor-sheet .item-set .unlocked {
+  background-color: var(--utopia-color-character-setup);
+  color: var(--utopia-color-black);
 }
 .utopia.item-sheet .item-set .item-play, .utopia.actor-sheet .item-set .item-play {
   flex: 0 0 32%;

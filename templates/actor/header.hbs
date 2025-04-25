@@ -123,15 +123,18 @@
       <div class="attribute-set-row">
         <div class="attribute body">
           <img class="box" src="systems/utopia/assets/attribute-box-body.png"/>
-          <input type="number" class="attribute" name="system.constitution" value="{{system.constitution}}" placeholder="BDY" readonly />
+          <span class="attribute">{{system.constitution}}</span>
+          {{!-- <input type="number" class="attribute" name="system.constitution" value="{{system.constitution}}" placeholder="BDY" readonly /> --}}
         </div>
         <div class="attribute mind">
           <img class="box" src="systems/utopia/assets/attribute-box-mind.png"/>
-          <input type="number" class="attribute" name="system.endurance" value="{{system.endurance}}" placeholder="MND" readonly />
+          <span class="attribute">{{system.endurance}}</span>
+          {{!-- <input type="number" class="attribute" name="system.endurance" value="{{system.endurance}}" placeholder="MND" readonly /> --}}
         </div>
         <div class="attribute soul">
           <img class="box" src="systems/utopia/assets/attribute-box-soul.png"/>
-          <input type="number" class="attribute" name="system.effervescence" value="{{system.effervescence}}" placeholder="SOL" readonly />
+          <span class="attribute">{{system.effervescence}}</span>
+          {{!-- <input type="number" class="attribute" name="system.effervescence" value="{{system.effervescence}}" placeholder="SOL" readonly /> --}}
         </div>
       </div>
       <label class="attribute-label">CON / END / EFF</label>
@@ -140,7 +143,11 @@
 
   <div class="actions">
     {{#if isPlay}}
-      <a class="action-button" data-action="viewDocument" data-document-id="{{system._speciesData.id}}"><i class="fa-fw fas fa-paw"></i> {{system._speciesData.name}}</a>
+      {{#if (eq system._speciesData.name "No Species")}}
+        <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="species" style="background-color: var(--utopia-color-maroon); color: white;"><i class="fa-fw fas fa-paw"></i> {{localize "UTOPIA.Actors.Actions.NoSpecies"}}</a>
+      {{else}}
+        <a class="action-button" data-action="viewDocument" data-document-id="{{system._speciesData.id}}"><i class="fa-fw fas fa-paw"></i> {{system._speciesData.name}}</a>
+      {{/if}}
     {{else}}   
       <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="species"><i class="fa-fw fas fa-paw"></i> {{system._speciesData.name}}</a>
     {{/if}}

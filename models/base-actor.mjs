@@ -180,10 +180,13 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         returns[key] = new fields.SchemaField({
           convertToStaminaPercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToStaminaFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          convertToStaminaFormula: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) }),
           convertToSurfacePercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToSurfaceFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          convertToSurfaceFormula: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) }),
           convertToDeepPercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToDeepFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          convertToDeepFormula: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) }),
           convertToResource: new fields.StringField({ required: false, nullable: true, initial: "", blank: true }),
           convertToResourcePercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToResourceFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -195,6 +198,14 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     schema.siphons = new fields.SchemaField({
       ...siphon()
     })
+
+    schema.blockSiphons = new fields.SchemaField({
+      ...siphon()
+    });
+
+    schema.dodgeSiphons = new fields.SchemaField({
+      ...siphon()
+    });
 
     // TODO - Implement healing factors
     schema.healing = new fields.SchemaField({ 
@@ -252,6 +263,21 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }),
       disabled: new fields.BooleanField({ required: true, nullable: false, initial: false }),
     });
+
+    schema.baseActions = new fields.SchemaField({
+      deepBreath: new fields.SchemaField({
+        type: new fields.StringField({ required: true, nullable: false, initial: "utility" }),
+        restoration: new fields.BooleanField({ required: true, nullable: false, initial: true }),
+        restores: new fields.SchemaField({
+          surface: new fields.StringField({ required: true, nullable: false, initial: "", blank: true }),
+          deep: new fields.StringField({ required: true, nullable: false, initial: "", blank: true }),
+          stamina: new fields.StringField({ required: true, nullable: false, initial: "", blank: true }),
+        })
+      }),
+      weaponless: new fields.SchemaField({
+        type: new fields.StringField({ required: true, nullable: false, initial: "damage" }),
+      })
+    })
 
     schema.initiative = new fields.SchemaField({
       formula: new fields.StringField({ ...requiredInteger, initial: "3d6" }),

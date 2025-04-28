@@ -704,6 +704,7 @@ export class UtopiaActor extends Actor {
     const roll = await new Roll(formula, this.getRollData()).evaluate();
     await damageInstance.handle({ block: roll.total, blockRoll: roll });
     damageInstance.finalize();
+    this._applySiphons(damageInstance);
     return damageInstance;
   }
 
@@ -712,6 +713,7 @@ export class UtopiaActor extends Actor {
     const roll = await new Roll(formula, this.getRollData()).evaluate();
     await damageInstance.handle({ dodge: roll.total, dodgeRoll: roll });
     damageInstance.finalize();
+    this._applySiphons(damageInstance);
     return damageInstance;
   }
 
@@ -931,84 +933,28 @@ export class UtopiaActor extends Actor {
    * @param {DamageInstance} damage - The damage instance to retrieve damage information from.
    */
   async _applySiphons(damage) {
-    const siphons = this.system.siphons;
-    const damageType = damage.typeKey;
-    const property = foundry.utils.getProperty(siphons, damageType);
+    if (damage.target === this.uuid) { // We need to apply damage siphons (system.siphons)
+      const damageType = damage.typeKey;
+      const siphons = foundry.utils.getProperty(this.system.siphons, damageType);
 
-    const effectiveSiphons = [];
+      const effectiveSiphons = [];
 
-    if (property) {
-      if (property.convertToStaminaPercent > 0) {
-        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
-        const staminaToRestore = Math.floor((damageDealt * property.convertToStaminaPercent));
-        await this.update({
-          "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
-        });
-        effectiveSiphons.push({
-          type: "stamina",
-          value: staminaToRestore,
-          percent: property.convertToStaminaPercent
-        });
+      if (property) {
+        _siphons(siphons, damage.shpDamage + damage.dhpDamage);
       }
-      if (property.convertToStaminaFixed > 0) {
-        const staminaToRestore = property.convertToStaminaFixed;
-        await this.update({
-          "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
-        });
-        effectiveSiphons.push({
-          type: "stamina",
-          value: staminaToRestore,
-          percent: property.convertToStaminaFixed / this.system.stamina.max
-        });
+    }
+    else {
+      if (damage.blocked) { // We need to apply block siphons
+        const damageType = damage.typeKey;
+        const siphons = foundry.utils.getProperty(this.system.blockSiphons, damageType);
+
+        effectiveSiphons = await this._siphons(siphons, 0);
       }
-      if (property.convertToSurfacePercent > 0) {
-        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
-        const surfaceToRestore = Math.floor((damageDealt * property.convertToSurfacePercent));
-        await this.update({
-          "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
-        });
-        effectiveSiphons.push({
-          type: "surface",
-          value: surfaceToRestore,
-          percent: property.convertToSurfacePercent
-        });
-      }
-      if (property.convertToSurfaceFixed > 0) {
-        const surfaceToRestore = property.convertToSurfaceFixed;
-        await this.update({
-          "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
-        });
-        effectiveSiphons.push({
-          type: "surface",
-          value: surfaceToRestore,
-          percent: property.convertToSurfaceFixed / this.system.hitpoints.surface.max
-        });
-      }
-      if (property.convertToDeepPercent > 0) {
-        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
-        const deepToRestore = Math.floor((damageDealt * property.convertToDeepPercent));
-        await this.update({
-          "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
-        });
-        effectiveSiphons.push({
-          type: "deep",
-          value: deepToRestore,
-          percent: property.convertToDeepPercent
-        });
-      }
-      if (property.convertToDeepFixed > 0) {
-        const deepToRestore = property.convertToDeepFixed;
-        await this.update({
-          "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
-        });
-        effectiveSiphons.push({
-          type: "deep",
-          value: deepToRestore,
-          percent: property.convertToDeepFixed / this.system.hitpoints.deep.max
-        });
-      }
-      if (property.convertToResource !== undefined && property.convertToResource.length > 0) {
-        // TODO - Implement resource conversion logic
+      if (damage.dodged) {
+        const damageType = damage.typeKey;
+        const siphons = foundry.utils.getProperty(this.system.dodgeSiphons, damageType);
+
+        effectiveSiphons = await this._siphons(siphons, 0);
       }
     }
 
@@ -1025,6 +971,109 @@ export class UtopiaActor extends Actor {
       content: template,
       speaker: ChatMessage.getSpeaker({ actor: this }),
     });
+  }
+
+  async _siphons(siphons, damageDealt) {
+    const effectiveSiphons = [];
+
+    if (siphons.convertToStaminaPercent > 0) {
+      const staminaToRestore = Math.floor((damageDealt * siphons.convertToStaminaPercent));
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
+      });
+      effectiveSiphons.push({
+        type: "stamina",
+        value: staminaToRestore,
+      });
+    }
+    if (siphons.convertToStaminaFixed > 0) {
+      const staminaToRestore = siphons.convertToStaminaFixed;
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
+      });
+      effectiveSiphons.push({
+        type: "stamina",
+        value: staminaToRestore,
+      });
+    }
+    if (siphons.convertToStaminaFormula.length > 0) {
+      const formula = siphons.convertToStaminaFormula;
+      const staminaToRestore = (await new Roll(formula, this.getRollData()).evaluate()).total;
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
+      });
+      effectiveSiphons.push({
+        type: "stamina",
+        value: staminaToRestore,
+      })
+    }
+    if (siphons.convertToSurfacePercent > 0) {
+      const surfaceToRestore = Math.floor((damageDealt * siphons.convertToSurfacePercent));
+      await this.update({
+        "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
+      });
+      effectiveSiphons.push({
+        type: "surface",
+        value: surfaceToRestore,
+      });
+    }
+    if (siphons.convertToSurfaceFixed > 0) {
+      const surfaceToRestore = siphons.convertToSurfaceFixed;
+      await this.update({
+        "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
+      });
+      effectiveSiphons.push({
+        type: "surface",
+        value: surfaceToRestore,
+      });
+    }
+    if (siphons.convertToSurfaceFormula.length > 0) {
+      const formula = siphons.convertToSurfaceFormula;
+      const surfaceToRestore = (await new Roll(formula, this.getRollData()).evaluate()).total;
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + surfaceToRestore)
+      });
+      effectiveSiphons.push({
+        type: "surface",
+        value: surfaceToRestore,
+      })
+    }
+    if (siphons.convertToDeepPercent > 0) {
+      const deepToRestore = Math.floor((damageDealt * siphons.convertToDeepPercent));
+      await this.update({
+        "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
+      });
+      effectiveSiphons.push({
+        type: "deep",
+        value: deepToRestore,
+      });
+    }
+    if (siphons.convertToDeepFixed > 0) {
+      const deepToRestore = siphons.convertToDeepFixed;
+      await this.update({
+        "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
+      });
+      effectiveSiphons.push({
+        type: "deep",
+        value: deepToRestore,
+      });
+    }
+    if (siphons.convertToDeepFormula.length > 0) {
+      const formula = siphons.convertToDeepFormula;
+      const deepToRestore = (await new Roll(formula, this.getRollData()).evaluate()).total;
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + deepToRestore)
+      });
+      effectiveSiphons.push({
+        type: "deep",
+        value: deepToRestore,
+      })
+    }
+    if (siphons.convertToResource !== undefined && siphons.convertToResource.length > 0) {
+      // TODO - Implement resource conversion logic
+    }
+
+    return effectiveSiphons;
   }
 
   /* -------------------------------------------- */
@@ -1173,7 +1222,7 @@ export class UtopiaActor extends Actor {
 
   //       this.performStrike(chatMessage, {formula: formula});
   //     }
-  //     // We roll based on the default formula
+  //     // We roll based on the default formula\
   //     else {       
   //       this.performStrike(chatMessage, {formula: roll.formula});
   //     }

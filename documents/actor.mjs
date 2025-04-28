@@ -1142,6 +1142,13 @@ export class UtopiaActor extends Actor {
         stamina: 1,
       }
     });
+
+    this.addItem(deepBreathAction, false, false, undefined).then(() => {
+      this._log(`Deep Breath action added to actor ${this.name}`);
+    }).catch(err => {
+      this._error(`Failed to add Deep Breath action to actor ${this.name}:`, err);
+    });
+
   }
 
 

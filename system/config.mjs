@@ -785,9 +785,34 @@ export function registerConfig() {
       name: "UTOPIA.StatusEffects.focus",
     },
     {
-      id: "fatigue",
+      id: "fatigue_1",
       img: "icons/svg/degen.svg",
-      name: "UTOPIA.StatusEffects.fatigue",
+      name: "UTOPIA.StatusEffects.fatigue_1",
+    },
+    {
+      id: "fatigue_2",
+      img: "icons/svg/degen.svg",
+      name: "UTOPIA.StatusEffects.fatigue_2",
+    },
+    {
+      id: "fatigue_3",
+      img: "icons/svg/degen.svg",
+      name: "UTOPIA.StatusEffects.fatigue_3",
+    },
+    {
+      id: "fatigue_4",
+      img: "icons/svg/degen.svg",
+      name: "UTOPIA.StatusEffects.fatigue_4",
+    },
+    {
+      id: "fatigue_5",
+      img: "icons/svg/degen.svg",
+      name: "UTOPIA.StatusEffects.fatigue_5",
+    },
+    {
+      id: "fatigue_6",
+      img: "icons/svg/degen.svg",
+      name: "UTOPIA.StatusEffects.fatigue_6",
     },
     {
       id: "stasis",

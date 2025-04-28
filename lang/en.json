@@ -181,7 +181,8 @@
       "NoSpeciesWarning": "There is no species assigned to this actor. A species is required to browse talents.",
       "NoConsumableQuantity": "You're trying to consume a consumable that has no quantity. Craft a new one, or set the quantity to 1.",
       "NoParentActor": "This item is not owned by a character or creature. It cannot be equipped.",
-      "CraftingMacroNotFound": "Crafting macro not found. Please ensure the macro is created, you may need to redefine the macro's UUID in the associated Gear Feature."
+      "CraftingMacroNotFound": "Crafting macro not found. Please ensure the macro is created, you may need to redefine the macro's UUID in the associated Gear Feature.",
+      "Encumbered": "{actorName} is encumbered! They automatically have a point of fatigue applied to them."
     },
     "CHAT": {
       "Block": "Block",
@@ -192,7 +193,8 @@
       "STATaken": "STA removed",
       "DamageAbsorbed": "Damage absorbed by defenses",
       "Absorbed": "Damage <b>absorbed entirely</b> by defenses!",
-      "NotAbsorbed": "Damage <b>not</b> entirely absorbed by defenses!"
+      "NotAbsorbed": "Damage <b>not</b> entirely absorbed by defenses!",
+      "Harvest": "Harvest Creatures"
     },
     "StatusEffects": {
       "deafened": "Deafened",
@@ -356,7 +358,9 @@
         "Convert": "Convert to NPC",
         "CreatureTalentsInfo": "Drag-and-Drop talents to use them on creatures.",
         "ViewSpecialist": "View Specialist Talents",
-        "UnlockArtistry": "Unlock Artistry"
+        "UnlockArtistry": "Unlock Artistry",
+        "WeaponlessAttack": "Weaponless Attack",
+        "DeepBreath": "Deep Breath"
       },
       "Items": {
         "Talents": "Talents",
@@ -605,6 +609,27 @@
           "hint": "The rarity of this item. This is used to determine the color of the item in the inventory and its value."
         }
       },
+      "Harvest": {
+        "Name": "Harvest",
+        "Header": "Post-combat Creature Harvesting",
+        "Info": "After combat, you can harvest components from the defeated creature. Below is a table of options for each defeated creature.",
+        "Component": "Component",
+        "Quality": "Quality",
+        "Amount": "Amount",
+        "RequiresTest": "Requires Test",
+        "TestTrait": "Test Trait",
+        "TestDifficulty": "Test Difficulty",
+        "Actions": "Actions",
+        "HarvestFast": "Harvest (6 TA)",
+        "HarvestModerate": "Harvest (1 Minute)",
+        "HarvestSlow": "Harvest (1 Hour)",
+        "Harvested": "Harvested by: ",
+        "Earned": "Earned: ",
+        "Yes": "Yes",
+        "Success": "Harvest successful for ",
+        "Failed": "Harvest failed for ",
+        "Complete": "[GM Only] Complete Encounter and Distribute EXP"
+      },
       "Action": {
         "FIELDS": {
           "type": {
@@ -634,6 +659,10 @@
             "label": "Range",
             "hint": "The range of the action. This is represented in the format \"close/far\". i.e \"20/40\" for 20M close range, 40M far range."
           },
+          "accuracyTrait": {
+            "label": "Accuracy Trait",
+            "hint": "The trait to use for the accuracy of the action. This is used for attack rolls and checks."
+          },
           "template": {
             "label": "Damage and Effect Template",
             "hint": "The template to use for the damage and effects of the action."
@@ -661,6 +690,10 @@
           "damages": {
             "label": "Damage and Healing",
             "hint": "The damage and healing effects of this action."
+          },
+          "damageModifier": {
+            "label": "Damage Modifier",
+            "hint": "The damage modifier to apply to the damage and healing effects of this action."
           },
           "validityCheck": {
             "label": "Only deal damage if a check is successful",
@@ -717,7 +750,20 @@
           "passive.equipment.reduceActionCostFlat": {
             "label": "Flat Action Cost Reduction",
             "hint": "The flat amount to reduce the action cost by.<br>Only used if 'Reduce Action Cost' is set to 'Flat'."
+          },
+          "restoration": {
+            "label": "Enable Resource Restoration",
+            "hint": "If enabled, and when this action is performed, will restore the specified resource, by the amount defined in this action's formula."
+          },
+          "restorationType": {
+            "label": "Resource Type",
+            "hint": "The type of resource to restore when this action is performed."
           }
+        },
+        "RestorationType": {
+          "surface": "Surface Hitpoints (SHP)",
+          "deep": "Deep Hitpoints (DHP)",
+          "stamina": "Stamina (STA)"
         },
         "Actor": {
           "self": "Self",
@@ -733,6 +779,7 @@
           "test": "Check / Test",
           "formula": "Formula",
           "passive": "Passive",
+          "utility": "Utility",
           "macro": "Macro"
         },
         "Template": {

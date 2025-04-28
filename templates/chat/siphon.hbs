@@ -1,0 +1,17 @@
+<div class="chat-card">
+  
+  <div class="card-header">
+    <img class="card-header-icon" src="systems/utopia/assets/siphon.svg" title="Siphon" width="30" height="30" />
+    <h3>Siphoned Damage</h3>
+  </div>
+
+  <div class="card-content">
+    {{#each siphons}}
+      {{#if (eq this.type "stamina")}}
+        <span>{{../actor.name}} siphoned {{this.value}} points from taken damage into their stamina!</span>
+      {{else}}
+        <span>{{../actor.name}} siphoned {{this.value}} points from taken damage into their {{this.type}} hitpoints!</span>
+      {{/if}}
+    {{/each}}
+  </div>
+</div>

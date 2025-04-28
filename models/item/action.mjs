@@ -21,6 +21,7 @@ export class Action extends UtopiaItemBase {
       "damage": "UTOPIA.Items.Action.Category.damage",
       "test": "UTOPIA.Items.Action.Category.test",
       "formula": "UTOPIA.Items.Action.Category.formula",
+      "utility": "UTOPIA.Items.Action.Category.utility",
       "passive": "UTOPIA.Items.Action.Category.passive",
       "macro": "UTOPIA.Items.Action.Category.macro",
     }});
@@ -44,6 +45,13 @@ export class Action extends UtopiaItemBase {
         return acc;
       }, {}),
     }
+
+    schema.restoration = new fields.BooleanField({ required: true, nullable: false, initial: true });
+    schema.restorationType = new fields.StringField({ required: false, nullable: true, initial: "surface", choices: {
+      "surface": "UTOPIA.Items.Action.RestorationType.surface",
+      "deep": "UTOPIA.Items.Action.RestorationType.deep",
+      "stamina": "UTOPIA.Items.Action.RestorationType.stamina",
+    }});
 
     schema.check = new fields.StringField({ required: true, nullable: false, initial: "agi", choices: allOptions });
     schema.checks = new fields.SetField(schema.check, { initial: [] });
@@ -76,6 +84,8 @@ export class Action extends UtopiaItemBase {
       "target": "UTOPIA.Items.Action.Actor.target",
     }});
     schema.range = new fields.StringField({ required: false, nullable: false, initial: "0/0" });
+    schema.damageModifier = new fields.StringField({ required: false, nullable: false, initial: "str", choices: allOptions });
+    schema.accuracyTrait = new fields.StringField({ required: false, nullable: false, initial: "agi", choices: allOptions });
     schema.template = new fields.StringField({ required: false, nullable: false, initial: "none", choices: {
       "none": "UTOPIA.Items.Action.Template.none",
       "self": "UTOPIA.Items.Action.Template.self",
@@ -182,9 +192,31 @@ export class Action extends UtopiaItemBase {
           editable: true,
         })
         fields.push({
+          field: this.schema.fields.damageModifier,
+          stacked: true,
+          editable: true,
+                    options: Object.entries(this.schema.fields.check.options.choices).map(([key, value]) => {
+            return {
+              ...value,
+              value: key,
+            };
+          })
+        })
+        fields.push({
           field: this.schema.fields.range,
           stacked: true,
           editable: true,
+        })
+        fields.push({
+          field: this.schema.fields.accuracyTrait,
+          stacked: true,
+          editable: true,
+          options: Object.entries(this.schema.fields.check.options.choices).map(([key, value]) => {
+            return {
+              ...value,
+              value: key,
+            };
+          })
         })
         fields.push({
           field: this.schema.fields.template,
@@ -291,6 +323,34 @@ export class Action extends UtopiaItemBase {
             });
           }
         }
+        break;
+      case "utility":
+        fields.push({
+          field: this.schema.fields.formula,
+          stacked: true,
+          editable: true,
+        }),
+        // fields.push({
+        //   field: this.schema.fields.validityCheck,
+        //   stacked: true,
+        //   editable: true,  
+        //   options: Object.entries(this.schema.fields.check.options.choices).map(([key, value]) => {
+        //     return {
+        //       ...value,
+        //       value: key,
+        //     };
+        //   })
+        // }),
+        fields.push({
+          field: this.schema.fields.restoration,
+          stacked: true,
+          editable: true,
+        }),
+        fields.push({
+          field: this.schema.fields.restorationType,
+          stacked: true,
+          editable: true,
+        });
         break;
     }
     return fields;

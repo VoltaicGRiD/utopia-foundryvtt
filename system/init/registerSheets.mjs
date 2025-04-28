@@ -8,6 +8,7 @@ import { Species } from "../../applications/item/species.mjs";
 import { GearSheet } from "../../applications/item/gear.mjs";
 import { Creature } from "../../applications/actor/creature.mjs";
 import { GearFeatureSheet } from "../../applications/item/gear-feature.mjs";
+import Harvest from "../../applications/item/harvest.mjs";
 
 export function registerItemSheets() {
   Items.registerSheet("utopia", TalentTree, {
@@ -40,11 +41,16 @@ export function registerItemSheets() {
     types: ["gear"],
     label: "UTOPIA.SheetLabels.gear",
   });
-  Items.registerSheet("gearFeature", GearFeatureSheet, {
+  Items.registerSheet("utopia", GearFeatureSheet, {
     makeDefault: true,
     types: ["gearFeature"],
     label: "UTOPIA.SheetLabels.gearFeature",
   });
+  Items.registerSheet("utopia", Harvest, {
+    makeDefault: true,
+    types: ["harvest"],
+    label: "UTOPIA.SheetLabels.harvest",
+  })
 }
 
 export function registerActorSheets() {

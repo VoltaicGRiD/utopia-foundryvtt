@@ -20,7 +20,8 @@ export class Creature extends UtopiaActorBase {
   }
 
   static prepareBaseData() {
-    
+    this.harvest = this.parent.items.find(i => i.type === "body").system.harvest;
+    this.difficulty = 0;
   }
 
   static defineSchema() {
@@ -34,13 +35,25 @@ export class Creature extends UtopiaActorBase {
       max: new fields.NumberField({ ...required })
     });
 
-    schema.difficulty = new fields.NumberField({ ...required, initial: 1 });
+    schema.difficulty = new fields.NumberField({ ...required, initial: 0 });
     schema.exp = new fields.NumberField({ ...required });
+    schema.harvested = new fields.BooleanField({ initial: false });
 
     return schema;
   }
 
   prepareDerivedData() {
     super.prepareDerivedData();
+
+    this.difficulty = this.parent.items.find(i => i.type === "body").system.baseDR;
+
+    for (const item of this.parent.items) {
+      if (item.type === "kit") {
+        this.difficulty += item.system.points;
+      }
+      if (item.type === "class") {
+        this.difficulty += item.system.difficulty;
+      }
+    }
   }
 }

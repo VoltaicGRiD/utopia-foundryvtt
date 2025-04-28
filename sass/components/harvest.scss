@@ -1,0 +1,60 @@
+.harvest-creature {
+  width: 100%;
+}
+
+.harvest-header {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 5px;
+  width: 100%;
+
+  .harvest-name {
+    height: 100%;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+}
+
+.creature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 90%;
+  overflow-y: auto;
+}
+
+.harvest-table {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+
+  th {
+    padding: 0.5rem 1rem;
+  }
+
+  td {
+    padding: 0.75rem;
+  }
+}
+
+.harvest {
+  position: relative;
+}
+
+.harvest-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}
+
+footer {
+  width: 100%;
+  position: fixed;
+  bottom: 10px;
+  padding-right: 30px;
+}

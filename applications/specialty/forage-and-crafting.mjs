@@ -206,7 +206,7 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
       levelOfSuccess = 0;
 
     // Convert the time to minutes, and divide by the level of success
-    const timeDivision = Math.floor(foraging.time * 60 / levelOfSuccess);
+    var timeDivision = Math.floor(foraging.time * 60 / levelOfSuccess);
     if (timeDivision === Infinity) 
       timeDivision = foraging.time * 60;
 
@@ -214,7 +214,7 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
     var returns = 0;
     if (result) 
       returns = await new Roll(foraging.returnsFormula).evaluate();
-    returns = `${returns.total} ${game.i18n.localize(rarities[foraging.rarity].label)} ${game.i18n.localize(components[foraging.component].label)} Components`;
+    const returnsOutput = `${returns.total} ${game.i18n.localize(rarities[foraging.rarity].label)} ${game.i18n.localize(components[foraging.component].label)} Components`;
 
     var timeOutput = timeDivision >= 60 ? `${Math.floor(timeDivision / 60)} ${game.i18n.localize("UTOPIA.TIME.Hours")}` : `${timeDivision} ${game.i18n.localize("UTOPIA.TIME.Minutes")}`;
 
@@ -222,15 +222,25 @@ export class ForageAndCrafting extends api.HandlebarsApplicationMixin(api.Applic
       content: `<h2>${game.i18n.localize("UTOPIA.ForageAndCrafting.Foraging")}</h2>` +
         `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.ForagingResult", { result })} (${testRoll.total} vs ${difficultyRoll.total})</p>` + 
         (levelOfSuccess > 0 ? 
-          `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.ForagingReturns", { returns })}` :
+          `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.ForagingReturns", { returns: returnsOutput })}` :
           `<p>${game.i18n.localize("UTOPIA.ForageAndCrafting.ForagingNoReturns")}`) + 
         `<p>${game.i18n.format("UTOPIA.ForageAndCrafting.ForagingTimeTaken", { time: timeOutput })}</p>`,
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
     });
-
+    
     const actorComponents = this.actor.system.components;
-    const newValue = actorComponents[foraging.component][foraging.rarity] + returns.total;
+    let newValue = 0;
+    if (levelOfSuccess === 1) {
+      newValue = actorComponents[foraging.component][foraging.rarity].available + returns.total;
+    }
+    else if (levelOfSuccess > 1) {
+      newValue = actorComponents[foraging.component][foraging.rarity].available + returns.total * levelOfSuccess;
+    }
+    else {
+      newValue = actorComponents[foraging.component][foraging.rarity].available;
+    }
 
+    // Update the actor's components with the new value
     await this.actor.update({
       [`system.components.${foraging.component}.${foraging.rarity}.available`]: newValue,
     });

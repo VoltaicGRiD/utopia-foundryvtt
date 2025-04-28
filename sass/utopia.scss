@@ -266,6 +266,12 @@
     @import "components/artifice.scss";
   }
 
+  &.harvest-sheet {
+    border-radius: 0 25px 0 25px ;
+
+    @import "components/harvest.scss";
+  }
+
   &.gear-feature-sheet {
     border-radius: 0 25px 0 25px ;
 

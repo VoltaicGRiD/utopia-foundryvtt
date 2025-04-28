@@ -8,8 +8,14 @@ export async function rangeTest({item, target, trait = 'dex'}) {
   let userToken = canvas.tokens.controlled[0];
   if (!userToken) {
     // If no token is controlled, get the first owned token.
-    userToken = canvas.tokens.owned[0];
+    userToken = canvas.tokens.owned?.[0] || null;
+
+    if (!userToken) {
+      // If no owned token is available, get the first controlled token.
+      userToken = canvas.tokens.controlled[0];
+    }
   }
+
   if (!userToken) {
     // If no token is selected or owned, show an error and exit.
     ui.notifications.error("You must select a token to attack.");
@@ -38,21 +44,27 @@ export async function rangeTest({item, target, trait = 'dex'}) {
   // Determine the Test Difficulty from the item's parent's `system.rangedTDModifier` attribute.
   let testDifficulty = item.parent.system.rangedTDModifier || 0;
    
-  if (item.system.ranged) {
+  if (item.system.ranged || item.system.range) {
     // If the weapon is ranged.
 
     if (range.includes('/')) {
       // The range is specified as close/far (e.g., "30/60").
 
       // Split the range into close and far values.
-      let [closeRange, farRange] = 0;
+      let [closeRange, farRange] = [0, 0];
 
       if (range.close && range.far) {
-        closeRange = range.close
+        closeRange = rangte.close
         farRange = range.far
       }
       else {
-        [closeRange, farRange] = range.split('/').map(r => parseInt(r));
+        [closeRange, farRange] = range.split('/').map(r => parseInt(r) || 0);
+      }
+
+      // If the range is represented as '0/0', treat it as a melee attack,
+      // which means the target is always in range.
+      if (closeRange === 0 && farRange === 0) {
+        return true;
       }
 
       // Get the roll data for the item.

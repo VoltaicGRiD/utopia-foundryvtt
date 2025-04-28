@@ -68,7 +68,8 @@
       "gear": {},
       "gearFeature": {},
 
-      "generic": {}
+      "generic": {},
+      "harvest": {}
     },
     "ActiveEffect": {
       "passive": {},

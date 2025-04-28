@@ -1,3 +1,5 @@
-2025/04/21-13:09:00.331 c694 Recovering log #663
-2025/04/21-13:09:00.335 c694 Delete type=0 #663
-2025/04/21-13:09:00.336 c694 Delete type=3 #662
+2025/04/27-20:01:35.922 1fec Recovering log #673
+2025/04/27-20:01:35.923 1fec Level-0 table #675: started
+2025/04/27-20:01:35.924 1fec Level-0 table #675: 25203 bytes OK
+2025/04/27-20:01:35.929 1fec Delete type=0 #673
+2025/04/27-20:01:35.929 1fec Delete type=3 #672

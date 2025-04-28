@@ -1,0 +1,77 @@
+<div class="tab harvest active">
+  <h2>{{localize "UTOPIA.Items.Harvest.Header"}}</h2>
+  <p>{{localize "UTOPIA.Items.Harvest.Info"}}</p>
+
+  <div class="creature-list">
+    {{#each creatures}}
+      <div class="harvest-creature">
+        <div class="harvest-header">
+          <img src="{{this.token}}" width="50" height="50">
+          <span class="harvest-name" style="color: {{this.rarityData.color}}">{{this.name}} ({{localize this.rarityData.label}})</span>
+          <hr/>
+        </div>
+        <table class="harvest-table">
+          <thead>
+            <tr>
+              <th>{{localize "UTOPIA.Items.Harvest.Component"}}</th>
+              <th>{{localize "UTOPIA.Items.Harvest.Quality"}}</th>
+              <th>{{localize "UTOPIA.Items.Harvest.Amount"}}</th>
+              <th>{{localize "UTOPIA.Items.Harvest.RequiresTest"}}</th>
+              <th>{{localize "UTOPIA.Items.Harvest.TestTrait"}}</th>
+              <th>{{localize "UTOPIA.Items.Harvest.TestDifficulty"}}</th>
+              <th>{{localize "UTOPIA.Items.Harvest.Actions"}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each this.alwaysHarvestables as |harvest|}}
+              {{#if (eq harvest.harvested.complete true)}}
+                <tr class="harvest-complete">
+                  <td>{{localize "UTOPIA.Items.Harvest.Harvested"}} {{harvest.harvested.byName}}</td>
+                  <td colspan="6">{{localize "UTOPIA.Items.Harvest.Earned"}} {{harvest.harvested.earned.quantity}} {{harvest.quality}} {{harvest.componentData.name}} components</td>
+                </tr>
+              {{else}}
+                <tr>
+                  <td><i class="{{harvest.componentData.icon}}"></i> {{harvest.componentData.name}}</td>
+                  <td>{{harvest.quality}}</td>
+                  <td>{{harvest.quantity}}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td class="harvest-actions">
+                    <a class="harvest-action" data-action="harvest" data-time="fast" data-harvest="{{this.id}}" data-creature="{{../this.id}}">{{localize "UTOPIA.Items.Harvest.HarvestFast"}}</a>
+                  </td>
+                </tr>
+              {{/if}}
+            {{/each}}
+            {{#each this.testHarvestables as |harvest|}}
+              {{#if (eq harvest.harvested.complete true)}}
+                <tr class="harvest-complete">
+                  <td>{{localize "UTOPIA.Items.Harvest.Harvested"}} {{harvest.harvested.byName}}</td>
+                  <td colspan="6">{{localize "UTOPIA.Items.Harvest.Earned"}} {{harvest.harvested.earned.quantity}} {{harvest.quality}} {{harvest.componentData.name}} components</td>
+                </tr>
+              {{else}}
+                <tr>
+                  <td><i class="{{harvest.componentData.icon}}"></i> {{harvest.componentData.name}}</td>
+                  <td>{{harvest.quality}}</td>
+                  <td>{{harvest.quantity}}</td>
+                  <td>{{localize "UTOPIA.Items.Harvest.Yes"}}</td>
+                  <td><i class="{{harvest.testTraitData.icon}}"></i> {{harvest.testTraitData.name}}</td>
+                  <td>{{harvest.testDifficulty}}</td>
+                  <td class="harvest-actions">
+                    <a class="harvest-action" data-action="harvest" data-time="fast" data-harvest="{{this.id}}" data-creature="{{../this.id}}">{{localize "UTOPIA.Items.Harvest.HarvestFast"}}</a>
+                    <a class="harvest-action" data-action="harvest" data-time="moderate" data-harvest="{{this.id}}" data-creature="{{../this.id}}">{{localize "UTOPIA.Items.Harvest.HarvestModerate"}}</a>
+                    <a class="harvest-action" data-action="harvest" data-time="slow" data-harvest="{{this.id}}" data-creature="{{../this.id}}">{{localize "UTOPIA.Items.Harvest.HarvestSlow"}}</a>
+                  </td>
+                </tr>
+              {{/if}}
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    {{/each}}
+  </div>
+
+  <footer class="sheet-footer">
+    <button type="submit" data-action="complete">{{localize "UTOPIA.Items.Harvest.Complete"}}</button>
+  </footer>
+</div>

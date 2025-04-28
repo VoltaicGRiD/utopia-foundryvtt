@@ -320,6 +320,45 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
+    let harvestAlwaysButtons = html.querySelectorAll('[data-action="harvestAlways"]');  
+    for (let button of harvestAlwaysButtons) {
+      button.addEventListener('click', async (event) => {
+        const actor = this.getActor();
+        const item = actor.items.get(this.getFlag('utopia', 'item'));
+        const target = await fromUuid(this.system.target);
+        if (!target) return ui.notifications.error("You must target a token to harvest.");
+        
+        const harvested = await item.harvestAlways(target, this);
+        if (harvested) {
+          this.setComplete(true);
+          this.render();
+        }
+      });
+    }
+
+    let harvestTestButtons = html.querySelectorAll('[data-action="harvestTest"]');
+    for (let button of harvestTestButtons) {
+      button.addEventListener('click', async (event) => {
+        const character = game.user.character ?? game.canvas.tokens.controlled[0]?.actor;
+        const creatureObject = this.system.creatures?.find(c => c._id === button.dataset.creatureId);
+        const creature = game.actors.get(creatureObject._id) ?? null;
+        console.warn("Harvest Test Button Clicked", character, creature);
+        if (!character) return ui.notifications.error("You must have a character to perform a harvest test.");
+        if (!creature) return ui.notifications.error("You must select a creature to harvest from.");
+        const difficulty = await new Roll(creature.system.harvest.testDifficulty, creature.getRollData()).roll();
+        const result = await character.check(creature.system.harvest.testTrait, { difficulty: difficulty.total });
+        console.log("Harvest Test Result", result);
+        if (result.success) {
+          const harvested = await creature.harvestTest(character, this);
+          if (harvested) {
+            // TODO - Update chat message
+          }
+        } else {
+          ui.notifications.warn(`Harvest test failed with a ${result.result}.`);
+        }
+      });
+    }
+
     const visibilityHtml = UtopiaUserVisibility.process(html, { document: actor ?? this, message: this });
 
     return $(visibilityHtml);

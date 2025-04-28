@@ -182,26 +182,16 @@
       <legend data-action="createDocument" data-document-type="action" title="{{localize "UTOPIA.Actions.New"}}">{{localize "DOCUMENT.Create" type="Action"}} <i class="fas fa-plus"></i></legend>
     {{/if}}
     <div class="item-container">
-
-      <div class="item">
-        <a data-action="roll" data-roll="weaponless"><i class="fa-fw fas fa-dice"></i> {{localize "UTOPIA.Actors.Actions.Perform"}}</a>
-        <a class="action">
-          <span class="item-name">Weaponless Attack</span>
-        </a>
-      </div>
-
       {{#each actions as |item|}} 
         {{#if ../isPlay}}
           <div class="item">
-            <a data-action="roll" data-roll="item" data-item="{{item.id}}"><i class="fa-fw fas fa-dice"></i> {{localize "UTOPIA.Actors.Actions.Perform"}}</a>
-            <a class="action" data-action="viewDocument" data-document-id="{{item.id}}">
+            <a class="action" data-action="roll" data-roll="item" data-item="{{item.id}}">
               <span class="item-name">{{item.name}}</span>
             </a>
           </div>
         {{else}}
           <div class="item-edit">
             <div class="item">
-              <a data-action="roll" data-roll="item" data-item="{{item.id}}"><i class="fa-fw fas fa-dice"></i> {{localize "UTOPIA.Actors.Actions.Perform"}}</a>
               <a class="action" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
@@ -275,7 +265,7 @@
           {{#each components as |component key|}}
             {{#each component.rarities as |rarity key|}}
               {{#if (gt rarity.value 0)}}
-                <div class="item">
+                <div class="component">
                   <span class="item-name">{{localize component.label}}</span>
                   <span class="item-rarity">{{localize rarity.label}}</span>
                   <span class="item-value">{{numberFormat rarity.value}}</span>

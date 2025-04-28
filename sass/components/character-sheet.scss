@@ -112,6 +112,19 @@
     }
   }
 
+  .component {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    font-size: var(--font-size-12);
+    border: 1px solid var(--utopia-color-blue-white);
+    border-radius: 5px;
+    flex: 0 0 32%;
+  }
+
   .prototype {
     border: 1px dashed var(--utopia-color-maroon);
     background: var(--utopia-color-blue-white);

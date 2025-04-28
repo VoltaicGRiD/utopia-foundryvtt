@@ -1,5 +1,6 @@
 import { ForageAndCrafting } from "../applications/specialty/forage-and-crafting.mjs";
 import { DamageInstance } from "../system/damage.mjs";
+import { rangeTest } from "../system/helpers/rangeTest.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
 
 /**
@@ -61,6 +62,14 @@ export class UtopiaActor extends Actor {
       } else {
         rollData.target = "multiple";
       }
+    }
+
+    if (this.type === "creature") {
+      if (this.items.some(i => i.type === "body")) {
+        const bodyItem = this.items.find(i => i.type === "body");
+        rollData.body = bodyItem.system;
+      }
+      rollData.baseDR = rollData.body.baseDR;
     }
 
     // Add paper doll data.
@@ -134,6 +143,12 @@ export class UtopiaActor extends Actor {
     }
 
     return [neededComponents, contributedComponents];
+  }
+
+  async beginHarvest() {
+    const template = await renderTemplate("systems/utopia/templates/chat/harvest.hbs", {
+      actor: this,
+    });
   }
 
   /* -------------------------------------------- */
@@ -422,12 +437,12 @@ export class UtopiaActor extends Actor {
    * @param {boolean} [options.checkFavor=true] - Whether to include favor in the check.
    * @returns {Promise<ChatMessage>} The chat message with the roll result.
    */
-  async check(trait, { specification = "always", checkFavor = true } = {}) {
+  async check(trait, { specification = "always", checkFavor = true, difficulty = 0 } = {}) {
     const specialChecks = JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))[trait] ?? {};
     if (Object.keys(specialChecks).length > 0) {
-      return this._checkSpecialty({ trait, specialChecks, specification, checkFavor });
+      return this._checkSpecialty({ trait, specialChecks, specification, checkFavor, difficulty });
     } else {
-      return this._checkTrait({ trait, specification, checkFavor });
+      return this._checkTrait({ trait, specification, checkFavor, difficulty });
     }
   }
 
@@ -439,9 +454,10 @@ export class UtopiaActor extends Actor {
    * @param {object} params.specialChecks - The specialty check configuration.
    * @param {string} [params.specification=""] - An optional specification to alter behavior.
    * @param {boolean} [params.checkFavor=true] - Whether to apply favor bonuses.
+   * @param {number} [params.difficulty=0] - The difficulty level of the check.
    * @returns {Promise<ChatMessage>}
    */
-  async _checkSpecialty({ trait, specialChecks, specification = "always", checkFavor = true }) {
+  async _checkSpecialty({ trait, specialChecks, specification = "always", checkFavor = true, difficulty = 0 }) {
     const formula = specialChecks.formula;
     const attribute = this.system.checks[trait];
     const netFavor = checkFavor ? (await this.checkForFavor(trait, specification)) || 0 : 0;
@@ -453,6 +469,19 @@ export class UtopiaActor extends Actor {
     // If the specification is not "always", append it to the label.
     if (specification !== "always") 
       label = label + ` vs. ${specification.capitalize()}`;    
+
+    if (difficulty > 0) {
+      const roll = await new Roll(newFormula, this.getRollData()).evaluate();
+      const success = roll.total >= difficulty;
+      await UtopiaChatMessage.create({
+        content: `<p>${label} ${success ? game.i18n.localize("UTOPIA.CHECKS.Success") : game.i18n.localize("UTOPIA.CHECKS.Failure")}</p>`,
+        flavor: label,
+        roll: roll,
+      });
+
+      return success;
+    }
+
     return await new Roll(newFormula, this.getRollData()).alter(1, netFavor).toMessage({ flavor: label });
   }
 
@@ -465,7 +494,7 @@ export class UtopiaActor extends Actor {
    * @param {boolean} [params.checkFavor=true] - Whether to apply favor bonuses.
    * @returns {Promise<ChatMessage>}
    */
-  async _checkTrait({ trait, specification = "always", checkFavor = true }) {
+  async _checkTrait({ trait, specification = "always", checkFavor = true, difficulty = 0 }) {
     const netFavor = checkFavor ? (await this.checkForFavor(trait, specification)) || 0 : 0;
     // Determine label based on whether the trait comes from traits or subtraits.
     var label = Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).includes(trait)
@@ -475,6 +504,18 @@ export class UtopiaActor extends Actor {
     if (specification !== "always") 
       label = label + ` vs. ${specification.capitalize()}`;
     const newFormula = `3d6 + @${trait}.mod`;
+
+    if (difficulty > 0) {
+      const roll = await new Roll(newFormula, this.getRollData()).evaluate();
+      const success = roll.total >= difficulty;
+      await UtopiaChatMessage.create({
+        content: `<p>${label} ${success ? game.i18n.localize("UTOPIA.CHECKS.Success") : game.i18n.localize("UTOPIA.CHECKS.Failure")}</p>`,
+        flavor: label,
+        roll: roll,
+      });
+      return success;
+    }
+
     return await new Roll(newFormula, this.getRollData()).alter(1, netFavor).toMessage({ flavor: label });
   }
 
@@ -690,7 +731,13 @@ export class UtopiaActor extends Actor {
    * @param {object} param0 - Object containing the item.
    * @returns {Promise<*>} The result of the action.
    */
-  _performAction({ item }) {
+  async _performAction({ item }) {
+    if (this.system.encumbered) {
+      await UtopiaChatMessage.create({
+        content: `<p>${game.i18n.format("UTOPIA.ERRORS.Encumbered", {actorName: this.name})}</p>`,
+      });
+    }
+
     if (item.type === "action") {
       const formula = item.system.formula;
       const category = item.system.category;
@@ -703,7 +750,7 @@ export class UtopiaActor extends Actor {
           }
           return;
         case "utility":
-          return this._utility(formula);
+          return this._utility(item);
         case "macro":
           return this._macro(item.system.macro, { item: item });
       }
@@ -731,22 +778,43 @@ export class UtopiaActor extends Actor {
           return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.NoTargetsSelectedInfo"));
         }
       }
-      targets.push(...Array.from(game.user.targets).map(t => t.actor));
+      targets.push(...Array.from(game.user.targets)); 
+    }
+    
+    // TODO - Implement automated accuracy tests
+    // TODO - Implement 'Roll for out-of-range targets anyway' game setting
+    const targetsInRange = [];
+    
+    for (const target of targets) {
+      const trait = item.system.accuracyTrait;
+      const result = await rangeTest({item, target, trait });
+      if (result) {
+        targetsInRange.push(target);
+      }
     }
 
+    const finalTargets = targetsInRange.map(t => t.actor);
+
     for (const damageData of item.system.damages) {
-      const roll = await new Roll(damageData.formula).evaluate();
+      const modifier = item.system.damageModifier;
+      const damageType = damageData.type;
+      const roll = await new Roll(`${damageData.formula} + @${modifier}.mod`).evaluate();
       const total = roll.total;
-      roll.toMessage();
 
-      if (targets.length === 0) {
-        const instance = await this.createDamageInstance(damageData.type, total);
-        instances.push(instance);
-      }
+      for (const target of finalTargets) {
+        const damage = new DamageInstance({
+          type: damageType ?? "physical",
+          value: total,
+          target: target.uuid,
+          source: this,
+          roll: roll,
+        });
+        
+        const handledDamage = await damage.handle();
+        const damageMessage = await damage.toMessage();
 
-      for (const target of targets) {
-        const instance = await this.createDamageInstance(damageData.type, total, target, item);
-        instances.push(instance);
+        console.warn(damage);
+        console.warn(damageMessage);
       }
     }
 
@@ -781,6 +849,29 @@ export class UtopiaActor extends Actor {
     }
     return instances;
   }
+
+  async _utility(item) {
+    const roll = await new Roll(item.system.formula, this.getRollData()).evaluate();
+    const tooltip = await roll.getTooltip(); 
+    roll.tooltip = tooltip;
+    
+    const restoration = item.system.restoration;
+    const type = item.system.restorationType;
+
+    if (restoration && type) {
+      const updateData = {};
+      if (type === "surface") {
+        updateData[`system.hitpoints.surface.value`] = Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + roll.total);
+      } else if (type === "deep") {
+        updateData[`system.hitpoints.deep.value`] = Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + roll.total);
+      } else if (type === "stamina") {
+        updateData[`system.stamina.value`] = Math.min(this.system.stamina.max, this.system.stamina.value + roll.total);
+      }
+      
+      await this.update(updateData);
+    }
+  }
+
 
   /**
    * Executes a macro associated with an item.
@@ -825,12 +916,115 @@ export class UtopiaActor extends Actor {
         handledDamage: handledDamage
       });
 
-      return await UtopiaChatMessage.create({
+      await UtopiaChatMessage.create({
         content: template,
         speaker: ChatMessage.getSpeaker({ actor: this }),
         flavor: game.i18n.localize("UTOPIA.CHAT.DamageAppliedFlavor"),
       });
     }    
+
+    await this._applySiphons(damage);
+  }
+
+  /**
+   * Applies siphon data present on the actor
+   * @param {DamageInstance} damage - The damage instance to retrieve damage information from.
+   */
+  async _applySiphons(damage) {
+    const siphons = this.system.siphons;
+    const damageType = damage.typeKey;
+    const property = foundry.utils.getProperty(siphons, damageType);
+
+    const effectiveSiphons = [];
+
+    if (property) {
+      if (property.convertToStaminaPercent > 0) {
+        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
+        const staminaToRestore = Math.floor((damageDealt * property.convertToStaminaPercent));
+        await this.update({
+          "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
+        });
+        effectiveSiphons.push({
+          type: "stamina",
+          value: staminaToRestore,
+          percent: property.convertToStaminaPercent
+        });
+      }
+      if (property.convertToStaminaFixed > 0) {
+        const staminaToRestore = property.convertToStaminaFixed;
+        await this.update({
+          "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
+        });
+        effectiveSiphons.push({
+          type: "stamina",
+          value: staminaToRestore,
+          percent: property.convertToStaminaFixed / this.system.stamina.max
+        });
+      }
+      if (property.convertToSurfacePercent > 0) {
+        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
+        const surfaceToRestore = Math.floor((damageDealt * property.convertToSurfacePercent));
+        await this.update({
+          "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
+        });
+        effectiveSiphons.push({
+          type: "surface",
+          value: surfaceToRestore,
+          percent: property.convertToSurfacePercent
+        });
+      }
+      if (property.convertToSurfaceFixed > 0) {
+        const surfaceToRestore = property.convertToSurfaceFixed;
+        await this.update({
+          "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
+        });
+        effectiveSiphons.push({
+          type: "surface",
+          value: surfaceToRestore,
+          percent: property.convertToSurfaceFixed / this.system.hitpoints.surface.max
+        });
+      }
+      if (property.convertToDeepPercent > 0) {
+        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
+        const deepToRestore = Math.floor((damageDealt * property.convertToDeepPercent));
+        await this.update({
+          "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
+        });
+        effectiveSiphons.push({
+          type: "deep",
+          value: deepToRestore,
+          percent: property.convertToDeepPercent
+        });
+      }
+      if (property.convertToDeepFixed > 0) {
+        const deepToRestore = property.convertToDeepFixed;
+        await this.update({
+          "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
+        });
+        effectiveSiphons.push({
+          type: "deep",
+          value: deepToRestore,
+          percent: property.convertToDeepFixed / this.system.hitpoints.deep.max
+        });
+      }
+      if (property.convertToResource !== undefined && property.convertToResource.length > 0) {
+        // TODO - Implement resource conversion logic
+      }
+    }
+
+    if (effectiveSiphons.length === 0) {
+      return;
+    }
+
+    const template = await renderTemplate("systems/utopia/templates/chat/siphon.hbs", {
+      actor: this,
+      siphons: effectiveSiphons,
+    });
+    
+    await UtopiaChatMessage.create({
+      content: template,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+    });
   }
 
   /* -------------------------------------------- */
@@ -897,6 +1091,60 @@ export class UtopiaActor extends Actor {
   // *****************************************************
   // Actor exclusive getters and helpers
   // *****************************************************
+  _onCreateDescendantDocuments(parent, collection, documents, data, options, userId) {
+    // This method is called when a new document is created that is a descendant of this actor.
+    console.warn("Actor._onCreateDescendantDocuments called", parent, collection, documents, data, options, userId);
+
+    for (const document of documents) {
+      if (document.type === "body") {
+        const baseDR = document.system.baseDR;
+        this.update({
+          "system.baseDR": baseDR,
+        });
+      }
+    }
+  }
+
+  _onCreate(data, options, userId) {
+    const weaponlessAction = new Item({
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.WeaponlessAttack"),
+      system: {
+        category: "damage",
+        damages: [{
+          formula: this.system.weaponlessAttacks.formula,
+          type: this.system.weaponlessAttacks.type,
+        }],
+        damageModifier: this.system.weaponlessAttacks.traits[0],
+        template: "target",
+        range: "0/0",
+        cost: String(this.system.weaponlessAttacks.actionCost),
+        stamina: this.system.weaponlessAttacks.stamina
+      }
+    });
+
+    // Add the weaponless action to the actor
+    this.addItem(weaponlessAction, false, false, undefined).then(() => {
+      this._log(`Weaponless action added to actor ${this.name}`);
+    }).catch(err => {
+      this._error(`Failed to add weaponless action to actor ${this.name}:`, err);
+    });
+
+    const deepBreathAction = new Item({
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.DeepBreath"),
+      system: {
+        category: "utility",
+        formula: "1d6 + @stamina.mod",
+        template: "self",
+        range: "0/0",
+        cost: "1",
+        stamina: 1,
+      }
+    });
+  }
+
+
   // TODO - Finish this method - was taken from 'item.mjs'
   // async _autoRollAttacks(chatMessage = undefined) {
   //   // Check if the world "AutoRollAttacks" setting is enabled

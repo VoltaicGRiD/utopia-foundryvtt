@@ -1292,6 +1292,18 @@
   display: flex;
   align-items: center;
 }
+.utopia.item-sheet .item-set .component, .utopia.actor-sheet .item-set .component {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  font-size: var(--font-size-12);
+  border: 1px solid var(--utopia-color-blue-white);
+  border-radius: 5px;
+  flex: 0 0 32%;
+}
 .utopia.item-sheet .item-set .prototype, .utopia.actor-sheet .item-set .prototype {
   border: 1px dashed var(--utopia-color-maroon);
   background: var(--utopia-color-blue-white);
@@ -3374,6 +3386,60 @@
 .utopia.gear-sheet .gear .gear-controls a:hover, .utopia.artifice .gear .gear-controls a:hover {
   background-color: #ff0000;
   color: white;
+}
+.utopia.harvest-sheet {
+  border-radius: 0 25px 0 25px;
+}
+.utopia.harvest-sheet .harvest-creature {
+  width: 100%;
+}
+.utopia.harvest-sheet .harvest-header {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 5px;
+  width: 100%;
+}
+.utopia.harvest-sheet .harvest-header .harvest-name {
+  height: 100%;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.utopia.harvest-sheet .creature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 90%;
+  overflow-y: auto;
+}
+.utopia.harvest-sheet .harvest-table {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.utopia.harvest-sheet .harvest-table th {
+  padding: 0.5rem 1rem;
+}
+.utopia.harvest-sheet .harvest-table td {
+  padding: 0.75rem;
+}
+.utopia.harvest-sheet .harvest {
+  position: relative;
+}
+.utopia.harvest-sheet .harvest-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}
+.utopia.harvest-sheet footer {
+  width: 100%;
+  position: fixed;
+  bottom: 10px;
+  padding-right: 30px;
 }
 .utopia.gear-feature-sheet {
   border-radius: 0 25px 0 25px;

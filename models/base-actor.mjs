@@ -85,6 +85,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     // this.level = 10;
   }
 
+  _on
+
   /**
    * Define the comprehensive data schema for the actor.
    * Includes fields, resources, traits, subtraits, and relevant data structures.
@@ -194,6 +196,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       ...siphon()
     })
 
+    // TODO - Implement healing factors
     schema.healing = new fields.SchemaField({ 
       item: new fields.SchemaField({
         staminaPercent: new fields.NumberField({ ...requiredInteger, initial: 1 }),
@@ -635,6 +638,15 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
 
     this.turnOrder = foundry.utils.getProperty(this.parent.getRollData(), this.turnOrder)
+    
+    let slots = 0;
+    for (const item of this.parent.items) {
+      if (item.system.slots && !item.system.equipped) {
+        slots += item.system.slots;
+      }
+    }
+    
+    this.encumbered = slots > this.slotCapacity.total;
   }
 
   /**
@@ -819,6 +831,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     }
 
     // Slot capacity is calculated from size and strength
+    // TODO - Implement the other sizes
     const str = this.traits.str.total;
     switch (this.size) {
       case "sm": 
@@ -828,7 +841,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         this.slotCapacity.total = this.slotCapacity.bonus + (5 * str);
         break;
       case "lg":
-        this.slotCapacity.total = this.slotCapacity.bonus + (15* str);
+        this.slotCapacity.total = this.slotCapacity.bonus + (15 * str);
         break;
     }
 

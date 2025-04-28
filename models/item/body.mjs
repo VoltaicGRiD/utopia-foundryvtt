@@ -73,7 +73,7 @@ export class Body extends UtopiaItemBase {
         component: new fields.StringField({ required: true, nullable: false, choices: components }),
         quantity: new fields.StringField({ required: true, nullable: false, initial: "0" }),
       })),
-      testTrait: new fields.StringField({ required: true, nullable: false, initial: "agi", choices: allOptions }),
+      testTrait: new fields.StringField({ required: true, nullable: false, initial: "eng", choices: allOptions }),
       // TD is calculated by a formula, typically 1/5 or 1/10 of the body's DR
       testDifficulty: new fields.StringField({ required: true, nullable: false, initial: "ceil(@baseDR/5)"}),
       testHarvestable: new SchemaArrayField(new fields.SchemaField({

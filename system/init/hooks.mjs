@@ -1,4 +1,5 @@
 import { FeatureBuilder } from "../../applications/specialty/feature-builder.mjs";
+import { UtopiaChatMessage } from "../../documents/chat-message.mjs";
 import { registerDiceSoNice } from "../integrations/DiceSoNice/diceSoNice.mjs";
 
 export function registerHooks() {
@@ -14,6 +15,85 @@ export function registerHooks() {
         let window = ui.activeWindow;
         window.render();
       }
+    });
+
+    Hooks.on("deleteCombat", async (combat, options, userId) => {    
+      console.warn("[UTOPIA] Combat is being deleted, restoring combatants' turn actions.", combat, options, userId);
+
+      const harvestableCreatures = [];
+
+      combat.combatants.forEach((combatant) => {
+        let actor = combatant.actor;
+        if (actor.type === "creature" && 
+          actor.system.hitpoints.surface.value === 0 && 
+          actor.system.hitpoints.deep.value === 0) { // We need to identify if the actor is a creature, so that they can be harvested for components
+          if (!actor.system.harvested) {
+            harvestableCreatures.push(combatant);
+          }
+        }
+      });
+
+      const updatedCreatures = await Promise.all(harvestableCreatures.map(async (combatant) => {
+        const creature = combatant.actor;        
+        const formula = creature.system.harvest.testDifficulty;
+        const roll = await new Roll(formula, creature.getRollData()).evaluate();
+
+        return {
+          id: foundry.utils.randomID(16),
+          name: creature.name,
+          difficulty: creature.system.difficulty,
+          token: combatant.img,
+          alwaysHarvestables: creature.system.harvest.alwaysHarvestable.map(harvestable => {
+            return {
+              id: foundry.utils.randomID(16),
+              component: harvestable.component,
+              quantity: harvestable.quantity,
+              harvested: {
+                complete: false,
+                by: null,
+                earned: null
+              }
+            }
+          }),
+          testHarvestables: creature.system.harvest.testHarvestable.map(harvestable => {
+            return {
+              id: foundry.utils.randomID(16),
+              testTrait: creature.system.harvest.testTrait,
+              testDifficulty: roll.total,
+              component: harvestable.component,
+              quantity: harvestable.quantity,
+              harvested: {
+                complete: false,
+                by: null,
+                earned: null
+              }
+            }
+          }),
+        }
+      }));
+
+      const item = await Item.createDocuments([{
+        name: game.i18n.localize("UTOPIA.Items.Harvest.Name"),
+        type: "harvest",
+        system: {
+          creatures: updatedCreatures
+        },
+        ownership: {
+          default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
+        }
+      }]);
+
+      console.log(item);
+
+      const template = await renderTemplate("systems/utopia/templates/chat/harvest-card.hbs");
+
+      await UtopiaChatMessage.create({
+        content: template,
+        speaker: ChatMessage.getSpeaker({ alias: game.i18n.localize("UTOPIA.Combat.Harvest") }),
+        system: {
+          harvest: item.uuid,
+        }
+      });
     });
 
     Hooks.on("combatTurnChange", (combat, from, to) => {

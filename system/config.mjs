@@ -785,6 +785,16 @@ export function registerConfig() {
       name: "UTOPIA.StatusEffects.focus",
     },
     {
+      id: "grappled",
+      img: "icons/svg/combat.svg",
+      name: "UTOPIA.StatusEffects.grappled"
+    },
+    {
+      id: "scaled",
+      img: "icons/svg/upgrade.svg",
+      name: "UTOPIA.StatusEffects.scaled"
+    },
+    {
       id: "fatigue_1",
       img: "icons/svg/degen.svg",
       name: "UTOPIA.StatusEffects.fatigue_1",

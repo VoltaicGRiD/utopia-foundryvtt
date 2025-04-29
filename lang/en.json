@@ -173,11 +173,13 @@
     "ERRORS": {
       "ArtistryNotUnlocked": "At least one of the features of this spell is from an artistry that you haven't unlocked yet.",
       "NotEnoughStamina": "<p>You don't have enough stamina to cast this spell.<br/>However, you can spend Deep Hitpoints (DHP) to in place of the remaining stamina, if you wish.<br/>Cast this spell for <b>{dhp}</b> DHP?</p>",
+      "NotEnoughActions": "You don't have enough turn or interrupt actions to perform this action.",
       "ReplaceSpeciesTitle": "Replace Species",
       "ReplaceSpecies": "You must be a GM to replace the species of an actor.",
       "ReplaceSpeciesGM": "As the GM, you can replace the species of this actor.<br>This will remove the existing species features and talents.<br/>Are you sure you want to do this? (Talent points will be returned)",
       "NoTargetsSelected": "The game rule \"Target Required\" is enabled, you must target at least one token to perform this action.",
       "NoTargetsSelectedInfo": "No tokens are targeted. Defense calculations will need to be performed manually.",
+      "ActionAgainstNoTarget": "This action requires you to have a target, please target a token first.",
       "NoSpeciesWarning": "There is no species assigned to this actor. A species is required to browse talents.",
       "NoConsumableQuantity": "You're trying to consume a consumable that has no quantity. Craft a new one, or set the quantity to 1.",
       "NoParentActor": "This item is not owned by a character or creature. It cannot be equipped.",
@@ -205,7 +207,14 @@
       "concentration": "Concentration",
       "focus": "Focus",
       "stasis": "Stasis",
-      "dead": "Dead"
+      "dead": "Dead",
+      "grappled": "Grappled",
+      "fatigue_1": "Fatigue 1",
+      "fatigue_2": "Fatigue 2",
+      "fatigue_3": "Fatigue 3",
+      "fatigue_4": "Fatigue 4",
+      "fatigue_5": "Fatigue 5",
+      "fatigue_6": "Fatigue 6"
     },
     "Settings": {
       "advancedSettingsMenu": "Advanced Settings (Homebrew)",
@@ -360,7 +369,9 @@
         "ViewSpecialist": "View Specialist Talents",
         "UnlockArtistry": "Unlock Artistry",
         "WeaponlessAttack": "Weaponless Attack",
-        "DeepBreath": "Deep Breath"
+        "DeepBreath": "Deep Breath",
+        "TakeCover": "Take Cover",
+        "Grapple": "Grapple"
       },
       "Items": {
         "Talents": "Talents",
@@ -758,6 +769,10 @@
           "restorationType": {
             "label": "Resource Type",
             "hint": "The type of resource to restore when this action is performed."
+          },
+          "toggleActiveEffects": {
+            "label": "Toggle Active Effects",
+            "hint": "Active Effects on this item that transfer to the owner, will be toggled enabled / disabled when this action is used."
           }
         },
         "RestorationType": {
@@ -770,6 +785,7 @@
           "target": "Targets"
         },
         "Type": {
+          "current": "Current",
           "turn": "Turn",
           "interrupt": "Interrupt",
           "free": "Free"
@@ -779,6 +795,7 @@
           "test": "Check / Test",
           "formula": "Formula",
           "passive": "Passive",
+          "active": "Active",
           "utility": "Utility",
           "macro": "Macro"
         },

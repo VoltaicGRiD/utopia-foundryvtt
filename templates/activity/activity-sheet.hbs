@@ -1,0 +1,15 @@
+<div>
+  <div class="activity-header">
+    <img src="{{item.img}}" alt="{{item.name}} icon" class="profile-img" />
+    {{formGroup systemFields.name}}
+  </div>
+  
+  <div class="operations-list">
+    {{#each operations}}
+      <div class="operation-item" data-action="openOperation" data-operation="{{this.id}}">
+        <h3>{{this.name}}</h3>
+      </div>
+    {{/each}}
+    <button type="button" data-action="addOperation"><i class="fas fa-plus-circle"></i> New Operation</button>
+  </div>
+</div>

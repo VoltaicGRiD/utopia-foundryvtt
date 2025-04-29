@@ -14,6 +14,7 @@ export { TalentTree } from "./talent-tree.mjs";
 export { Talent } from "./talent.mjs";
 export { SpecialistTalent } from "./specialist-talent.mjs";
 export { Spell } from "./spell.mjs";
+export { Activity } from "./activity/activity.mjs";
 
 export { ArmorFeatureOptions as ArmorFeature } from "./feature-options/armor.mjs";
 export { WeaponFeatureOptions as WeaponFeature } from "./feature-options/weapon.mjs";

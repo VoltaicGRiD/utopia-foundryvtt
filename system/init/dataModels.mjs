@@ -23,6 +23,7 @@ export function registerItemDataModels() {
     shieldFeature: ItemModels.ShieldFeature,
     artifactFeature: ItemModels.ArtifactFeature,
     consumableFeature: ItemModels.ConsumableFeature,
+    activity: ItemModels.Activity
   }
 }
 

@@ -1,0 +1,15 @@
+<div class="operations">
+  <div class="operations-list">
+    <h2>{{title}}</h2>
+    {{#each operations}}
+      {{log this}}
+      <div class="operation-item" data-action="select-operation" data-operation="{{this.name}}">
+        <h3>{{this.name}}</h3>
+      </div>
+    {{/each}}
+  </div>
+  {{!-- <footer class="sheet-footer">
+    <button class="btn btn-secondary" type="button" data-action="cancel">Cancel</button>
+    <button class="btn btn-primary" type="submit" data-action="submit">Submit</button>
+  </footer> --}}
+</div>

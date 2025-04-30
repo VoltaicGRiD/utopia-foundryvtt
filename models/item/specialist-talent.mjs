@@ -33,7 +33,6 @@ export class SpecialistTalent extends UtopiaItemBase {
       }}),
     });
     schema.resources = new fields.ArrayField(schema.resource);
-    schema.grants = new fields.SetField(new fields.DocumentUUIDField({ type: "Item" }), { initial: [] });
 
     schema.attributeRequirements = new fields.SetField(new fields.StringField(), { required: true, nullable: true, initial: [] });
     schema.speciesRequirements = new fields.StringField({ required: true, nullable: false });

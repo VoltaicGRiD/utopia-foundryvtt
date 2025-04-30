@@ -810,7 +810,7 @@ export class UtopiaActor extends Actor {
       }
     }
 
-    if (this.getFatigue(4)) {
+    if (this.getFatigue(4) === true) {
       await this.update({
         "system.stamina.value": this.system.stamina.value - this.getFatigue()
       })
@@ -874,7 +874,7 @@ export class UtopiaActor extends Actor {
       }
     }
 
-    if (this.getFatigue(4)) {
+    if (this.getFatigue(4) === true) {
       await this.update({
         "system.stamina.value": this.system.stamina.value - this.getFatigue()
       })
@@ -1003,7 +1003,7 @@ export class UtopiaActor extends Actor {
         const handledDamage = await damage.handle();
         const damageMessage = await damage.toMessage();
 
-        if (this.getFatigue(4)) { // Handle fatigue
+        if (this.getFatigue(4) === true) { // Handle fatigue
           await this.update({
             "system.stamina.value": this.system.stamina.value - this.getFatigue()
           })
@@ -1177,7 +1177,7 @@ export class UtopiaActor extends Actor {
         }
         return await this.update({
           "system.turnActions.value": this.system.turnActions.value - costLeft,
-          "system.stamina.value": this.system.stamina.value - item.system.staminaCost
+          "system.stamina.value": this.system.stamina.value - item.system.stamina
         });
       case "interrupt":
         if (this.system.interruptActions.temporary > 0) {
@@ -1196,7 +1196,7 @@ export class UtopiaActor extends Actor {
         }
         return await this.update({
           "system.interruptActions.value": this.system.interruptActions.value - cost,
-          "system.stamina.value": this.system.stamina.value - item.system.staminaCost
+          "system.stamina.value": this.system.stamina.value - item.system.stamina
         });
       default:
         return;
@@ -1499,6 +1499,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.WeaponlessAttack"),
       system: {
+        isBaseAction: true,
         category: "damage",
         damages: [{
           formula: this.system.weaponlessAttacks.formula,
@@ -1516,6 +1517,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.DeepBreath"),
       system: {
+        isBaseAction: true,
         category: "utility",
         restoration: true,
         restorationType: "stamina",
@@ -1530,6 +1532,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Grapple"),
       system: {
+        isBaseAction: true,
         category: "test",
         checks: new Set(["str"]),
         checkAgainstTarget: true,
@@ -1546,6 +1549,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Aim"),
       system: {
+        isBaseAction: true,
         category: "active",
         toggleActiveEffects: true,
         type: "turn",
@@ -1572,6 +1576,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.TakeCover"),
       system: {
+        isBaseAction: true,
         category: "active",
         type: "current",
         toggleActiveEffects: true,
@@ -1606,6 +1611,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Travel"),
       system: {
+        isBaseAction: true,
         category: "passive",
         type: "turn",
         cost: "1",
@@ -1617,6 +1623,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Stealth"),
       system: {
+        isBaseAction: true,
         category: "test",
         checks: ["stu"],
         type: "current",
@@ -1629,6 +1636,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Leap"),
       system: {
+        isBaseAction: true,
         category: "passive",
         type: "turn",
         cost: "3",
@@ -1640,6 +1648,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.ScaleSame"),
       system: {
+        isBaseAction: true,
         category: "test",
         checks: ["agi"],
         checkAgainstTarget: true,
@@ -1654,6 +1663,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.ScaleLarger"),
       system: {
+        isBaseAction: true,
         category: "test",
         checks: ["agi"],
         checkAgainstTarget: true,
@@ -1668,6 +1678,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.HoldAction"),
       system: {
+        isBaseAction: true,
         category: "active",
         toggleActiveEffects: true,
         type: "turn",
@@ -1694,6 +1705,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Assist"),
       system: {
+        isBaseAction: true,
         category: "active",
         toggleActiveEffects: true,
         type: "turn",
@@ -1715,6 +1727,16 @@ export class UtopiaActor extends Actor {
         }
       }]
     }]);
+  }
+
+  _onUpdate(changed, options, userId) {
+    super._onUpdate(changed, options, userId);
+
+    for (const item of this.items) {
+      if (item.type === "action" && item.system.isBaseAction) {
+        item.reset();
+      }
+    }
   }
 
 

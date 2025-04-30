@@ -69,6 +69,8 @@ export class Gear extends UtopiaItemBase {
     });
     console.warn(components);
 
+    schema.craftedFor = new fields.DocumentUUIDField({ required: false, nullable: true, initial: null });
+
     schema.prototype = new fields.BooleanField({ required: true, nullable: false, initial: true });
     schema.contributedComponents = new fields.SchemaField({});
     for (const [component, componentValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components")))) {

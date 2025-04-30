@@ -371,7 +371,15 @@
         "WeaponlessAttack": "Weaponless Attack",
         "DeepBreath": "Deep Breath",
         "TakeCover": "Take Cover",
-        "Grapple": "Grapple"
+        "Grapple": "Grapple",
+        "Travel": "Travel",
+        "Aim": "Aim",
+        "Stealth": "Stealth",
+        "Leap": "Leap",
+        "ScaleSame": "Scale (same size)",
+        "ScaleLarger": "Scale (larger)",
+        "HoldAction": "Hold Action (2 TA = 1 IA)",
+        "Assist": "Assist (WIP)"
       },
       "Items": {
         "Talents": "Talents",
@@ -1199,6 +1207,11 @@
           "none": "None",
           "wild": "Wild",
           "enhance": "Enhance"
+        },
+        "PaperDoll": {
+          "toggleSpecialty": "Requires special armor",
+          "toggleEquippable": "Toggle equippable",
+          "toggleAugmentable": "Toggle augmentable"
         }
       },
       "TalentTree": {
@@ -1450,6 +1463,21 @@
           "AoE": "Area of Effect",
           "Range": "Range",
           "Duration": "Duration"
+        }
+      },
+      "SpecialistTalent": {
+        "attributeRequirements": "Attribute Requirements",
+        "speciesRequirements": "Species Requirements (species name contains value)",
+        "talentRequirements": "Talent Requirements (talent name contains value)",
+        "talentTreeRequirements": "Talent Tree Requirements (all talents in tree unlocked)",
+        "artistryRequirements": "Artistry Requirements (artistry (name) unlocked)",
+        "Resource": {
+          "title": "Resource",
+          "name": "Resource Name",
+          "amount": "Resource Starting Amount",
+          "max": "Resource Maximum Amount",
+          "recoverAmount": "Resource Recovery Amount",
+          "recoverInterval": "Resource Recovery Interval"
         }
       }
     },

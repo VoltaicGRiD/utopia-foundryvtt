@@ -1,6 +1,6 @@
 const { api, sheets } = foundry.applications;
 
-export default class Harvest extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) {  
+export class Harvest extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) {  
   static DEFAULT_OPTIONS = {
     classes: ["utopia", "harvest-sheet"],
     position: {

@@ -923,7 +923,7 @@ export class UtopiaActor extends Actor {
         }
       }
 
-      if (this._canPerformAction(item)) {
+      if (this._canPerformAction({item}) === true) {
         switch (category) {
           case "damage":
             return this._damageAction(item);
@@ -1727,6 +1727,12 @@ export class UtopiaActor extends Actor {
         }
       }]
     }]);
+
+    this.update({
+      "system.hitpoints.surface.value": this.system.hitpoints.surface.max,
+      "system.hitpoints.deep.value": this.system.hitpoints.deep.max,
+      "system.stamina.value": this.system.stamina.max,
+    })
   }
 
   _onUpdate(changed, options, userId) {

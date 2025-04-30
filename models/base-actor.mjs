@@ -26,6 +26,10 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }
     }
 
+    this.deepBreath = {
+      additionalStamina: 0,
+    }
+
     try { prepareGearData(this) } catch (e) { console.error(e); }
     if (["character", "npc"].includes(this.parent.type)) {
       try { this._prepareTraits() } catch (e) { console.error(e) }
@@ -194,9 +198,9 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       actionCost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
     });
 
-    schema.deepBreath = new fields.SchemaField({
-      additionalStamina: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-    })
+    // schema.deepBreath = new fields.SchemaField({
+    //   additionalStamina: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+    // })
 
     const siphon = () => {
       const returns = {};
@@ -662,8 +666,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
   prepareDerivedData() {
     super.prepareDerivedData();
     
-    this.turnActions.available = this.turnActions.value + this.turnActions.temporary;
-    this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;
+    this.turnActions.available = Math.max(this.turnActions.value + this.turnActions.temporary, 0);
+    this.interruptActions.available = Math.max(this.interruptActions.value + this.interruptActions.temporary, 0);
   }
 
   /**

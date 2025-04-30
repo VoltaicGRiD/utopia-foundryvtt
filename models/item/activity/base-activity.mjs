@@ -3,7 +3,7 @@ export class BaseOperation {
     const schema = {};
     const fields = foundry.data.fields;
 
-    schema.name = new fields.StringField({ required: true, nullable: false, blank: false, initial: this.constructor.name });
+    schema.name = new fields.StringField({ required: true, nullable: false, blank: false, initial: "New Operation" });
 
     schema.id = new fields.StringField({ required: true, nullable: false, blank: false, initial: foundry.utils.randomID(16) });
 
@@ -51,4 +51,3 @@ export class BaseOperation {
       return { uuid: effect.uuid, name: effect.name };
     });
   }
-}

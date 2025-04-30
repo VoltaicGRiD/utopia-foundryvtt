@@ -1,0 +1,5 @@
+packs/*/*.log
+packs/*/*.ldb
+packs/*/*.log
+packs/*/MANIFEST-*
+

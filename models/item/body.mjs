@@ -68,6 +68,8 @@ export class Body extends UtopiaItemBase {
       , {}),
     }
 
+    schema.grants = new fields.SetField(new fields.DocumentUUIDField({ type: "Item" }), { required: true, nullable: true, initial: [] });
+
     schema.harvest = new UtopiaSchemaField({
       alwaysHarvestable: new SchemaArrayField(new fields.SchemaField({
         component: new fields.StringField({ required: true, nullable: false, choices: components }),
@@ -128,13 +130,18 @@ export class Body extends UtopiaItemBase {
 
   get attributeFields() {
     return [
-      // {
-      //   field: this.schema.fields.defenses,
-      //   stacked: true,
-      //   editable: true,
-      //   columns: 5,
-      //   classes: ["flex-lg"] 
-      // },
+      {
+        field: this.schema.fields.defenses,
+        stacked: true,
+        editable: true,
+        columns: 5,
+        classes: ["flex-lg"] 
+      },
+      {
+        field: this.schema.fields.grants,
+        stacked: true,
+        editable: true,
+      },
       {
         field: this.schema.fields.traits,
         stacked: true,

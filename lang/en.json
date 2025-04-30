@@ -218,9 +218,21 @@
     },
     "Settings": {
       "advancedSettingsMenu": "Advanced Settings (Homebrew)",
+      "AdvancedSettings": {
+        "Traits": "Traits",
+        "Subtraits": "Subtraits",
+        "SpecialtyChecks": "Specialty Checks",
+        "Components": "Components",
+        "Rarities": "Rarities",
+        "Artistries": "Artistries",
+        "DamageTypes": "Damage Types",
+        "Languages": "Languages"
+      }, 
       "Buttons": {
         "CompendiumBrowser": "Compendium Browser",
-        "FeatureBuilder": "Artifice Feature Builder"
+        "FeatureBuilder": "Artifice Feature Builder",
+        "Save": "Save",
+        "Reset": "Reset this setting to defaults (You will lose all changes)"
       },
       "targetRequired": "Require Targeting for Attacks",
       "targetRequiredHint": "When enabled, you must target at least one token to perform attacks and actions that require a target.",
@@ -255,6 +267,8 @@
       "displayActionsOptionCircle": "Display as circle",
       "displayActionsOptionVertical": "Display vertically",
       "displayActionsOptionHorizontal": "Display horizontally",
+      "displayActionsSize": "Token Action indicator size",
+      "displayActionsSizeHint": "The size of the action indicators on tokens. This is basically a division of the size of the grid. You may need to tinker with this setting to get the right size for your preference.",
       "restOnLevelUp": "[Homebrew] Rest on Level Up",
       "restOnLevelUpHint": "When enabled, and a character or NPC levels up, the rest action will be performed automatically. Resting sets Surface HP and Stamina to their maximums, and resets turn and interrupt actions to their maximums.",
       "diceRedistributionDiceSizes": "Dice Redistribution Sizes",

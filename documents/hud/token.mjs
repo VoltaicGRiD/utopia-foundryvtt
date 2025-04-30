@@ -77,8 +77,12 @@ export class UtopiaToken extends Token {
     const tokenWidth  = (canvas.dimensions.size * this.document.width);
     const tokenHeight = (canvas.dimensions.size * this.document.height);
 
+    // We'll add a bit of padding to the token's width/height
+    const tokenWidthPadding = (canvas.dimensions.size * this.document.width) / 10;
+    const tokenHeightPadding = (canvas.dimensions.size * this.document.height) / 10;
+
     // Each indicator's size
-    const size = Math.max(canvas.dimensions.size / 6, 8);
+    const size = Math.max(canvas.dimensions.size / game.settings.get("utopia", "displayActionsSize"), 8);
 
     // We draw turn actions on the top, left to right, right being the end of the chain
     if (index === 0) {
@@ -106,7 +110,7 @@ export class UtopiaToken extends Token {
         // Place them symmetrically around centerX 
         const offsetFactor = i - mid; // could be negative, zero, or positive 
         indicator.x = centerX + (offsetFactor * step); // Y stays the same for them all 
-        indicator.y = centerY;
+        indicator.y = centerY + tokenHeightPadding;
 
         action.addChild(indicator);
       }
@@ -138,7 +142,7 @@ export class UtopiaToken extends Token {
         // Place them symmetrically around centerX 
         const offsetFactor = i - mid; // could be negative, zero, or positive 
         indicator.x = centerX + (offsetFactor * step); // Y stays the same for them all 
-        indicator.y = centerY;
+        indicator.y = centerY - tokenHeightPadding;
 
         action.addChild(indicator);
       }
@@ -156,14 +160,18 @@ export class UtopiaToken extends Token {
     const tokenWidth  = (canvas.dimensions.size * this.document.width);
     const tokenHeight = (canvas.dimensions.size * this.document.height);
 
+    // We'll add a bit of padding to the token's width/height
+    const tokenWidthPadding = (canvas.dimensions.size * this.document.width) / 10;
+    const tokenHeightPadding = (canvas.dimensions.size * this.document.height) / 10;
+
     // Each indicator's size
-    const size = Math.max(canvas.dimensions.size / 6, 8);
+    const size = Math.max(canvas.dimensions.size / game.settings.get("utopia", "displayActionsSize"), 8);
 
     // We draw turn actions on the left, top to bottom, bottom being the top of the
     // chain, and interrupt actions on the right, top to bottom
     if (index === 0) {
       // Where on the token do we anchor the bar?
-      const centerX = 0;
+      const centerX = 0 + tokenWidthPadding;
       const centerY = tokenHeight / 2;
 
       // For an even number, half go left, half go right
@@ -194,7 +202,7 @@ export class UtopiaToken extends Token {
     // We draw interrupt actions on the right, top to bottom
     else {
       // Where on the token do we anchor the bar?
-      const centerX = tokenWidth;
+      const centerX = tokenWidth - tokenWidthPadding;
       const centerY = tokenHeight / 2;
 
       // For an even number, half go left, half go right
@@ -234,18 +242,22 @@ export class UtopiaToken extends Token {
     const tokenWidth  = (canvas.dimensions.size * this.document.width);
     const tokenHeight = (canvas.dimensions.size * this.document.height);
 
+    // We'll add a bit of padding to the token's width/height
+    const tokenWidthPadding = (canvas.dimensions.size * this.document.width) / 10;
+    const tokenHeightPadding = (canvas.dimensions.size * this.document.height) / 10;
+
     // Where on the token do we anchor the arc? e.g. near bottom center
     const centerX = tokenWidth / 2;
     const centerY = tokenHeight / 2; // positions around the bottom
 
     // Each indicator's radius (circle size)
-    const size = Math.max(canvas.dimensions.size / 6, 8) * 
+    const size = Math.max(canvas.dimensions.size / game.settings.get("utopia", "displayActionsSize"), 8) * 
                 (this.document.height >= 2 ? 1.6 : 1);
 
     // If index=0, arrange in a semi-circle from left to right
     if (index === 0) {
-      // Radius of the arc
-      const radius = tokenWidth / 2;
+      // Radius of the arc, needs to fit within the bounds of the token
+      const radius = (tokenWidth / 2) - tokenWidthPadding;
       // We'll sweep half a circle (π radians)
       const angleStep = Math.PI / (data.max - 1);
 
@@ -295,7 +307,7 @@ export class UtopiaToken extends Token {
         // Place them symmetrically around centerX 
         const offsetFactor = i - mid; // could be negative, zero, or positive 
         indicator.x = centerX + (offsetFactor * step); // Y stays the same for them all 
-        indicator.y = centerY + (canvas.dimensions.size * this.document.height) / 2;
+        indicator.y = centerY + (canvas.dimensions.size * this.document.height) / 2 - tokenHeightPadding;
 
         action.addChild(indicator);
       }

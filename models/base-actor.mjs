@@ -26,6 +26,26 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }
     }
 
+    try { prepareGearData(this) } catch (e) { console.error(e); }
+    if (["character", "npc"].includes(this.parent.type)) {
+      try { this._prepareTraits() } catch (e) { console.error(e) }
+      try { prepareSpeciesData(this); } catch (e) { console.error(e); }
+    }
+    else {
+      try { prepareBodyData(this); } catch (e) { console.error(e); }
+      try { prepareClassData(this); } catch (e) { console.error(e); }
+      try { prepareKitData(this); } catch (e) { console.error(e); }
+    }
+    try { this._prepareDefenses() } catch (e) { console.error(e) }
+    try { this._prepareTravel() } catch (e) { console.error(e); }
+    try { this._prepareTalents() } catch (e) { console.error(e) }
+    if (["character", "npc"].includes(this.parent.type)) {
+      try { this._preparePoints(); } catch (e) { console.error(e); }
+      try { this._prepareAttributes(); } catch (e) { console.error(e); }
+    }
+    try { this._prepareAutomation(); } catch (e) { console.error(e); }
+    super.prepareDerivedData();
+
     // console.log(this);
     // console.log(this.source);
 
@@ -85,8 +105,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     // this.level = 10;
   }
 
-  _on
-
   /**
    * Define the comprehensive data schema for the actor.
    * Includes fields, resources, traits, subtraits, and relevant data structures.
@@ -144,9 +162,11 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     schema.stamina = ResourceField();
 
     schema.block = new fields.SchemaField({
+      quantity: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       size: new fields.NumberField({ ...requiredInteger, initial: 4 }),
     });
     schema.dodge = new fields.SchemaField({
+      quantity: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       size: new fields.NumberField({ ...requiredInteger, initial: 12 }),
     });
 
@@ -164,12 +184,12 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     });
 
     schema.weaponlessAttacks = new fields.SchemaField({
-      formula: new fields.StringField({ ...requiredInteger, initial: "1d6" }),
+      formula: new fields.StringField({ ...requiredInteger, initial: "1d8" }),
       type: new fields.StringField({ ...requiredInteger, initial: "physical", choices: {
         ...JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))
       } }),
       range: new fields.StringField({ ...requiredInteger, initial: "0/0" }),
-      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: [] }),
+      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['pow'] }),
       stamina: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       actionCost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
     });
@@ -180,10 +200,13 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         returns[key] = new fields.SchemaField({
           convertToStaminaPercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToStaminaFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          convertToStaminaFormula: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) }),
           convertToSurfacePercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToSurfaceFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          convertToSurfaceFormula: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) }),
           convertToDeepPercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToDeepFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+          convertToDeepFormula: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) }),
           convertToResource: new fields.StringField({ required: false, nullable: true, initial: "", blank: true }),
           convertToResourcePercent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           convertToResourceFixed: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -195,6 +218,14 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     schema.siphons = new fields.SchemaField({
       ...siphon()
     })
+
+    schema.blockSiphons = new fields.SchemaField({
+      ...siphon()
+    });
+
+    schema.dodgeSiphons = new fields.SchemaField({
+      ...siphon()
+    });
 
     // TODO - Implement healing factors
     schema.healing = new fields.SchemaField({ 
@@ -252,6 +283,21 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }),
       disabled: new fields.BooleanField({ required: true, nullable: false, initial: false }),
     });
+
+    schema.baseActions = new fields.SchemaField({
+      deepBreath: new fields.SchemaField({
+        type: new fields.StringField({ required: true, nullable: false, initial: "utility" }),
+        restoration: new fields.BooleanField({ required: true, nullable: false, initial: true }),
+        restores: new fields.SchemaField({
+          surface: new fields.StringField({ required: true, nullable: false, initial: "", blank: true }),
+          deep: new fields.StringField({ required: true, nullable: false, initial: "", blank: true }),
+          stamina: new fields.StringField({ required: true, nullable: false, initial: "", blank: true }),
+        })
+      }),
+      weaponless: new fields.SchemaField({
+        type: new fields.StringField({ required: true, nullable: false, initial: "damage" }),
+      })
+    })
 
     schema.initiative = new fields.SchemaField({
       formula: new fields.StringField({ ...requiredInteger, initial: "3d6" }),
@@ -319,11 +365,13 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     schema.turnActions = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
       max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
+      temporary: new fields.NumberField({ ...requiredInteger, initial: 0 })
       //rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
     })
     schema.interruptActions = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "interruptActionsMax") }),
       max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "interruptActionsMax") }),
+      temporary: new fields.NumberField({ ...requiredInteger, initial: 0 })
       //rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
     })
 
@@ -609,24 +657,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
    * Invokes multiple preparation methods for traits, species, defenses, etc.
    */
   prepareDerivedData() {
-    try { prepareGearData(this) } catch (e) { console.error(e); }
-    if (["character", "npc"].includes(this.parent.type)) {
-      try { this._prepareTraits() } catch (e) { console.error(e) }
-      try { prepareSpeciesData(this); } catch (e) { console.error(e); }
-    }
-    else {
-      try { prepareBodyData(this); } catch (e) { console.error(e); }
-      try { prepareClassData(this); } catch (e) { console.error(e); }
-      try { prepareKitData(this); } catch (e) { console.error(e); }
-    }
-    try { this._prepareDefenses() } catch (e) { console.error(e) }
-    try { this._prepareTravel() } catch (e) { console.error(e); }
-    try { this._prepareTalents() } catch (e) { console.error(e) }
-    if (["character", "npc"].includes(this.parent.type)) {
-      try { this._preparePoints(); } catch (e) { console.error(e); }
-      try { this._prepareAttributes(); } catch (e) { console.error(e); }
-    }
-    try { this._prepareAutomation(); } catch (e) { console.error(e); }
+    this.turnActions.available = this.turnActions.value + this.turnActions.temporary;
+    this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;
   }
 
   /**

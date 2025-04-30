@@ -17,10 +17,10 @@ export async function prepareSpeciesData(character) {
   }
 
   //character.block.size += character._speciesData.system.block.size;
-  character.block.quantity += character._speciesData.system.block.quantity;
+  character.block.quantity = character._speciesData.system.block.quantity;
 
   //character.dodge.size += character._speciesData.system.dodge.size;
-  character.dodge.quantity += character._speciesData.system.dodge.quantity;
+  character.dodge.quantity = character._speciesData.system.dodge.quantity;
 
   const traits = JSON.parse(game.settings.get("utopia", "advancedSettings.traits"));
   const subtraits = JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"));

@@ -1,5 +1,6 @@
 import { ForageAndCrafting } from "../applications/specialty/forage-and-crafting.mjs";
 import { DamageInstance } from "../system/damage.mjs";
+import { isNumeric } from "../system/helpers/isNumeric.mjs";
 import { rangeTest } from "../system/helpers/rangeTest.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
 
@@ -526,11 +527,73 @@ export class UtopiaActor extends Actor {
     await this.resetResources('rest');
     await this.update({
       "system.hitpoints.surface.value": this.system.hitpoints.surface.max,
-      "system.stamina.value": this.system.stamina.max,
+      "system.stamina.value": !this.getFatigue(3) ? this.system.stamina.max : this.system.stamina.value, // If Fatigue 3, cannot regen stamina
       "system.hitpoints.deep.value": this.type === "creature" ? this.system.hitpoints.deep.max : this.system.hitpoints.deep.value,
       "system.turnActions.value": this.system.turnActions.max,
       "system.interruptActions.value": this.system.interruptActions.max, 
     });
+    this.removeFatigue(1); // TODO - Validate this should go here
+  }
+
+  async addFatigue(amount = 1) {
+    const statuses = Array.from(this.statuses);
+    if (statuses.some(s => s.includes("fatigue"))) {
+      let highestFatigue = 1;
+      for (const status of statuses.filter(s => s.includes("fatigue"))) {
+        highestFatigue = Math.max(highestFatigue, parseInt(status.id.split("_")[1]));
+      }
+      highestFatigue += amount;
+      if (highestFatigue === 7) // Character is already at maximum fatigue
+        return false;
+      else 
+        this.toggleStatusEffect(`fatigue_${highestFatigue}`);
+    }
+    else 
+      this.toggleStatusEffect("fatigue_1");
+  }
+
+  async removeFatigue(amount = 1) {
+    const statuses = Array.from(this.statuses);
+    if (statuses.some(s => s.includes("fatigue"))) {
+      let highestFatigue = 6;
+      let amountRemoved = 0;
+      for (let i = 6; i > 0; i--) {
+        if (statuses.includes(`fatigue_${i}`)) {
+          this.toggleStatusEffect(`fatigue_${i}`);
+          amountRemoved++;
+        }
+        if (amountRemoved === amount) 
+          return;
+      }
+    }
+  }
+
+  async setFatigue(level) {
+    const statuses = Array.from(this.statuses);
+    for (let i = 1; i <= level; i++) {
+      if (!statuses.includes(`fatigue_${i}`)) // Set all fatigues lower than or equal to the requested level
+        this.toggleStatusEffect(`fatigue_${i}`);
+    }
+    if (level === 6) return;
+    for (let i = 6; i > level; i--) {
+      if (statuses.includes(`fatigue_${i}`)) // Remove all fatigues greater than the requested level
+        this.toggleStatusEffect(`fatigue_${i}`); 
+    }
+  }
+
+  async getFatigue(level = null) {
+    const statuses = Array.from(this.statuses).filter(s => s.includes("fatigue"));
+    if (level && statuses.includes(`fatigue_${level}`))
+      return true;
+    else if (level && !statuses.includes(`fatigue_${level}`))
+      return false;
+    else {
+      let highestFatigue = 0;
+      for (const status of statuses) {
+        highestFatigue = Math.max(highestFatigue, parseInt(status.split("_")[1]));
+      }
+      return highestFatigue;
+    }
   }
 
   async equip({item, slot, override = false}) {
@@ -700,18 +763,128 @@ export class UtopiaActor extends Actor {
   /* -------------------------------------------- */
 
   async blockDamageInstance(damageInstance ) {
+    let canPerform = false;
+    let isTurn = false;
+
+    if (this.inCombat) {
+      for (const combat of game.combats) {
+        if (combat.current.combatantId === combat.combatants.find(c => c.actorId === this.id)) // Is currently this actors turn, use turn actions
+          isTurn = true;
+      }
+
+      if (isTurn) 
+        canPerform = this._canPerformAction({cost: 1, type: "turn"})     
+      else 
+        canPerform = this._canPerformAction({cost: 1, type: "interrupt"})     
+    }
+
+    if (!canPerform) {
+      ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NotEnoughActions"));
+      await damageInstance.handle();
+      damageInstance.finalize();
+      return damageInstance;
+    }
+
+    if (isTurn) {
+      if (this.system.turnActions.temporary > 0) { // Always use temporary first
+        await this.update({
+          "system.turnActions.temporary": this.system.turnActions.temporary - 1
+        })
+      }
+      else {
+        await this.update({
+          "system.turnActions.value": this.system.turnActions.value - 1
+        })
+      }
+    }
+    else {
+      if (this.system.interruptActions.temporary > 0) { // Always use temporary first
+        await this.update({
+          "system.interruptActions.temporary": this.system.interruptActions.temporary - 1
+        })
+      }
+      else {
+        await this.update({
+          "system.interruptActions.value": this.system.interruptActions.value - 1
+        })
+      }
+    }
+
+    if (this.getFatigue(4)) {
+      await this.update({
+        "system.stamina.value": this.system.stamina.value - this.getFatigue()
+      })
+    }
+
+    await this.update(updateData);
+
     const formula = this.system.block.formula;
     const roll = await new Roll(formula, this.getRollData()).evaluate();
     await damageInstance.handle({ block: roll.total, blockRoll: roll });
     damageInstance.finalize();
+    this._applySiphons(damageInstance);
     return damageInstance;
   }
 
   async dodgeDamageInstance(damageInstance) {
+    let canPerform = false;
+    let isTurn = false;
+
+    if (this.inCombat) {
+      for (const combat of game.combats) {
+        if (combat.current.combatantId === combat.combatants.find(c => c.actorId === this.id)) // Is currently this actors turn, use turn actions
+          isTurn = true;
+      }
+
+      if (isTurn) 
+        canPerform = this._canPerformAction({cost: 1, type: "turn"})     
+      else 
+        canPerform = this._canPerformAction({cost: 1, type: "interrupt"})     
+    }
+
+    if (!canPerform) {
+      ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NotEnoughActions"));
+      await damageInstance.handle();
+      damageInstance.finalize();
+      return damageInstance;
+    }
+
+    if (isTurn) {
+      if (this.system.turnActions.temporary > 0) { // Always use temporary first
+        await this.update({
+          "system.turnActions.temporary": this.system.turnActions.temporary - 1
+        })
+      }
+      else {
+        await this.update({
+          "system.turnActions.value": this.system.turnActions.value - 1
+        })
+      }
+    }
+    else {
+      if (this.system.interruptActions.temporary > 0) { // Always use temporary first
+        await this.update({
+          "system.interruptActions.temporary": this.system.interruptActions.temporary - 1
+        })
+      }
+      else {
+        await this.update({
+          "system.interruptActions.value": this.system.interruptActions.value - 1
+        })
+      }
+    }
+
+    if (this.getFatigue(4)) {
+      await this.update({
+        "system.stamina.value": this.system.stamina.value - this.getFatigue()
+      })
+    }
+
     const formula = this.system.dodge.formula;
     const roll = await new Roll(formula, this.getRollData()).evaluate();
     await damageInstance.handle({ dodge: roll.total, dodgeRoll: roll });
     damageInstance.finalize();
+    this._applySiphons(damageInstance);
     return damageInstance;
   }
 
@@ -741,18 +914,35 @@ export class UtopiaActor extends Actor {
     if (item.type === "action") {
       const formula = item.system.formula;
       const category = item.system.category;
-      switch (category) {
-        case "damage":
-          return this._damageAction(item);
-        case "test": 
-          for (const check of item.system.checks) {
-            this.check(check, item.system.checkFavor);
+
+      if (item.system.toggleActiveEffects) {
+        for (const effect of this.effects) {
+          if (effect.origin = item.uuid) {
+            await effect.update({ "disabled": !effect.disabled })
           }
-          return;
-        case "utility":
-          return this._utility(item);
-        case "macro":
-          return this._macro(item.system.macro, { item: item });
+        }
+      }
+
+      if (this._canPerformAction(item)) {
+        switch (category) {
+          case "damage":
+            return this._damageAction(item);
+          case "test": 
+            await this._actionAgainst(item);
+            for (const check of item.system.checks) {
+              this.check(check, item.system.checkFavor);
+            }
+            this._finishAction(item);
+            return;
+          case "utility":
+            return this._utility(item);
+          case "macro":
+            return this._macro(item.system.macro, { item: item });
+        }
+      }
+      else {
+        ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NotEnoughActions"));
+        return false;
       }
     }
   }
@@ -813,6 +1003,12 @@ export class UtopiaActor extends Actor {
         const handledDamage = await damage.handle();
         const damageMessage = await damage.toMessage();
 
+        if (this.getFatigue(4)) { // Handle fatigue
+          await this.update({
+            "system.stamina.value": this.system.stamina.value - this.getFatigue()
+          })
+        }
+
         console.warn(damage);
         console.warn(damageMessage);
       }
@@ -826,6 +1022,8 @@ export class UtopiaActor extends Actor {
     for (const instance of instances) {
       await instance.target.applyDamage(instance);
     }
+
+    this._finishAction(item);
   }
 
   /**
@@ -870,8 +1068,9 @@ export class UtopiaActor extends Actor {
       
       await this.update(updateData);
     }
-  }
 
+    this._finishAction(item);
+  }
 
   /**
    * Executes a macro associated with an item.
@@ -881,9 +1080,127 @@ export class UtopiaActor extends Actor {
    * @returns {Promise<void>}
    */
   _macro(macro, { item = null }) {
-    return fromUuid(macro).then((macro) => {
+    fromUuid(macro).then((macro) => {
       macro.execute(item?.system.macroData ?? {});
     });
+    this._finishAction(item);
+  }
+
+  async _canPerformAction({ item = undefined, staminaCost = 0, cost = 0, type = "special" }) {
+    if (item) {
+      const actionCost = item.system.cost;
+      type = item.system.type;
+
+      if (isNumeric(actionCost)) {
+        cost = parseInt(actionCost);
+      }
+      else {
+        cost = (await new Roll(actionCost).evaluate()).total;
+      }
+
+      staminaCost = item.system.stamina;
+    }
+
+    if (type === "current") { // Use currently available action type
+      if (this.inCombat) {
+        let isTurn = false;
+        
+        for (const combat of game.combats) {
+          if (combat.current.combatantId === combat.combatants.find(c => c.actorId === this.id)) // Is currently this actors turn, use turn actions
+            isTurn = true;
+        }
+
+        if (isTurn) type = "turn";
+        else type = "interrupt";
+      }
+
+      type = "turn";
+    }
+
+    switch (type) {
+      case "turn": 
+        return this.system.turnActions.available >= cost && this.system.stamina.value >= staminaCost;
+      case "interrupt":
+        return this.system.interruptActions.available >= cost && this.system.stamina.value >= staminaCost;
+      default:
+        return true;
+    }    
+  }
+
+  async _actionAgainst(item) {
+    if (!item.system.checkAgainstTarget) return;
+
+    else {
+      if (game.user.targets.size === 0) {
+        ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ActionAgainstNoTarget"));
+        return false;
+      }
+      
+      for (const target of Array.from(game.user.targets)) {
+        const actor = target.actor ?? undefined;
+        if (actor) {
+          actor.check(item.system.checkAgainstTrait);
+        }
+      }
+    }
+  }
+
+  async _finishAction(item) {
+    const actionCost = item.system.cost;
+    const type = item.system.type;
+    let cost = 0;
+
+    if (isNumeric(actionCost)) {
+      cost = parseInt(actionCost);
+    }
+    else {
+      cost = (await new Roll(actionCost).evaluate()).total;
+    }
+
+    let costLeft = cost;
+
+    switch (type) {
+      case "turn": 
+        if (this.system.turnActions.temporary > 0) {
+          if (this.system.turnActions.temporary >= cost) {
+            costLeft = 0; // If we have enough temporary actions, no need to update the value
+            await this.update({
+              "system.turnActions.temporary": this.system.turnActions.temporary - cost
+            })
+          }
+          else {
+            costLeft -= this.system.turnActions.temporary; // Remove all temporary actions
+            await this.update({
+              "system.turnActions.temporary": 0
+            });
+          }
+        }
+        return await this.update({
+          "system.turnActions.value": this.system.turnActions.value - costLeft,
+          "system.stamina.value": this.system.stamina.value - item.system.staminaCost
+        });
+      case "interrupt":
+        if (this.system.interruptActions.temporary > 0) {
+          if (this.system.interruptActions.temporary >= cost) {
+            costLeft = 0; // If we have enough temporary actions, no need to update the value
+            await this.update({
+              "system.interruptActions.temporary": this.system.interruptActions.temporary - cost
+            })
+          }
+          else {
+            costLeft -= this.system.interruptActions.temporary; // Remove all temporary actions
+            await this.update({
+              "system.interruptActions.temporary": 0
+            });
+          }
+        }
+        return await this.update({
+          "system.interruptActions.value": this.system.interruptActions.value - cost,
+          "system.stamina.value": this.system.stamina.value - item.system.staminaCost
+        });
+      default:
+        return;
+    }
   }
 
   /**
@@ -931,84 +1248,28 @@ export class UtopiaActor extends Actor {
    * @param {DamageInstance} damage - The damage instance to retrieve damage information from.
    */
   async _applySiphons(damage) {
-    const siphons = this.system.siphons;
-    const damageType = damage.typeKey;
-    const property = foundry.utils.getProperty(siphons, damageType);
+    if (damage.target === this.uuid) { // We need to apply damage siphons (system.siphons)
+      const damageType = damage.typeKey;
+      const siphons = foundry.utils.getProperty(this.system.siphons, damageType);
 
-    const effectiveSiphons = [];
+      const effectiveSiphons = [];
 
-    if (property) {
-      if (property.convertToStaminaPercent > 0) {
-        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
-        const staminaToRestore = Math.floor((damageDealt * property.convertToStaminaPercent));
-        await this.update({
-          "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
-        });
-        effectiveSiphons.push({
-          type: "stamina",
-          value: staminaToRestore,
-          percent: property.convertToStaminaPercent
-        });
+      if (property) {
+        _siphons(siphons, damage.shpDamage + damage.dhpDamage);
       }
-      if (property.convertToStaminaFixed > 0) {
-        const staminaToRestore = property.convertToStaminaFixed;
-        await this.update({
-          "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
-        });
-        effectiveSiphons.push({
-          type: "stamina",
-          value: staminaToRestore,
-          percent: property.convertToStaminaFixed / this.system.stamina.max
-        });
+    }
+    else {
+      if (damage.blocked) { // We need to apply block siphons
+        const damageType = damage.typeKey;
+        const siphons = foundry.utils.getProperty(this.system.blockSiphons, damageType);
+
+        effectiveSiphons = await this._siphons(siphons, 0);
       }
-      if (property.convertToSurfacePercent > 0) {
-        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
-        const surfaceToRestore = Math.floor((damageDealt * property.convertToSurfacePercent));
-        await this.update({
-          "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
-        });
-        effectiveSiphons.push({
-          type: "surface",
-          value: surfaceToRestore,
-          percent: property.convertToSurfacePercent
-        });
-      }
-      if (property.convertToSurfaceFixed > 0) {
-        const surfaceToRestore = property.convertToSurfaceFixed;
-        await this.update({
-          "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
-        });
-        effectiveSiphons.push({
-          type: "surface",
-          value: surfaceToRestore,
-          percent: property.convertToSurfaceFixed / this.system.hitpoints.surface.max
-        });
-      }
-      if (property.convertToDeepPercent > 0) {
-        const damageDealt = damage.final.shpDamage + damage.final.dhpDamage;
-        const deepToRestore = Math.floor((damageDealt * property.convertToDeepPercent));
-        await this.update({
-          "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
-        });
-        effectiveSiphons.push({
-          type: "deep",
-          value: deepToRestore,
-          percent: property.convertToDeepPercent
-        });
-      }
-      if (property.convertToDeepFixed > 0) {
-        const deepToRestore = property.convertToDeepFixed;
-        await this.update({
-          "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
-        });
-        effectiveSiphons.push({
-          type: "deep",
-          value: deepToRestore,
-          percent: property.convertToDeepFixed / this.system.hitpoints.deep.max
-        });
-      }
-      if (property.convertToResource !== undefined && property.convertToResource.length > 0) {
-        // TODO - Implement resource conversion logic
+      if (damage.dodged) {
+        const damageType = damage.typeKey;
+        const siphons = foundry.utils.getProperty(this.system.dodgeSiphons, damageType);
+
+        effectiveSiphons = await this._siphons(siphons, 0);
       }
     }
 
@@ -1025,6 +1286,109 @@ export class UtopiaActor extends Actor {
       content: template,
       speaker: ChatMessage.getSpeaker({ actor: this }),
     });
+  }
+
+  async _siphons(siphons, damageDealt) {
+    const effectiveSiphons = [];
+
+    if (siphons.convertToStaminaPercent > 0) {
+      const staminaToRestore = Math.floor((damageDealt * siphons.convertToStaminaPercent));
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
+      });
+      effectiveSiphons.push({
+        type: "stamina",
+        value: staminaToRestore,
+      });
+    }
+    if (siphons.convertToStaminaFixed > 0) {
+      const staminaToRestore = siphons.convertToStaminaFixed;
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
+      });
+      effectiveSiphons.push({
+        type: "stamina",
+        value: staminaToRestore,
+      });
+    }
+    if (siphons.convertToStaminaFormula.length > 0) {
+      const formula = siphons.convertToStaminaFormula;
+      const staminaToRestore = (await new Roll(formula, this.getRollData()).evaluate()).total;
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + staminaToRestore)
+      });
+      effectiveSiphons.push({
+        type: "stamina",
+        value: staminaToRestore,
+      })
+    }
+    if (siphons.convertToSurfacePercent > 0) {
+      const surfaceToRestore = Math.floor((damageDealt * siphons.convertToSurfacePercent));
+      await this.update({
+        "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
+      });
+      effectiveSiphons.push({
+        type: "surface",
+        value: surfaceToRestore,
+      });
+    }
+    if (siphons.convertToSurfaceFixed > 0) {
+      const surfaceToRestore = siphons.convertToSurfaceFixed;
+      await this.update({
+        "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, this.system.hitpoints.surface.value + surfaceToRestore)
+      });
+      effectiveSiphons.push({
+        type: "surface",
+        value: surfaceToRestore,
+      });
+    }
+    if (siphons.convertToSurfaceFormula.length > 0) {
+      const formula = siphons.convertToSurfaceFormula;
+      const surfaceToRestore = (await new Roll(formula, this.getRollData()).evaluate()).total;
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + surfaceToRestore)
+      });
+      effectiveSiphons.push({
+        type: "surface",
+        value: surfaceToRestore,
+      })
+    }
+    if (siphons.convertToDeepPercent > 0) {
+      const deepToRestore = Math.floor((damageDealt * siphons.convertToDeepPercent));
+      await this.update({
+        "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
+      });
+      effectiveSiphons.push({
+        type: "deep",
+        value: deepToRestore,
+      });
+    }
+    if (siphons.convertToDeepFixed > 0) {
+      const deepToRestore = siphons.convertToDeepFixed;
+      await this.update({
+        "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, this.system.hitpoints.deep.value + deepToRestore)
+      });
+      effectiveSiphons.push({
+        type: "deep",
+        value: deepToRestore,
+      });
+    }
+    if (siphons.convertToDeepFormula.length > 0) {
+      const formula = siphons.convertToDeepFormula;
+      const deepToRestore = (await new Roll(formula, this.getRollData()).evaluate()).total;
+      await this.update({
+        "system.stamina.value": Math.min(this.system.stamina.max, this.system.stamina.value + deepToRestore)
+      });
+      effectiveSiphons.push({
+        type: "deep",
+        value: deepToRestore,
+      })
+    }
+    if (siphons.convertToResource !== undefined && siphons.convertToResource.length > 0) {
+      // TODO - Implement resource conversion logic
+    }
+
+    return effectiveSiphons;
   }
 
   /* -------------------------------------------- */
@@ -1091,7 +1455,7 @@ export class UtopiaActor extends Actor {
   // *****************************************************
   // Actor exclusive getters and helpers
   // *****************************************************
-  _onCreateDescendantDocuments(parent, collection, documents, data, options, userId) {
+  _onCreateDescendantDocuments(parent, collection, documents, data, options, userId) { // TODO - Move Species processing here
     // This method is called when a new document is created that is a descendant of this actor.
     console.warn("Actor._onCreateDescendantDocuments called", parent, collection, documents, data, options, userId);
 
@@ -1103,10 +1467,35 @@ export class UtopiaActor extends Actor {
         });
       }
     }
+
+    if (collection === "effects") { // ActiveEffect created
+      if (data.statuses && data.statuses.includes('grappled')) { // Character grappled
+        new foundry.applications.api.DialogV2({
+          window: { title: "Choose an option" },
+          content: `<p>You're being grappled! Select a check to respond with.</p>`,
+          buttons: [{
+            action: "str",
+            label: "Strength",
+            default: true,
+          }, {
+            action: "agi",
+            label: "Agility",
+          }],
+          submit: result => {
+            if (result === "str") this.check("str");
+            else if (result === "agi") this.check("agi");
+          }
+        }).render({ force: true });
+      }
+    }
+
+    super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
   }
 
   _onCreate(data, options, userId) {
-    const weaponlessAction = new Item({
+    super._onCreate(data, options, userId);
+
+    this.createEmbeddedDocuments("Item", [{
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.WeaponlessAttack"),
       system: {
@@ -1121,27 +1510,211 @@ export class UtopiaActor extends Actor {
         cost: String(this.system.weaponlessAttacks.actionCost),
         stamina: this.system.weaponlessAttacks.stamina
       }
-    });
+    }]);
 
-    // Add the weaponless action to the actor
-    this.addItem(weaponlessAction, false, false, undefined).then(() => {
-      this._log(`Weaponless action added to actor ${this.name}`);
-    }).catch(err => {
-      this._error(`Failed to add weaponless action to actor ${this.name}:`, err);
-    });
-
-    const deepBreathAction = new Item({
+    this.createEmbeddedDocuments("Item", [{
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.DeepBreath"),
       system: {
         category: "utility",
-        formula: "1d6 + @stamina.mod",
-        template: "self",
-        range: "0/0",
+        restoration: true,
+        restorationType: "stamina",
+        formula: 1,
+        type: "turn",
+        cost: "1",
+        stamina: 0,
+      }
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.Grapple"),
+      system: {
+        category: "test",
+        checks: new Set(["str"]),
+        checkAgainstTarget: true,
+        checkAgainstTrait: "str",
+        applyStatusEffectToTarget: true,
+        statusEffectToApply: "grappled",
+        type: "turn",
+        cost: "3",
+        stamina: 2,
+      }
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.Aim"),
+      system: {
+        category: "active",
+        toggleActiveEffects: true,
+        type: "turn",
+        cost: "1",
+        stamina: 0,
+      },
+      effects: [{
+        transfer: true,
+        name: game.i18n.localize("UTOPIA.Actors.Actions.Aim"),
+        changes: [{
+          key: "system.favors.accuracy",
+          value: "1",
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          priority: 1
+        }],
+        disabled: true,
+        duration: {
+          turns: 1
+        }
+      }]
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.TakeCover"),
+      system: {
+        category: "active",
+        type: "current",
+        toggleActiveEffects: true,
         cost: "1",
         stamina: 1,
-      }
-    });
+      },
+      effects: [{
+        transfer: true,
+        name: game.i18n.localize("UTOPIA.Actors.Actions.TakeCover"),
+        changes: [
+          {
+            key: "system.block.quantity",
+            value: "2",
+            mode: CONST.ACTIVE_EFFECT_MODES.MULTIPLY,
+            priority: 1
+          },
+          {
+            key: "system.dodge.quantity",
+            value: "2",
+            mode: CONST.ACTIVE_EFFECT_MODES.MULTIPLY,
+            priority: 1
+          }
+        ],
+        disabled: true,
+        duration: {
+          turns: 1
+        }
+      }]
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.Travel"),
+      system: {
+        category: "passive",
+        type: "turn",
+        cost: "1",
+        stamina: 0,
+      },
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.Stealth"),
+      system: {
+        category: "test",
+        checks: ["stu"],
+        type: "current",
+        cost: "1",
+        stamina: 0,
+      },
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.Leap"),
+      system: {
+        category: "passive",
+        type: "turn",
+        cost: "3",
+        stamina: 3,
+      },
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.ScaleSame"),
+      system: {
+        category: "test",
+        checks: ["agi"],
+        checkAgainstTarget: true,
+        checkAgainstTrait: "str",
+        type: "current",
+        cost: "3",
+        stamina: 4,
+      },
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.ScaleLarger"),
+      system: {
+        category: "test",
+        checks: ["agi"],
+        checkAgainstTarget: true,
+        checkAgainstTrait: "agi",
+        type: "current",
+        cost: "3",
+        stamina: 4,
+      },
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.HoldAction"),
+      system: {
+        category: "active",
+        toggleActiveEffects: true,
+        type: "turn",
+        cost: "2",
+        stamina: 0,
+      },
+      effects: [{
+        transfer: true,
+        name: game.i18n.localize("UTOPIA.Actors.Actions.HoldAction"),
+        changes: [{
+          key: "system.turnActions.temporary",
+          value: "1",
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          priority: 1
+        }],
+        disabled: true,
+        duration: {
+          rounds: 1
+        }
+      }]
+    }]);
+
+    this.createEmbeddedDocuments("Item", [{
+      type: "action",
+      name: game.i18n.localize("UTOPIA.Actors.Actions.Assist"),
+      system: {
+        category: "active",
+        toggleActiveEffects: true,
+        type: "turn",
+        cost: "2",
+        stamina: 0,
+      },
+      effects: [{
+        transfer: true,
+        name: game.i18n.localize("UTOPIA.Actors.Actions.Assist"),
+        changes: [{
+          key: "system.turnActions.temporary",
+          value: "1",
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          priority: 1
+        }],
+        disabled: true,
+        duration: {
+          rounds: 1
+        }
+      }]
+    }]);
   }
 
 
@@ -1166,7 +1739,7 @@ export class UtopiaActor extends Actor {
 
   //       this.performStrike(chatMessage, {formula: formula});
   //     }
-  //     // We roll based on the default formula
+  //     // We roll based on the default formula\
   //     else {       
   //       this.performStrike(chatMessage, {formula: roll.formula});
   //     }

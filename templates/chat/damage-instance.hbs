@@ -69,6 +69,9 @@
       {{#if (eq blockable true)}}
         <a data-action="block"><i class="fa-fw fas fa-shield"></i> {{localize "UTOPIA.CHAT.Block"}}</a>
       {{/if}}
+      {{#if (or (eq blockable true) (eq dodgable true))}}
+        <a data-action="takeCover"><i class="fa-fw fas fa-shield"></i> {{localize "UTOPIA.CHAT.Block"}}</a>
+      {{/if}}
     </div>
   {{/if}}
 

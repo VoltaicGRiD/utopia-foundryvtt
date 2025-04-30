@@ -11,6 +11,7 @@ export class Action extends UtopiaItemBase {
     const schema = super.defineSchema();
 
     schema.type = new fields.StringField({ required: false, nullable: false, initial: "turn", choices: {
+      "current": "UTOPIA.Items.Action.Type.current",
       "turn": "UTOPIA.Items.Action.Type.turn",
       "interrupt": "UTOPIA.Items.Action.Type.interrupt",
       "free": "UTOPIA.Items.Action.Type.free",
@@ -23,6 +24,7 @@ export class Action extends UtopiaItemBase {
       "formula": "UTOPIA.Items.Action.Category.formula",
       "utility": "UTOPIA.Items.Action.Category.utility",
       "passive": "UTOPIA.Items.Action.Category.passive",
+      "active": "UTOPIA.Items.Action.Category.active",
       "macro": "UTOPIA.Items.Action.Category.macro",
     }});
 
@@ -46,6 +48,15 @@ export class Action extends UtopiaItemBase {
       }, {}),
     }
 
+    const statusEffects = {
+      ...CONFIG.statusEffects.reduce((acc, effect) => {
+        acc[effect.id] = { ...effect };
+        return acc;
+      }, {})
+    }
+
+    schema.toggleActiveEffects = new fields.BooleanField({ required: true, nullable: false, initial: false });
+
     schema.restoration = new fields.BooleanField({ required: true, nullable: false, initial: true });
     schema.restorationType = new fields.StringField({ required: false, nullable: true, initial: "surface", choices: {
       "surface": "UTOPIA.Items.Action.RestorationType.surface",
@@ -56,6 +67,10 @@ export class Action extends UtopiaItemBase {
     schema.check = new fields.StringField({ required: true, nullable: false, initial: "agi", choices: allOptions });
     schema.checks = new fields.SetField(schema.check, { initial: [] });
     schema.checkFavor = new fields.BooleanField({ required: true, nullable: false, initial: true });
+    schema.checkAgainstTarget = new fields.BooleanField({ required: true, nullable: false, initial: false })
+    schema.checkAgainstTrait = new fields.StringField({ required: true, nullable: false, initial: "agi", choices: allOptions });
+    schema.applyStatusEffectToTarget = new fields.BooleanField({ required: true, nullable: false, initial: false });
+    schema.statusEffectToApply = new fields.StringField({ required: true, nullable: false, initial: "grappled", choices: statusEffects })
 
     const damageTypes = {
       ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
@@ -167,6 +182,11 @@ export class Action extends UtopiaItemBase {
         stacked: false,
         editable: true,
       },
+      {
+        field: this.schema.fields.toggleActiveEffects,
+        stacked: false,
+        editable: true,
+      }
     ]
   }
 

@@ -218,9 +218,21 @@
     },
     "Settings": {
       "advancedSettingsMenu": "Advanced Settings (Homebrew)",
+      "AdvancedSettings": {
+        "Traits": "Traits",
+        "Subtraits": "Subtraits",
+        "SpecialtyChecks": "Specialty Checks",
+        "Components": "Components",
+        "Rarities": "Rarities",
+        "Artistries": "Artistries",
+        "DamageTypes": "Damage Types",
+        "Languages": "Languages"
+      }, 
       "Buttons": {
         "CompendiumBrowser": "Compendium Browser",
-        "FeatureBuilder": "Artifice Feature Builder"
+        "FeatureBuilder": "Artifice Feature Builder",
+        "Save": "Save",
+        "Reset": "Reset this setting to defaults (You will lose all changes)"
       },
       "targetRequired": "Require Targeting for Attacks",
       "targetRequiredHint": "When enabled, you must target at least one token to perform attacks and actions that require a target.",

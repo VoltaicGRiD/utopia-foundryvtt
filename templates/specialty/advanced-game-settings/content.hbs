@@ -9,6 +9,7 @@
     </a>
     <a class="item " data-action="subTab" data-tab="specialtyChecks" data-tooltip="UTOPIA.Settings.Tabs.specialtyChecks">
       <i class="fas fa-fw fa-bolt"></i>
+      {{localize "UTOPIA."}}
     </a>
     <a class="item " data-action="subTab" data-tab="damageTypes" data-tooltip="UTOPIA.Settings.Tabs.damageTypes">
       <i class="fas fa-fw fa-sword"></i>
@@ -28,6 +29,9 @@
   </nav>
 
   <textarea name="editor">{{settingValue}}</textarea>
-  <button type="button" class="save" data-action="save">{{localize 'SHEETS.Save'}}</button>
+  <div class="flexrow">
+    <button type="button" class="reset danger" data-action="reset">{{localize 'UTOPIA.Settings.Buttons.Reset'}}</button>
+    <button type="button" class="save" data-action="save">{{localize 'UTOPIA.Settings.Buttons.Save'}}</button>
+  </div>
 
 </section>

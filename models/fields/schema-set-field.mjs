@@ -45,6 +45,7 @@ export class SchemaArrayField extends foundry.data.fields.ArrayField {
 
       const button = document.createElement("button");
       button.textContent = game.i18n.localize("Add");
+      button.type = "button";
       button.dataset.action = "schemaSetAdd";
       
       inputContainer.append(button);

@@ -128,6 +128,7 @@ export class Action extends UtopiaItemBase {
         "respondWithAttack": "UTOPIA.Items.Action.PassiveType.respondWithAttack", // Sensed creature attacks + 8 stamina = attack action for interrupt cost
         "attackAllInRange": "UTOPIA.Items.Action.PassiveType.attackAllInRange",
         "reduceAttackActionCost": "UTOPIA.Items.Action.PassiveType.reduceActionCost", // 3 -> min 4; 5 -> min 2; 7 -> min 1
+        "ignoreDamageType": "UTOPIA.Items.Action.PassiveType.ignoreDamageType",
       }, initial: "meleeRedirect" }),
       scaling: new fields.SchemaField({
         enabled: new fields.BooleanField({ required: true, initial: false }),
@@ -150,8 +151,15 @@ export class Action extends UtopiaItemBase {
           "flat": "UTOPIA.Items.Action.ReduceActionCost.flat",
         }, initial: "scalingRatio" }),
         reduceActionCostFlat: new fields.NumberField({ required: false, nullable: true, initial: 0 }),
+      }),
+      ignoreDamage: new fields.SchemaField({
+        ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
+          if (value.healing === false) 
+            acc[key] = new fields.BooleanField({ required: true, initial: false });
+          return acc;
+        }, {}),
       })
-    })
+    });
 
     return schema;
   }
@@ -217,7 +225,7 @@ export class Action extends UtopiaItemBase {
           field: this.schema.fields.damageModifier,
           stacked: true,
           editable: true,
-                    options: Object.entries(this.schema.fields.check.options.choices).map(([key, value]) => {
+          options: Object.entries(this.schema.fields.check.options.choices).map(([key, value]) => {
             return {
               ...value,
               value: key,
@@ -340,6 +348,22 @@ export class Action extends UtopiaItemBase {
           if (this.passive.equipment.reduceActionCost === "flat") {
             fields.push({
               field: this.schema.fields.passive.fields.equipment.fields.reduceActionCostFlat,
+              stacked: true,
+              editable: true,
+            });
+          }
+        }
+        if (this.passive.type === "ignoreDamageType") {
+          const allDamage = {
+            ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
+              if (value.healing === false)
+                acc[key] = { ...value, group: "UTOPIA.DAMAGE_TYPES.GroupName", value: key };
+              return acc;
+            }, {})
+          }
+          for (const [key, value] of Object.entries(allDamage)) { 
+            fields.push({
+              field: this.schema.fields.passive.fields.ignoreDamage.fields[key],
               stacked: true,
               editable: true,
             });

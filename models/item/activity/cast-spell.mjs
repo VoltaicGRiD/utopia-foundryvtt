@@ -10,7 +10,9 @@ export class castSpell extends BaseOperation {
       castSpell: new fields.SchemaField({
         type: new fields.StringField({ required: true, nullable: false, blank: false, initial: "castSpell" }),
         spell: new fields.DocumentUUIDField({ required: true, nullable: false }),
-        stamina: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
+        ignoreStamina: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+        ignoreStatusEffects: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+        ignoreArtistries: new fields.BooleanField({ required: true, nullable: false, initial: false }),
         ...baseActivity,
       })
     }

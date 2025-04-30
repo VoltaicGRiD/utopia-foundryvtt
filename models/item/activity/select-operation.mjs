@@ -43,4 +43,23 @@ export class selectOperation extends BaseOperation {
 
     return operations;
   }
+
+  static async execute(activity, operation, options = {}) {
+    await DialogV2.prompt({
+      title: game.i18n.localize("UTOPIA.Activity.SelectOperation.Title"),
+      content: `<p>${game.i18n.localize("UTOPIA.Activity.SelectOperation.Description")}</p>`,
+      buttons: operation.selectedOperations.reduce((acc, op) => {
+        acc[op.id] = {
+          label: op.name,
+          callback: () => {
+            activity.system.selectOperation.selectedOperations.push(op);
+            activity.update({ "system.selectOperation.selectedOperations": activity.system.selectOperation.selectedOperations });
+          }
+        };
+        return acc;
+      }, {}),
+      default: "cancel",
+      options: { width: 400, height: "auto" }
+    })
+  }
 }

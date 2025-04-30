@@ -236,6 +236,10 @@
     }
   }
 
+  &.activity-sheet, &.new-operation-sheet {
+    @import "components/activity.scss";
+  }
+
   &.placeable-hud {
     @import "components/token-hud.scss";
   }

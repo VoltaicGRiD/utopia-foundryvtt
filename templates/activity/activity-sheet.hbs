@@ -1,7 +1,7 @@
 <div>
   <div class="activity-header">
     <img src="{{item.img}}" alt="{{item.name}} icon" class="profile-img" />
-    {{formGroup systemFields.name}}
+    <input type="text" class="activity-name" value="{{item.name}}" name="name" placeholder="Activity Name" data-action="updateName" />
   </div>
   
   <div class="operations-list">

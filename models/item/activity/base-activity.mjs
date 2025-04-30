@@ -25,7 +25,7 @@ export class BaseOperation {
       isNotMyTurn: new fields.BooleanField({ required: true, nullable: false, initial: true }),
     })
 
-    schema.activateImmediately = new fields.BooleanField({ required: true, nullable: false, initial: true });
+    schema.executeImmediately = new fields.BooleanField({ required: true, nullable: false, initial: true });
     
     schema.toggleActiveEffects = new fields.SchemaField({
       availableEffects: new fields.ArrayField(new fields.ObjectField({ required: true, nullable: false, initial: {} })),

@@ -32,13 +32,13 @@ export class Activity extends foundry.abstract.TypeDataModel {
   }
 
   get allOperations() {
-    return ["selectOperation", "attack", "selectOption", "condition", "castSpell"];
+    return ["attack", "castSpell", "selectOperation", "condition"];
   }
 
   async newOperation(operation) {
     const id = foundry.utils.randomID(16);
 
-    const newOp = { ...ops[operation].defineSchema(), id: id };
+    const newOp = { ...ops[operation].defineSchema(), id: id, type: operation };
 
     try {
       await this.parent.update({
@@ -47,6 +47,52 @@ export class Activity extends foundry.abstract.TypeDataModel {
       return true;
     } catch (error) {
       console.error("Failed to update operations:", error);
+      return false;
+    }
+  }
+
+  static async execute(activity, options = {}) {
+    const { operations } = activity.system;
+
+    // Create a running tally of costs for each operation that executes successfully
+    const costs = { 
+      turnActions: 0,
+      interruptActions: 0,
+      currentActions: 0,
+      stamina: 0,
+      shp: 0,
+      dhp: 0
+    }
+    
+    for (const operation of operations) {
+      if (operation.executeImmediately) {
+        if (await ops[operation.type].execute(activity, operation, options)) {
+          costs.turnActions += operation.costs.actionType === "turn" ? operation.costs.actions : 0;
+          costs.interruptActions += operation.costs.actionType === "interrupt" ? operation.costs.actions : 0;
+          costs.currentActions += operation.costs.actionType === "current" ? operation.costs.actions : 0;
+          costs.stamina += operation.costs.stamina;
+          costs.shp += operation.costs.shp;
+          costs.dhp += operation.costs.dhp;
+          continue;
+        }
+        else 
+          break;
+      }
+    }
+  }
+
+  static async executeSpecificOperation(activity, operationId, options = {}) {
+    const operation = activity.system.operations.find(op => op.id === operationId);
+    
+    if (!operation) {
+      console.warn(`Operation with ID "${operationId}" not found in activity.`);
+      return false;
+    }
+
+    if (operation.executeImmediately) {
+      return await ops[operation.type].execute(activity, operation, options);
+    } else {
+      console.warn(`Operation "${operation.type}" does not execute immediately.`);
       return false;
     }
   }

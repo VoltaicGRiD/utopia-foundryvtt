@@ -15,6 +15,7 @@ export class condition extends BaseOperation {
           value: new fields.StringField({ required: true, nullable: false, blank: false }),
           priority: new fields.NumberField({ required: true, nullable: false, initial: 1 })
         })),
+        proceedAnyway: new fields.BooleanField({ required: true, nullable: false, initial: false }),
         ...baseActivity
       })
     }
@@ -98,5 +99,34 @@ export class condition extends BaseOperation {
       }
       return { key, comparison, value, priority, met: conditionMet };
     }).filter(condition => condition !== null);
+  }
+
+  static async execute(activity, operation, options = {}) {
+    const { conditions, proceedAnyway } = operation;
+    
+    if (!conditions || conditions.length === 0) {
+      console.warn("No conditions defined for this operation.");
+      return true; // No conditions to check, proceed anyway
+    }
+
+    const processedConditions = this.processConditions(conditions, activity);
+
+    if (processedConditions.length === 0) {
+      console.warn("No valid conditions found after processing.");
+      return true; // No valid conditions to check, proceed anyway
+    }
+
+    const failedConditions = processedConditions.filter(condition => !condition.met);
+
+    if (failedConditions.length > 0) {
+      console.warn("Some conditions were not met:", failedConditions);
+      if (proceedAnyway) {
+        console.warn("Proceeding anyway due to 'proceedAnyway' flag.");
+        return true;
+      }
+      return false; // Conditions not met and not allowed to proceed
+    }
+
+    return true; // All conditions met, proceed with the operation
   }
 }

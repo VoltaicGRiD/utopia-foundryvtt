@@ -1,11 +1,11 @@
 <div class="operations">
   <div class="operations-list">
-    <h2>{{title}}</h2>
+    <h2>{{localize "UTOPIA.Items.Activity.AddOperation"}}</h2>
     {{#each operations}}
       {{log this}}
-      <div class="operation-item" data-action="select-operation" data-operation="{{this.name}}">
-        <h3>{{this.name}}</h3>
-      </div>
+      <button type="button" class="operation-item" data-action="selectOperation" data-operation="{{this.type}}">
+        <span>{{this.name}}</span>
+      </button>
     {{/each}}
   </div>
   {{!-- <footer class="sheet-footer">

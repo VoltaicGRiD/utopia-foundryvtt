@@ -51,17 +51,15 @@ export class NewOperationSheet extends api.HandlebarsApplicationMixin(api.Applic
     return context;
   }
 
-  static async _selectOperation(event) {
-    event.preventDefault();
-    const button = event.currentTarget;
-    const operation = button.dataset.operation;
+  static async _selectOperation(event, target) {
+    const operation = target.dataset.operation;
     const activity = this.activity;
 
     if (!activity) return console.warn("No activity found to select operation from.");
 
     const id = foundry.utils.randomID(16);
     const operations = activity.system.operations;
-    const success = await activity.newOperation(operation);
+    const success = await activity.system.newOperation(operation);
     if (!success) return console.warn(`Operation "${operation}" could not be created.`);
     
     // Close this sheet, and ensure the activity's sheet is rendered

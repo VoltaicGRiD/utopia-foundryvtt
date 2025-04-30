@@ -620,6 +620,15 @@
           "hint": "The rarity of this item. This is used to determine the color of the item in the inventory and its value."
         }
       },
+      "Activity": {
+        "AddOperation": "Select an Operation to add",
+        "Operation": {
+          "selectOperation": "Select Specific Operation",
+          "attack": "Attack",
+          "castSpell": "Cast a Spell",
+          "condition": "Check For Condition"
+        }
+      },
       "Harvest": {
         "Name": "Harvest",
         "Header": "Post-combat Creature Harvesting",

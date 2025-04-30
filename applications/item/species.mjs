@@ -38,7 +38,8 @@ export class Species extends DragDropItemV2 {
       toggleMode: this._toggleMode,
       addBranch: this._addBranch,
       editTalent: this._editTalent,
-      deleteTalent: this._deleteTalent
+      deleteTalent: this._deleteTalent,
+      togglePaperdoll: this._togglePaperdoll,
     },
     position: {
       width: 1200,
@@ -199,6 +200,29 @@ export class Species extends DragDropItemV2 {
         await this.item.update({ 'system.branches': branches });
       });
     })
+  }
+
+  static async _togglePaperdoll(event, target) {
+    const type = target.dataset.type;
+    const slot = target.dataset.slot;
+
+    switch (type) {
+      case "augmentable": 
+        await this.item.update({
+          [`system.armors.unaugmentable.${slot}`]: !this.item.system.armors.unaugmentable[slot]
+        })
+        break;
+      case "equippable": 
+        await this.item.update({
+          [`system.armors.unequippable.${slot}`]: !this.item.system.armors.unequippable[slot]
+        });
+        break;
+      case "specialty":
+        await this.item.update({
+          [`system.armors.specialty.${slot}`]: !this.item.system.armors.specialty[slot]
+        });
+        break;
+    }
   }
 
   static async _addBranch(event, target) {

@@ -194,6 +194,10 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       actionCost: new fields.NumberField({ ...requiredInteger, initial: 0 }),
     });
 
+    schema.deepBreath = new fields.SchemaField({
+      additionalStamina: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+    })
+
     const siphon = () => {
       const returns = {};
       for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes")))) {
@@ -361,7 +365,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: [] }),
     }), { initial: [] });
 
-    schema.fatigue = ResourceField();
     schema.turnActions = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
       max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
@@ -657,6 +660,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
    * Invokes multiple preparation methods for traits, species, defenses, etc.
    */
   prepareDerivedData() {
+    super.prepareDerivedData();
+    
     this.turnActions.available = this.turnActions.value + this.turnActions.temporary;
     this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;
   }

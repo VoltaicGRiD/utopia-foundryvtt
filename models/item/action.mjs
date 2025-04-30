@@ -28,6 +28,8 @@ export class Action extends UtopiaItemBase {
       "macro": "UTOPIA.Items.Action.Category.macro",
     }});
 
+    schema.isBaseAction = new fields.BooleanField({ required: true, nullable: false, initial: false });
+
     const returns = {};
     const allOptions = {
       ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).reduce((acc, [key, value]) => {
@@ -378,5 +380,26 @@ export class Action extends UtopiaItemBase {
 
   prepareDerivedData() {
     super.prepareDerivedData();
+
+    if (this.parent.parent) { // Owned by an actor
+      const system = this.parent.parent.system;
+
+      if (this.isBaseAction && this.parent.name === game.i18n.localize("UTOPIA.Actors.Actions.DeepBreath")) {
+        // Get the parent's data for "system.deepBreath"
+        this.restoration += system.deepBreath.additionalStamina || {};
+      }
+
+      if (this.isBaseAction && this.parent.name === game.i18n.localize("UTOPIA.Actors.Actions.WeaponlessAttack")) {
+        // Update this item with the actors weaponless attack data
+        this.damages = [{
+          formula: system.weaponlessAttacks.formula,
+          type: system.weaponlessAttacks.type || "physical",
+        }];
+        this.range = system.weaponlessAttacks.range || "0/0";
+        this.accuracyTrait = system.weaponlessAttacks.traits[0] || "agi";
+        this.stamina = system.weaponlessAttacks.stamina || 0;
+        this.cost = system.weaponlessAttacks.actionCost || "1";
+      }
+    }
   }
 }

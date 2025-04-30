@@ -45,7 +45,7 @@ export class Creature extends UtopiaActorBase {
   prepareDerivedData() {
     super.prepareDerivedData();
 
-    this.difficulty = this.parent.items.find(i => i.type === "body").system.baseDR;
+    this.difficulty = this.parent.items.find(i => i.type === "body")?.system?.baseDR || 0;
 
     for (const item of this.parent.items) {
       if (item.type === "kit") {

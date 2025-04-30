@@ -53,13 +53,16 @@ export class UtopiaItem extends Item {
     // Create a boolean to check if any components are needed
     var anyNeeded = false;
 
+    // Get the actor's crafting discounts
+    const craftingDiscounts = actorOwner.system.artifice?.gearDiscounts || {};
+
     // Initialize the total required amounts for each main component type.
     const neededComponents = {
       ...Object.keys(componentConfig).reduce((acc, key) => {
         acc[key] = 0;
         return acc;
       }, {})
-    };
+    };   
     
     // Create a boolean to check if any components are excess
     var anyExcess = false;
@@ -78,6 +81,14 @@ export class UtopiaItem extends Item {
       neededComponents.material += parseFloat(feature.system.final.material);
       neededComponents.refinement += parseFloat(feature.system.final.refinement);
       neededComponents.power += parseFloat(feature.system.final.power);
+    }
+
+    // Apply crafting discounts to the needed components.
+    for (const [componentType, discount] of Object.entries(craftingDiscounts)) {
+      if (neededComponents[componentType] !== undefined) {
+        // Apply the discount to the needed amount. Minimum is 1.
+        neededComponents[componentType] = Math.max(1, neededComponents[componentType] - discount);
+      }
     }
     
     // Determine the item's rarity based on the total cost points.

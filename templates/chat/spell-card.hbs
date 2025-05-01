@@ -51,9 +51,17 @@
     </ol>
   </div>
 
-  {{#if template}}
-    <a data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></a>
+  {{#each templates}} 
+    <a data-action="template" data-template="{{this.flags.utopia.feature}}"><i class='fa-solid fa-bullseye'></i> {{localize "UTOPIA.CHAT.PlaceTemplate"}}</a>
+  {{/each}}
+
+  {{#if (gt templates.length 0)}}
+    <a data-action="finishCasting"><i class='fa-solid fa-check'></i> {{localize "UTOPIA.CHAT.FinishCasting"}}</a>
   {{/if}}
+
+  {{!-- {{#if template}}
+    <a data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></a>
+  {{/if}} --}}
 
   <div class="card-content">
     {{{item.system.flavor}}}

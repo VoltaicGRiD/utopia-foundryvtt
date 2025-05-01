@@ -35,12 +35,25 @@
     <a data-action="openApplication" data-application="spellcraft"><i class="fas fa-magic"></i> {{localize "UTOPIA.Actors.Actions.OpenSpellcraft"}}</a>
     <div class="item-container">
       {{#each spells as |item|}} 
-        <div class="item">
-          <a data-action="roll" data-roll="item" data-item="{{item.id}}"><i class="fa-fw fas fa-magic"></i></a>
-          <a class="action" data-action="viewDocument" data-document-id="{{item.id}}">
-            <span class="item-name">{{item.name}} [{{item.system.cost}}]</span>
-          </a>
-        </div>
+        {{#if ../isPlay}}
+          <div class="item">
+            <a data-action="roll" data-roll="item" data-item="{{item.id}}"><i class="fa-fw fas fa-magic"></i></a>
+            <a class="action" data-action="viewDocument" data-document-id="{{item.id}}">
+              <span class="item-name">{{item.name}} [{{item.system.cost}}]</span>
+            </a>
+          </div>
+        {{else}}
+          <div class="item-edit">
+            <div class="item">
+              <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
+                <span class="item-name">{{item.name}}</span>
+              </a>
+            </div>
+            <div class="item-actions">
+              <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
+            </div>        
+          </div>
+        {{/if}}
       {{/each}}
     </div>
   </fieldset>

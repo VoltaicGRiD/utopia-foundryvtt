@@ -21,6 +21,7 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
       use: this._use,
       craft: this._craft,
       equip: this._equip,
+      augment: this._augment,
       edit: this._edit,
       save: this._save,
     },
@@ -290,6 +291,15 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
    */
   static async _equip(event, target) {
     await this.item.equip();
+    this.render(true);
+  }
+
+  /**
+   * Augments the gear.
+   * 
+   */
+  static async _augment(event, target) {
+    await this.item.augment();
     this.render(true);
   }
 }

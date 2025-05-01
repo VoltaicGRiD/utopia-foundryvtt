@@ -52,9 +52,37 @@ export class UtopiaChatMessage extends ChatMessage {
           );
           const measuredTemplate = new UtopiaTemplates(template);
           measuredTemplate.drawPreview();
+
+          button.remove(); // Remove the button after drawing the template
+        }
+        else if (this.system.templates) {
+          const id = button.dataset.template;
+          const systemTemplate = this.system.templates.find(t => t.flags.utopia.feature === id);
+          if (!systemTemplate) return ui.notifications.error("Template not found.");
+
+          // Set template data based on preset option
+          const template = new CONFIG.MeasuredTemplate.documentClass(
+            systemTemplate,
+            { parent: canvas.scene ?? undefined }
+          );
+          const measuredTemplate = new UtopiaTemplates(template);
+          measuredTemplate.drawPreview(this);
+
+          button.remove(); // Remove the button after drawing the template
         }
       });
     }
+
+    let finishCasting = html.querySelectorAll('[data-action="finishCasting"]');
+    for (let button of finishCasting) {
+      button.addEventListener('click', async (event) => {
+        const item = await fromUuid(this.getFlag('utopia', 'itemUuid'));
+        if (!item) return ui.notifications.error("Item not found.");
+        item._finishCastingSpell(this);
+        await this.delete();
+      })
+    }
+
 
     let blockButton = html.querySelector('[data-action="block"]');
     blockButton?.addEventListener('click', async (event) => {

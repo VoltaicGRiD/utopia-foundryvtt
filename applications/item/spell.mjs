@@ -53,15 +53,15 @@ export class SpellSheet extends api.HandlebarsApplicationMixin(
       name: this.item.name,
     };
 
-    context.features = this.item.system.parsedFeatures ?? [];
+    context.features = this.item.system.parsedFeatures.map(feature => {
+      return { ...feature, variables: this.item.system.featureSettings[feature.id], id: feature.id };
+    }) ?? [];
+
     if (context.features.length === 0) {
       context.features = await Promise.all(this.item.system.features.map(async (feature) => {
         const featureItem = await fromUuid(feature);
         return featureItem;
       }));
-    }
-    for (const feature of context.features) {
-      feature.variables = this.item.system.featureSettings[feature._id];
     }
     
     console.log(context);
@@ -122,15 +122,15 @@ export class SpellSheet extends api.HandlebarsApplicationMixin(
   async _onRender(context, options) {
     super._onRender(context, options);
 
-    // const numVariables = this.element.querySelectorAll("input[type='number']");
-    // numVariables.forEach(v => {
+    // const variables = this.element.querySelectorAll("input.variable-input");
+    // variables.forEach(v => {
     //   v.addEventListener("change", (event) => {
     //     const featureId = event.target.dataset.feature;
     //     const variableId = event.target.dataset.variable;
     //     const value = event.target.value;
 
     //     this.item.update({
-    //       [`system.features.${featureId}.system.variables.${variableId}.value`]: value
+    //       [`system.featureSettings.${featureId}.${variableId}`]: value
     //     });
     //   });
     // });
@@ -142,7 +142,7 @@ export class SpellSheet extends api.HandlebarsApplicationMixin(
   }
   
   static async _save(event, target) {
-    super.submit();
+    await this.submit();
   }
 
   static async _cast(event, target) {

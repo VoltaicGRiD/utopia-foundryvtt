@@ -48,18 +48,18 @@ export class UtopiaTemplates extends MeasuredTemplate {
   }
 
   /** Creates a preview of the template */
-  drawPreview() {
+  drawPreview(chatMessage = null) {
     const initialLayer = canvas.activeLayer;
     // Draw the template and switch to the template layer
     this.draw();
     this.layer.activate();
     if (this.layer.preview) this.layer.preview.addChild(this);
     // Activate interactivity
-    this.activatePreviewListeners(initialLayer);
+    this.activatePreviewListeners(initialLayer, chatMessage);
   }
 
   /** Activate listeners for the template preview */
-  activatePreviewListeners(initialLayer) {
+  activatePreviewListeners(initialLayer, chatMessage) {
     let moveTime = 0;
     // Update placement (mouse-move)
     this.handlers.mm = (event) => {
@@ -94,19 +94,13 @@ export class UtopiaTemplates extends MeasuredTemplate {
       const canvasTemplate = await canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [
         this.document.toObject(),
       ]);
-      // const poly = canvas.scene.grid.getCircle({
-      //   x: this.document.x,
-      //   y: this.document.y,
-      // }, this.document.distance);
-      // canvas.scene.tokens.forEach((token) => {
-      //   if (this._isPointInPolygon({
-      //     x: token.x,
-      //     y: token.y,
-      //   }, poly)) {
-      //     console.log(token);
-      //     game.user.targets.add(token.object);
-      //   }
-      // });
+
+      if (chatMessage) {
+        const placedTemplates = chatMessage.getFlag("utopia", "placedTemplates") || [];
+        placedTemplates.push(canvasTemplate[0].id);
+        chatMessage.setFlag("utopia", "placedTemplates", placedTemplates);
+      }
+
       console.log(canvasTemplate);
       console.log(this);
     };
@@ -150,7 +144,7 @@ export class UtopiaTemplates extends MeasuredTemplate {
    * @param {Array} polygon - Array of points with x and y properties in order.
    * @returns {boolean} - True if the point is inside the polygon.
    */
-  _isPointInPolygon(point, polygon) {
+  static _isPointInPolygon(point, polygon) {
     let inside = false;
     for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
       const xi = polygon[i].x, yi = polygon[i].y;
@@ -217,6 +211,24 @@ export class UtopiaTemplates extends MeasuredTemplate {
     layer.beginFill(options.color, options.alpha);
     if (options.border) layer.lineStyle(2, options.border, Math.min(options.alpha * 1.5, 1.0));
     layer.drawShape(options.shape).endFill();
+  }
+
+    /**
+   * Is the given point contained in the template's shape?
+   * @param {Point} point    The point
+   * @returns {boolean}      Is contained?
+   */
+  static testPoint(point, template) {
+    const {x: ox, y: oy} = template.document;
+    const x0 = point.x - ox;
+    const y0 = point.y - oy;
+    const shape = template.shape;
+    for ( let dx = -1; dx <= 1; dx += 1 ) {
+      for ( let dy = -1; dy <= 1; dy += 1 ) {
+        if ( shape.contains(x0 + dx, y0 + dy) ) return true;
+      }
+    }
+    return false;
   }
 }
 

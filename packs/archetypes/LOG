@@ -3,3 +3,7 @@
 2025/04/30-08:48:12.289 45cc Delete type=0 #237
 2025/04/30-08:48:12.290 45cc Delete type=0 #239
 2025/04/30-08:48:12.291 45cc Delete type=3 #236
+2025/04/30-19:00:54.197 85c0 Level-0 table #242: started
+2025/04/30-19:00:54.208 85c0 Level-0 table #242: 0 bytes OK
+2025/04/30-19:00:54.209 85c0 Delete type=0 #240
+2025/04/30-19:00:54.212 85c0 Manual compaction at level-0 from 'undefined' @ 72057594037927935 : 1 .. 'undefined' @ 0 : 0; will stop at (end)

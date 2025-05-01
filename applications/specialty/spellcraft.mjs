@@ -337,7 +337,8 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
           return ui.notifications.error("This feature does not exist.");
         
         this.selected.push(uuid);
-        this.featureSettings[uuid] = { 
+
+        this.featureSettings[feature._id] = { 
           stacks: {
             variableName: "stacks",
             variableDescription: "Stacks",
@@ -349,7 +350,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
         };
 
         for (const variable of Object.values(feature.system.variables)) {
-          this.featureSettings[uuid][variable.name] = variable; 
+          this.featureSettings[feature._id][variable.name] = variable; 
         }
 
         this.render();
@@ -690,6 +691,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
       name: name,
       type: "spell",
       system: {
+        featureSettings: this.featureSettings,
         features: selected,
         duration: duration,
         range: range,

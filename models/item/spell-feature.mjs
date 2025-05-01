@@ -253,6 +253,7 @@ export class SpellFeature extends UtopiaItemBase {
       this.costResult = `${this.cost} PP`;
     } else if (this.costMultiplier === "multiply") {
       this.costResult = `${this.cost}X PP`;  
+      
     } 
   }
 

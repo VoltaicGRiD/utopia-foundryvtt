@@ -1,3 +1,27 @@
-2025/04/29-23:47:00.601 3224 Recovering log #582
-2025/04/29-23:47:00.608 3224 Delete type=0 #582
-2025/04/29-23:47:00.609 3224 Delete type=3 #581
+2025/04/30-08:48:12.224 45cc Recovering log #584
+2025/04/30-08:48:12.224 45cc Level-0 table #586: started
+2025/04/30-08:48:12.227 45cc Level-0 table #586: 2772 bytes OK
+2025/04/30-08:48:12.227 45cc Recovering log #587
+2025/04/30-08:48:12.232 45cc Delete type=0 #584
+2025/04/30-08:48:12.233 45cc Delete type=0 #587
+2025/04/30-08:48:12.233 45cc Delete type=3 #583
+2025/04/30-19:00:54.172 85c0 Level-0 table #590: started
+2025/04/30-19:00:54.174 85c0 Level-0 table #590: 6070 bytes OK
+2025/04/30-19:00:54.175 85c0 Delete type=0 #588
+2025/04/30-19:00:54.180 85c0 Manual compaction at level-0 from '!folders!UAGBgFkP95hbyEss' @ 72057594037927935 : 1 .. '!items!zlqrW5qJBG1K3vE8' @ 0 : 0; will stop at '!items!sX74zo8Q2W9LYSYX' @ 222 : 1
+2025/04/30-19:00:54.180 85c0 Compacting 3@0 + 0@1 files
+2025/04/30-19:00:54.188 85c0 Generated table #591@0: 8 keys, 3136 bytes
+2025/04/30-19:00:54.188 85c0 Compacted 3@0 + 0@1 files => 3136 bytes
+2025/04/30-19:00:54.189 85c0 compacted to: files[ 0 1 1 0 0 0 0 ]
+2025/04/30-19:00:54.189 85c0 Delete type=2 #577
+2025/04/30-19:00:54.190 85c0 Delete type=2 #586
+2025/04/30-19:00:54.191 85c0 Delete type=2 #590
+2025/04/30-19:00:54.210 85c0 Manual compaction at level-0 from '!items!sX74zo8Q2W9LYSYX' @ 222 : 1 .. '!items!zlqrW5qJBG1K3vE8' @ 0 : 0; will stop at (end)
+2025/04/30-19:00:54.212 85c0 Manual compaction at level-1 from '!folders!UAGBgFkP95hbyEss' @ 72057594037927935 : 1 .. '!items!zlqrW5qJBG1K3vE8' @ 0 : 0; will stop at '!items!sX74zo8Q2W9LYSYX' @ 228 : 1
+2025/04/30-19:00:54.212 85c0 Compacting 1@1 + 1@2 files
+2025/04/30-19:00:54.215 85c0 Generated table #592@1: 36 keys, 12229 bytes
+2025/04/30-19:00:54.215 85c0 Compacted 1@1 + 1@2 files => 12229 bytes
+2025/04/30-19:00:54.215 85c0 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/04/30-19:00:54.216 85c0 Delete type=2 #557
+2025/04/30-19:00:54.217 85c0 Delete type=2 #591
+2025/04/30-19:00:54.221 85c0 Manual compaction at level-1 from '!items!sX74zo8Q2W9LYSYX' @ 228 : 1 .. '!items!zlqrW5qJBG1K3vE8' @ 0 : 0; will stop at (end)

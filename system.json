@@ -1,4 +1,4 @@
-{
+[{
   "id": "utopia",
   "title": "Utopia (V2)",
   "description": "The Utopia system for FoundryVTT!",
@@ -339,14 +339,14 @@
         {
           "name": "Talents Etc.",
           "sorting": "a",
-          "color": "string",
+          "color": "#ff0000",
           "packs": ["talents", "talentTrees", "specialistTalents"],
           "folders": []
         },
         {
           "name": "Equipment Etc.",
           "sorting": "a",
-          "color": "string",
+          "color": "#ff0000",
           "packs": [
             "artificeFeatures",
             "gear",
@@ -359,28 +359,28 @@
         {
           "name": "Species Etc.",
           "sorting": "a",
-          "color": "string",
+          "color": "#ff0000",
           "packs": ["species", "quirks"],
           "folders": []
         },
         {
           "name": "Conceptual Etc.",
           "sorting": "a",
-          "color": "string",
+          "color": "#ff0000",
           "packs": ["actions", "favors", "utopiaMacros"],
           "folders": []
         },
         {
           "name": "Spells Etc.",
           "sorting": "a",
-          "color": "string",
+          "color": "#ff0000",
           "packs": ["spells", "spellFeatures"],
           "folders": []
         },
         {
           "name": "Creatures Etc.",
           "sorting": "a",
-          "color": "string",
+          "color": "#ff0000",
           "packs": ["bodies", "classes", "kits", "creatures"],
           "folders": []
         }
@@ -388,8 +388,8 @@
     }
   ],
   "socket": true,
-  "manifest": "https://github.com/VoltaicGRiD/utopia-foundryvtt-v1/releases/latest/download/system.json",
-  "download": "https://github.com/VoltaicGRiD/utopia-foundryvtt-v1/releases/latest/download/utopia.zip",
+  "manifest": "https://github.com/VoltaicGRiD/utopia-foundryvtt/releases/latest/download/system.json",
+  "download": "https://github.com/VoltaicGRiD/utopia-foundryvtt/releases/latest/download/utopia.zip",
   "background": "systems/utopia/assets/Utopia-Background.webp",
   "grid": {
     "distance": 1,

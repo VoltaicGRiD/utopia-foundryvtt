@@ -140,13 +140,15 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
     
     const trees = await gatherItems({ type: 'talentTree', gatherFolders: false, gatherFromWorld: true, gatherFromActor: false });
     const species = await gatherItems({ type: 'species', gatherFolders: false, gatherFromWorld: true, gatherFromActor: false });
-    const allTrees = trees.concat(species);
+    const allTrees = [...trees, ...species];
 
     const actorTrees = this.options.actor.system.trees;
     const flexibilities = this.actor.system.flexibility;
 
+    const validTrees = [];
     for (const tree of allTrees) {
       if (tree.type === "talentTree" || (actorSpecies && tree.type === 'species' && tree.name === actorSpecies) ) {
+        validTrees.push(tree);
         for (var b = 0; b < tree.system.branches.length; b++) {
           const branch = tree.system.branches[b];
 
@@ -158,6 +160,7 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
         }
       }
       else if (flexibilities.some(flexibility => ["subspecies", "speciesFirst", "speciesSecond", "speciesAll"].includes(flexibility.category) && tree.type === "species")) {
+        validTrees.push(tree);
         for (var b = 0; b < tree.system.branches.length; b++) {
           const branch = tree.system.branches[b];
 
@@ -255,23 +258,20 @@ export class TalentBrowser extends api.HandlebarsApplicationMixin(api.Applicatio
           }
         }
       }
-      else {
-        allTrees.splice(allTrees.indexOf(tree), 1);
-      }
     }
 
     // Remove all empty branches
-    for (const tree of allTrees) {
+    for (const tree of validTrees) {
       tree.system.branches = tree.system.branches.filter(branch => branch.talents.length > 0);
     }
 
     // If the actor is a creature, remove all species branches
     if (this.actor.type === "creature") {
-      allTrees = allTrees.filter(tree => tree.type !== 'species' && tree.type !== 'subspecies');
+      validTrees = validTrees.filter(tree => tree.type !== 'species' && tree.type !== 'subspecies');
     }
 
     // Remove all empty trees
-    const filteredTrees = allTrees.filter(tree => tree.system.branches.length > 0);
+    const filteredTrees = validTrees.filter(tree => tree.system.branches.length > 0);
 
     // Check if the actor has any flexibility points
     if (this.actor.system.flexibility.length > 0) {

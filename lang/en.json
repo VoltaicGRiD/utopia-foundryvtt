@@ -184,7 +184,8 @@
       "NoConsumableQuantity": "You're trying to consume a consumable that has no quantity. Craft a new one, or set the quantity to 1.",
       "NoParentActor": "This item is not owned by a character or creature. It cannot be equipped.",
       "CraftingMacroNotFound": "Crafting macro not found. Please ensure the macro is created, you may need to redefine the macro's UUID in the associated Gear Feature.",
-      "Encumbered": "{actorName} is encumbered! They automatically have a point of fatigue applied to them."
+      "Encumbered": "{actorName} is encumbered! They automatically have a point of fatigue applied to them.",
+      "CannotDeleteBaseAction": "You cannot delete a base action of an actor. This action is inherit to the system."
     },
     "CHAT": {
       "Block": "Block",
@@ -784,6 +785,27 @@
             "label": "Flat Action Cost Reduction",
             "hint": "The flat amount to reduce the action cost by.<br>Only used if 'Reduce Action Cost' is set to 'Flat'."
           },
+          "passive.ignoreDamage.energy": {
+            "label": "Ignore Energy Damage"
+          },
+          "passive.ignoreDamage.heat": {
+            "label": "Ignore Heat Damage"
+          },
+          "passive.ignoreDamage.chill": {
+            "label": "Ignore Chill Damage"
+          },
+          "passive.ignoreDamage.physical": {
+            "label": "Ignore Physical Damage"
+          },
+          "passive.ignoreDamage.psyche": {
+            "label": "Ignore Psyche Damage"
+          },
+          "passive.ignoreDamage.kinetic": {
+            "label": "Ignore Kinetic Damage"
+          },
+          "passive.ignoreDamage.stamina": {
+            "label": "Ignore Stamina Damage"
+          },
           "restoration": {
             "label": "Enable Resource Restoration",
             "hint": "If enabled, and when this action is performed, will restore the specified resource, by the amount defined in this action's formula."
@@ -823,6 +845,8 @@
         },
         "Template": {
           "none": "None",
+          "self": "Self",
+          "target": "Target",
           "sbt": "Small Blast (2M)",
           "mbt": "Medium Blast (4M)",
           "lbt": "Large Blast (6M)",
@@ -837,12 +861,14 @@
           "blockWithWeapon": "Block with Weapon - Use weapon's attack roll instead of creatures block rating",
           "respondWithAttack": "Respond with Attack - When sensing another creature attack, respond with an attack action",
           "attackAllInRange": "Attack All in Range - When attacking, roll to attack all creatures in range as a single action",
-          "reduceActionCost": "Reduce Attack Cost - Reduce the action cost of equipment attack actions"
+          "reduceActionCost": "Reduce Attack Cost - Reduce the action cost of equipment attack actions",
+          "ignoreDamageType": "Ignore Damage - Ignore damage of a specific type"
         },
         "ScaleResource": {
           "cost": "Based on this action's TA / IA cost",
           "stamina": "Based on this action's stamina cost"
         },
+        "None": "None",
         "EquipmentType": {
           "weapon": "Weapon",
           "armor": "Armor",

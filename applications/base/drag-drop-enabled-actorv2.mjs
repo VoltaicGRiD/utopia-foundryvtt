@@ -538,6 +538,12 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
   static async _deleteDocument(event, target) {
     const id = target.dataset.documentId;
+    
+    const item = this.actor.items.get(id);
+    if (item.type === "action" && item.system.isBaseAction) {
+      return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.CannotDeleteBaseAction"));
+    }
+
     await this.actor.deleteItem(this.actor.items.get(id));
   }
 

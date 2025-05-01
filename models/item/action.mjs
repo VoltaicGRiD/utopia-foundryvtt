@@ -32,6 +32,7 @@ export class Action extends UtopiaItemBase {
 
     const returns = {};
     const allOptions = {
+      "none": { label: "UTOPIA.Items.Action.None", group: "UTOPIA.Items.Action.None" },
       ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.TRAITS.GroupName" };
         return acc;
@@ -103,7 +104,7 @@ export class Action extends UtopiaItemBase {
     schema.range = new fields.StringField({ required: false, nullable: false, initial: "0/0" });
     schema.damageModifier = new fields.StringField({ required: false, nullable: false, initial: "str", choices: allOptions });
     schema.accuracyTrait = new fields.StringField({ required: false, nullable: false, initial: "agi", choices: allOptions });
-    schema.template = new fields.StringField({ required: false, nullable: false, initial: "none", choices: {
+    schema.template = new fields.StringField({ required: false, nullable: false, initial: "target", choices: {
       "none": "UTOPIA.Items.Action.Template.none",
       "self": "UTOPIA.Items.Action.Template.self",
       "target": "UTOPIA.Items.Action.Template.target",
@@ -364,7 +365,7 @@ export class Action extends UtopiaItemBase {
           for (const [key, value] of Object.entries(allDamage)) { 
             fields.push({
               field: this.schema.fields.passive.fields.ignoreDamage.fields[key],
-              stacked: true,
+              stacked: false,
               editable: true,
             });
           }
@@ -409,8 +410,10 @@ export class Action extends UtopiaItemBase {
       const system = this.parent.parent.system;
 
       if (this.isBaseAction && this.parent.name === game.i18n.localize("UTOPIA.Actors.Actions.DeepBreath")) {
+        console.log("Updating Deep Breath action with actor's data");
+
         // Get the parent's data for "system.deepBreath"
-        this.restoration += system.deepBreath.additionalStamina || {};
+        this.formula = `${this.formula} + @deepBreath.additionalStamina` || this.formula;
       }
 
       if (this.isBaseAction && this.parent.name === game.i18n.localize("UTOPIA.Actors.Actions.WeaponlessAttack")) {

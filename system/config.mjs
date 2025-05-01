@@ -370,6 +370,17 @@ export function registerConfig() {
       label: 'UTOPIA.DAMAGE_TYPES.Healing',
       appliesTo: 'shp'
     },
+    deepHealing: {
+      name: 'Healing',
+      icon: 'fas fa-heart',
+      initialDefense: 0,
+      healing: true,
+      block: 0,
+      dodge: false,
+      armor: false,
+      label: 'UTOPIA.DAMAGE_TYPES.DeepHealing',
+      appliesTo: 'dhp'
+    },
     restoreStamina: {
       name: 'Restore Stamina',
       icon: 'fas fa-heartbeat',

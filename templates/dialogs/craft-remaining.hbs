@@ -1,17 +1,19 @@
 <div class="dialog crafting-dialog">
+  <p>You are missing the following components, please craft, forage, or harvest them before crafting this item.</p>
+
   <table>
     <thead>
       <tr>
         <th></th>
         {{#each componentTypes as |componentType|}}
-          <th>{{componentType.label}}</th>
+          <th>{{localize componentType.label}}</th>
         {{/each}}
       </tr>
     </thead>
     <tbody>
-      {{#each rarityTypes as |rarity|}}
+      {{#each rarityTypes as |rarity|}}     
         <tr>
-          <th>{{rarity.label}}</th>
+          <th>{{localize rarity.label}}</th>
           {{!--
             Within each rarity row, iterate over componentTypes.
             Note: Using "../../components" because:
@@ -20,6 +22,10 @@
             - ../../ takes us back to the top-level context where "components" is defined.
           --}}
           {{#each ../componentTypes as |componentType|}}
+            {{log componentType}}
+            {{log rarity}}
+            {{log ../../components}}
+            {{!-- Lookup the value in the components object using the componentType and rarity keys --}}
             <td>
               {{lookup (lookup ../../components componentType.key) rarity.key}}
             </td>

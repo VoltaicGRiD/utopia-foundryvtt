@@ -86,7 +86,9 @@ export async function prepareSpeciesData(character) {
   character.augmentSlots.capacity.waist = 1;
   character.augmentSlots.capacity.feet = character.evolution.feet / 2;
   character.augmentSlots.capacity.hands = character.evolution.hands / 2;
-  character.augmentSlots.capacity.ring = character.evolution.hands / 2;
+  character.augmentSlots.capacity.ring = character.evolution.hands / 2;  
+
+  character.armors = species.system.armors;
 
   character.handheldSlots.capacity = character.evolution.hands;
   character.handheldSlots.equipped = character.handheldSlots.equipped || [];

@@ -185,7 +185,9 @@
       "NoParentActor": "This item is not owned by a character or creature. It cannot be equipped.",
       "CraftingMacroNotFound": "Crafting macro not found. Please ensure the macro is created, you may need to redefine the macro's UUID in the associated Gear Feature.",
       "Encumbered": "{actorName} is encumbered! They automatically have a point of fatigue applied to them.",
-      "CannotDeleteBaseAction": "You cannot delete a base action of an actor. This action is inherit to the system."
+      "CannotDeleteBaseAction": "You cannot delete a base action of an actor. This action is inherit to the system.",
+      "ItemNotEquippable": "This item cannot be equipped.",
+      "ItemCannotBeAugmented": "This item cannot be augmented."
     },
     "CHAT": {
       "Block": "Block",
@@ -197,7 +199,9 @@
       "DamageAbsorbed": "Damage absorbed by defenses",
       "Absorbed": "Damage <b>absorbed entirely</b> by defenses!",
       "NotAbsorbed": "Damage <b>not</b> entirely absorbed by defenses!",
-      "Harvest": "Harvest Creatures"
+      "Harvest": "Harvest Creatures",
+      "PlaceTemplate": "Place Template",
+      "FinishCasting": "Finish Casting Spell"
     },
     "StatusEffects": {
       "deafened": "Deafened",
@@ -232,6 +236,8 @@
       "Buttons": {
         "CompendiumBrowser": "Compendium Browser",
         "FeatureBuilder": "Artifice Feature Builder",
+        "twitch": "Twitch Integration",
+        "discord": "Utopia Discord",  
         "Save": "Save",
         "Reset": "Reset this setting to defaults (You will lose all changes)"
       },
@@ -1068,8 +1074,9 @@
         "BUTTONS": {
           "Use": "Use",
           "Equip": "Equip",
+          "Augment": "Augment",
           "Craft": "Craft",
-          "Artifice": "Open in Artifice"
+          "Artifice": "Artifice"
         },
         "Slot": { 
           "head": "Head",

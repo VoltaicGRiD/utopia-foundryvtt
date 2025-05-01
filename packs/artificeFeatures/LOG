@@ -3,3 +3,8 @@
 2025/04/30-08:48:12.272 39a8 Delete type=0 #311
 2025/04/30-08:48:12.273 39a8 Delete type=0 #313
 2025/04/30-08:48:12.274 39a8 Delete type=3 #310
+2025/04/30-19:00:54.210 85c0 Level-0 table #316: started
+2025/04/30-19:00:54.210 85c0 Level-0 table #316: 0 bytes OK
+2025/04/30-19:00:54.212 85c0 Delete type=0 #314
+2025/04/30-19:00:54.219 85c0 Manual compaction at level-0 from '!folders!AibQR5dvHv8Z9Uoc' @ 72057594037927935 : 1 .. '!items.effects!wIRtz0kBiqKJ98EZ.Y2qWzY6yPSX8yCIg' @ 0 : 0; will stop at (end)
+2025/04/30-19:00:54.221 85c0 Manual compaction at level-1 from '!folders!AibQR5dvHv8Z9Uoc' @ 72057594037927935 : 1 .. '!items.effects!wIRtz0kBiqKJ98EZ.Y2qWzY6yPSX8yCIg' @ 0 : 0; will stop at (end)

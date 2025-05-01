@@ -1,6 +1,8 @@
 <div class="paper-doll-entry {{#if (eq dir "left")}}left{{/if}}">
   <span>{{localize (concat "UTOPIA.Items.Gear.Slot." key)}}</span>
 
+  {{log slot}}
+
   {{#if evolution}}
     <div class="evolution">
       <i class="fas fa-hashtag fa-fw"></i>
@@ -8,15 +10,15 @@
     </div>
   {{/if}}
 
-  <a type="button" class="paper-doll-button {{#if slot.unaugmentable}}active{{/if}}" data-action="togglePaperdoll" data-type="augmentable" data-slot="{{key}}" data-tooltip="{{localize "UTOPIA.Items.Species.PaperDoll.toggleAugmentable"}}">
+  <a type="button" class="paper-doll-button {{#if (eq slot.unaugmentable true)}}active{{/if}}" data-action="togglePaperdoll" data-type="augmentable" data-slot="{{key}}" data-tooltip="{{localize "UTOPIA.Items.Species.PaperDoll.toggleAugmentable"}}">
     <i class="fas fa-pencil-slash fa-fw"></i>
   </a>
 
-  <a type="button" class="paper-doll-button {{#if slot.unequippable}}active{{/if}}" data-action="togglePaperdoll" data-type="equippable" data-slot="{{key}}" data-tooltip="{{localize "UTOPIA.Items.Species.PaperDoll.toggleEquippable"}}">
+  <a type="button" class="paper-doll-button {{#if (eq slot.unequippable true)}}active{{/if}}" data-action="togglePaperdoll" data-type="equippable" data-slot="{{key}}" data-tooltip="{{localize "UTOPIA.Items.Species.PaperDoll.toggleEquippable"}}">
     <i class="fas fa-lock fa-fw"></i>
   </a>
 
-  <a type="button" class="paper-doll-button {{#if slot.specialty}}active{{/if}}" data-action="togglePaperdoll" data-type="specialty" data-slot="{{key}}" data-tooltip="{{localize "UTOPIA.Items.Species.PaperDoll.toggleSpecialty"}}">
+  <a type="button" class="paper-doll-button {{#if (eq slot.specialty true)}}active{{/if}}" data-action="togglePaperdoll" data-type="specialty" data-slot="{{key}}" data-tooltip="{{localize "UTOPIA.Items.Species.PaperDoll.toggleSpecialty"}}">
     <i class="fas fa-wand-magic-sparkles fa-fw"></i>
   </a>
 </div>

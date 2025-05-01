@@ -30,6 +30,8 @@
   <div class="spell-features">
     <ol class="selected-feature-list flexcol">
       {{#each features as |feature key|}}
+        {{log feature}}
+
         <li class="feature" style="background: {{feature.system.style.background}}; color: {{feature.system.style.color}}" data-id="{{key}}">
           <img src="{{feature.img}}" class="feature-icon" />
           <button type="button" class="remove-feature hidden">
@@ -42,25 +44,30 @@
           </span>
           <div class="feature-controls">
             {{#each feature.variables as |variable varKey|}}
+              {{log variable}}
+              {{log varKey}}
+
               {{#if (eq varKey "stacks")}}
                 <div class="flexrow feature-variable">
                   <input type="number" 
+                        class="variable-input"
                         name="system.featureSettings.{{feature.id}}.{{varKey}}.value"
                         min="{{variable.minimum}}" 
                         max="{{variable.maximum}}" 
                         value="{{variable.value}}"
-                        data-feature="{{key}}" 
+                        data-feature="{{feature.id}}" 
                         data-variable="{{varKey}}" />
                   <span class="feature-variable-character"><i class="fa-solid fa-cubes-stacked"></i></span>
                 </div>
               {{else if (eq variable.kind "number")}}
                 <div class="flexrow feature-variable">
                   <input type="number" 
+                        class="variable-input"
                         name="system.featureSettings.{{feature.id}}.{{varKey}}.value"
                         min="{{variable.minimum}}" 
                         max="{{variable.maximum}}" 
                         value="{{variable.value}}"
-                        data-feature="{{key}}" 
+                        data-feature="{{feature.id}}" 
                         data-variable="{{varKey}}" />
                   <span class="feature-variable-character">{{variable.character}}</span>
                 </div>
@@ -68,7 +75,7 @@
                 <div class="flexrow feature-variable">
                   <button type="button" class="feature-variable-options {{#if (eq feature.value "")}}unset{{/if}}"
                           data-variable="{{varKey}}"
-                          data-feature="{{key}}">
+                          data-feature="{{feature.id}}">
                     <i class="fa-fw fa-solid fa-list"></i>
                   </button>
                 </div>

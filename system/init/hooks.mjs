@@ -320,7 +320,7 @@ export function registerHooks() {
 
     utopiaSettings.append(twitchSettings, discordButton, vaultButton);
 
-    const ws = new WebSocket("ws://localhost:8765");
+    //const ws = new WebSocket("ws://localhost:8765");
   });
 
   Hooks.on("renderSidebarTab", (tab) => {

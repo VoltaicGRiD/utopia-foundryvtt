@@ -1,4 +1,4 @@
-[{
+{
   "id": "utopia",
   "title": "Utopia (V2)",
   "description": "The Utopia system for FoundryVTT!",
@@ -397,4 +397,4 @@
   },
   "primaryTokenAttribute": "shp",
   "secondaryTokenAttribute": "dhp"
-}]
+}

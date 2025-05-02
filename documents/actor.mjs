@@ -1645,6 +1645,12 @@ export class UtopiaActor extends Actor {
           "system.baseDR": baseDR,
         });
       }
+
+      if (document.type === "species") {
+        this.update({
+          "system._speciesData": document.system,
+        })
+      }
     }
 
     if (collection === "effects") { // ActiveEffect created

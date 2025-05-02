@@ -177,6 +177,7 @@
       "ReplaceSpeciesTitle": "Replace Species",
       "ReplaceSpecies": "You must be a GM to replace the species of an actor.",
       "ReplaceSpeciesGM": "As the GM, you can replace the species of this actor.<br>This will remove the existing species features and talents.<br/>Are you sure you want to do this? (Talent points will be returned)",
+      "SpeciesDataNotFound": "New characters don't have a species by default. Please select a species to see you character's data update.",
       "NoTargetsSelected": "The game rule \"Target Required\" is enabled, you must target at least one token to perform this action.",
       "NoTargetsSelectedInfo": "No tokens are targeted. Defense calculations will need to be performed manually.",
       "ActionAgainstNoTarget": "This action requires you to have a target, please target a token first.",

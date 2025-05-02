@@ -1,3 +1,4 @@
+import { prepareGearDataPostActorPrep } from "../models/utility/gear-utils.mjs";
 import { DamageInstance } from "../system/damage.mjs";
 import { UtopiaTemplates } from "../system/init/measuredTemplates.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
@@ -901,5 +902,34 @@ export class UtopiaItem extends Item {
     }
 
     return categories;
+  }
+
+  /**
+   * Item data preparation to take place after actor data preparation.
+   */
+  prepareDataPostActorPrep() {
+    // Double check this item is owned
+    if (this.parent) { 
+      if (this.type === "talent") {
+        const actorSystem = this.parent.system;
+        
+        actorSystem.body = this.system.body ?? actorSystem.body;
+        actorSystem.mind = this.system.mind ?? actorSystem.mind;
+        actorSystem.soul = this.system.soul ?? actorSystem.soul;
+
+        if (this.system.selectedOption.length > 0) {
+          const category = this.system.options.category;
+
+          actorSystem._talentOptions[category] ??= [];
+          actorSystem._talentOptions[category].push(this.system.selectedOption);
+        }
+      }
+
+      if (this.type === "gear") {
+        actor._gearData = [...actor._gearData, this.toObject()];
+
+        prepareGearDataPostActorPrep(this.parent.system, this);
+      }
+    }
   }
 }

@@ -1,0 +1,20 @@
+name: Cybernetic Cyborg
+sorting: a
+folder: Dm1uStPaE0GVKP5e
+type: Item
+_id: IaX36Eo6n1nW7vkF
+description: ''
+sort: 0
+color: '#e999ea'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: null
+  lastModifiedBy: null
+_key: '!folders!IaX36Eo6n1nW7vkF'
+

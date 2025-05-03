@@ -1,0 +1,40 @@
+folder: PRkgmBAlxIcWdL66
+name: Illusive
+type: talent
+_id: Gxs8dRl5utCtWkeS
+img: systems/utopia/assets/icons/talents/illusive.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">Your Dodge Rating increases by
+    2d12.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Tactics-2
+  position: 3
+  attributes:
+    cost: []
+  points:
+    body: 2
+    mind: 2
+    soul: 0
+  ultimate: true
+  macro: Compendium.utopia.utopiaMacros.Macro.XXB68BrXlhNB03Xq
+  soul: 4
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731694613248
+  modifiedTime: 1743029944083
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!Gxs8dRl5utCtWkeS'
+

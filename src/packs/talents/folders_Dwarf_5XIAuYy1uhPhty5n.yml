@@ -1,0 +1,20 @@
+name: Dwarf
+sorting: a
+folder: null
+type: Item
+_id: 5XIAuYy1uhPhty5n
+description: ''
+sort: 1200000
+color: '#c76a1f'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731922620244
+  modifiedTime: 1743030597008
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!folders!5XIAuYy1uhPhty5n'
+

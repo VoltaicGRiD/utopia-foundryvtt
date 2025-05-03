@@ -1,0 +1,41 @@
+folder: KFlYO9mt368S0a8m
+name: Physical Combat
+type: talent
+_id: DdtrM2eWFPsYOtft
+img: systems/utopia/assets/icons/talents/physical_combat.svg
+system:
+  formula: 2d8[Physical]
+  description: >-
+    <p>When you make an attack, you may spend an additional turn action up to 3
+    times to deal an additional 2d8 physical damage.</p>
+  flavor: ''
+  parent: ''
+  tree: Human-1
+  position: 4
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 1
+    soul: 0
+  ultimate: true
+  isSpecies: true
+  body: 1
+  mind: 1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731887669538
+  modifiedTime: 1741958962086
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!DdtrM2eWFPsYOtft'
+

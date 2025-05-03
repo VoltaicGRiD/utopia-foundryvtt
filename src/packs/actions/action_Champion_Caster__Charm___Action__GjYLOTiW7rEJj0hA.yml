@@ -1,0 +1,46 @@
+name: Champion Caster [Charm] (Action)
+type: action
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  type: free
+  category: test
+  check: agi
+  checks:
+    - cha
+  checkFavor: true
+  damages: []
+  validityCheck:
+    check: agi
+    favor: true
+    difficulty: '10'
+  consumed: 0
+  macro: null
+  actor: self
+  template: none
+  cost: '0'
+  stamina: 0
+  secret: false
+  resource: ''
+effects: []
+folder: null
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743032214797
+  modifiedTime: 1743032214797
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: GjYLOTiW7rEJj0hA
+sort: 0
+_key: '!items!GjYLOTiW7rEJj0hA'
+

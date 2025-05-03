@@ -1,0 +1,39 @@
+folder: 0UAnpi8lui1DK8c3
+name: Quick Footing
+type: talent
+_id: Y0aAPTXQVwHARarU
+img: systems/utopia/assets/icons/talents/angelic_cambion_quick_footing.svg
+system:
+  formula: ''
+  description: <p>Your Dodge Rating is increased by 1d12</p>
+  flavor: ''
+  parent: ''
+  tree: Angelic Cambion
+  position: 1
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 0
+    soul: 1
+  ultimate: true
+  isSpecies: true
+  body: 1
+  soul: 1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731885606709
+  modifiedTime: 1745777052484
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!Y0aAPTXQVwHARarU'
+

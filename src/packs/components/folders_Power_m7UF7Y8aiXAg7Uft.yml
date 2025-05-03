@@ -1,0 +1,20 @@
+name: Power
+sorting: m
+folder: null
+type: Item
+_id: m7UF7Y8aiXAg7Uft
+description: ''
+sort: 200000
+color: null
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734916087480
+  modifiedTime: 1734916091419
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!m7UF7Y8aiXAg7Uft'
+

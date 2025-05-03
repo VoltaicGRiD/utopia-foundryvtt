@@ -1,0 +1,43 @@
+folder: Kbja2Jan2w3aVjsm
+name: Mischevious
+type: talent
+_id: hb7Xu8MJKW94XgSY
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  body: 0
+  mind: 0
+  soul: 1
+  options:
+    choices: []
+    category: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants:
+    - Compendium.utopia.favors.Item.gHRcU4EF3nQ58PrE
+effects: []
+sort: 100000
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743030445109
+  modifiedTime: 1743030905574
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!hb7Xu8MJKW94XgSY'
+

@@ -1,0 +1,67 @@
+name: Continuum I
+type: spellFeature
+img: systems/utopia/assets/icons/artistries/enchantment.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The spell remains active for X turns after this
+    one or until you spend 1 turn action or 1 interrupt action to dispel it.</p>
+  flavor: ''
+  art: enchantment
+  cost: 40
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables: {}
+  character: A
+  kind: none
+  modifies: duration
+  modifiedAoE:
+    shape: circle
+    value: 0
+    variable: X
+    unit: meters
+    measured: radius
+    type: point
+  modifiedRange:
+    value: 1
+    variable: ''
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: none
+    dispelInterruptCost: 1
+    dispelActionCost: 1
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+folder: MxNtWOKgZszC5ZGV
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769605948
+  modifiedTime: 1734769605948
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: t1NJfzlB0E6Cu1Di
+sort: 0
+_key: '!items!t1NJfzlB0E6Cu1Di'
+

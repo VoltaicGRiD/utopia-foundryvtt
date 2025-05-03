@@ -1,0 +1,79 @@
+folder: jLbboxpKvob6wmFc
+name: Summon Magimatter
+type: spellFeature
+_id: neu3uj3DV89a774Y
+img: systems/utopia/assets/icons/artistries/evocation.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster produces X kilograms of magimatter
+    centered on the spell’s maw, taking a form that the caster can vividly
+    imagine. </p><p style="text-align: left;">The magimatter exists for the
+    spell’s duration. Upon being dispelled, it disintegrates into fine particles
+    and ultimately disappears with no trace.</p>
+  flavor: ''
+  art: evocation
+  cost: 5
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: I
+      kind: text
+      description: ''
+      dice: ''
+      options: []
+      minimum: 0
+      maximum: 0
+      name: Form
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769606898
+  modifiedTime: 1734827191600
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!neu3uj3DV89a774Y'
+

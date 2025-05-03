@@ -1,0 +1,29 @@
+name: Mythical Refinement Component
+type: artificeMaterial
+img: icons/commodities/treasure/token-engraved-blue-glowing.webp
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  quality: mythical
+  type: refinement
+  quantity: 0
+effects: []
+folder: zC7rZimOXPRIBuXJ
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734915915859
+  modifiedTime: 1734915936268
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: xAtRkwcEK9SP0MLm
+sort: 600000
+_key: '!items!xAtRkwcEK9SP0MLm'
+

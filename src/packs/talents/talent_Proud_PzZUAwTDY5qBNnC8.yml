@@ -1,0 +1,75 @@
+name: Proud
+type: talent
+_id: PzZUAwTDY5qBNnC8
+img: systems/utopia/assets/icons/talents/proud.svg
+system:
+  formula: ''
+  description: >-
+    <p>When you spend 5 or more stamina on something other than casting a spell,
+    you may make a Portrayal test. If the test succeeds the amount of stamina
+    spent, you regain 2 stamina. You may only make 1 Portrayal test per stamina
+    costing event.</p>
+  flavor: ''
+  parent: Compendium.utopia.species.Item.BoWN6px3m4QIZFjI
+  tree: Cambion-2
+  position: 4
+  attributes:
+    cost: []
+  points:
+    body: 0
+    mind: 1
+    soul: 1
+  parentItem:
+    name: Demonic Cambion
+    type: species
+    _id: BoWN6px3m4QIZFjI
+    img: icons/svg/item-bag.svg
+    system:
+      description: ''
+      name: Human
+      grants:
+        block: 2d4
+        dodge: 2d12
+        constitution: 4
+        endurance: '6'
+        effervescence: '2'
+        subtraits: 2
+        languages: utopian,primordial
+    effects: []
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+      nLkleFyXeCclB3Jg: 3
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1731344008598
+      modifiedTime: 1731344021043
+      lastModifiedBy: nLkleFyXeCclB3Jg
+  ultimate: true
+  isSpecies: true
+  mind: 1
+  soul: 1
+effects: []
+folder: WVIbwDRA5h8LBuJi
+sort: 300000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731392040368
+  modifiedTime: 1743030438079
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!PzZUAwTDY5qBNnC8'
+

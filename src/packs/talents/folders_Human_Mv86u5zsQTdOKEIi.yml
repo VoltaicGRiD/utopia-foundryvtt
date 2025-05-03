@@ -1,0 +1,20 @@
+name: Human
+sorting: a
+folder: null
+type: Item
+_id: Mv86u5zsQTdOKEIi
+description: ''
+sort: 1100000
+color: '#5f5858'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731887043149
+  modifiedTime: 1743030597008
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!folders!Mv86u5zsQTdOKEIi'
+

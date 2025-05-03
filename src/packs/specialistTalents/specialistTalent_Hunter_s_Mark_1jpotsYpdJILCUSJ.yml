@@ -1,0 +1,66 @@
+name: Hunter's Mark
+type: specialistTalent
+_id: 1jpotsYpdJILCUSJ
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>When you make a test for accuracy using a ranged weapon, you may make an
+    Agility test rather than a Dexterity test.</p>
+  flavor: ''
+  requirements:
+    - '@dex.value >= 7'
+effects:
+  - name: Hunter's Mark
+    _id: SS04ow9I1gXwpcRs
+    img: null
+    type: base
+    system: {}
+    changes:
+      - key: system.accuracy
+        mode: 0
+        value: agi
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    origin: null
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1734490111888
+      modifiedTime: 1734490155944
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!1jpotsYpdJILCUSJ.SS04ow9I1gXwpcRs'
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734396073037
+  modifiedTime: 1734396839449
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!1jpotsYpdJILCUSJ'
+

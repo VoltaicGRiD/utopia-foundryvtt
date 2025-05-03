@@ -1,0 +1,59 @@
+name: Artificial Hybrid
+type: specialistTalent
+_id: orhBksc0q4pgEqRi
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>Must be a Cyborg.</p><p>When you become the target of an effect, you may
+    choose to be treated as a Construct rather than a Humanoid against the
+    effect. You do not gain points of Fatigue from lack of sleep.</p>
+  formula: ''
+  flavor: ''
+  resource:
+    resourceId: A0q7EzmJQjX3FvDn
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  action:
+    actionId: xGsPpBylqM0JAhHH
+    name: New Action
+    category: trait
+    type: turn
+    trait: agi
+    modifier: ''
+    cost: 0
+    stamina: 0
+    formula: ''
+    flavor: ''
+    template: none
+    resource: ''
+    consumed: 0
+    macro: null
+    actor: default
+  actions: []
+  requirements: []
+  grants: []
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1739005994167
+  modifiedTime: 1739006021319
+  lastModifiedBy: p7QOrF2iNLdEPi7z
+_key: '!items!orhBksc0q4pgEqRi'
+

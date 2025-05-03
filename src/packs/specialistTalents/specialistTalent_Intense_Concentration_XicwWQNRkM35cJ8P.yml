@@ -1,0 +1,29 @@
+name: Intense Concentration
+type: specialistTalent
+_id: XicwWQNRkM35cJ8P
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  requirements:
+    - '@res.value >= 7'
+  grants: []
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1737027390690
+  modifiedTime: 1737028434110
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!XicwWQNRkM35cJ8P'
+

@@ -1,0 +1,82 @@
+folder: rLZDXQGxQ9o55jd0
+name: Telekinetic Force
+type: spellFeature
+_id: xd3tJiOkGWEZ8GTv
+img: systems/utopia/assets/icons/artistries/alteration.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">Affected creatures and objects that weigh 10
+    times X kilograms or less are forced in a single specific direction chosen
+    by the caster for the duration of the spell. Creatures and objects affected
+    this way travel up to a number of meters per second (meters per turn action)
+    equal to the caster’s Will score. The caster may spend 1 turn action or 1
+    interrupt action to change direction or speed during the duration of the
+    spell.</p><p style="text-align: left;">This effect cannot force a creature
+    further than X meters away from its original position.</p><p
+    style="text-align: left;">A creature may attempt to forcefully prevent this
+    motion, including on itself, by spending 1 turn action or 1 interrupt action
+    to make a Strength contest against X. If it succeeds, the effect ends on the
+    targeted object or creature. Creatures may only attempt to make this test if
+    they have proper leverage.</p><p style="text-align: left;">An affected
+    creature or object impacting another obstacle may cause kinetic force
+    damage.</p><p style="text-align:
+    left;">@UUID[JournalEntry.A8Ono1Av8IPOYxly.JournalEntryPage.0W640JXgQT14cjB5]{Kinetic
+    Force}</p>
+  flavor: ''
+  art: alteration
+  cost: 10
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769603326
+  modifiedTime: 1734769603326
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!xd3tJiOkGWEZ8GTv'
+

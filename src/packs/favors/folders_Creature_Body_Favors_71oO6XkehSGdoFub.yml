@@ -1,0 +1,20 @@
+name: Creature Body Favors
+sorting: a
+folder: null
+type: Item
+_id: 71oO6XkehSGdoFub
+description: ''
+sort: 0
+color: '#00c241'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1746024845325
+  modifiedTime: 1746024845325
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!folders!71oO6XkehSGdoFub'
+

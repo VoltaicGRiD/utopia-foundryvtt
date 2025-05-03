@@ -1,0 +1,20 @@
+name: Fast Weapon
+sorting: a
+folder: null
+type: Item
+_id: AibQR5dvHv8Z9Uoc
+description: ''
+sort: 0
+color: null
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1735316943948
+  modifiedTime: 1735316943948
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!AibQR5dvHv8Z9Uoc'
+

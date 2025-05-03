@@ -1,0 +1,67 @@
+name: Split Focus
+type: specialistTalent
+_id: 6MoM6Gd6HBdadDnh
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>You do not gain points of disfavor for focusing on multiple tasks when
+    making tests to remain focused.</p>
+  flavor: ''
+  requirements:
+    - '@awa.value >= 7'
+  grants: []
+effects:
+  - name: Split Focus
+    origin: Compendium.utopia.specialistTalents.Item.6MoM6Gd6HBdadDnh
+    img: icons/svg/aura.svg
+    type: specialist
+    _id: Q3cFPoz9lb1ZBOt1
+    system: {}
+    changes:
+      - key: system.disfavorLocks
+        mode: 2
+        value: multitasking
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1737029136794
+      modifiedTime: 1738710084483
+      lastModifiedBy: p7QOrF2iNLdEPi7z
+    _key: '!items.effects!6MoM6Gd6HBdadDnh.Q3cFPoz9lb1ZBOt1'
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1737028553340
+  modifiedTime: 1737029267962
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!6MoM6Gd6HBdadDnh'
+

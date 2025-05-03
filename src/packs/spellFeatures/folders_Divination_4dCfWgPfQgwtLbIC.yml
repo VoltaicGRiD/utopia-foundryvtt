@@ -1,0 +1,20 @@
+name: Divination
+sorting: a
+folder: null
+type: Item
+_id: 4dCfWgPfQgwtLbIC
+description: ''
+sort: 100000
+color: '#62b4ae'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769605112
+  modifiedTime: 1734769605134
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!4dCfWgPfQgwtLbIC'
+

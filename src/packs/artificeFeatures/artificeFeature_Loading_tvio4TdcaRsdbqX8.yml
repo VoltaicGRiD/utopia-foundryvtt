@@ -1,0 +1,93 @@
+name: Loading
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>This weapon requires 1 additional turn action to load or charge.
+    </p><p>Requires one or more stacks of the Loaded feature, maximum of 6
+    stacks.</p><p>-1 Power Component for any number of stacks.</p>
+  flavor: ''
+  category: fastWeapon
+  cost: -5
+  costMultiplier: flat
+  stackable: stackable
+  components:
+    refinement: 0
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires:
+    - Compendium.utopia.artificeFeatures.Item.BalhTfm3vU7pZptw
+  componentsPerStack: all
+  grantsAction: null
+  costBonus: ''
+  ammo:
+    item: ''
+    quantity: 0
+  craftingPrompt: ''
+  tagline: 1 Action to Reload
+effects:
+  - name: Loading
+    origin: Item.BEzuX1eYnzIp6V3X
+    img: icons/svg/aura.svg
+    type: gear
+    _id: MVvYIRphrGHauzmd
+    system: {}
+    changes:
+      - key: system.loading
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: <p>Weapon requires 1 additional turn action to load or charge.</p><p></p>
+    tint: '#ffffff'
+    transfer: false
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: 1736717527406
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!tvio4TdcaRsdbqX8.MVvYIRphrGHauzmd'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1735137637778
+  modifiedTime: 1735601413212
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: tvio4TdcaRsdbqX8
+sort: 1500000
+_key: '!items!tvio4TdcaRsdbqX8'
+

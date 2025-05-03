@@ -1,0 +1,37 @@
+name: Substantial 1
+type: quirk
+system:
+  description: >-
+    This species’ Constitution, Endurance, and Effervescence each have a maximum
+    of 12.
+  attributes:
+    - key: system.constitution.max
+      value: '12'
+    - key: system.endurance.max
+      value: '12'
+    - key: system.effervescence.max
+      value: '12'
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: VkBaC9BT7ZhCQuF6
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!VkBaC9BT7ZhCQuF6'
+

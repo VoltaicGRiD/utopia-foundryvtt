@@ -1,0 +1,81 @@
+folder: zOxwTGvDlKgBXTxs
+name: Draconic [Energy] (Action)
+type: action
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  type: free
+  category: passive
+  isBaseAction: false
+  toggleActiveEffects: false
+  restoration: true
+  restorationType: surface
+  check: agi
+  checks: []
+  checkFavor: true
+  checkAgainstTarget: false
+  checkAgainstTrait: agi
+  applyStatusEffectToTarget: false
+  statusEffectToApply: grappled
+  damages: []
+  validityCheck:
+    enabled: false
+    check: agi
+    favor: true
+    difficulty: '10'
+  consumed: 0
+  macro: null
+  actor: self
+  range: 0/0
+  damageModifier: str
+  accuracyTrait: agi
+  template: none
+  cost: '1'
+  stamina: 0
+  secret: false
+  passive:
+    type: ignoreDamageType
+    scaling:
+      enabled: false
+      resource: stamina
+      ratio: []
+    equipment:
+      enabled: false
+      mustBeEquipped: true
+      type: weapon
+      reduceActionCost: scalingRatio
+      reduceActionCostFlat: 0
+    ignoreDamage:
+      energy: true
+      heat: false
+      chill: false
+      physical: false
+      psyche: false
+      kinetic: false
+      stamina: false
+  resource: ''
+effects: []
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1746024752745
+  modifiedTime: 1746024752758
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: dwemhyV1PRJ7audR
+sort: 200000
+_key: '!items!dwemhyV1PRJ7audR'
+

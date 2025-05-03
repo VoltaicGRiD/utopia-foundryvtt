@@ -1,0 +1,70 @@
+name: Draconic (Chill)
+type: body
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  baseDR: 50
+  shp: 40
+  dhp: 45
+  stamina: 35
+  traits:
+    - trait: spd
+      value: 3
+    - trait: dex
+      value: 2
+    - trait: pow
+      value: 6
+    - trait: for
+      value: 6
+    - trait: res
+      value: 6
+    - trait: por
+      value: 3
+    - trait: app
+      value: 3
+  traitDefault: 2
+  defenses:
+    energy: 9
+    heat: 9
+    chill: 9
+    physical: 19
+    psyche: 9
+  dodge:
+    quantity: 4
+    size: 12
+  block:
+    quantity: 4
+    size: 4
+  harvest:
+    alwaysHarvestable: []
+    testTrait: eng
+    testDifficulty: ceil(@baseDR/5)
+    testHarvestable: []
+  grants:
+    - Compendium.utopia.actions.Item.7F6E2pMfzNWvRN55
+effects: []
+folder: null
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1746024730639
+  modifiedTime: 1746024734951
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: blRyMjGnPwcFa1bb
+sort: 200000
+_key: '!items!blRyMjGnPwcFa1bb'
+

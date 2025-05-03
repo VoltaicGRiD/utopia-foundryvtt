@@ -1,0 +1,20 @@
+name: Material
+sorting: m
+folder: null
+type: Item
+_id: vK9lbWgd7c91xr39
+description: ''
+sort: -100000
+color: null
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734915777161
+  modifiedTime: 1734916097417
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!vK9lbWgd7c91xr39'
+

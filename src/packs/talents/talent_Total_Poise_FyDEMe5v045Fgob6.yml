@@ -1,0 +1,39 @@
+folder: PRkgmBAlxIcWdL66
+name: Total Poise
+type: talent
+_id: FyDEMe5v045Fgob6
+img: systems/utopia/assets/icons/talents/total_poise.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">Your Dodge Rating increases by
+    2d12 and your Block Rating increases by 2d4.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Tactics-2
+  position: 5
+  attributes:
+    cost: []
+  points:
+    body: 4
+    mind: 4
+    soul: 0
+  ultimate: true
+  soul: 7
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731694744836
+  modifiedTime: 1743029958429
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!FyDEMe5v045Fgob6'
+

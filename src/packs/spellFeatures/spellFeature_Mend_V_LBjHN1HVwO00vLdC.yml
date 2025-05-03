@@ -1,0 +1,72 @@
+folder: rLZDXQGxQ9o55jd0
+name: Mend V
+type: spellFeature
+_id: LBjHN1HVwO00vLdC
+img: systems/utopia/assets/icons/artistries/alteration.svg
+system:
+  formula: '-(@X)d4[DHP]'
+  description: >-
+    <p style="text-align: left;">Upon casting and at the beginning of each turn
+    after for the duration of the spell, affected creatures regain an additional
+    1d4 DHP. Healing dice may be redistributed in any fashion as long as the
+    maximum healing is the same. </p><p style="text-align: left;">Each time
+    affected creatures regain DHP this way, a Mythical component must be
+    consumed. If the caster does not have enough or chooses not to, this effect
+    ends instead.</p>
+  flavor: ''
+  art: alteration
+  cost: 120
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769603326
+  modifiedTime: 1734829048695
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!LBjHN1HVwO00vLdC'
+

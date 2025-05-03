@@ -1,0 +1,35 @@
+name: Running Leap
+type: action
+_id: WBURZCVIX4TWeNJM
+img: icons/svg/wingfoot.svg
+system:
+  formula: '@str.value'
+  description: ''
+  flavor: ''
+  type: Standard
+  source: null
+  cost: 3
+  stamina: 3
+  rules: {}
+  trigger: ''
+  recharge: Immediate
+  target: None
+  triggers: []
+effects: []
+folder: null
+sort: 1800000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734257660077
+  modifiedTime: 1743031962746
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!WBURZCVIX4TWeNJM'
+

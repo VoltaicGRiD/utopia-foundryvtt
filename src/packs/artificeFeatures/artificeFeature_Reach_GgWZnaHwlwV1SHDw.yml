@@ -1,0 +1,87 @@
+name: Reach
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>The weapon gains 1 meter of range. It’s still melee.</p><p>Not compatible
+    with the Range feature, maximum of 2 stacks.</p><p>+1 Material Component</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 2
+  costMultiplier: flat
+  stackable: stackable
+  components:
+    refinement: 0
+    material: 1
+    power: 0
+  costModifier: flat
+  incompatible:
+    - Compendium.utopia.artificeFeatures.Item.hk8pnnxFHiZQQ73l
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 3
+  craftingPrompt: ''
+  componentsPerStack: one
+  tagline: +Xm of Range
+  costBonus: ''
+effects:
+  - name: Reach
+    origin: Compendium.utopia.artificeFeatures.Item.GgWZnaHwlwV1SHDw
+    img: icons/svg/aura.svg
+    type: gear
+    _id: Mr2ZWMr3jO1qF2TT
+    system: {}
+    changes:
+      - key: system.range
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: <p>Weapon gains 1 meter of range.</p>
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1734985220949
+      modifiedTime: 1734985642620
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!GgWZnaHwlwV1SHDw.Mr2ZWMr3jO1qF2TT'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734985191844
+  modifiedTime: 1735601772521
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: GgWZnaHwlwV1SHDw
+sort: 2000000
+_key: '!items!GgWZnaHwlwV1SHDw'
+

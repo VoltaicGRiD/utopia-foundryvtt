@@ -1,0 +1,56 @@
+name: Confusing
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>This weapon’s user may spend double the number of necessary turn actions
+    to attack with this weapon. If they do, creatures that are dealt damage with
+    it must make a Fortitude test against the amount of damage dealt. Upon
+    failing, the creature becomes Dazed until the beginning of the user’s next
+    turn. </p><p>+1 Power Component, +1 Refinement Component</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 25
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: 1
+    material: 0
+    power: 1
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  grantsAction: Compendium.utopia.actions.Item.qybrUQnARNuYoKdH
+  costBonus: 0
+  costBonusModifier: system.range.far
+  craftingPrompt: ''
+  tagline: 2x Actions to Confuse
+effects: []
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734992523545
+  modifiedTime: 1735601038600
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: ZCJ4erMMF11Oizub
+sort: 800000
+_key: '!items!ZCJ4erMMF11Oizub'
+

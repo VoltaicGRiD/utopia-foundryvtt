@@ -1,0 +1,59 @@
+name: Swift Consumption
+type: specialistTalent
+_id: ucWnoV1C2lCdPlBJ
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>Must be an Automaton.</p><p>When you consume a power component to regain
+    stamina, you may consume three times as many instead, given they are all the
+    same rarity. If you do, you regain three times as much stamina.</p>
+  formula: ''
+  flavor: ''
+  resource:
+    resourceId: A0q7EzmJQjX3FvDn
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  action:
+    actionId: xGsPpBylqM0JAhHH
+    name: New Action
+    category: trait
+    type: turn
+    trait: agi
+    modifier: ''
+    cost: 0
+    stamina: 0
+    formula: ''
+    flavor: ''
+    template: none
+    resource: ''
+    consumed: 0
+    macro: null
+    actor: default
+  actions: []
+  requirements: []
+  grants: []
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1739005629972
+  modifiedTime: 1739005657224
+  lastModifiedBy: p7QOrF2iNLdEPi7z
+_key: '!items!ucWnoV1C2lCdPlBJ'
+

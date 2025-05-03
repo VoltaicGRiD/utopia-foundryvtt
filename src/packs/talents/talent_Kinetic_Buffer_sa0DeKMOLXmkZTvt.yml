@@ -1,0 +1,75 @@
+folder: XqMT5PB2cUuk3C6Q
+name: Kinetic Buffer
+type: talent
+_id: sa0DeKMOLXmkZTvt
+img: systems/utopia/assets/icons/talents/kinetic_buffer.svg
+system:
+  formula: ''
+  description: <p>Your Energy defense increases by 4.</p>
+  flavor: ''
+  parent: ''
+  tree: Dwarf-1
+  position: 4
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 1
+    soul: 0
+  ultimate: true
+  isSpecies: true
+  body: 1
+  mind: 1
+effects:
+  - name: Kinetic Buffer
+    origin: Compendium.utopia.talents.Item.sa0DeKMOLXmkZTvt
+    img: icons/svg/aura.svg
+    type: passive
+    _id: ukqSUNhnNNf8Zfmb
+    system: {}
+    changes:
+      - key: system.innateDefenses.energy
+        mode: 2
+        value: '4'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1742575824244
+      modifiedTime: 1742575833167
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!sa0DeKMOLXmkZTvt.ukqSUNhnNNf8Zfmb'
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731923376617
+  modifiedTime: 1742575837884
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!sa0DeKMOLXmkZTvt'
+

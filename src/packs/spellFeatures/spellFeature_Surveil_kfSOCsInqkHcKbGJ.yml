@@ -1,0 +1,104 @@
+folder: 4dCfWgPfQgwtLbIC
+name: Surveil
+type: spellFeature
+_id: kfSOCsInqkHcKbGJ
+img: systems/utopia/assets/icons/artistries/divination.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">For each creature affected upon casting, the
+    caster learns one of the following stats: current SHP, current DHP, current
+    stamina, a single type of defense, a single subtrait, difficulty rating,
+    block rating, or dodge rating. The caster learns how the chosen stats change
+    during the spell’s duration.</p>
+  flavor: ''
+  art: divination
+  cost: 30
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: S
+      kind: options
+      description: ''
+      dice: ''
+      options: >-
+        SHP,DHP,Stamina,1 Defense,1 Subtrait,Difficulty Rating,Block
+        Rating,Dodge Rating
+      minimum: 0
+      maximum: 0
+      name: Attribute
+    variable1:
+      character: D
+      kind: options
+      description: Only necessary if '1 Defense' is selected for the 'Stat' variable.
+      dice: ''
+      options: Heat,Energy,Chill,Physical,Psyche
+      minimum: 0
+      maximum: 0
+      name: Defenses
+    variable2:
+      character: T
+      kind: options
+      description: Only necessary if '1 Subtrait' is selected for the 'Stat' variable.
+      dice: ''
+      options: >-
+        Speed,Dexterity,Power,Fortitude,Engineering,Memory,Resolve,Awareness,Portrayal,Stunt,Appeal,Language
+      minimum: 0
+      maximum: 0
+      name: Subtrait
+    stacks:
+      name: stacks
+      kind: number
+      description: ''
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 100000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769605125
+  modifiedTime: 1742443359974
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!kfSOCsInqkHcKbGJ'
+

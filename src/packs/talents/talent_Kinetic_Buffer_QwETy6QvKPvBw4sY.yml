@@ -1,0 +1,39 @@
+folder: V3qNS0o9ULL1RGQt
+name: Kinetic Buffer
+type: talent
+_id: QwETy6QvKPvBw4sY
+img: systems/utopia/assets/icons/talents/kinetic_buffer.svg
+system:
+  formula: ''
+  description: <p>Your Energy Defense increase by 4.</p>
+  flavor: ''
+  parent: ''
+  tree: Automaton-3
+  position: 1
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 0
+    soul: 0
+  ultimate: true
+  isSpecies: true
+  body: 1
+  mind: 1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731888888386
+  modifiedTime: 1742575664792
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!QwETy6QvKPvBw4sY'
+

@@ -1,0 +1,20 @@
+name: Elf
+sorting: a
+folder: null
+type: Item
+_id: kU2NnMLUQk9ZT2L0
+description: ''
+sort: 300000
+color: '#8a8a53'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1733190134612
+  modifiedTime: 1745983703927
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!folders!kU2NnMLUQk9ZT2L0'
+

@@ -1,0 +1,20 @@
+name: Magecraft-2
+sorting: a
+folder: 8TuUJHv9ewQvjwS6
+type: Item
+_id: W8uNKjtkrKz8pNNt
+description: ''
+sort: 200000
+color: '#cca800'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: 1733618893127
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!W8uNKjtkrKz8pNNt'
+

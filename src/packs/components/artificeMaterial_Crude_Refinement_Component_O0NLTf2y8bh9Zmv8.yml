@@ -1,0 +1,29 @@
+name: Crude Refinement Component
+type: artificeMaterial
+img: icons/commodities/treasure/token-engraved-alpha-grey.webp
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  quality: crude
+  type: refinement
+  quantity: 0
+effects: []
+folder: zC7rZimOXPRIBuXJ
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734915771604
+  modifiedTime: 1734915805824
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: O0NLTf2y8bh9Zmv8
+sort: 100000
+_key: '!items!O0NLTf2y8bh9Zmv8'
+

@@ -1,0 +1,31 @@
+name: Handsy 3 (Evolution)
+type: quirk
+system:
+  description: This species has 4 functional hands. You have 2 hand slots and 2 ring slots.
+  attributes:
+    - key: evolution.hands
+      value: '4'
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: OBeKimpTEHW5LrGl
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!OBeKimpTEHW5LrGl'
+

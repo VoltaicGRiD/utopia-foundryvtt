@@ -1,0 +1,20 @@
+name: Biotech Cyborg
+sorting: a
+folder: Dm1uStPaE0GVKP5e
+type: Item
+_id: CO4XxoWCOTKS4BWE
+description: ''
+sort: 0
+color: '#e999ea'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: null
+  lastModifiedBy: null
+_key: '!folders!CO4XxoWCOTKS4BWE'
+

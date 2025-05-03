@@ -1,0 +1,71 @@
+name: Harsh
+type: artificeFeature
+_id: rnU11obiSVQK7um1
+img: icons/svg/item-bag.svg
+system:
+  formula: 1d4
+  description: >-
+    <p>The weapon deals an additional 1d4 damage of any type. Damage dice may be
+    redistributed in any fashion as long as the maximum damage per damage type
+    is the same.</p><p>+1 Power Component for any number of stacks.</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 15
+  costMultiplier: flat
+  stackable: stackable
+  components:
+    crude:
+      material: 0
+      refinement: 0
+      power: 1
+    common:
+      material: 0
+      refinement: 0
+      power: 0
+    extraordinary:
+      material: 0
+      refinement: 0
+      power: 0
+    rare:
+      material: 0
+      refinement: 0
+      power: 0
+    legendary:
+      material: 0
+      refinement: 0
+      power: 0
+    mythical:
+      material: 0
+      refinement: 0
+      power: 0
+    power: 1
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  costBonus: ''
+  formulas:
+    melee: 1d4[@choice]
+    ranged: ''
+  craftingPrompt: >-
+    [{"value":"Heat"},{"value":"Chill"},{"value":"Energy"},{"value":"Psyche"},{"value":"Physical"}]
+  tagline: +1d4 Any Type
+effects: []
+folder: AibQR5dvHv8Z9Uoc
+sort: 1200000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734939320521
+  modifiedTime: 1735601312903
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!rnU11obiSVQK7um1'
+

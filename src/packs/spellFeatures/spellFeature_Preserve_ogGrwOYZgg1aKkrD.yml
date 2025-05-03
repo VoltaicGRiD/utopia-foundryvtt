@@ -1,0 +1,69 @@
+folder: xXCxQL201Rj0h9iA
+name: Preserve
+type: spellFeature
+_id: ogGrwOYZgg1aKkrD
+img: systems/utopia/assets/icons/artistries/necromancy.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">Upon casting, the DHP of each affected body in
+    stasis becomes 0. If an affected body would take damage during the spell's
+    duration, it reverts back to 0 DHP again unless the damage was equal to or
+    higher than the creature’s maximum DHP.</p>
+  flavor: ''
+  art: necromancy
+  cost: 50
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769608382
+  modifiedTime: 1734769608382
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!ogGrwOYZgg1aKkrD'
+

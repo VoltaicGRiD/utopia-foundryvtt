@@ -1,0 +1,85 @@
+folder: LhhxTfsVKDybY6ZH
+name: Hyperphotosynthesis
+type: talent
+_id: 5aYunXjjcDruvNrY
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>When you successfully dodge any amount of Energy damage. you regain 1d4
+    stamina.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  body: 1
+  mind: 0
+  soul: 1
+  options:
+    choices: []
+    category: ''
+  selectedOption: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Hyperphotosynthesis
+    origin: Compendium.utopia.talents.Item.5aYunXjjcDruvNrY
+    img: icons/svg/aura.svg
+    type: passive
+    _id: 02BUNmV5OMPyXSOk
+    system: {}
+    changes:
+      - key: system.dodgeSiphons.energy.convertToStaminaFormula
+        mode: 5
+        value: 1d4
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1745859405660
+      modifiedTime: 1745859552646
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!5aYunXjjcDruvNrY.02BUNmV5OMPyXSOk'
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1745858831846
+  modifiedTime: 1745858937015
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!5aYunXjjcDruvNrY'
+

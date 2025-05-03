@@ -1,0 +1,41 @@
+folder: UfIqoqgMOiSqowEa
+name: Tenacious
+type: talent
+_id: IgUzCbfq65TSJAAU
+img: systems/utopia/assets/icons/talents/tenacious.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">You may craft items and
+    components without a tool station. Items and components crafted this way
+    require twice as long to craft.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Innovation-1
+  position: 3
+  attributes:
+    cost: []
+  points:
+    body: 0
+    mind: 5
+    soul: 2
+  ultimate: true
+  mind: 4
+  soul: 3
+effects: []
+sort: 200000
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731695650472
+  modifiedTime: 1743030237912
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!IgUzCbfq65TSJAAU'
+

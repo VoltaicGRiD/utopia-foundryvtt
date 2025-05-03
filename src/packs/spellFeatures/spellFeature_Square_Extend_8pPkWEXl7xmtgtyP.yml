@@ -1,0 +1,75 @@
+folder: Oqds7vyg50vLegqY
+name: Square Extend
+type: spellFeature
+_id: 8pPkWEXl7xmtgtyP
+img: systems/utopia/assets/icons/artistries/wake.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The spell’s wake increases in a square X meters
+    long across a flat surface.</p>
+  flavor: ''
+  art: wake
+  cost: 20
+  allowRedistribution: 'false'
+  doesTarget: 'true'
+  targetType: template
+  templateType: rectangle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables:
+    cost:
+      name: cost
+      kind: number
+      description: ''
+    stacks:
+      name: stacks
+      kind: number
+      description: ''
+  modifies: aoe
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: template
+    shape: rectangle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769608985
+  modifiedTime: 1746040466835
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!8pPkWEXl7xmtgtyP'
+

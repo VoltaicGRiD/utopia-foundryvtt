@@ -1,0 +1,57 @@
+name: Armed
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>This weapon requires and consumes a single piece of a specific type of
+    ammunition. Ammunition must be equipped on the user's Back or Waist slot in
+    order to be used this way. </p><p>-1 Refinement Component</p>
+  flavor: ''
+  category: fastWeapon
+  cost: -20
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: -1
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  grantsAction: null
+  costBonus: ''
+  ammo:
+    quantity: 1
+    item: qUDbgb9SUYHdjSk4
+  craftingPrompt: ''
+  categories: []
+  tagline: Ammo Requirement
+effects: []
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1735136704824
+  modifiedTime: 1735359272938
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: GZXh8wsYqiKqJ9AY
+sort: 100000
+_key: '!items!GZXh8wsYqiKqJ9AY'
+

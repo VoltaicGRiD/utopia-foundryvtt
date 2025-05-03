@@ -1,0 +1,101 @@
+name: Rugged
+type: specialistTalent
+_id: GI1EA9A7aBdoEaFI
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  flavor: ''
+  resource:
+    resourceId: A0q7EzmJQjX3FvDn
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources:
+    - name: Protection Charges
+      amount: 0
+      max:
+        formula: '@for.total'
+      recoverAmount: 0
+      recoverInterval: rest
+      propagateToActor: true
+      resourceId: p9yLeO7dB3V1zcUx
+      secret: false
+  action:
+    actionId: xGsPpBylqM0JAhHH
+    name: New Action
+    category: trait
+    type: turn
+    trait: agi
+    modifier: ''
+    cost: 0
+    stamina: 0
+    formula: ''
+    flavor: ''
+    template: none
+    resource: ''
+    consumed: 0
+    macro: null
+    actor: default
+  actions: []
+  requirements: []
+  grants: []
+effects:
+  - name: Rugged
+    origin: Compendium.utopia.specialistTalents.Item.GI1EA9A7aBdoEaFI
+    img: icons/svg/aura.svg
+    type: specialist
+    _id: zIyCJ79eHpxQo7rG
+    system: {}
+    changes:
+      - key: system.traits.str.subtraits.for.bonus
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1739005389418
+      modifiedTime: 1739009804215
+      lastModifiedBy: p7QOrF2iNLdEPi7z
+    _key: '!items.effects!GI1EA9A7aBdoEaFI.zIyCJ79eHpxQo7rG'
+folder: null
+sort: 0
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1739005330390
+  modifiedTime: 1739009805201
+  lastModifiedBy: p7QOrF2iNLdEPi7z
+_key: '!items!GI1EA9A7aBdoEaFI'
+

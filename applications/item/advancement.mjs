@@ -11,6 +11,7 @@ export class AdvancementSheet extends DragDropAppV2 {
         gifted: this.actor.system.subtraits[subtrait.short].gifted,
         value: this.actor.system.subtraits[subtrait.short].value,
         newValue: this.actor.system.subtraits[subtrait.short].value,
+        newMod: this.actor.system.subtraits[subtrait.short].mod,
       }
     })
   }
@@ -71,6 +72,7 @@ export class AdvancementSheet extends DragDropAppV2 {
 
     const key = target.dataset.key;
     this.subtraits.find((subtrait) => subtrait.short === key).newValue += 1;
+    this.subtraits.find((subtrait) => subtrait.short === key).newMod += 1;
 
     this.render();
   }
@@ -81,6 +83,7 @@ export class AdvancementSheet extends DragDropAppV2 {
 
     const key = target.dataset.key;
     this.subtraits.find((subtrait) => subtrait.short === key).newValue -= 1;
+    this.subtraits.find((subtrait) => subtrait.short === key).newMod -= 1;
 
     this.render();
   }

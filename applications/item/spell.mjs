@@ -53,15 +53,15 @@ export class SpellSheet extends api.HandlebarsApplicationMixin(
       name: this.item.name,
     };
 
-    context.features = this.item.system.parsedFeatures.map(feature => {
+    context.features = this.item.system.parsedFeatures?.map(feature => {
       return { ...feature, variables: this.item.system.featureSettings[feature.id], id: feature.id };
     }) ?? [];
 
     if (context.features.length === 0) {
-      context.features = await Promise.all(this.item.system.features.map(async (feature) => {
+      context.features = await Promise.all(this.item.system.features?.map(async (feature) => {
         const featureItem = await fromUuid(feature);
         return featureItem;
-      }));
+      })) ?? [];
     }
     
     console.log(context);

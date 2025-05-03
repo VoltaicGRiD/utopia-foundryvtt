@@ -146,10 +146,10 @@
 
   <div class="actions">
     {{#if isPlay}}
-      {{#if (eq system._speciesData.name "No Species")}}
-        <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="species" style="background-color: var(--utopia-color-maroon); color: white;"><i class="fa-fw fas fa-paw"></i> {{localize "UTOPIA.Actors.Actions.NoSpecies"}}</a>
-      {{else}}
+      {{#if (eq system._hasSpecies true)}}
         <a class="action-button" data-action="viewDocument" data-document-id="{{system._speciesData.id}}"><i class="fa-fw fas fa-paw"></i> {{system._speciesData.name}}</a>
+      {{else}}
+        <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="species" style="background-color: var(--utopia-color-maroon); color: white;"><i class="fa-fw fas fa-paw"></i> {{localize "UTOPIA.Actors.Actions.NoSpecies"}}</a>
       {{/if}}
     {{else}}   
       <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="species"><i class="fa-fw fas fa-paw"></i> {{system._speciesData.name}}</a>
@@ -157,6 +157,8 @@
 
     {{#if (or system.canLevel (gt system.subtraitPoints.available 0))}}
       <a class="levelup-button action-button" data-action="openApplication" data-application="advancement"><i class="fa-fw fas fa-arrow-up"></i> {{localize "UTOPIA.Actors.Actions.LevelUp"}}</a>
+    {{else}}
+      <a class="action-button" data-action="openApplication" data-application="advancement"><i class="fa-fw fas fa-arrow-up"></i> {{localize "UTOPIA.Actors.Actions.ViewSubtraits"}}</a>
     {{/if}}
   </div>
 
@@ -220,11 +222,14 @@
     <details>
       <summary>{{localize "UTOPIA.Actors.SpecialtyChecks.Summary"}}</summary>
       <div class="details">
-        {{#each specialtyChecks as |check key|}}
-          <a data-action="viewDocument" data-document-type="specialtyCheck" data-check="{{check.key}}" class="check-name" style="color: black;"><i class="fa-fw {{check.icon}}"></i> {{localize check.label}}</a>
+        {{#each specialtyChecks as |specialtyCheck key|}}
+          {{log specialtyCheck}}
+          {{log key}}
+          <a data-action="viewDocument" data-document-type="specialtyCheck" data-check="{{key}}" class="check-name" style="color: black;"><i class="fa-fw {{specialtyCheck.icon}}"></i> {{localize specialtyCheck.label}}</a>
           {{#if ../isPlay}}
             <div class="check-formula">
-              <a data-action="roll" data-roll="check" class="formula trait-check" style="color: black;">{{check.formula}}</a>
+              {{log specialtyCheck.formula}}
+              <a data-action="roll" data-roll="check" data-check="{{specialtyCheck.key}}" class="formula specialty-check" style="color: black;">{{specialtyCheck.formula}}</a>
               <div class="sub-buttons">
                 <a data-action="roll" data-roll="check" data-specification="hostile" data-tooltip="vs. Hostile" class="sub-button trait-check" style="color: black;"><i class="fas fa-dragon"></i></a>
                 <a data-action="roll" data-roll="check" data-specification="neutral" data-tooltip="vs. Neutral" class="sub-button trait-check" style="color: black;"><i class="fas fa-handshake"></i></a>

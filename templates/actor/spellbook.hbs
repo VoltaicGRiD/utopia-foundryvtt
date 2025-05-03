@@ -32,7 +32,7 @@
     {{else}}
       <legend data-action="createDocument" data-document-type="spell">{{localize "DOCUMENT.Create" type="Spell"}} <i class="fas fa-plus"></i></legend>
     {{/if}}
-    <a data-action="openApplication" data-application="spellcraft"><i class="fas fa-magic"></i> {{localize "UTOPIA.Actors.Actions.OpenSpellcraft"}}</a>
+    <a data-action="openApplication" data-application="spellcraft"><i class="fas fa-magic"></i> {{localize "UTOPIA.Actors.Actions.OpenSpellcraft"}} - {{localize "UTOPIA.Actors.Actions.Spellcap"}} {{system.spellcasting.spellcap}}</a>
     <div class="item-container">
       {{#each spells as |item|}} 
         {{#if ../isPlay}}

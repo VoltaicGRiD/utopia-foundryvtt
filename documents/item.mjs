@@ -1,3 +1,4 @@
+import { prepareGearDataPostActorPrep } from "../models/utility/gear-utils.mjs";
 import { DamageInstance } from "../system/damage.mjs";
 import { UtopiaTemplates } from "../system/init/measuredTemplates.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
@@ -550,6 +551,11 @@ export class UtopiaItem extends Item {
 
     cost = Math.floor(cost / 10);
 
+    // First and foremost, we need to validate the spell's stamina is less than the owner's spellcap
+    if (cost > owner.system.spellcasting.spellcap) {
+      return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.SpellCostExceedsSpellcap'));
+    }
+
     if (stamina < cost) {
       const proceed = await foundry.applications.api.DialogV2.confirm({
         content: game.i18n.format('UTOPIA.ERRORS.NotEnoughStamina', { dhp: Math.abs(cost - stamina) }),
@@ -901,5 +907,42 @@ export class UtopiaItem extends Item {
     }
 
     return categories;
+  }
+
+  /**
+   * Item data preparation to take place after actor data preparation.
+   */
+  prepareDataPostActorPrep() {
+    // Double check this item is owned
+    if (this.parent) { 
+      if (this.type === "talent") {
+        // const actorSystem = this.parent.system;
+        
+        // actorSystem.body = this.system.body ?? actorSystem.body;
+        // actorSystem.mind = this.system.mind ?? actorSystem.mind;
+        // actorSystem.soul = this.system.soul ?? actorSystem.soul;
+
+        // actorSystem.hitpoints.surface.max += (actorSystem.body * actorSystem.constitution) + actorSystem.level;
+        // actorSystem.hitpoints.deep.max += (actorSystem.soul * actorSystem.effervescence) + actorSystem.level;
+        // actorSystem.stamina.max += (actorSystem.mind * actorSystem.endurance) + actorSystem.level;
+
+        // actorSystem.hitpoints.surface.value = Math.min(actorSystem.hitpoints.surface.value, actorSystem.hitpoints.surface.max);
+        // actorSystem.hitpoints.deep.value = Math.min(actorSystem.hitpoints.deep.value, actorSystem.hitpoints.deep.max);
+        // actorSystem.stamina.value = Math.min(actorSystem.stamina.value, actorSystem.stamina.max);
+
+        // if (this.system.selectedOption.length > 0) {
+        //   const category = this.system.options.category;
+
+        //   actorSystem._talentOptions[category] ??= [];
+        //   actorSystem._talentOptions[category].push(this.system.selectedOption);
+        // }
+      }
+
+      if (this.type === "gear") {
+        actor._gearData = [...actor._gearData, this.toObject()];
+
+        prepareGearDataPostActorPrep(this.parent.system, this);
+      }
+    }
   }
 }

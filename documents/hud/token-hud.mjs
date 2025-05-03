@@ -34,23 +34,7 @@ export class UtopiaTokenHUD extends TokenHUD {
 
   /** @override */
   activateListeners(html) {
-    console.log(this);
-    console.log(this.object);
-    console.log(this.document);
-
     super.activateListeners(html);
-
-    // Attribute Bars
-    html.find(".attribute input")
-      .click(super._onAttributeClick)
-      .keydown(super._onAttributeKeydown.bind(this))
-      .focusout(this._onAttributeUpdate.bind(this));
-
-    // html[0].addEventListener("blur", element => {
-    //   html.find(".attribute input").each(async (i, el) => {
-    //     await this._onAttributeUpdate(el);
-    //   });
-    // });
   }
 
   /** @override */

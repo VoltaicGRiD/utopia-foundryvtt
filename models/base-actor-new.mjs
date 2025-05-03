@@ -713,6 +713,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       stamina: this.innateTravel.air.stamina + (this.speciesTravel?.air?.stamina ?? 0),
     }
   }
+
+
   
   /**
    * Adjust the actor's attributes (hitpoints, stamina) based on stats and current level.

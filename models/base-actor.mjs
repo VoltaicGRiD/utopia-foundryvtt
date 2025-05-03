@@ -5,8 +5,8 @@ import { BiographyField as TextareaField } from "./fields/biography-field.mjs";
 import { SchemaArrayField } from "./fields/schema-set-field.mjs";
 import { getPaperDollContext } from "./utility/paper-doll-utils.mjs";
 import { prepareSpeciesData } from "./utility/species-utils.mjs";
-import { prepareGearData } from "./utility/gear-utils.mjs";
-import { prepareBodyData, prepareClassData, prepareKitData } from "./utility/pawn-utils.mjs";
+// import { prepareGearData } from "./utility/gear-utils.mjs";
+// import { prepareBodyData, prepareClassData, prepareKitData } from "./utility/pawn-utils.mjs";
 
 export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
   // Extended from Foundry's TypeDataModel to represent base data logic for Utopia Actors.
@@ -25,7 +25,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     const TraitField = (parent = null) => {
       const returns = {
         mod: new fields.NumberField({ ...requiredInteger }),
-        value: new fields.NumberField({ ...requiredInteger }),
+        value: new fields.NumberField({ ...requiredInteger, initial: 1 }),
         bonus: new fields.NumberField({ ...requiredInteger }),
         total: new fields.NumberField({ ...requiredInteger }),
         gifted: new fields.BooleanField({ required: true, nullable: false, initial: false }),
@@ -40,14 +40,35 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       //rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
     });
 
-    schema.traits = new fields.SchemaField({});
-    schema.subtraits = new fields.SchemaField({});
-    for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits")))) {
-      schema.traits.fields[key] = TraitField();
-      for (const subtrait of value.subtraits) {
-        schema.subtraits.fields[subtrait] = TraitField(key);
-      }
-    }
+    schema.traits = new fields.SchemaField({
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).reduce((acc, [key, value]) => {
+        acc[key] = new fields.SchemaField({
+          value: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+        })
+        return acc;
+      }, {}),
+    });
+
+    schema.subtraits = new fields.SchemaField({
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).reduce((acc, [key, value]) => {
+        acc[key] = new fields.SchemaField({ 
+          value: new fields.NumberField({ ...requiredInteger, initial: 1 }),
+          gifted: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+          critRisk: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+        });
+        return acc;
+      }, {}),
+    });
+
+    schema.checks = new fields.SchemaField({
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))).reduce((acc, [key, value]) => {
+        acc[key] = new fields.SchemaField({
+          attribute: new fields.StringField({ required: true, nullable: false, initial: value.defaultAttribute }),
+          bonus: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+        })
+        return acc;
+      }, {}),
+    });
 
     schema.fullbody = new fields.FilePathField({categories: ["IMAGE", "VIDEO"], required: true}),
 
@@ -76,10 +97,16 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     })
 
     schema.hitpoints = new fields.SchemaField({
-      surface: ResourceField(),
-      deep: ResourceField(),
+      surface: new fields.SchemaField({
+        value: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      }),
+      deep: new fields.SchemaField({
+        value: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      })
     });
-    schema.stamina = ResourceField();
+    schema.stamina = new fields.SchemaField({
+      value: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+    })
 
     schema.block = new fields.SchemaField({
       quantity: new fields.NumberField({ ...requiredInteger, initial: 1 }),
@@ -287,15 +314,11 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     schema.turnActions = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
-      max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "turnActionsMax") }),
       temporary: new fields.NumberField({ ...requiredInteger, initial: 0 })
-      //rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
     })
     schema.interruptActions = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "interruptActionsMax") }),
-      max: new fields.NumberField({ ...requiredInteger, initial: game.settings.get("utopia", "interruptActionsMax") }),
       temporary: new fields.NumberField({ ...requiredInteger, initial: 0 })
-      //rest: new fields.StringField({ required: true, nullable: false, blank: true, initial: "", validate: (v) => Roll.validate(v) || v === "" }),
     })
 
     schema.evolution = new fields.SchemaField({
@@ -381,20 +404,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }, {}),
     } 
 
-    const specialtyChecks = () => {
-      // Create a new StringField for each SPECIALTY_CHECKS
-      const returns = {};
-      for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks")))) {
-        returns[key] = new fields.StringField({ required: true, nullable: false, initial: value.defaultAttribute, choices: traitOptions });
-      }      
-      return returns;
-    }
-
-    schema.checks = new fields.SchemaField({
-      // Create a new StringField for each SPECIALTY_CHECKS
-      ...specialtyChecks(),
-    });
-
     schema.augmenting = new fields.SchemaField({
       canAugment: new fields.BooleanField({ required: true, nullable: false, initial: true }),
       damageFormula: new fields.StringField({ required: true, nulllable: false, initial: "1d"}),
@@ -428,9 +437,12 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       grantedName: new fields.StringField({ required: true, nullable: false }), 
     }));
 
-    schema.body = new fields.NumberField({ ...requiredInteger, initial: 0 });
-    schema.mind = new fields.NumberField({ ...requiredInteger, initial: 0 });
-    schema.soul = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    // schema.body = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    // schema.mind = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    // schema.soul = new fields.NumberField({ ...requiredInteger, initial: 0 });
+
+    schema._speciesData = new fields.ObjectField({ required: true, nullable: false, initial: {} });
+    schema._hasSpecies = new fields.BooleanField({ required: true, nullable: false, initial: false });
     
     return schema;
   }
@@ -442,10 +454,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       additionalStamina: 0,
     }
 
-    this.hitpoints.surface.max = 0;
-    this.hitpoints.deep.max = 0;
-    this.stamina.max = 0;
-
     Object.keys(this.subtraits).map(k => {
       this.subtraits[k].max = 0;
     })
@@ -456,15 +464,48 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       this.travel[k].stamina = 0;
     })
 
+    Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).forEach(k => {
+      this.subtraits[k].total = this.subtraits[k].value;
+      this.subtraits[k].mod = this.subtraits[k].value - 4;
+    })
+
+    Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).forEach(([key, value]) => {
+      this.traits[key].total = value.subtraits.reduce((acc, subtrait) => {
+        return acc + this.subtraits[subtrait].total;
+      }, 0);
+      this.traits[key].mod = this.traits[key].total - 4;
+    })
+
+    this.defenses = {};
+
     const systemDefenses = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
     for (const [key, value] of Object.entries(systemDefenses)) {
       if (value.initialDefense) {
         this.innateDefenses[key] += value.initialDefense;
+        this.defenses[key] = 0;
       }
       else {
         this.innateDefenses[key] = 0;
+        this.defenses[key] = 0;
       }
     }
+
+    this.talentPoints = {
+      spent: 0,
+      available: this.level
+    }
+
+    this.hitpoints.surface.max = 0;
+    this.hitpoints.deep.max = 0;
+    this.stamina.max = 0;
+
+    this.subtraitPoints = {
+      spent: 0
+    };
+    this.talentPoints = {};
+
+    this.turnActions.max = game.settings.get("utopia", "turnActionsMax");
+    this.interruptActions.max = game.settings.get("utopia", "interruptActionsMax");
   }
 
 
@@ -476,42 +517,77 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     super.prepareDerivedData();
 
     try {
-      // Prepare traits and subtraits
-      Object.keys(this.traits).forEach(k => {
-        this.traits[k].mod = this.traits[k].value - 4;
-        this.traits[k].total = this.traits[k].value + this.traits[k].bonus;
-      });
-      Object.keys(this.subtraits).forEach(k => {
-        this.subtraits[k].mod = this.subtraits[k].value - 4;
-        this.subtraits[k].total = this.subtraits[k].value + this.subtraits[k].bonus;
-      });
-
       // Prepare species data
-      if (!_this.speciesData) {
-        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.SpeciesDataNotFound"));
+      if (!this._speciesData) {
+        //ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.SpeciesDataNotFound"));
       }
-
-      prepareSpeciesData(this).then((characterData) => {
-        foundry.utils.mergeObject(this, characterData);
-
-        // Prepare travel speeds
-        Object.keys(this.travel).forEach(k => {
-          this.travel[k].speed = new Roll(this.travel[k].formula, this.parent.getRollData()).evaluateSync().total;
-        });
-
-        // Prepare defenses
-        Object.keys(this.innateDefenses).forEach(k => {
-          this.defenses[k] = new Roll(this.innateDefenses[k], this.parent.getRollData()).evaluateSync().total;
-        });
-
-        // Prepare points
-        if (["character", "npc"].includes(this.parent.type)) {
-          
-        }
-      });
-    } catch (error) {
-      console.error("Error preparing derived data:", error);
+      else {
+        prepareSpeciesData(this);
+      }
+    } catch (err) {
+      console.error("Error preparing derived data:", err);
     }
+  }
+
+  _preparePostSpeciesData(characterData) {
+    foundry.utils.mergeObject(this, characterData);
+
+    // Prepare travel speeds
+    Object.keys(this.travel).forEach(k => {
+      this.travel[k].speed = new Roll(this.travel[k].formula, this.parent.getRollData()).evaluateSync().total;
+    });
+
+    // Prepare defenses
+    Object.keys(this.innateDefenses).forEach(k => {
+      this.defenses[k] = this.innateDefenses[k];
+    });
+
+    this.canLevel = this.experience >= this.level * 100;
+
+    for (const item of this.parent.items) {
+      item.prepareDataPostActorPrep();
+    }
+
+    // Prepare points
+    if (["character", "npc"].includes(this.parent.type)) {
+      this.hitpoints.surface.max += (this.body * this.constitution) + this.level;
+      this.hitpoints.deep.max += (this.soul * this.effervescence) + this.level;
+      this.stamina.max += (this.mind * this.endurance) + this.level;
+
+      this.hitpoints.surface.value = Math.min(this.hitpoints.surface.value, this.hitpoints.surface.max);
+      this.hitpoints.deep.value = Math.min(this.hitpoints.deep.value, this.hitpoints.deep.max);
+      this.stamina.value = Math.min(this.stamina.value, this.stamina.max);
+    }
+
+    this.talentPoints.spent = this.body + this.mind + this.soul;
+    this.talentPoints.available = this.level - this.talentPoints.spent;
+    
+    this.specialistPoints.spent = this.parent.items.filter(i => i.type === "specialist").length;
+    this.specialistPoints.available = Math.floor(this.level / 10) - this.specialistPoints.spent;
+
+    Object.keys(this.subtraits).forEach(k =>{
+      this.subtraitPoints.spent += (this.subtraits[k].value - 1);
+      this.subtraitPoints.available = 5 + this.level - this.subtraitPoints.spent;
+    })    
+
+    this.turnActions.available = this.turnActions.value + this.turnActions.temporary;
+    this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;
+  }
+
+  get body() {
+    return this.parent.items.filter(i => i.type === "talent").reduce((acc, talent) => acc + talent.system.body, 0);
+  }
+
+  get mind() {
+    return this.parent.items.filter(i => i.type === "talent").reduce((acc, talent) => acc + talent.system.mind, 0);
+  }
+
+  get soul() {
+    return this.parent.items.filter(i => i.type === "talent").reduce((acc, talent) => acc + talent.system.soul, 0);
+  }
+
+  get encumbered() {
+    return this.parent.items.filter(i => ["gear", "generic"].includes(i.type) && i.system.slots && !i.system.equipped).reduce((acc, item) => acc + item.system.slots, 0) > this.slotCapacity.total;
   }
 
   /**

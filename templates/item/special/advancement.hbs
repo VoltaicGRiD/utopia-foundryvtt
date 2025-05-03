@@ -1,5 +1,5 @@
 <section class="advancement">
-  <span class="subtrait-points">{{localize 'UTOPIA.Actor.Points.subtraits'}}: {{points}}</span>
+  <span class="subtrait-points">{{localize 'UTOPIA.Actors.Points.subtraits'}}: {{points}}</span>
 
   <div class="subtrait-selection">
     {{#each subtraits as |subtrait|}}
@@ -16,7 +16,7 @@
         {{/if}}
         <span class="subtrait-value" data-key="{{subtrait.short}}">{{subtrait.value}}</span>
         <span class="subtrait-arrow"><i class="fas fa-arrow-right"></i></span>
-        <span class="subtrait-new-value {{#if (gt subtrait.newValue subtrait.value)}}greater{{else if (lt subtrait.newValue subtrait.value)}}lesser{{/if}}" data-key="{{subtrait.short}}">{{subtrait.newValue}}</span>
+        <span class="subtrait-new-value {{#if (gt subtrait.newValue subtrait.value)}}greater{{else if (lt subtrait.newValue subtrait.value)}}lesser{{/if}}" data-key="{{subtrait.short}}">{{subtrait.newValue}}&nbsp;&nbsp;-&nbsp;&nbsp;({{numberFormat subtrait.newMod sign=true}})</span>
       </div>
     {{/each}}
   </div>

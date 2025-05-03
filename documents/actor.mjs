@@ -450,9 +450,9 @@ export class UtopiaActor extends Actor {
    * @returns {Promise<ChatMessage>} The chat message with the roll result.
    */
   async check(trait, { specification = "always", checkFavor = true, difficulty = 0 } = {}) {
-    const specialChecks = JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))[trait] ?? {};
-    if (Object.keys(specialChecks).length > 0) {
-      return this._checkSpecialty({ trait, specialChecks, specification, checkFavor, difficulty });
+    const check = JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))[trait] ?? {};
+    if (Object.keys(check).length > 0) {
+      return this._checkSpecialty({ trait, check, specification, checkFavor, difficulty });
     } else {
       return this._checkTrait({ trait, specification, checkFavor, difficulty });
     }
@@ -469,15 +469,14 @@ export class UtopiaActor extends Actor {
    * @param {number} [params.difficulty=0] - The difficulty level of the check.
    * @returns {Promise<ChatMessage>}
    */
-  async _checkSpecialty({ trait, specialChecks, specification = "always", checkFavor = true, difficulty = 0 }) {
-    const formula = specialChecks.formula;
-    const attribute = this.system.checks[trait];
+  async _checkSpecialty({ trait, check, specification = "always", checkFavor = true, difficulty = 0 }) {
+    const formula = check.formula;
+    const attribute = this.system.checks[trait].attribute;
     const netFavor = checkFavor ? (await this.checkForFavor(trait, specification)) || 0 : 0;
     // Modify the formula by replacing the default attribute placeholder.
-    const newFormula = formula.replace(`@${specialChecks.defaultAttribute}`, `@${attribute}`);
-    // If a specification is provided and exists within specialChecks, use its label.
-    const labelKey = specification && specialChecks[specification] ? specification : trait;
-    var label = game.i18n.localize(specialChecks[labelKey].label);
+    const newFormula = formula.replace(`@${check.defaultAttribute}`, `@${attribute}`);
+    // If a specification is provided and exists within check, use its label.
+    var label = game.i18n.localize(check.label);
     // If the specification is not "always", append it to the label.
     if (specification !== "always") 
       label = label + ` vs. ${specification.capitalize()}`;    
@@ -952,9 +951,9 @@ export class UtopiaActor extends Actor {
       }
 
       if (isTurn) 
-        canPerform = this._canPerformAction({cost: 1, type: "turn"})     
+        canPerform = await this._canPerformAction({cost: 1, type: "turn"})     
       else 
-        canPerform = this._canPerformAction({cost: 1, type: "interrupt"})     
+        canPerform = await this._canPerformAction({cost: 1, type: "interrupt"})     
     }
 
     if (!canPerform) {
@@ -1016,9 +1015,9 @@ export class UtopiaActor extends Actor {
       }
 
       if (isTurn) 
-        canPerform = this._canPerformAction({cost: 1, type: "turn"})     
+        canPerform = await this._canPerformAction({cost: 1, type: "turn"})     
       else 
-        canPerform = this._canPerformAction({cost: 1, type: "interrupt"})     
+        canPerform = await this._canPerformAction({cost: 1, type: "interrupt"})     
     }
 
     if (!canPerform) {
@@ -1102,7 +1101,7 @@ export class UtopiaActor extends Actor {
         }
       }
 
-      if (this._canPerformAction({item}) === true) {
+      if (await this._canPerformAction({item}) === true) {
         switch (category) {
           case "damage":
             return this._damageAction(item);
@@ -1648,7 +1647,8 @@ export class UtopiaActor extends Actor {
 
       if (document.type === "species") {
         this.update({
-          "system._speciesData": document.system,
+          "system._speciesData": foundry.utils.mergeObject( document.system.toObject(), {name: document.name} ),
+          "system._hasSpecies": true,
         })
       }
     }

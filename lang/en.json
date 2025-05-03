@@ -401,7 +401,8 @@
         "ScaleSame": "Scale (same size)",
         "ScaleLarger": "Scale (larger)",
         "HoldAction": "Hold Action (2 TA = 1 IA)",
-        "Assist": "Assist (WIP)"
+        "Assist": "Assist (WIP)",
+        "ViewSubtraits": "View Subtraits"
       },
       "Items": {
         "Talents": "Talents",

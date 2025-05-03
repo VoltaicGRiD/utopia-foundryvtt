@@ -911,18 +911,26 @@ export class UtopiaItem extends Item {
     // Double check this item is owned
     if (this.parent) { 
       if (this.type === "talent") {
-        const actorSystem = this.parent.system;
+        // const actorSystem = this.parent.system;
         
-        actorSystem.body = this.system.body ?? actorSystem.body;
-        actorSystem.mind = this.system.mind ?? actorSystem.mind;
-        actorSystem.soul = this.system.soul ?? actorSystem.soul;
+        // actorSystem.body = this.system.body ?? actorSystem.body;
+        // actorSystem.mind = this.system.mind ?? actorSystem.mind;
+        // actorSystem.soul = this.system.soul ?? actorSystem.soul;
 
-        if (this.system.selectedOption.length > 0) {
-          const category = this.system.options.category;
+        // actorSystem.hitpoints.surface.max += (actorSystem.body * actorSystem.constitution) + actorSystem.level;
+        // actorSystem.hitpoints.deep.max += (actorSystem.soul * actorSystem.effervescence) + actorSystem.level;
+        // actorSystem.stamina.max += (actorSystem.mind * actorSystem.endurance) + actorSystem.level;
 
-          actorSystem._talentOptions[category] ??= [];
-          actorSystem._talentOptions[category].push(this.system.selectedOption);
-        }
+        // actorSystem.hitpoints.surface.value = Math.min(actorSystem.hitpoints.surface.value, actorSystem.hitpoints.surface.max);
+        // actorSystem.hitpoints.deep.value = Math.min(actorSystem.hitpoints.deep.value, actorSystem.hitpoints.deep.max);
+        // actorSystem.stamina.value = Math.min(actorSystem.stamina.value, actorSystem.stamina.max);
+
+        // if (this.system.selectedOption.length > 0) {
+        //   const category = this.system.options.category;
+
+        //   actorSystem._talentOptions[category] ??= [];
+        //   actorSystem._talentOptions[category].push(this.system.selectedOption);
+        // }
       }
 
       if (this.type === "gear") {

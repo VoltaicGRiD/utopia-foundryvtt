@@ -46,7 +46,7 @@ export class Character extends DragDropActorV2 {
 
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    options.parts = ["header", "tabs", "attributes", "equipment", "spellbook", "background", "effects"];
+    options.parts = ["header", "tabs", "attributes", "equipment", "spellbook", , "effects"];
   }
 
   _prepareSubmitData(event, form, formData) {

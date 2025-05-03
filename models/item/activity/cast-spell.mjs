@@ -1,3 +1,4 @@
+import { gatherItemsSync } from "../../../system/helpers/gatherItems.mjs";
 import { BaseOperation } from "./base-activity.mjs";
 
 const fields = foundry.data.fields;
@@ -9,12 +10,19 @@ export class castSpell extends BaseOperation {
     return {
       castSpell: new fields.SchemaField({
         type: new fields.StringField({ required: true, nullable: false, blank: false, initial: "castSpell" }),
-        spell: new fields.DocumentUUIDField({ required: true, nullable: false }),
+        spell: new fields.StringField({ required: false, nullable: true, initial: null, choices: this.getChoices() }), // Substitute for DocumentUUIDField, which cannot display 'choices' in the UI
         ignoreStamina: new fields.BooleanField({ required: true, nullable: false, initial: false }),
         ignoreStatusEffects: new fields.BooleanField({ required: true, nullable: false, initial: false }),
         ignoreArtistries: new fields.BooleanField({ required: true, nullable: false, initial: false }),
         ...baseActivity,
       })
     }
+  }
+
+  static getChoices() {
+    return gatherItemsSync({ type: "spell", gatherFromActor: true, gatherFromWorld: true, gatherFolders: true }).reduce((acc, spell) => { 
+      acc[spell.uuid] = spell.name;
+      return acc;
+    }, {})
   }
 }

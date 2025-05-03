@@ -1,4 +1,6 @@
-export class BaseOperation {
+export class BaseOperation extends foundry.abstract.DataModel {
+  static LOCALIZATION_PREFIXES = [...super.LOCALIZATION_PREFIXES, "UTOPIA.Items.Activity.Operations"];
+
   static defineSchema() {
     const schema = {};
     const fields = foundry.data.fields;
@@ -10,9 +12,9 @@ export class BaseOperation {
     schema.costs = new fields.SchemaField({
       actions: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
       actionType: new fields.StringField({ required: true, nullable: false, initial: "turn", choices: { 
-        turn: "UTOPIA.Items.Activity.ActionType.Turn",
-        interrupt: "UTOPIA.Items.Activity.ActionType.Interrupt",
-        current: "UTOPIA.Items.Activity.ActionType.Current",
+        turn: game.i18n.localize("UTOPIA.Items.Activity.ActionType.Turn"),
+        interrupt: game.i18n.localize("UTOPIA.Items.Activity.ActionType.Interrupt"),
+        current: game.i18n.localize("UTOPIA.Items.Activity.ActionType.Current"),
       } }),
       stamina: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
       shp: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
@@ -28,8 +30,7 @@ export class BaseOperation {
     schema.executeImmediately = new fields.BooleanField({ required: true, nullable: false, initial: true });
     
     schema.toggleActiveEffects = new fields.SchemaField({
-      availableEffects: new fields.ArrayField(new fields.ObjectField({ required: true, nullable: false, initial: {} })),
-      selectedEffects: new fields.ArrayField(new fields.ObjectField({ required: true, nullable: false, initial: {} })),
+      selectedEffects: new fields.SetField(new fields.StringField({ required: true, nullable: false, initial: "", choices: this.getEffects() }), { required: true, nullable: false, initial: [] }),
       notificationMessage: new fields.StringField({ required: true, nullable: false, initial: game.i18n.localize("UTOPIA.Items.Activity.NotificationMessage") }),
       displayNotification: new fields.BooleanField({ required: true, nullable: false, initial: true }),
       displayInChat: new fields.BooleanField({ required: true, nullable: false, initial: false }),
@@ -40,14 +41,12 @@ export class BaseOperation {
     return schema;
   }
 
-  static getEffects(activity) {
-    const effects = activity.effects || [];
-    const activityParent = activity.parent ?? {};
-    const parentEffects = activityParent.effects || [];
-
-    if (activity.parent)    
+  static getEffects() {
+    const effects = this.parent?.effects || [];
+    const parentEffects = this.parent?.parent?.effects ?? [];
 
     return [...effects, ...parentEffects].map(effect => {
       return { uuid: effect.uuid, name: effect.name };
     });
   }
+}

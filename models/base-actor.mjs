@@ -442,6 +442,10 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     // schema.mind = new fields.NumberField({ ...requiredInteger, initial: 0 });
     // schema.soul = new fields.NumberField({ ...requiredInteger, initial: 0 });
 
+    schema.constitution = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    schema.endurance = new fields.NumberField({ ...requiredInteger, initial: 0 });
+    schema.effervescence = new fields.NumberField({ ...requiredInteger, initial: 0 });
+
     schema.biography = new fields.SchemaField({
       pronouns: new fields.StringField({ required: true, nullable: false, initial: "" }),
       age: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -584,6 +588,16 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       this.hitpoints.deep.value = Math.min(this.hitpoints.deep.value, this.hitpoints.deep.max);
       this.stamina.value = Math.min(this.stamina.value, this.stamina.max);
     }
+
+    Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).forEach(([key, trait]) => {
+      const maximum = trait.maximum;
+
+      trait.subtraits.forEach(subtrait => {
+        if (this.subtraits[subtrait]) {
+          this.subtraits[subtrait].max = this[maximum];
+        }
+      })
+    })
 
     this.talentPoints.spent = this.body + this.mind + this.soul;
     this.talentPoints.available = this.level - this.talentPoints.spent;

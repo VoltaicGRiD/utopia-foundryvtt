@@ -15,18 +15,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Compress
-        run: |
-          cd ../
-          rm -rf utopia-foundryvtt.zip
-          rm -rf utopia.zip
-          zip -r utopia.zip utopia-foundryvtt -x ".git/*" ".github/*"
       - name: Install Dependencies
         run: |
           npm ci
       - name: Package SRD Content
         run: |
           npm run pack --if-present
+      - name: Compress
+        run: |
+          cd ../
+          rm -rf utopia-foundryvtt.zip
+          rm -rf utopia.zip
+          zip -r utopia.zip utopia-foundryvtt -x ".git/*" ".github/*"
       - name: Add Build to Release
         uses: softprops/action-gh-release@v2
         with:

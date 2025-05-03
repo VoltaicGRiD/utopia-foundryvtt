@@ -21,9 +21,12 @@ jobs:
           rm -rf utopia-foundryvtt.zip
           rm -rf utopia.zip
           zip -r utopia.zip utopia-foundryvtt -x ".git/*" ".github/*"
-      - name: Echo location
+      - name: Install Dependencies
         run: |
-          ls | echo
+          npm ci
+      - name: Package SRD Content
+        run: |
+          npm run pack --if-present
       - name: Add Build to Release
         uses: softprops/action-gh-release@v2
         with:

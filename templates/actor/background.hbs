@@ -43,16 +43,6 @@
           {{formGroup (lookup ../systemFields.biography.fields this) value=(lookup ../system.biography this) name=(concat 'system.biography.' this) stacked=true localize=true}}
         {{/each}}
       </div>
-      <div class="grid grid-1col">
-        {{#if editable}}
-          <prose-mirror name="system.description" data-document-u-u-i-d="{{item.uuid}}" value="{{system.description}}" collaborate="true" toggled="true">
-            {{{enrichedDescription}}}
-          </prose-mirror>
-        {{else}} 
-          {{{enrichedDescription}}}
-        {{/if}}
-      </div>
-      <!-- {{formGroup systemFields.biographyFields name="system.biographyFields" value=system.biographyFields localize=true}} -->
     {{/if}}
   </div>
 </section>

@@ -8,6 +8,7 @@ export class ArtifactFeatureOptions extends FeatureBase {
     const requiredInteger = { required: true, nullable: false, initial: 0 };
     const requiredString = { required: true, nullable: false, initial: "" };
     
+    schema.craftMacro = new fields.StringField({ ...requiredString, initial: "" });
     schema.damage = new fields.SchemaField({
       formula: new fields.StringField({ required: true, nullable: false, initial: "0", validate: (value) => {
         return Roll.validate(value);

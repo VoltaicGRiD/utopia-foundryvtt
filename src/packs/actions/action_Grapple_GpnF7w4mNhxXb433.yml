@@ -1,0 +1,35 @@
+name: Grapple
+type: action
+_id: GpnF7w4mNhxXb433
+img: icons/svg/trap.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  type: Standard
+  source: null
+  cost: 3
+  stamina: 2
+  rules: {}
+  trigger: ''
+  recharge: Immediate
+  target: None
+  triggers: []
+effects: []
+folder: null
+sort: 1600000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734257886043
+  modifiedTime: 1743031962746
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!GpnF7w4mNhxXb433'
+

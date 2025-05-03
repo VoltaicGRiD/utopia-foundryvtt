@@ -1,0 +1,88 @@
+name: Unwieldy
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>This weapon requires an additional hand to attack with.</p><p>-1
+    Refinement Componen</p>
+  flavor: ''
+  category: fastWeapon
+  cost: -20
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: -1
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  grantsAction: null
+  costBonus: ''
+  craftingPrompt: ''
+  tagline: +1 Handling
+effects:
+  - name: Unwieldy
+    origin: Item.seJZKEwTVc9gslcL
+    img: icons/svg/aura.svg
+    type: gear
+    _id: GBaNXM20S9OF3v6P
+    system: {}
+    changes:
+      - key: system.handling
+        mode: 0
+        value: twoHanded
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: 1735368276098
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!qAIP0lMovaHahjcN.GBaNXM20S9OF3v6P'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734993257663
+  modifiedTime: 1735601548000
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: qAIP0lMovaHahjcN
+sort: 2600000
+_key: '!items!qAIP0lMovaHahjcN'
+

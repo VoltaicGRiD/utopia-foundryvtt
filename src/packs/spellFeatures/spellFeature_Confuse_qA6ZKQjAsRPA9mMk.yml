@@ -1,0 +1,68 @@
+folder: KHSQSKTQfJSy9HeI
+name: Confuse
+type: spellFeature
+img: systems/utopia/assets/icons/artistries/illusion.svg
+system:
+  formula: ''
+  description: >-
+    <p style="">All affected creatures make a [[/r 3d6 + @wil.mod]]{Will}
+    contest against the caster when the spell is cast. For each creature, upon
+    failing, it becomes Dazed for the spell's duration.</p>
+  flavor: ''
+  art: illusion
+  cost: 70
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769607685
+  modifiedTime: 1734827683253
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: qA6ZKQjAsRPA9mMk
+sort: 0
+_key: '!items!qA6ZKQjAsRPA9mMk'
+

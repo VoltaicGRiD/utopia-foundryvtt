@@ -17,7 +17,8 @@ export class Character extends UtopiaActorBase {
         actorLink: true,
         disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
         sight: {
-          enabled: true
+          enabled: true,
+          range: 15,
         }
       }
     });
@@ -30,34 +31,10 @@ export class Character extends UtopiaActorBase {
     const fields = foundry.data.fields;
     const schema = super.defineSchema();
 
-    const required = { required: true, nullable: false, initial: 0 }
-    const FormulaField = () => new fields.StringField({ required: true, nullable: true, validate: (v) => Roll.validate(v) });
-    const ResourceField = () => new fields.SchemaField({
-      value: new fields.NumberField({ ...required }),
-      max: new fields.NumberField({ ...required })
-    });
-    const PointField = (initial) => new fields.SchemaField({
-      available: new fields.NumberField({ ...required, initial: initial }),
-      bonus: new fields.NumberField({ ...required, initial: 0 }),
-      spent: new fields.NumberField({ ...required, initial: 0 })
-    })
+    const required = { required: true, nullable: false }
 
-    schema.level = new fields.NumberField({ ...required, initial: 10 });
-    schema.experience = new fields.NumberField({ ...required });
     schema.tags = new fields.SetField(new fields.StringField({ required: true, nullable: false }));
-    schema.giftPoints = PointField(0);
-    schema.subtraitPoints = PointField(0);
-    schema.talentPoints = PointField(0);
-    schema.specialistPoints = PointField(0);
-    schema.languagePoints = PointField(0);
     schema.flexibility = new fields.ArrayField(new fields.ObjectField({}), { initial: [] });
-    schema._talentTracking = new fields.ArrayField(new fields.SchemaField({
-      tree: new fields.DocumentUUIDField({ required: true, nullable: false }),
-      branch: new fields.NumberField({ required: true, nullable: false }),
-      tier: new fields.NumberField({ required: true, nullable: false }),
-      talent: new fields.DocumentUUIDField({ required: true, nullable: false }),
-    }))    
-    schema._talentOptions = new fields.ObjectField({ initial: {} });
     
     // Actor owned crafting components
     schema.components = new fields.SchemaField({});

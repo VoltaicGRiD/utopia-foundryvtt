@@ -1,0 +1,20 @@
+name: Necromancy
+sorting: a
+folder: null
+type: Item
+_id: xXCxQL201Rj0h9iA
+description: ''
+sort: 800000
+color: '#a75aa2'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769608372
+  modifiedTime: 1734888678163
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!xXCxQL201Rj0h9iA'
+

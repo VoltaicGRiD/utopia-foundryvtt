@@ -1,0 +1,106 @@
+name: Warfare
+type: talentTree
+_id: 8bh7Yr1RkP9hZ3j4
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>The Warfare tree is a path towards combat and fitness in conflict.
+    Talents from this tree are battle oriented, both general and specialized. It
+    is the fine art of not only hitting things really hard, but also hitting
+    things very quickly and in close succession.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  style:
+    foregroundColor: '#ffffff'
+    backgroundColor: '#000000'
+    headerColor: '#555555'
+  allowLooping: false
+  branchCount: 3
+  branches:
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.Ssi7KNxiAVbE15Yt
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.wqv4X5X3UnM9TVfy
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.YME8HDAAJzjrcUkE
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.VJq5KibRzB4wmtsW
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.4GBAdAleoavmDm9d
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.THAVlOY4Y9TXvQMD
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.jDzpWuLZGT31JICZ
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.AvIkofwSbXJboNh8
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.p5LfkIplQAsC4Aoa
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.92Vy4glUNG2bYM4r
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.NAKBR32MTg5t3MN6
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.Ai1MU0zo5pv18A9L
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.62sBoANDJ6ycUqVs
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741966295782
+  modifiedTime: 1741966368596
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!8bh7Yr1RkP9hZ3j4'
+

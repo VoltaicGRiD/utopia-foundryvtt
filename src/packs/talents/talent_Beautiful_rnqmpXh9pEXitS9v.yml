@@ -1,0 +1,83 @@
+folder: 0ReMDsRTDtz3NbnA
+name: Beautiful
+type: talent
+_id: rnqmpXh9pEXitS9v
+img: icons/svg/item-bag.svg
+system:
+  description: <p>You cannot gain points of disfavor on Appeal tests.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  body: 0
+  mind: 0
+  soul: 3
+  options:
+    choices: []
+    category: ''
+  selectedOption: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Beautiful
+    origin: Compendium.utopia.talents.Item.rnqmpXh9pEXitS9v
+    img: icons/svg/aura.svg
+    type: passive
+    _id: p0JhzFa3DEdfX7dB
+    system: {}
+    changes:
+      - key: system.favorLocks.blockDisfavor.app
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1745982078072
+      modifiedTime: 1745982145853
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!rnqmpXh9pEXitS9v.p0JhzFa3DEdfX7dB'
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1745982060773
+  modifiedTime: 1745982076370
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!rnqmpXh9pEXitS9v'
+

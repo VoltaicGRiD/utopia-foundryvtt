@@ -1,31 +1,20 @@
 export async function prepareSpeciesData(character) {
-  if (character.parent.items.filter(i => i.type === "species").length === 0) {
-    return prepareSpeciesDefault(character);
-  }
+  const species = character._speciesData;
 
-  const species = character.parent.items.find(i => i.type === "species");
-  character._speciesData = species;
+  if (character.languagePoints) character.languagePoints.available += species.communication.languages - character.languagePoints.spent;
+  if (character.communication) character.communication.telepathy = species.communication.telepathy;
+  character.size = species.size;
 
-  if (character.languagePoints) character.languagePoints.available += character._speciesData.system.communication.languages - character.languagePoints.spent;
-  if (character.communication) character.communication.telepathy = character._speciesData.system.communication.telepathy;
-  character.size = character._speciesData.system.size;
+  //character.block.size += species.block.size;
+  character.block.quantity = species.block.quantity;
 
-  character.speciesTravel = {
-    land: { speed: 0, stamina: 0 },
-    water: { speed: 0, stamina: 0 },
-    air: { speed: 0, stamina: 0 }
-  }
-
-  //character.block.size += character._speciesData.system.block.size;
-  character.block.quantity = character._speciesData.system.block.quantity;
-
-  //character.dodge.size += character._speciesData.system.dodge.size;
-  character.dodge.quantity = character._speciesData.system.dodge.quantity;
+  //character.dodge.size += species.dodge.size;
+  character.dodge.quantity = species.dodge.quantity;
 
   const traits = JSON.parse(game.settings.get("utopia", "advancedSettings.traits"));
   const subtraits = JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"));
   const allTraits = { ...traits, ...subtraits };
-  for (const trait of character._speciesData.system.gifts.subtraits) {
+  for (const trait of species.gifts.subtraits || []) {
     for (const [traitKey, traitValue] of Object.entries(traits)) {
       if (
         traitKey === trait.toLowerCase() || 
@@ -36,7 +25,7 @@ export async function prepareSpeciesData(character) {
       }
     }
 
-    for (const [traitKey, traitValue] of Object.entries(subtraits)) {
+    for (const [traitKey, traitValue] of Object.entries(subtraits) || []) {
       if (
         traitKey === trait.toLowerCase() || 
         traitValue.long === trait.toLowerCase() ||
@@ -47,26 +36,22 @@ export async function prepareSpeciesData(character) {
     }
   }
 
-  character.giftPoints.available = character._speciesData.system.gifts.points;
+  character.giftPoints.available = species.gifts.points;
 
-  for (const [key, value] of Object.entries(character._speciesData.system.travel)) {
-    const rolldata = await character.parent.getRollData();
-    const innateRoll = new Roll(String(character.innateTravel[key].speed), rolldata);
-    innateRoll.evaluateSync();  
-    character.speciesTravel[key].speed = innateRoll.total;
+  character.travel.land.formula = String(species.travel.land.speed);
+  character.travel.land.stamina = species.travel.land.stamina;
+  character.travel.water.formula = String(species.travel.water.speed);
+  character.travel.water.stamina = species.travel.water.stamina;
+  character.travel.air.formula = String(species.travel.air.speed);
+  character.travel.air.stamina = species.travel.air.stamina;
 
-    const speciesRoll = new Roll(String(value.speed), rolldata);
-    speciesRoll.evaluateSync();
-    character.speciesTravel[key].speed += speciesRoll.total;
-  }
+  character.constitution += species.constitution;
+  character.endurance += species.endurance;
+  character.effervescence += species.effervescence;
 
-  character.constitution += character._speciesData.system.constitution;
-  character.endurance += character._speciesData.system.endurance;
-  character.effervescence += character._speciesData.system.effervescence;
-
-  character.evolution.head = Math.max(species.system.evolution.head, 1);
-  character.evolution.feet = species.system.evolution.feet;
-  character.evolution.hands = species.system.evolution.hands;
+  character.evolution.head = Math.max(species.evolution.head, 1);
+  character.evolution.feet = species.evolution.feet;
+  character.evolution.hands = species.evolution.hands;
 
   character.equipmentSlots.capacity = {};
   character.equipmentSlots.capacity.head = character.evolution.head;
@@ -80,19 +65,28 @@ export async function prepareSpeciesData(character) {
 
   character.augmentSlots.capacity = {};
   character.augmentSlots.capacity.head = character.evolution.head;
-  character.augmentSlots.capacity.neck = character.evolution.head;
-  character.augmentSlots.capacity.back = 1;
+  character.augmentSlots.capacity.neck = 0;
+  character.augmentSlots.capacity.back = 0;
   character.augmentSlots.capacity.chest = 1;
-  character.augmentSlots.capacity.waist = 1;
+  character.augmentSlots.capacity.waist = 0;
   character.augmentSlots.capacity.feet = character.evolution.feet / 2;
   character.augmentSlots.capacity.hands = character.evolution.hands / 2;
-  character.augmentSlots.capacity.ring = character.evolution.hands / 2;
+  character.augmentSlots.capacity.ring = 0;  
+
+  character.armors = species.armors;
+
+  character.armors.unaugmentable.neck = true;
+  character.armors.unaugmentable.back = true;
+  character.armors.unaugmentable.waist = true;
+  character.armors.unaugmentable.ring = true;
 
   character.handheldSlots.capacity = character.evolution.hands;
   character.handheldSlots.equipped = character.handheldSlots.equipped || [];
   for (let i = 0; i < character.handheldSlots.capacity; i++) {
     if (!character.handheldSlots.equipped[i]) character.handheldSlots.equipped[i] = null;
   }
+
+  character._preparePostSpeciesData(character);
 }
 
 export async function prepareSpeciesDefault(character) {
@@ -112,9 +106,9 @@ export async function prepareSpeciesDefault(character) {
     }
   }
 
-  if (character.languagePoints) character.languagePoints.available = character._speciesData.system.communication.languages;
-  if (character.communication) character.communication.telepathy = character._speciesData.system.communication.telepathy;
-  character.size = character._speciesData.system.size;
+  if (character.languagePoints) character.languagePoints.available = species.communication.languages;
+  if (character.communication) character.communication.telepathy = species.communication.telepathy;
+  character.size = species.size;
   
   character.speciesTravel = {
     land: { speed: 0, stamina: 0 },
@@ -122,8 +116,10 @@ export async function prepareSpeciesDefault(character) {
     air: { speed: 0, stamina: 0 }
   }
 
-  for (const [key, value] of Object.entries(character._speciesData.system.travel)) {
+  for (const [key, value] of Object.entries(species.travel)) {
     character.speciesTravel[key].speed = await new Roll(String(character.innateTravel[key].speed), character.parent.getRollData()).evaluate().total;
     character.speciesTravel[key].speed += await new Roll(String(value.speed), character.parent.getRollData()).evaluate().total;
   }
+
+  return character;
 }

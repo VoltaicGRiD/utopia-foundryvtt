@@ -1,0 +1,36 @@
+name: 'Strike: Non-Lethal'
+type: action
+_id: XeXA0yVNpC9g2M6a
+img: icons/svg/sword.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  type: Standard
+  source: null
+  cost: inherit
+  stamina: 0
+  rules: {}
+  trigger: ''
+  recharge: Immediate
+  target: Any
+  triggers:
+    - DHPDamageDealt
+effects: []
+folder: null
+sort: 900000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1735137741228
+  modifiedTime: 1743031962746
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!XeXA0yVNpC9g2M6a'
+

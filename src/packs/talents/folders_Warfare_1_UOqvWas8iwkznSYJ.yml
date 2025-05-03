@@ -1,0 +1,20 @@
+name: Warfare-1
+sorting: a
+folder: mezsRfegdPeM7Gpz
+type: Item
+_id: UOqvWas8iwkznSYJ
+description: ''
+sort: 0
+color: '#720d10'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: 1733192576165
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!UOqvWas8iwkznSYJ'
+

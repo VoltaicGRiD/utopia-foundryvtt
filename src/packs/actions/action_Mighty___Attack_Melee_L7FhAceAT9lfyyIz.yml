@@ -1,0 +1,49 @@
+folder: UAGBgFkP95hbyEss
+name: Mighty - Attack Melee
+type: action
+_id: L7FhAceAT9lfyyIz
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  type: turn
+  category: damage
+  check: agi
+  checks: []
+  checkFavor: true
+  damages:
+    - formula: 10d10 + @pow.mod
+      type: physical
+  validityCheck:
+    enabled: false
+    check: agi
+    favor: true
+    difficulty: '10'
+  consumed: 0
+  macro: null
+  actor: self
+  range: 2/2
+  template: none
+  cost: '6'
+  stamina: 0
+  secret: false
+  resource: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1744006902355
+  modifiedTime: 1744006938050
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!L7FhAceAT9lfyyIz'
+

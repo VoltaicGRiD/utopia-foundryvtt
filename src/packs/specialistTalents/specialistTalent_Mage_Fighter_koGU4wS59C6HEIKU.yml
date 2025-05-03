@@ -1,0 +1,30 @@
+name: Mage Fighter
+type: specialistTalent
+_id: koGU4wS59C6HEIKU
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>When you are affected by a spell using the Art of Array, you may make a
+    Will contest against the caster. If you succeed the test, the spell fails
+    and has no effect, though all costs are still paid by the caster.</p>
+  flavor: ''
+  requirements: []
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734394321782
+  modifiedTime: 1734394333999
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!koGU4wS59C6HEIKU'
+

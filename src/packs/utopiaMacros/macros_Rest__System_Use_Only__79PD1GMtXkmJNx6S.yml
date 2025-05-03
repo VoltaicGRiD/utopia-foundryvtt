@@ -1,0 +1,33 @@
+name: Rest [System Use Only]
+type: script
+_id: 79PD1GMtXkmJNx6S
+author: p7QOrF2iNLdEPi7z
+img: systems/utopia/assets/Utopia-Logo.webp
+scope: global
+command: |-
+  const actor = scope.restActor;
+  console.log(actor);
+
+  if (actor) {
+    actor.rest();
+  }
+  else {
+    ui.notifications.error("Unable to determine the actor to rest");
+  }
+folder: null
+sort: 300000
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1739008399396
+  modifiedTime: 1742571415985
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!macros!79PD1GMtXkmJNx6S'
+

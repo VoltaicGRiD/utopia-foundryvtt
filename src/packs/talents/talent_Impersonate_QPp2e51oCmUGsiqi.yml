@@ -1,0 +1,43 @@
+folder: Vk9j7v3fEW1pBaWl
+name: Impersonate
+type: talent
+_id: QPp2e51oCmUGsiqi
+img: systems/utopia/assets/icons/talents/impersonate.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">You gain 2 points of favor on
+    tests made to disguise yourself or to keep your identity unknown.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Influence-1
+  position: 1
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 0
+    soul: 1
+  ultimate: true
+  category: ''
+  grants:
+    - Compendium.utopia.favors.Item.YR2YiemMKNQZae81
+  body: 1
+  soul: 1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731883711535
+  modifiedTime: 1743030118557
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!QPp2e51oCmUGsiqi'
+

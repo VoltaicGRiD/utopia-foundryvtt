@@ -34,64 +34,6 @@ export class SpecialistTalent extends UtopiaItemBase {
     });
     schema.resources = new fields.ArrayField(schema.resource);
 
-    schema.action = new fields.SchemaField({
-      actionId: new fields.StringField({...requiredString, initial: foundry.utils.randomID(16)}),
-      name: new fields.StringField({...requiredString, initial: "New Action"}),
-      category: new fields.StringField({required: true, nullable: false, initial: "trait", choices: {
-        "generic": "UTOPIA.Item.Action.Category.generic",
-        "trait": "UTOPIA.Item.Action.Category.trait",
-        "damage": "UTOPIA.Item.Action.Category.damage",
-        "macro": "UTOPIA.Item.Action.Category.macro",
-      }}),
-      type: new fields.StringField({required: true, nullable: false, initial: "turn", choices: {
-        "turn": "UTOPIA.Item.Action.Type.turn",
-        "interrupt": "UTOPIA.Item.Action.Type.interrupt",
-      }}),
-      trait: new fields.StringField({required: true, nullable: false, initial: "agi", choices: {
-        "agi": "UTOPIA.Actor.Traits.agi.long",
-        "str": "UTOPIA.Actor.Traits.str.long",
-        "int": "UTOPIA.Actor.Traits.int.long",
-        "wil": "UTOPIA.Actor.Traits.wil.long",
-        "dis": "UTOPIA.Actor.Traits.dis.long",
-        "cha": "UTOPIA.Actor.Traits.cha.long",  
-        "spd": "UTOPIA.Actor.Subtraits.spd.long",
-        "dex": "UTOPIA.Actor.Subtraits.dex.long",
-        "pow": "UTOPIA.Actor.Subtraits.pow.long",
-        "for": "UTOPIA.Actor.Subtraits.for.long",
-        "eng": "UTOPIA.Actor.Subtraits.eng.long",
-        "mem": "UTOPIA.Actor.Subtraits.mem.long",
-        "res": "UTOPIA.Actor.Subtraits.res.long",
-        "awa": "UTOPIA.Actor.Subtraits.awa.long",
-        "por": "UTOPIA.Actor.Subtraits.por.long",
-        "stu": "UTOPIA.Actor.Subtraits.stu.long",
-        "app": "UTOPIA.Actor.Subtraits.app.long",
-        "lan": "UTOPIA.Actor.Subtraits.lan.long",
-      }}),
-      modifier: new fields.StringField({required: true, nullable: false}),
-      cost: new fields.NumberField({...requiredInteger, min: 0, max: 6}),
-      stamina: new fields.NumberField({...requiredInteger, initial: 0}),
-      formula: new fields.StringField({...requiredString, initial: ""}),
-      flavor: new fields.StringField({...requiredString, initial: ""}),
-      template: new fields.StringField({required: true, nullable: false, initial: "none", choices: {
-        "none": "UTOPIA.Item.Action.Template.none",
-        "sbt": "UTOPIA.Item.Action.Template.sbt",
-        "mbt": "UTOPIA.Item.Action.Template.mbt",
-        "lbt": "UTOPIA.Item.Action.Template.lbt",
-        "xbt": "UTOPIA.Item.Action.Template.xbt",
-        "cone": "UTOPIA.Item.Action.Template.cone",
-        "line": "UTOPIA.Item.Action.Template.line",
-      }}),
-      resource: new fields.StringField({required: true, nullable: false}),
-      consumed: new fields.NumberField({...requiredInteger, initial: 0}),
-      macro: new fields.DocumentUUIDField({required: false, nullable: true}),
-      actor: new fields.StringField({required: true, nullable: false, initial: "default", choices: {
-        "default": "UTOPIA.Item.Action.Actor.default",
-        "self": "UTOPIA.Item.Action.Actor.self",
-        "target": "UTOPIA.Item.Action.Actor.target", 
-      }}),
-    })
-    schema.actions = new fields.ArrayField(schema.action, {required: true, nullable: false, initial: []});
-
     schema.attributeRequirements = new fields.SetField(new fields.StringField(), { required: true, nullable: true, initial: [] });
     schema.speciesRequirements = new fields.StringField({ required: true, nullable: false });
     schema.talentRequirements = new fields.StringField({ required: true, nullable: false });

@@ -136,7 +136,7 @@ export class DamageInstance {
       // Apply overflow to deep HP
       const dhpDamage = overflow * this.dhpPercent;
 
-      const absorbedEntirely = shpDamage + dhpDamage <= 0 ? true : false;
+      const absorbedEntirely = shpDamage + dhpDamage <= 0 && this.value > 0 ? true : false;
       const absorbed = await this.defenses();
 
       this.final = { shpDamage, dhpDamage, staminaDamage: 0, total: this.value, absorbedEntirely, absorbed };
@@ -154,11 +154,9 @@ export class DamageInstance {
       }
 
       // We dealt more damage than the target has deep HP
-      if (dhpDamage > targetData.dhp) {
-        dhpDamage = targetData.dhp;
-      }
+      // But DHP can go below 0, so we don't need to track overflow.
 
-      const absorbedEntirely = dhpDamage <= 0 ? true : false;
+      const absorbedEntirely = dhpDamage <= 0 && this.value > 0 ? true : false;
       const absorbed = await this.defenses();
 
       this.final = { shpDamage: 0, dhpDamage, staminaDamage: 0, total: this.value, absorbedEntirely, absorbed };
@@ -187,7 +185,7 @@ export class DamageInstance {
       // Apply overflow to deep HP
       const dhpDamage = overflow * this.dhpPercent;
 
-      const absorbedEntirely = dhpDamage + staminaDamage <= 0 ? true : false;
+      const absorbedEntirely = dhpDamage + staminaDamage <= 0 && this.value > 0 ? true : false;
       const absorbed = await this.defenses();
 
       this.final = { shpDamage: 0, dhpDamage, staminaDamage, total: this.value, absorbedEntirely, absorbed };
@@ -206,7 +204,7 @@ export class DamageInstance {
       const total = Math.round(simulation.reduce((a, b) => a + b, 0) / simulation.length);
       this.simulationResult = total;
     }
-    const content = await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [this], item: this.source, targets: this.targets });
+    const content = await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [this], item: this.source, targets: this.target });
 
     this.messageInstance = UtopiaChatMessage.create({
       content,
@@ -218,6 +216,19 @@ export class DamageInstance {
       },
       system: { instance: this, source: this.source, target: this.target }
     });
+
+    return this.messageInstance;
+  }
+
+  async toFinalMessage() {
+    if (!this.finalized) {
+      await this.handle();
+    }
+
+    const message = new UtopiaChatMessage({});
+
+    const target = await fromUuid(this.target);
+    target.applyDamage(this, message) // TODO - Implement damage percentages
 
     return this.messageInstance;
   }

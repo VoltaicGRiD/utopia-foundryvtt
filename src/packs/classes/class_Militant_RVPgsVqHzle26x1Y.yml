@@ -1,0 +1,62 @@
+name: Militant
+type: class
+system:
+  type: martial
+  points: 30
+  attributes:
+    - key: system.hitpoints.surface.max
+      value: '70'
+    - key: system.hitpoints.deep.max
+      value: '60'
+    - key: system.stamina.max
+      value: '20'
+    - key: system.innateDefenses.physical
+      value: '7'
+    - key: system.innateDefenses.energy
+      value: '5'
+    - key: system.innateDefenses.heat
+      value: '4'
+    - key: system.innateDefenses.chill
+      value: '4'
+    - key: system.subtraits.dex.value
+      value: '8'
+    - key: system.subtraits.pow.value
+      value: '8'
+    - key: system.subtraits.spd.value
+      value: '6'
+    - key: system.subtraits.for.value
+      value: '6'
+    - key: system.subtraits.res.value
+      value: '4'
+    - key: system.dodge.quantity
+      value: '5'
+    - key: system.block.quantity
+      value: '6'
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  grants: []
+  specialtyPassives: []
+  grantedEquipment: []
+  selectedChoices: {}
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1744059246676
+  modifiedTime: 1744059246686
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: RVPgsVqHzle26x1Y
+sort: 200000
+_key: '!items!RVPgsVqHzle26x1Y'
+

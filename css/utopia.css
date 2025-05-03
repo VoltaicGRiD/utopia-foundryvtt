@@ -171,6 +171,24 @@
   bottom: 0;
 }
 
+.chat-message {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4.9px);
+  -webkit-backdrop-filter: blur(4.9px);
+  margin-top: 5px;
+  border: 2px groove black;
+}
+.chat-message .message-header {
+  color: white;
+}
+.chat-message .message-content {
+  color: white;
+}
+.chat-message footer {
+  color: rgb(192, 192, 192);
+}
 .chat-message .chat-card {
   display: flex;
   flex-direction: column;
@@ -350,6 +368,10 @@
   text-align: center;
   font-weight: 900;
   font-size: var(--font-size-16);
+}
+
+.chat-message.whisper {
+  background: rgba(112, 0, 122, 0.7);
 }
 
 .skill-description {
@@ -4365,7 +4387,7 @@
 }
 .utopia.advancement-sheet .subtrait-value,
 .utopia.advancement-sheet .subtrait-new-value {
-  width: 20px;
+  width: 60px;
   text-align: center;
 }
 .utopia.advancement-sheet .subtrait-new-value.greater {

@@ -1,0 +1,24 @@
+name: Traveler
+type: script
+_id: tI6A3Hytd8O5V5KP
+author: J3DseiXIgI97Cf1C
+img: icons/svg/dice-target.svg
+scope: global
+command: "const fields = foundry.applications.fields;\n\nconst selectInput = fields.createSelectInput({\n\toptions: [\n\t\t{\n\t\t\tlabel: \"UTOPIA.Actor.FIELDS.travel.land.label\",\n\t\t\tvalue: \"land\"\n\t\t},\n\t\t{\n\t\t\tlabel: \"UTOPIA.Actor.FIELDS.travel.water.label\",\n\t\t\tvalue: \"water\"\n\t\t}\n\t]\n})\n\nconst selectGroup = fields.createFormGroup({\n\tinput: selectInput,\n\tlabel: \"UTOPIA.Macros.FIELDS.select.label\",\n\thint: \"UTOPIA.Macros.FIELDS.select.hint\",\n\tlocalize: true\n})\n\nconst content = `${selectGroup.outerHTML}`;\n\nconst callback = (event, button, dialog) => {\n\tconst value = dialog.querySelector('select').selectedOptions[0].value;\n\tconst actor = scope.actor;\n\t\n\tconst effect = ActiveEffect.create({\n\t\tname: \"Traveller\",\n\t\torigin: scope.item.uuid,\n\t\ttype: \"passive\",\n\t\tchanges: [\n\t\t\t{\n\t\t\t\t\"key\": `system.travel.${value}`,\n\t\t\t\t\"mode\": 2,\n\t\t\t\t\"value\": 2,\n\t\t\t\t\"priority\": null\n\t\t\t}\n\t\t]\n\t})\n}\n\nconst dialog = await foundry.applications.api.DialogV2.prompt({\n\twindow: { title: game.i18n.localize(\"UTOPIA.Macros.TITLES.select.label\") },\n\tcontent: content,\n\tmodal: true,\n\tok: {\n\t\tlabel: game.i18n.localize(\"UTOPIA.Macros.BUTTONS.save.label\"),\n\t\ticon: \"fas fa-floppy-disk\",\n\t\tcallback: (event, button, dialog) => callback(event, button, dialog)\n\t}\n})"
+folder: null
+sort: 500000
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741966453395
+  modifiedTime: 1741968233671
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!macros!tI6A3Hytd8O5V5KP'
+

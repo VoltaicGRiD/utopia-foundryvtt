@@ -1,0 +1,20 @@
+name: Tactics
+sorting: a
+folder: null
+type: Item
+_id: k8NGgWwAdt4EVYDE
+description: ''
+sort: 1300000
+color: '#0c540b'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731694275079
+  modifiedTime: 1734631901158
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!k8NGgWwAdt4EVYDE'
+

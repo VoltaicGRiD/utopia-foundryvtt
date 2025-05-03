@@ -28,8 +28,11 @@ export class Action extends UtopiaItemBase {
       "macro": "UTOPIA.Items.Action.Category.macro",
     }});
 
+    schema.isBaseAction = new fields.BooleanField({ required: true, nullable: false, initial: false });
+
     const returns = {};
     const allOptions = {
+      "none": { label: "UTOPIA.Items.Action.None", group: "UTOPIA.Items.Action.None" },
       ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).reduce((acc, [key, value]) => {
         acc[key] = { ...value, group: "UTOPIA.TRAITS.GroupName" };
         return acc;
@@ -101,7 +104,7 @@ export class Action extends UtopiaItemBase {
     schema.range = new fields.StringField({ required: false, nullable: false, initial: "0/0" });
     schema.damageModifier = new fields.StringField({ required: false, nullable: false, initial: "str", choices: allOptions });
     schema.accuracyTrait = new fields.StringField({ required: false, nullable: false, initial: "agi", choices: allOptions });
-    schema.template = new fields.StringField({ required: false, nullable: false, initial: "none", choices: {
+    schema.template = new fields.StringField({ required: false, nullable: false, initial: "target", choices: {
       "none": "UTOPIA.Items.Action.Template.none",
       "self": "UTOPIA.Items.Action.Template.self",
       "target": "UTOPIA.Items.Action.Template.target",
@@ -126,6 +129,7 @@ export class Action extends UtopiaItemBase {
         "respondWithAttack": "UTOPIA.Items.Action.PassiveType.respondWithAttack", // Sensed creature attacks + 8 stamina = attack action for interrupt cost
         "attackAllInRange": "UTOPIA.Items.Action.PassiveType.attackAllInRange",
         "reduceAttackActionCost": "UTOPIA.Items.Action.PassiveType.reduceActionCost", // 3 -> min 4; 5 -> min 2; 7 -> min 1
+        "ignoreDamageType": "UTOPIA.Items.Action.PassiveType.ignoreDamageType",
       }, initial: "meleeRedirect" }),
       scaling: new fields.SchemaField({
         enabled: new fields.BooleanField({ required: true, initial: false }),
@@ -148,8 +152,15 @@ export class Action extends UtopiaItemBase {
           "flat": "UTOPIA.Items.Action.ReduceActionCost.flat",
         }, initial: "scalingRatio" }),
         reduceActionCostFlat: new fields.NumberField({ required: false, nullable: true, initial: 0 }),
+      }),
+      ignoreDamage: new fields.SchemaField({
+        ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
+          if (value.healing === false) 
+            acc[key] = new fields.BooleanField({ required: true, initial: false });
+          return acc;
+        }, {}),
       })
-    })
+    });
 
     return schema;
   }
@@ -215,7 +226,7 @@ export class Action extends UtopiaItemBase {
           field: this.schema.fields.damageModifier,
           stacked: true,
           editable: true,
-                    options: Object.entries(this.schema.fields.check.options.choices).map(([key, value]) => {
+          options: Object.entries(this.schema.fields.check.options.choices).map(([key, value]) => {
             return {
               ...value,
               value: key,
@@ -343,6 +354,22 @@ export class Action extends UtopiaItemBase {
             });
           }
         }
+        if (this.passive.type === "ignoreDamageType") {
+          const allDamage = {
+            ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
+              if (value.healing === false)
+                acc[key] = { ...value, group: "UTOPIA.DAMAGE_TYPES.GroupName", value: key };
+              return acc;
+            }, {})
+          }
+          for (const [key, value] of Object.entries(allDamage)) { 
+            fields.push({
+              field: this.schema.fields.passive.fields.ignoreDamage.fields[key],
+              stacked: false,
+              editable: true,
+            });
+          }
+        }
         break;
       case "utility":
         fields.push({
@@ -378,5 +405,28 @@ export class Action extends UtopiaItemBase {
 
   prepareDerivedData() {
     super.prepareDerivedData();
+
+    if (this.parent.parent) { // Owned by an actor
+      const system = this.parent.parent.system;
+
+      if (this.isBaseAction && this.parent.name === game.i18n.localize("UTOPIA.Actors.Actions.DeepBreath")) {
+        console.log("Updating Deep Breath action with actor's data");
+
+        // Get the parent's data for "system.deepBreath"
+        this.formula = `${this.formula} + @deepBreath.additionalStamina` || this.formula;
+      }
+
+      if (this.isBaseAction && this.parent.name === game.i18n.localize("UTOPIA.Actors.Actions.WeaponlessAttack")) {
+        // Update this item with the actors weaponless attack data
+        this.damages = [{
+          formula: system.weaponlessAttacks.formula,
+          type: system.weaponlessAttacks.type || "physical",
+        }];
+        this.range = system.weaponlessAttacks.range || "0/0";
+        this.accuracyTrait = system.weaponlessAttacks.traits[0] || "agi";
+        this.stamina = system.weaponlessAttacks.stamina || 0;
+        this.cost = system.weaponlessAttacks.actionCost || "1";
+      }
+    }
   }
 }

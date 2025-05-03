@@ -8,6 +8,7 @@ export class WeaponFeatureOptions extends FeatureBase {
     const requiredInteger = { required: true, nullable: false, initial: 0 };
     const requiredString = { required: true, nullable: false, initial: "" };
     
+    schema.craftMacro = new fields.StringField({ ...requiredString, initial: "" });
     schema.craftingOptionSet = new fields.StringField({ ...requiredString, initial: "none" });
     schema.handheld = new fields.BooleanField({ required: true, nullable: false, initial: false });
     schema.hands = new fields.NumberField({ ...requiredInteger, initial: 1 });

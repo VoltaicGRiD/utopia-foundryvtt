@@ -62,7 +62,7 @@ export class UtopiaTokenDocument extends TokenDocument {
     const actorData = this.actor.system;
     if (!actorData) return;
     this.shpBar = this.getBarAttribute("shp", {alternative: "hitpoints.surface"});
-    this.dhpBar = this.getBarAttribute("dhp", {alternative: "hitpoints.surface"});
+    this.dhpBar = this.getBarAttribute("dhp", {alternative: "hitpoints.deep"});
     this.staminaBar = this.getBarAttribute("stamina", {alternative: "stamina"});
     
     this.turnActionsBar = this.getBarAttribute("actions.turn", {alternative: "turnActions"});

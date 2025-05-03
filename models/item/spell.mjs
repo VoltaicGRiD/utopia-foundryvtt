@@ -18,7 +18,8 @@ export class Spell extends UtopiaItemBase {
     schema.duration = new fields.StringField(); // raw duration info
     schema.aoe = new fields.ArrayField(new fields.SchemaField({
       size: new fields.StringField(),
-      shape: new fields.StringField()
+      shape: new fields.StringField(),
+      feature: new fields.StringField()
     })); // area-of-effect representation
     schema.range = new fields.StringField(); // range info
     schema.cost = new fields.NumberField();  // stamina or resource cost
@@ -42,31 +43,39 @@ export class Spell extends UtopiaItemBase {
       flags: item ? { utopia: { origin: this.parent.uuid } } : {}
     };
 
+    const templates = [];
+
     // Parse this AoE and return a placeable template that corresponds to the AoE
     for (const aoe of this.aoe) {
-      const size = aoe.split("m" )[0];
-      const shape = aoe.split("m ")[1];
+      // const size = aoe.split("m")[0];
+      // const shape = aoe.split("m ")[1].split(" ")[0].toLowerCase();
+      // const name = aoe.split("m ")[1].split(" ")[1] ?? "Area of Effect";
+      const size = aoe.size.split("m")[0];
+      const shape = aoe.shape.toLowerCase();
+      const feature = aoe.feature;
 
       if (shape.includes("radius")) {
         const template = new CONFIG.MeasuredTemplate.documentClass(
           foundry.utils.mergeObject(templateBaseData, {
             t: foundry.CONST.MEASURED_TEMPLATE_TYPES.CIRCLE,
-            distance: size
+            distance: size,
+            flags: { utopia: { feature } },
           }), { parent: canvas.scene ?? undefined }
         );
-        
-        return template;
+
+        templates.push(template);
       }
 
       if (shape.includes("angle")) {
         const template = new CONFIG.MeasuredTemplate.documentClass(
           foundry.utils.mergeObject(templateBaseData, {
             t: foundry.CONST.MEASURED_TEMPLATE_TYPES.CONE,
-            distance: size
+            distance: size,
+            flags: { utopia: { feature } },
           }), { parent: canvas.scene ?? undefined }
         );
-        
-        return template;
+
+        templates.push(template);
       }
 
       if (shape.includes("width")) {
@@ -74,24 +83,30 @@ export class Spell extends UtopiaItemBase {
           foundry.utils.mergeObject(templateBaseData, {
             t: foundry.CONST.MEASURED_TEMPLATE_TYPES.RECTANGLE,
             direction: 45,
-            distance: size * Math.SQRT2
+            distance: size * Math.SQRT2,
+            flags: { utopia: { feature } },
+
           }), { parent: canvas.scene ?? undefined }
         );
-        
-        return template;
+
+        templates.push(template);
       }
 
       if (shape.includes("length")) {
         const template = new CONFIG.MeasuredTemplate.documentClass(
           foundry.utils.mergeObject(templateBaseData, {
             t: foundry.CONST.MEASURED_TEMPLATE_TYPES.RAY,
-            distance: size
+            distance: size,
+            flags: { utopia: { feature } },
+
           }), { parent: canvas.scene ?? undefined }
         );
-        
-        return template;
+
+        templates.push(template);
       }
-    }  
+    }
+
+    return templates;
   }
 
   /**
@@ -102,10 +117,7 @@ export class Spell extends UtopiaItemBase {
    * methods that interpret the state's "features" data 
    * into final form (cost, duration, range, etc.).
    */
-  async prepareDerivedData() {
-    // "this.parent" is the item data context from the Foundry Document.
-    
-
+  async prepareDerivedData() { // TODO - Fix this, prepareDerivedData is called by Foundry VTT and should not be async.
     // Initialize or reset key system fields
     this.cost = 0;      // Stamina or resource cost
     this.aoe = [];  // Return string or final AoE representation
@@ -113,7 +125,7 @@ export class Spell extends UtopiaItemBase {
     this.range = 0;     // Range in meters
 
     // Private data preparation methods
-    await this._prepareSpellFeatures();  
+    await this._prepareSpellFeatures();
     this._prepareSpellDuration();
     this._prepareSpellRange();
     this._prepareSpellAoE();
@@ -134,13 +146,13 @@ export class Spell extends UtopiaItemBase {
     const artistries = spellcasting.artistries;
     const features = this.parsedFeatures;
     let cost = 0;
-  
+
     for (const feature of features) {
       const art = feature.system.art;
       const artSettings = artistries[art];
       const cost = feature.system.cost;
-      
-      if (artSettings.unlocked === false) 
+
+      if (artSettings.unlocked === false)
         this.canCast = false;
       // if (artSettings.multiplier === 0)      
       //   cost += 
@@ -171,8 +183,38 @@ export class Spell extends UtopiaItemBase {
     let staminaCost = 0; // Final stamina cost
 
     for (let feature of features) {
+      //this.featureSettings[feature.id] ??= feature.system.variables ?? {};
+
+      // for (const [variable, value] of Object.entries(feature.system.variables)) {
+      //   this.featureSettings[feature.id][variable] = value;
+      // }
+
+      if (this.featureSettings[feature.id].cost === undefined && feature.system.costMultiplier === "multiply") {
+        this.featureSettings[feature.id].cost = {
+          variableName: "cost",
+          variableDescription: "Cost",
+          character: "X",
+          kind: "number",
+          minimum: 0,
+          value: 1
+        };
+      }
+
+      if (this.featureSettings[feature.id].stacks === undefined) {
+        this.featureSettings[feature.id].stacks = {
+          variableName: "stacks",
+          variableDescription: "Stacks",
+          character: "@",
+          kind: "number",
+          minimum: 1,
+          value: 1
+        };
+      }
+
       // Gather cost or stack info from the feature
       ppCost = this._handleFeatureCostAndStacks(feature, ppCost);
+
+      feature.system.variables = this.featureSettings[feature.id];
 
       // Potential modifications
       if (feature.system.modifies === "range") {
@@ -183,21 +225,6 @@ export class Spell extends UtopiaItemBase {
       }
       if (feature.system.modifies === "aoe") {
         this._handleFeatureAoE(feature);
-      }
-
-      this.featureSettings[feature.uuid] ??= settings[feature.uuid] ?? {};
-      for (const [variable, value] of Object.entries(feature.system.variables)) {
-        this.featureSettings[feature.uuid][variable] = value;
-      }
-      if (this.featureSettings[feature.uuid].stacks === undefined) {
-        this.featureSettings[feature.uuid].stacks = {
-          variableName: "stacks",
-          variableDescription: "Stacks",
-          character: "@",
-          kind: "number",
-          minimum: 1,
-          value: 1
-        };
       }
     }
 
@@ -219,7 +246,7 @@ export class Spell extends UtopiaItemBase {
   _handleFeatureCostAndStacks(feature, ppCost) {
     // Feature variable settings are now stored in 'this.featureSettings'
     // where the key is the feature's uuid and the value is the feature's settings object.
-    
+
     // Initialize stacks to 1
     feature.stacks ??= 1;
 
@@ -228,12 +255,12 @@ export class Spell extends UtopiaItemBase {
       feature.stacks = this.featureSettings[feature._id].stacks.value;
 
       if (this.featureSettings[feature._id].cost) {
-        ppCost += feature.system.cost * this.featureSettings[feature._id].cost * feature.stacks;
+        ppCost += feature.system.cost * this.featureSettings[feature._id].cost.value * feature.stacks;
       }
       else {
         ppCost += feature.system.cost * feature.stacks;
       }
-    } 
+    }
 
     return ppCost;
   }
@@ -247,7 +274,7 @@ export class Spell extends UtopiaItemBase {
    * @private
    */
   _handleFeatureRange(feature) {
-    
+
     let range = feature.system.modifiedRange.value;
 
     // 0 indicates a fallback minimum
@@ -257,15 +284,15 @@ export class Spell extends UtopiaItemBase {
 
     // If there's a variable for range, multiply it
     if (
-      feature.system.modifiedRange.variable && 
+      feature.system.modifiedRange.variable &&
       feature.system.modifiedRange.variable !== "X" &&
       feature.system.variables[feature.system.modifiedRange.variable]
     ) {
       range *= feature.system.variables[feature.system.modifiedRange.variable].value;
-    } 
+    }
     // If the variable is "X", multiply by the "cost" variable
     else if (
-      feature.system.modifiedRange.variable && 
+      feature.system.modifiedRange.variable &&
       feature.system.modifiedRange.variable === "X"
     ) {
       range *= feature.system.variables["cost"].value;
@@ -293,7 +320,7 @@ export class Spell extends UtopiaItemBase {
    * @private
    */
   _handleFeatureDuration(feature) {
-    
+
     let duration = feature.system.modifiedDuration.value;
 
     // 0 indicates a fallback minimum
@@ -303,15 +330,15 @@ export class Spell extends UtopiaItemBase {
 
     // If there's a variable for duration, multiply it
     if (
-      feature.system.modifiedDuration.variable && 
+      feature.system.modifiedDuration.variable &&
       feature.system.modifiedDuration.variable !== "X" &&
       feature.system.variables[feature.system.modifiedDuration.variable]
     ) {
       duration *= feature.system.variables[feature.system.modifiedDuration.variable].value;
-    } 
+    }
     // If the variable is "X", multiply by the "cost" variable
     else if (
-      feature.system.modifiedDuration.variable && 
+      feature.system.modifiedDuration.variable &&
       feature.system.modifiedDuration.variable === "X"
     ) {
       duration *= feature.system.variables["cost"].value;
@@ -320,12 +347,12 @@ export class Spell extends UtopiaItemBase {
     // Convert to seconds depending on unit
     let unit = feature.system.modifiedDuration.unit;
     switch (unit) {
-      case "turns":    duration *= 6;        break;
-      case "minutes":  duration *= 60;       break;
-      case "hours":    duration *= 3600;     break;
-      case "days":     duration *= 86400;    break;
-      case "months":   duration *= 2592000;  break;
-      case "years":    duration *= 31536000; break;
+      case "turns": duration *= 6; break;
+      case "minutes": duration *= 60; break;
+      case "hours": duration *= 3600; break;
+      case "days": duration *= 86400; break;
+      case "months": duration *= 2592000; break;
+      case "years": duration *= 31536000; break;
     }
 
     // Apply stacking
@@ -344,7 +371,7 @@ export class Spell extends UtopiaItemBase {
    * @private
    */
   _handleFeatureAoE(feature) {
-    
+
     let aoe = feature.system.modifiedAoE.value;
 
     // 0 indicates a fallback minimum
@@ -354,18 +381,18 @@ export class Spell extends UtopiaItemBase {
 
     // If there's a variable for aoe, multiply it
     if (
-      feature.system.modifiedAoE.variable && 
+      feature.system.modifiedAoE.variable &&
       feature.system.modifiedAoE.variable !== "X" &&
       feature.system.variables[feature.system.modifiedAoE.variable]
     ) {
-      aoe *= feature.system.variables[feature.system.modifiedAoE.variable].value;
-    } 
+      aoe *= feature.system.variables[feature.system.modifiedAoE.variable].value || 1; // Default to 1 if undefined
+    }
     // If the variable is "X", multiply by the cost variable
     else if (
-      feature.system.modifiedAoE.variable && 
+      feature.system.modifiedAoE.variable &&
       feature.system.modifiedAoE.variable === "X"
     ) {
-      aoe *= feature.system.variables["cost"].value;
+      aoe *= feature.system.variables["cost"].value || 1; // Default to 1 if undefined
     }
 
     let type = feature.system.modifiedAoE.type;
@@ -375,10 +402,10 @@ export class Spell extends UtopiaItemBase {
       // e.g. circle, cone, rectangle, ray
       let shape = feature.system.modifiedAoE.shape;
       switch (shape) {
-        case "circle":     output = "radius";             break;
-        case "cone":       output = "angle";              break;
-        case "rectangle":  output = "width x height";     break;
-        case "ray":        output = "length";             break;
+        case "circle": output = "radius"; break;
+        case "cone": output = "angle"; break;
+        case "rectangle": output = "width x height"; break;
+        case "ray": output = "length"; break;
       }
     } else if (type === "point") {
       output = "Target Point";
@@ -386,12 +413,18 @@ export class Spell extends UtopiaItemBase {
       output = "Attached";
     }
 
-    // e.g. "10m radius"
-    this.aoe.push(`${aoe}m ${output}`);
+    this.aoe.push({
+      size: `${aoe}m`,
+      shape: output,
+      feature: feature.id
+    })
 
-    if (this.aoe.length === 0) {
-      this.aoe.push("None");
-    }
+    // // e.g. "10m radius"
+    // this.aoe.push(`${aoe}m ${output} [${feature.name}]`);
+
+    // if (this.aoe.length === 0) {
+    //   this.aoe.push("None");
+    // }
   }
 
   /**
@@ -402,7 +435,7 @@ export class Spell extends UtopiaItemBase {
    * @private
    */
   _prepareSpellDuration() {
-    
+
 
     // If 0, treat as "Instant"
     if (this.duration === 0) {
@@ -449,7 +482,7 @@ export class Spell extends UtopiaItemBase {
    * @private
    */
   _prepareSpellRange() {
-    
+
     if (this.range === 0) {
       this.rangeOut = "Touch";
     } else {
@@ -493,15 +526,14 @@ export class Spell extends UtopiaItemBase {
 
     // If multiple colors, build a linear gradient
     if (colors.length > 1) {
-      return `style="background: linear-gradient(120deg, ${
-        colors.map((color, index) => {
-          const colorStopPercentage = 100 / colors.length;
-          const start = colorStopPercentage * index;
-          const end = start + colorStopPercentage;
-          return `${color} ${start}%, ${color} ${end}%`;
-        }).join(', ')
-      })"`;
-    } 
+      return `style="background: linear-gradient(120deg, ${colors.map((color, index) => {
+        const colorStopPercentage = 100 / colors.length;
+        const start = colorStopPercentage * index;
+        const end = start + colorStopPercentage;
+        return `${color} ${start}%, ${color} ${end}%`;
+      }).join(', ')
+        })"`;
+    }
     // Otherwise, single color
     else {
       return `style="background: ${colors[0]};"`;

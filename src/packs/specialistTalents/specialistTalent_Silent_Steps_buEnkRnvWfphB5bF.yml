@@ -1,0 +1,63 @@
+name: Silent Steps
+type: specialistTalent
+_id: buEnkRnvWfphB5bF
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: <p>You gain a point of favor on tests made to remain inconspicuous.</p>
+  flavor: ''
+  requirements: []
+effects:
+  - name: Silent Steps
+    origin: Compendium.utopia.specialistTalents.Item.buEnkRnvWfphB5bF
+    img: icons/svg/aura.svg
+    type: specialist
+    _id: MVqN7DocGZEryXe8
+    system: {}
+    changes:
+      - key: system.favors
+        mode: 2
+        value: inconspicuous
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1738707520099
+      modifiedTime: 1738707538999
+      lastModifiedBy: p7QOrF2iNLdEPi7z
+    _key: '!items.effects!buEnkRnvWfphB5bF.MVqN7DocGZEryXe8'
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734394054278
+  modifiedTime: 1734394299891
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!buEnkRnvWfphB5bF'
+

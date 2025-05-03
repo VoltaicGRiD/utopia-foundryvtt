@@ -1,0 +1,41 @@
+name: Intellectual (Action)
+type: action
+_id: f5w2Z9ToBQhIxcR8
+img: systems/utopia/assets/icons/talents/intellectual.svg
+system:
+  description: ''
+  formula: '@int.total'
+  tags: []
+  favors: {}
+  type: interrupt
+  category: formula
+  check: agi
+  checks: []
+  checkFavor: true
+  damages: []
+  consumed: 0
+  macro: null
+  actor: self
+  template: none
+  cost: '1'
+  stamina: 0
+  secret: false
+  resource: ''
+effects: []
+folder: null
+sort: 1100000
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741969514561
+  modifiedTime: 1743031962746
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!f5w2Z9ToBQhIxcR8'
+

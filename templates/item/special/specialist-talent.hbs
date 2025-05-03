@@ -1,0 +1,88 @@
+<div class="tab attributes {{tab.cssClass}}" data-group="primary" data-tab="attributes">
+  <div class="standard-attributes">
+    <fieldset class="attribute-set">
+      <legend class="label">{{localize "UTOPIA.CommonTerms.attributes"}}</legend>
+      <div class="form-group slim">
+        <label for="system.attributeRequirements" class="label">{{localize "UTOPIA.Items.SpecialistTalent.attributeRequirements"}}</label>
+        {{formInput systemFields.attributeRequirements name="system.attributeRequirements" value=system.attributeRequirements localize=true}}
+      </div> 
+      <div class="form-group slim">
+        <label for="system.speciesRequirements" class="label">{{localize "UTOPIA.Items.SpecialistTalent.speciesRequirements"}}</label>
+        {{formInput systemFields.speciesRequirements name="system.speciesRequirements" value=system.speciesRequirements localize=true}}
+      </div> 
+      <div class="form-group slim">
+        <label for="system.talentRequirements" class="label">{{localize "UTOPIA.Items.SpecialistTalent.talentRequirements"}}</label>
+        {{formInput systemFields.talentRequirements name="system.talentRequirements" value=system.talentRequirements localize=true}}
+      </div> 
+      <div class="form-group slim">
+        <label for="system.talentTreeRequirements" class="label">{{localize "UTOPIA.Items.SpecialistTalent.talentTreeRequirements"}}</label>
+        {{formInput systemFields.talentTreeRequirements name="system.talentTreeRequirements" value=system.talentTreeRequirements localize=true}}
+      </div> 
+      <div class="form-group slim">
+        <label for="system.artistryRequirements" class="label">{{localize "UTOPIA.Items.SpecialistTalent.artistryRequirements"}}</label>
+        {{formInput systemFields.artistryRequirements name="system.artistryRequirements" value=system.artistryRequirements localize=true}}
+      </div> 
+    </fieldset>
+
+    <br>
+
+    {{formGroup systemFields.grants stacked=true localize=true}}
+
+    <div class="flexrow">
+      <select class="add-options" name="addOptions" id="addOptions" data-action="addOptions">
+        <option value="resource">{{localize "UTOPIA.Items.SpecialistTalent.Resource.title"}}</option>
+      </select>
+      <button type="button" class="add-item" data-action="addItem">
+        <i class="fas fa-plus"></i>
+        {{localize "UTOPIA.MATH.add"}}
+      </button>
+    </div>
+
+    {{#each system.resources as |resource|}}
+      <details class="resource">
+        <summary><i class="fas fa-box"></i> <b>{{localize "UTOPIA.Items.SpecialistTalent.Resource.title"}}:</b> {{resource.name}}</summary>
+        
+        <fieldset class="resource-attributes">
+          <legend><i class="fas fa-box-open"></i> <b>{{localize "UTOPIA.Items.SpecialistTalent.Resource.title"}}:</b> {{localize "UTOPIA.Items.SpecialistTalent.Resource.attributes"}}</legend>
+
+          <div class="flexcol grid-span-5">
+            <label for="resource.{{@index}}.name">{{localize "UTOPIA.Items.SpecialistTalent.Resource.name"}}</label>
+            {{formInput ../systemFields.resource.fields.name value=resource.name name=(concat "system.resources." @index ".name") localize=true}}
+          </div>
+
+          <div class="flexcol">
+            <label for="resource.{{@index}}.amount">{{localize "UTOPIA.Items.SpecialistTalent.Resource.amount"}}</label>
+            {{formInput ../systemFields.resource.fields.amount value=resource.amount name=(concat "system.resources." @index ".amount") localize=true}}
+          </div>
+
+          <div class="flexcol">
+            <label for="resource.{{@index}}.max.formula">{{localize "UTOPIA.Items.SpecialistTalent.Resource.max"}}</label>
+            {{formInput ../systemFields.resource.fields.max.fields.formula value=resource.max.formula name=(concat "system.resources." @index ".max.formula") localize=true}}
+          </div>
+
+          <div class="flexcol">
+            <label for="resource.{{@index}}.recoverAmount">{{localize "UTOPIA.Items.SpecialistTalent.Resource.recoverAmount"}}</label>
+            {{formInput ../systemFields.resource.fields.recoverAmount value=resource.recoverAmount name=(concat "system.resources." @index ".recoverAmount") localize=true}}
+          </div>
+
+          <div class="flexcol">
+            <label for="resource.{{@index}}.recoverInterval">{{localize "UTOPIA.Items.SpecialistTalent.Resource.recoverInterval"}}</label>
+            {{formInput ../systemFields.resource.fields.recoverInterval value=resource.recoverInterval name=(concat "system.resources." @index ".recoverInterval") localize=true}}
+          </div>
+          
+          {{!-- <div class="flexcol">
+            <label for="resource.{{@index}}.propagateToActor">{{localize "UTOPIA.Items.SpecialistTalent.Resource.propagateToActor"}}</label>
+            <label class="switch" for="resource.propagateToActor">
+              <input type="checkbox" id="resource.propagateToActor" name={{concat "system.resources." @index ".propagateToActor"}} {{#if (eq resource.propagateToActor true)}} checked {{/if}} />
+              <div class="slider round"></div>
+            </label>
+          </div> --}}
+
+        </fieldset>
+
+        <button type="button" class="grid-span-2" data-action="deleteResource" data-index="{{@index}}"><i class="fas fa-trash"></i> {{localize "UTOPIA.CommonTerms.deleteResource"}}</button>
+      </details>
+    {{/each}}
+
+  </div>
+</div>

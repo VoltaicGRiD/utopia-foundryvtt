@@ -235,6 +235,15 @@ export function registerGameSettings() {
     default: 0,
   });
 
+  game.settings.register('utopia', 'displayActionsSize', {
+    name: "UTOPIA.Settings.displayActionsSize",
+    hint: "UTOPIA.Settings.displayActionsSizeHint",
+    scope: "world",
+    config: game.settings.get("utopia", "displayActionsOnToken"),
+    type: Number,
+    default: 6,
+  });
+
   game.settings.register('utopia', 'enableTwitchIntegration', {
     name: "UTOPIA.Settings.enableTwitchIntegration",
     hint: "UTOPIA.Settings.enableTwitchIntegrationHint",

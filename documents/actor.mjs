@@ -119,7 +119,7 @@ export class UtopiaActor extends Actor {
 
     // Initialize contributedComponents using componentConfig.
     // Assumes a global 'componentConfig' exists with keys for each component type.
-    const contributedComponents = Object.keys(componentConfig).reduce((acc, key) => {
+    const contributedComponents = Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.components"))).reduce((acc, key) => {
       acc[key] = 0;
       return acc;
     }, {});
@@ -144,6 +144,17 @@ export class UtopiaActor extends Actor {
     }
 
     return [neededComponents, contributedComponents];
+  }
+
+  async craftComponent(componentType, craftingRarity, amount = 1) {
+    const components = Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components")));
+    const rarities = Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")));
+
+    const generalRequirements = components[componentType].crafting;
+    if (generalRequirements[craftingRarity]) {
+      const requirements = generalRequirements[craftingRarity];
+      const difficulty = requirements.difficulty || 0;
+    }
   }
 
   async beginHarvest() {
@@ -439,9 +450,9 @@ export class UtopiaActor extends Actor {
    * @returns {Promise<ChatMessage>} The chat message with the roll result.
    */
   async check(trait, { specification = "always", checkFavor = true, difficulty = 0 } = {}) {
-    const specialChecks = JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))[trait] ?? {};
-    if (Object.keys(specialChecks).length > 0) {
-      return this._checkSpecialty({ trait, specialChecks, specification, checkFavor, difficulty });
+    const check = JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))[trait] ?? {};
+    if (Object.keys(check).length > 0) {
+      return this._checkSpecialty({ trait, check, specification, checkFavor, difficulty });
     } else {
       return this._checkTrait({ trait, specification, checkFavor, difficulty });
     }
@@ -458,15 +469,14 @@ export class UtopiaActor extends Actor {
    * @param {number} [params.difficulty=0] - The difficulty level of the check.
    * @returns {Promise<ChatMessage>}
    */
-  async _checkSpecialty({ trait, specialChecks, specification = "always", checkFavor = true, difficulty = 0 }) {
-    const formula = specialChecks.formula;
-    const attribute = this.system.checks[trait];
+  async _checkSpecialty({ trait, check, specification = "always", checkFavor = true, difficulty = 0 }) {
+    const formula = check.formula;
+    const attribute = this.system.checks[trait].attribute;
     const netFavor = checkFavor ? (await this.checkForFavor(trait, specification)) || 0 : 0;
     // Modify the formula by replacing the default attribute placeholder.
-    const newFormula = formula.replace(`@${specialChecks.defaultAttribute}`, `@${attribute}`);
-    // If a specification is provided and exists within specialChecks, use its label.
-    const labelKey = specification && specialChecks[specification] ? specification : trait;
-    var label = game.i18n.localize(specialChecks[labelKey].label);
+    const newFormula = formula.replace(`@${check.defaultAttribute}`, `@${attribute}`);
+    // If a specification is provided and exists within check, use its label.
+    var label = game.i18n.localize(check.label);
     // If the specification is not "always", append it to the label.
     if (specification !== "always") 
       label = label + ` vs. ${specification.capitalize()}`;    
@@ -527,11 +537,15 @@ export class UtopiaActor extends Actor {
     await this.resetResources('rest');
     await this.update({
       "system.hitpoints.surface.value": this.system.hitpoints.surface.max,
-      "system.stamina.value": !this.getFatigue(3) ? this.system.stamina.max : this.system.stamina.value, // If Fatigue 3, cannot regen stamina
       "system.hitpoints.deep.value": this.type === "creature" ? this.system.hitpoints.deep.max : this.system.hitpoints.deep.value,
       "system.turnActions.value": this.system.turnActions.max,
       "system.interruptActions.value": this.system.interruptActions.max, 
     });
+    if (!(await this.getFatigueLevel(3))) {
+      await this.update({
+        "system.stamina.value": this.system.stamina.max
+      });
+    }
     this.removeFatigue(1); // TODO - Validate this should go here
   }
 
@@ -582,17 +596,19 @@ export class UtopiaActor extends Actor {
   }
 
   async getFatigue(level = null) {
+    let highestFatigue = 0;
+    for (const status of statuses) {
+      highestFatigue = Math.max(highestFatigue, parseInt(status.split("_")[1]));
+    }
+    return highestFatigue;
+  }
+
+  async getFatigueLevel(level) {
     const statuses = Array.from(this.statuses).filter(s => s.includes("fatigue"));
-    if (level && statuses.includes(`fatigue_${level}`))
+    if (statuses.includes(`fatigue_${level}`)) {
       return true;
-    else if (level && !statuses.includes(`fatigue_${level}`))
+    } else {
       return false;
-    else {
-      let highestFatigue = 0;
-      for (const status of statuses) {
-        highestFatigue = Math.max(highestFatigue, parseInt(status.split("_")[1]));
-      }
-      return highestFatigue;
     }
   }
 
@@ -600,7 +616,7 @@ export class UtopiaActor extends Actor {
     const capacityData = (foundry.utils.getProperty(this, slot.slot)).capacity;
     var capacity = 0;
     
-    const equippedData = (foundry.utils.getProperty(this, slot.slot)).equipped;
+    let equippedData = (foundry.utils.getProperty(this, slot.slot)).equipped;
     if (equippedData.length >= capacity && !override) {
       return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
     }
@@ -653,6 +669,11 @@ export class UtopiaActor extends Actor {
       });
     }
     else if (slot.type) {
+      equippedData = (foundry.utils.getProperty(this, slot.slot)).equipped[slot.type];
+
+      if (!this._canEquip(slot.type, item))
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemWasNotEquipped"));
+
       capacity = capacityData[slot.type];
       if (capacity === undefined || capacity === 0) {
         return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresInvalidSlot"));
@@ -667,7 +688,7 @@ export class UtopiaActor extends Actor {
         // })
 
         return await this.update({
-          [`${slot.slot}.equipped`]: equippedData
+          [`${slot.slot}.equipped.${slot.type}`]: equippedData
         });
       }
       else if (equippedData.length >= capacity && !override) {
@@ -687,7 +708,164 @@ export class UtopiaActor extends Actor {
           [`${slot.slot}.equipped`]: equippedData
         });
       }
+      else {
+        // Add the item to the equipped items
+        equippedData.push(item.id);
+        
+        return await this.update({
+          [`${slot.slot}.equipped.${slot.type}`]: equippedData
+        });
+      }
     }
+  }
+
+  async augment({item, slot, override = false}) {
+    const capacityData = (foundry.utils.getProperty(this, slot.slot)).capacity;
+    var capacity = 0;
+    
+    let equippedData = (foundry.utils.getProperty(this, slot.slot)).equipped;
+    if (equippedData.length >= capacity && !override) {
+      return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
+    }
+
+    if (slot.hands) { // Uses a handheld slot
+      capacity = capacityData;
+      const hands = slot.hands ?? 1; // Default to 1 hand if not specified
+
+      const nullSlots = equippedData.filter(id => id === null || id === undefined);
+      const indexOfNull = equippedData.indexOf(null);
+      if (nullSlots.length >= hands) { // If there are enough empty slots, just equip the item
+        // Pop the null slots, and take their place        
+        for (var i = 0; i < hands; i++) {
+          nullSlots.splice(i, 1, item.id);
+        }
+
+        // Update the equipped data with the new item
+        // Replacing the null slots with the new item
+        equippedData.splice(indexOfNull, hands, ...nullSlots);
+        
+        // Update the item to reflect that it is now equipped
+        await item.update({
+          "system.equipped": true,
+        })
+
+        // Update the actor with the new equipped data
+        return await this.update({
+          [`${slot.slot}.equipped`]: equippedData
+        });
+      }
+
+      for (var i = 0; i < hands; i++) {
+        if (override) { // Remove the item at the end of the equipped items
+          equippedData.pop();
+        }
+        else if (equippedData.length + hands >= capacity) {
+          return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
+        }
+
+        equippedData.push(item.id);
+      }
+
+      // Ensure we do not exceed the capacity
+      if (equippedData.length > capacity) {
+        equippedData.splice(0, equippedData.length - capacity); // Keep only the first 'capacity' items
+      }
+
+      await this.update({
+        [`${slot.slot}.equipped`]: equippedData
+      });
+    }
+    else if (slot.type) {
+      equippedData = (foundry.utils.getProperty(this, slot.slot)).equipped[slot.type];
+
+      if (!this._canEquip(slot.type, item))
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemWasNotEquipped"));
+
+      capacity = capacityData[slot.type];
+      if (capacity === undefined || capacity === 0) {
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresInvalidSlot"));
+      }
+
+      if (equippedData.length < capacity) {
+        // Add the new item to the equipped items
+        equippedData.push(item.id);
+
+        // await item.update({
+        //   "system.equipped": true,
+        // })
+
+        return await this.update({
+          [`${slot.slot}.equipped.${slot.type}`]: equippedData
+        });
+      }
+      else if (equippedData.length >= capacity && !override) {
+        return ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresFullSlot"));
+      }
+      else if (equippedData.length >= capacity && override) {
+        // Remove the last item in the equipped items
+        equippedData.splice(0, 1);
+        // Add the new item to the equipped items
+        equippedData.push(item.id);
+
+        // await item.update({
+        //   "system.equipped": true,
+        // })
+
+        return await this.update({
+          [`${slot.slot}.equipped`]: equippedData
+        });
+      }
+      else {
+        // Add the item to the equipped items
+        equippedData.push(item.id);
+        
+        return await this.update({
+          [`${slot.slot}.equipped.${slot.type}`]: equippedData
+        });
+      }
+    }
+  }
+
+  async _canEquip(slot, item) {
+    const armors = this.system.armors;
+    let equippable = true;
+
+    if (armors.specialty[slot]) {
+      // Requires the item to be crafted specifically for this character
+      if (item.system.craftedFor !== this.uuid) {
+        ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresSpecialtyCrafting"));
+        equippable = false;
+      }
+    }
+
+    if (armors.unequippable[slot]) {
+      // The item cannot be equipped in this slot
+      ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresUnequippableSlot"));
+      equippable = false;
+    }
+
+    return equippable;
+  }
+
+  async _canAugment(slot, item) {
+    const armors = this.system.armors;
+    let augmentable = true;
+
+    if (armors.specialty[slot]) {
+      // Requires the item to be crafted specifically for this character
+      if (item.system.craftedFor !== this.uuid) {
+        ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresSpecialtyCrafting"));
+        augmentable = false;
+      }
+    }
+    
+    if (armors.unaugmentable[slot]) {
+      // The item cannot be augmented in this slot
+      ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresUnaugmentableSlot"));
+      augmentable = false;
+    }
+
+    return augmentable;
   }
 
   /**
@@ -773,9 +951,9 @@ export class UtopiaActor extends Actor {
       }
 
       if (isTurn) 
-        canPerform = this._canPerformAction({cost: 1, type: "turn"})     
+        canPerform = await this._canPerformAction({cost: 1, type: "turn"})     
       else 
-        canPerform = this._canPerformAction({cost: 1, type: "interrupt"})     
+        canPerform = await this._canPerformAction({cost: 1, type: "interrupt"})     
     }
 
     if (!canPerform) {
@@ -810,7 +988,7 @@ export class UtopiaActor extends Actor {
       }
     }
 
-    if (this.getFatigue(4)) {
+    if (await this.getFatigueLevel(4)) {
       await this.update({
         "system.stamina.value": this.system.stamina.value - this.getFatigue()
       })
@@ -837,9 +1015,9 @@ export class UtopiaActor extends Actor {
       }
 
       if (isTurn) 
-        canPerform = this._canPerformAction({cost: 1, type: "turn"})     
+        canPerform = await this._canPerformAction({cost: 1, type: "turn"})     
       else 
-        canPerform = this._canPerformAction({cost: 1, type: "interrupt"})     
+        canPerform = await this._canPerformAction({cost: 1, type: "interrupt"})     
     }
 
     if (!canPerform) {
@@ -874,7 +1052,7 @@ export class UtopiaActor extends Actor {
       }
     }
 
-    if (this.getFatigue(4)) {
+    if (await this.getFatigueLevel(4)) {
       await this.update({
         "system.stamina.value": this.system.stamina.value - this.getFatigue()
       })
@@ -923,7 +1101,7 @@ export class UtopiaActor extends Actor {
         }
       }
 
-      if (this._canPerformAction(item)) {
+      if (await this._canPerformAction({item}) === true) {
         switch (category) {
           case "damage":
             return this._damageAction(item);
@@ -1003,7 +1181,7 @@ export class UtopiaActor extends Actor {
         const handledDamage = await damage.handle();
         const damageMessage = await damage.toMessage();
 
-        if (this.getFatigue(4)) { // Handle fatigue
+        if (this.getFatigue(4) === true) { // Handle fatigue
           await this.update({
             "system.stamina.value": this.system.stamina.value - this.getFatigue()
           })
@@ -1177,7 +1355,7 @@ export class UtopiaActor extends Actor {
         }
         return await this.update({
           "system.turnActions.value": this.system.turnActions.value - costLeft,
-          "system.stamina.value": this.system.stamina.value - item.system.staminaCost
+          "system.stamina.value": this.system.stamina.value - item.system.stamina
         });
       case "interrupt":
         if (this.system.interruptActions.temporary > 0) {
@@ -1196,7 +1374,7 @@ export class UtopiaActor extends Actor {
         }
         return await this.update({
           "system.interruptActions.value": this.system.interruptActions.value - cost,
-          "system.stamina.value": this.system.stamina.value - item.system.staminaCost
+          "system.stamina.value": this.system.stamina.value - item.system.stamina
         });
       default:
         return;
@@ -1254,8 +1432,8 @@ export class UtopiaActor extends Actor {
 
       const effectiveSiphons = [];
 
-      if (property) {
-        _siphons(siphons, damage.shpDamage + damage.dhpDamage);
+      if (siphons) {
+        await this._siphons(siphons, damage.shpDamage + damage.dhpDamage);
       }
     }
     else {
@@ -1466,6 +1644,13 @@ export class UtopiaActor extends Actor {
           "system.baseDR": baseDR,
         });
       }
+
+      if (document.type === "species") {
+        this.update({
+          "system._speciesData": foundry.utils.mergeObject( document.system.toObject(), {name: document.name} ),
+          "system._hasSpecies": true,
+        })
+      }
     }
 
     if (collection === "effects") { // ActiveEffect created
@@ -1499,6 +1684,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.WeaponlessAttack"),
       system: {
+        isBaseAction: true,
         category: "damage",
         damages: [{
           formula: this.system.weaponlessAttacks.formula,
@@ -1516,6 +1702,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.DeepBreath"),
       system: {
+        isBaseAction: true,
         category: "utility",
         restoration: true,
         restorationType: "stamina",
@@ -1530,6 +1717,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Grapple"),
       system: {
+        isBaseAction: true,
         category: "test",
         checks: new Set(["str"]),
         checkAgainstTarget: true,
@@ -1546,6 +1734,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Aim"),
       system: {
+        isBaseAction: true,
         category: "active",
         toggleActiveEffects: true,
         type: "turn",
@@ -1572,6 +1761,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.TakeCover"),
       system: {
+        isBaseAction: true,
         category: "active",
         type: "current",
         toggleActiveEffects: true,
@@ -1606,6 +1796,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Travel"),
       system: {
+        isBaseAction: true,
         category: "passive",
         type: "turn",
         cost: "1",
@@ -1617,6 +1808,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Stealth"),
       system: {
+        isBaseAction: true,
         category: "test",
         checks: ["stu"],
         type: "current",
@@ -1629,6 +1821,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Leap"),
       system: {
+        isBaseAction: true,
         category: "passive",
         type: "turn",
         cost: "3",
@@ -1640,6 +1833,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.ScaleSame"),
       system: {
+        isBaseAction: true,
         category: "test",
         checks: ["agi"],
         checkAgainstTarget: true,
@@ -1654,6 +1848,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.ScaleLarger"),
       system: {
+        isBaseAction: true,
         category: "test",
         checks: ["agi"],
         checkAgainstTarget: true,
@@ -1668,6 +1863,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.HoldAction"),
       system: {
+        isBaseAction: true,
         category: "active",
         toggleActiveEffects: true,
         type: "turn",
@@ -1694,6 +1890,7 @@ export class UtopiaActor extends Actor {
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.Assist"),
       system: {
+        isBaseAction: true,
         category: "active",
         toggleActiveEffects: true,
         type: "turn",
@@ -1715,6 +1912,22 @@ export class UtopiaActor extends Actor {
         }
       }]
     }]);
+
+    this.update({
+      "system.hitpoints.surface.value": this.system.hitpoints.surface.max,
+      "system.hitpoints.deep.value": this.system.hitpoints.deep.max,
+      "system.stamina.value": this.system.stamina.max,
+    })
+  }
+
+  _onUpdate(changed, options, userId) {
+    super._onUpdate(changed, options, userId);
+
+    for (const item of this.items) {
+      if (item.type === "action" && item.system.isBaseAction) {
+        item.reset();
+      }
+    }
   }
 
 

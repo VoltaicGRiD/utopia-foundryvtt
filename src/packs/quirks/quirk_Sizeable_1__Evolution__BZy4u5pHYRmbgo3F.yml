@@ -1,0 +1,35 @@
+name: Sizeable 1 (Evolution)
+type: quirk
+system:
+  description: >-
+    The number of slots this species can carry is equal to double times its
+    Strength score.
+
+    Optional: You are considered Small
+  attributes:
+    - key: carryCapacity
+      value: '@str.total * 2'
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: BZy4u5pHYRmbgo3F
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!BZy4u5pHYRmbgo3F'
+

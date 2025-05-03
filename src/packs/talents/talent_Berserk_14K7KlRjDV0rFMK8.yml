@@ -1,0 +1,50 @@
+folder: gAE5SUQJMqItCNJy
+name: Berserk
+type: talent
+_id: 14K7KlRjDV0rFMK8
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>When you take the Attack action, you may spend 2 additional turn actions
+    and 12 stamina to attack a random target within range. If you do, the
+    attack's damage is doubled.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  body: 3
+  mind: 0
+  soul: 0
+  options:
+    choices: []
+    category: ''
+  selectedOption: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects: []
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1745982379598
+  modifiedTime: 1745982424468
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!14K7KlRjDV0rFMK8'
+

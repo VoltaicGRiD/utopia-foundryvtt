@@ -1,0 +1,73 @@
+folder: xXCxQL201Rj0h9iA
+name: Kindle
+type: spellFeature
+_id: 3ncJD1eOzkfcrlk5
+img: systems/utopia/assets/icons/artistries/necromancy.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">All affected, available objects become
+    animated, each turning into an animated creature, the exact stats chosen by
+    the caster and the GM (A single body may have multiple usable stat blocks).
+    Each creature stays animated for the spell’s duration, and the caster may
+    spend 1 turn action or 1 interrupt action to command any of the creatures or
+    to give a creature free will. </p><p style="text-align: left;">Animated
+    creatures may be up to a DR X, and the caster will be aware of what type of
+    creature will be created prior to casting the spell.</p>
+  flavor: ''
+  art: necromancy
+  cost: 10
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769608382
+  modifiedTime: 1734769608382
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!3ncJD1eOzkfcrlk5'
+

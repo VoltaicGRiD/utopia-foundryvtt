@@ -69,6 +69,8 @@ export class Gear extends UtopiaItemBase {
     });
     console.warn(components);
 
+    schema.craftedFor = new fields.DocumentUUIDField({ required: false, nullable: true, initial: null });
+
     schema.prototype = new fields.BooleanField({ required: true, nullable: false, initial: true });
     schema.contributedComponents = new fields.SchemaField({});
     for (const [component, componentValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components")))) {
@@ -199,7 +201,7 @@ export class Gear extends UtopiaItemBase {
     const attributes = feature.system.classifications[this._getRelevantClassificationKey()];
     const costs = feature.system.costs[this._getRelevantClassificationKey()];
     let material, refinement, power, cost = 0;
-    const componentsPerStack = costs.componentsPerStack ?? true;
+    const componentsPerStack = costs?.componentsPerStack ?? true;
     
     // Components per stack indicates whether the components are multiplied by the stack count.
     if (componentsPerStack) {

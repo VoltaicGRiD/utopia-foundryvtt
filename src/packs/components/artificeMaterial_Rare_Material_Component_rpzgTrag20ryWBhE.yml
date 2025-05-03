@@ -1,0 +1,29 @@
+name: Rare Material Component
+type: artificeMaterial
+img: icons/commodities/gems/gem-faceted-cushion-teal.webp
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  quality: rare
+  type: material
+  quantity: 0
+effects: []
+folder: vK9lbWgd7c91xr39
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734915553339
+  modifiedTime: 1734915795968
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: rpzgTrag20ryWBhE
+sort: 400000
+_key: '!items!rpzgTrag20ryWBhE'
+

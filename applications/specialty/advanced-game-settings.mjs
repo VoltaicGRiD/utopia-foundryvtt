@@ -15,12 +15,13 @@ export class AdvancedSettingsMenu extends api.HandlebarsApplicationMixin(api.App
       title: `UTOPIA.Settings.AdvancedSettingsMenu`,
     },
     position: {
-      width: 800,
+      width: 1000,
       height: 900,
     },
     actions: {
       subTab: this._tab,
       save: this._save,
+      reset: this._reset,
     },
   };
 
@@ -160,6 +161,17 @@ export class AdvancedSettingsMenu extends api.HandlebarsApplicationMixin(api.App
   static async _tab(event, target) {
     const tabId = target.dataset.tab;
     this.render({ tabId, force: true });
+  }
+
+  static async _reset(event, target) {
+    const setting = `advancedSettings.${this.selectedTab}`;
+    const defaultSetting = CONFIG.UTOPIA[this.selectedTab.toUpperCase()];
+
+    console.log(defaultSetting);
+
+    await game.settings.set("utopia", setting, JSON.stringify(defaultSetting, null, 2));
+
+    this.render({ tabId: this.selectedTab, force: true });
   }
 
   static async _save(event, target) {

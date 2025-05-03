@@ -36,7 +36,7 @@ export class Species extends UtopiaItemBase {
         "subspecies": "UTOPIA.Items.Species.BranchCategory.Subspecies",
       } }),
       talents: new fields.ArrayField(talent, { initial: [] }),
-    }), { initial: [{ name: "", talents: [] }, { name: "", talents: [] }, { name: "", talents: [] }] });
+    }), { initial: [{ category: "species", talents: [] }, { category: "species", talents: [] }, { category: "subspecies", talents: [] }] });
 
     schema.branchCount = new fields.NumberField({ required: true, nullable: false, initial: 3 });
 

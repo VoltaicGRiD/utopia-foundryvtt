@@ -8,6 +8,7 @@ export class ShieldFeatureOptions extends FeatureBase {
     const requiredInteger = { required: true, nullable: false, initial: 0 };
     const requiredString = { required: true, nullable: false, initial: "" };
     
+    schema.craftMacro = new fields.StringField({ ...requiredString, initial: "" });
     schema.increaseDefense = new fields.StringField({ ...requiredString, initial: "physical", choices: {
       physical: "UTOPIA.DamageTypes.physical",
       energy: "UTOPIA.DamageTypes.energy",

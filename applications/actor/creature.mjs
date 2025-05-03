@@ -15,7 +15,7 @@ export class Creature extends DragDropActorV2 {
     spellbook: {
       template: "systems/utopia/templates/actor/spellbook.hbs",
     },
-  background: {
+    background: {
       template: "systems/utopia/templates/actor/background.hbs",
     },
     effects: {

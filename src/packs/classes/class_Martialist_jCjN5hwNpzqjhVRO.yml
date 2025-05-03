@@ -1,0 +1,60 @@
+name: Martialist
+type: class
+system:
+  type: martial
+  points: 15
+  attributes:
+    - key: system.hitpoints.surface.max
+      value: '35'
+    - key: system.hitpoints.deep.max
+      value: '30'
+    - key: system.stamina.max
+      value: '10'
+    - key: system.innateDefenses.physical
+      value: '4'
+    - key: system.innateDefenses.energy
+      value: '2'
+    - key: system.innateDefenses.heat
+      value: '2'
+    - key: system.innateDefenses.chill
+      value: '2'
+    - key: system.subtraits.dex.value
+      value: '5'
+    - key: system.subtraits.pow.value
+      value: '5'
+    - key: system.subtraits.spd.value
+      value: '3'
+    - key: system.subtraits.for.value
+      value: '2'
+    - key: system.dodge.quantity
+      value: '2'
+    - key: system.block.quantity
+      value: '2'
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  grants: []
+  specialtyPassives: []
+  grantedEquipment: []
+  selectedChoices: {}
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1744059244856
+  modifiedTime: 1744059246686
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: jCjN5hwNpzqjhVRO
+sort: 100000
+_key: '!items!jCjN5hwNpzqjhVRO'
+

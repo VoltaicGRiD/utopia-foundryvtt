@@ -1,0 +1,20 @@
+name: Copper Dwarf
+sorting: a
+folder: 5XIAuYy1uhPhty5n
+type: Item
+_id: lK6Pvhd0qNCBFb14
+description: ''
+sort: 0
+color: '#823c03'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: null
+  lastModifiedBy: null
+_key: '!folders!lK6Pvhd0qNCBFb14'
+

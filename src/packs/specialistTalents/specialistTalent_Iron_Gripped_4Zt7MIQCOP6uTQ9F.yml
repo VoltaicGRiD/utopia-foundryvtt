@@ -1,0 +1,85 @@
+name: Iron Gripped
+type: specialistTalent
+_id: 4Zt7MIQCOP6uTQ9F
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>Your Power score increases by 1. When a creature enters within 1 meter of
+    you, you may take the Grapple action by spending 2 interrupt actions and 6
+    stamina.</p>
+  flavor: ''
+  requirements: []
+  grants: []
+  actions:
+    - name: Iron Gripped
+      category: generic
+      type: interrupt
+      cost: 2
+      stamina: 6
+      resource: ''
+      consumed: 0
+      flavor: >-
+        When a creature enters within 1m, you may take Grapple for 2 IA and 6
+        stamina.
+      actionId: q72oprRFfeJTRaq3
+      trait: agi
+      modifier: ''
+      formula: ''
+      template: none
+      macro: null
+      actor: default
+effects:
+  - name: Iron Gripped
+    origin: Compendium.utopia.specialistTalents.Item.4Zt7MIQCOP6uTQ9F
+    img: icons/svg/aura.svg
+    type: specialist
+    _id: MlrBAx27v0lEfTtQ
+    system: {}
+    changes:
+      - key: system.traits.str.subtraits.pow.bonus
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1737029759367
+      modifiedTime: 1739009682861
+      lastModifiedBy: p7QOrF2iNLdEPi7z
+    _key: '!items.effects!4Zt7MIQCOP6uTQ9F.MlrBAx27v0lEfTtQ'
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1737029723396
+  modifiedTime: 1739009700177
+  lastModifiedBy: p7QOrF2iNLdEPi7z
+_key: '!items!4Zt7MIQCOP6uTQ9F'
+

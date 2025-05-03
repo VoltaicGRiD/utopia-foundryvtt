@@ -13,7 +13,8 @@ export class Creature extends UtopiaActorBase {
         actorLink: false,
         disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
         sight: {
-          enabled: true
+          enabled: true,
+          range: 15,
         }
       }
     });
@@ -28,12 +29,7 @@ export class Creature extends UtopiaActorBase {
     const fields = foundry.data.fields;
     const schema = super.defineSchema();
 
-    const required = { required: true, nullable: false, initial: 0 }
-    const FormulaField = () => new fields.StringField({ required: true, nullable: true, validate: (v) => Roll.validate(v) });
-    const ResourceField = () => new fields.SchemaField({
-      value: new fields.NumberField({ ...required }),
-      max: new fields.NumberField({ ...required })
-    });
+    const required = { required: true, nullable: false }
 
     schema.difficulty = new fields.NumberField({ ...required, initial: 0 });
     schema.exp = new fields.NumberField({ ...required });
@@ -45,7 +41,7 @@ export class Creature extends UtopiaActorBase {
   prepareDerivedData() {
     super.prepareDerivedData();
 
-    this.difficulty = this.parent.items.find(i => i.type === "body").system.baseDR;
+    this.difficulty = this.parent.items.find(i => i.type === "body")?.system?.baseDR || 0;
 
     for (const item of this.parent.items) {
       if (item.type === "kit") {

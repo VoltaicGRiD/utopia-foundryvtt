@@ -1,0 +1,78 @@
+folder: PSC8fCSHq7iv5fuL
+name: Quick Footing
+type: talent
+_id: AdkE9j8hGXBLHFgr
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  body: 1
+  mind: 1
+  soul: 0
+  options:
+    choices: []
+    category: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Quick Footing
+    origin: Compendium.utopia.talents.Item.AdkE9j8hGXBLHFgr
+    img: icons/svg/aura.svg
+    type: passive
+    _id: Oi0zSgS36wsRbzeN
+    system: {}
+    changes:
+      - key: system.dodge.quantity
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1743031866330
+      modifiedTime: 1743031874302
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!AdkE9j8hGXBLHFgr.Oi0zSgS36wsRbzeN'
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743031861402
+  modifiedTime: 1743031864830
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!AdkE9j8hGXBLHFgr'
+

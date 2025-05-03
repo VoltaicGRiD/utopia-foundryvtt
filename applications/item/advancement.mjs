@@ -11,6 +11,7 @@ export class AdvancementSheet extends DragDropAppV2 {
         gifted: this.actor.system.subtraits[subtrait.short].gifted,
         value: this.actor.system.subtraits[subtrait.short].value,
         newValue: this.actor.system.subtraits[subtrait.short].value,
+        newMod: this.actor.system.subtraits[subtrait.short].mod,
       }
     })
   }
@@ -59,18 +60,16 @@ export class AdvancementSheet extends DragDropAppV2 {
     return context;
   }
 
-  async _onRender(context, options) {
-    super._onRender(context, options);
-
-    // Find our subtraits and our buttons
-  }
-
   static async _increase(event, target) {
     const points = this.actor.system.subtraitPoints.available - this.subtraits.reduce((acc, subtrait) => acc + subtrait.newValue - subtrait.value, 0) + (this.actor.system.experience >= this.actor.system.level * 100 ? 1 : 0);
     if (points <= 0) return;
 
+    
     const key = target.dataset.key;
+    const maximum = this.actor.system.subtraits[key].max
+    if (this.subtraits.find((subtrait) => subtrait.short === key).newValue + 1 >= maximum) return;
     this.subtraits.find((subtrait) => subtrait.short === key).newValue += 1;
+    this.subtraits.find((subtrait) => subtrait.short === key).newMod += 1;
 
     this.render();
   }
@@ -81,6 +80,7 @@ export class AdvancementSheet extends DragDropAppV2 {
 
     const key = target.dataset.key;
     this.subtraits.find((subtrait) => subtrait.short === key).newValue -= 1;
+    this.subtraits.find((subtrait) => subtrait.short === key).newMod -= 1;
 
     this.render();
   }

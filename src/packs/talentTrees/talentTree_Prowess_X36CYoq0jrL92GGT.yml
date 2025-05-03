@@ -1,0 +1,82 @@
+name: Prowess
+type: talentTree
+_id: X36CYoq0jrL92GGT
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  style:
+    foregroundColor: '#ffffff'
+    backgroundColor: '#000000'
+    headerColor: '#555555'
+  allowLooping: true
+  branchCount: 3
+  branches:
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.ktYVaLMq004GG56v
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.6Ptgwbm3LsCDpkFT
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.hv8C7WldPHwxFLP3
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.1FKQtyA44BPeIWSY
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.5RMOqUbi3XORQHnB
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.hZtNYKJl13HBh7Ji
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.q0d0Mw1lGPPYWrqt
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.yTBSftounwt5EAQx
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.NFhBsF4a3Dk97AcX
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741977906839
+  modifiedTime: 1741977933535
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!X36CYoq0jrL92GGT'
+

@@ -1,0 +1,75 @@
+folder: rLZDXQGxQ9o55jd0
+name: Transmute
+type: spellFeature
+_id: cBvdHcQsfaCEB5ab
+img: systems/utopia/assets/icons/artistries/alteration.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster changes 1 additional kilogram of
+    affected solid substances, or if the spell has a wake, all applicable
+    substances within the spell’s wake, to another type. The transformation
+    persists for the spell's duration. Upon dispelling, the material reverts
+    back to its original form. </p><p style="text-align: left;">Unless the
+    targeted substance is magimatter, both the targeted substance and the new
+    substance must be solid and pure. </p><p style="text-align: left;">The
+    caster must be touching a sample of the new substance upon casting the
+    spell, otherwise this effect fails. This effect may modify objects, equipped
+    or otherwise, but cannot modify anything living</p>
+  flavor: ''
+  art: alteration
+  cost: 20
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769603326
+  modifiedTime: 1734769603326
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!cBvdHcQsfaCEB5ab'
+

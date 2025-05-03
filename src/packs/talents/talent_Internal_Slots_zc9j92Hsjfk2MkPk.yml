@@ -1,0 +1,78 @@
+folder: ddgKmbzwPlwR0uNM
+name: Internal Slots
+type: talent
+_id: zc9j92Hsjfk2MkPk
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  body: 1
+  mind: 1
+  soul: 0
+  options:
+    choices: []
+    category: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Internal Slots
+    origin: Compendium.utopia.talents.Item.zc9j92Hsjfk2MkPk
+    img: icons/svg/aura.svg
+    type: passive
+    _id: iytWjAQAoEdcsWPY
+    system: {}
+    changes:
+      - key: system.augmenting.damage
+        mode: 5
+        value: 'false'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1742579007696
+      modifiedTime: 1742579034502
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!zc9j92Hsjfk2MkPk.iytWjAQAoEdcsWPY'
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1742578997258
+  modifiedTime: 1742579006018
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!zc9j92Hsjfk2MkPk'
+

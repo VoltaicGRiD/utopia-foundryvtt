@@ -1,0 +1,74 @@
+folder: jLbboxpKvob6wmFc
+name: Elemental Imbue
+type: spellFeature
+_id: Xqw2TgS6TszVXZCD
+img: systems/utopia/assets/icons/artistries/evocation.svg
+system:
+  formula: 1d4
+  description: >-
+    <p style="text-align: left;">All weapons and creatures affected become
+    imbued, dealing an additional 1d4 damage on its next attack. The type may be
+    chosen between Energy, Heat, or Chill. Damage dice may be redistributed in
+    any fashion as long as the maximum damage per damage type is the same. Each
+    creature affected receives additional damage during its next weaponless
+    attack. </p><p style="text-align: left;">Imbuement damage does not gain the
+    features of the weapon, such as ignoring SHP or ignoring defenses. </p><p
+    style="text-align: left;">Weapons and creatures that are already imbued
+    cannot be affected this way.</p>
+  flavor: ''
+  art: evocation
+  cost: 15
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769606898
+  modifiedTime: 1734769606898
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!Xqw2TgS6TszVXZCD'
+

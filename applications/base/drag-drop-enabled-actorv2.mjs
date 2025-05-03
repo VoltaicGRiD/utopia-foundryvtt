@@ -73,10 +73,6 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         acc[key] = { ...value, ...this.actor.system.subtraits[key], group: game.i18n.localize("UTOPIA.SUBTRAITS.GroupName") };
         return acc;
       }, {}),
-      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))).reduce((acc, [key, value]) => {
-        acc[key] = { ...value, group: game.i18n.localize("UTOPIA.SPECIALTY_CHECKS.GroupName") };
-        return acc;
-      }, {}),
     }
 
     // Sort them by their groups
@@ -95,20 +91,17 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       checkOptions[group] = game.i18n.sortObjects(checkOptions[group], "label");
     }    
 
-    var specialtyChecks = Object.fromEntries(await Promise.all(Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))).map(async ([key, value]) => {
-      const netFavor = await this.actor.checkForFavor(key) || 0;
-      const attribute = this.actor.system.checks[key];
-      const newFormula = value.formula.replace(`@${value.defaultAttribute}`, `@${attribute}`);
-      const formula = new Roll(newFormula, this.actor.getRollData()).alter(1, netFavor).formula;
-      return [key, { 
-        ...value, 
-        attribute: attribute,
-        formula: formula,
-        key: key
-      }];
-    })));
-
+    var specialtyChecks = Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))).reduce((acc, [key, value]) => {
+      acc[key] = { 
+        ...value,
+        key: key,
+        formula: new Roll(`3d6 + @${this.actor.system.checks[key].attribute}.mod + ${this.actor.system.checks[key].bonus}`, this.actor.getRollData()).formula,
+      };
+      return acc;
+    }, {});
     specialtyChecks = game.i18n.sortObjects(Object.values(specialtyChecks), "label");
+
+
 
     const handheldSlotsEquipped = this.actor.system.handheldSlots.equipped.map(i => this.actor.items.get(i) ?? null);
 
@@ -185,17 +178,17 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       case 'spellbook':
       case 'equipment':
         context.paperdoll = await getPaperDollContext(this.actor);
+        context = this._prepareItems(context);
       case 'background':
         context.tab = context.tabs[partId];
-        context.enrichedDescription = await TextEditor.enrichHTML(
-          this.actor.system.description,
-          {
-            secrets: this.document.isOwner,
-            rollData: this.actor.getRollData(),
-            relativeTo: this.actor
-          }
-        );
-        context = this._prepareItems(context);
+        // context.enrichedDescription = await TextEditor.enrichHTML(
+        //   this.actor.system.description,
+        //   {
+        //     secrets: this.document.isOwner,
+        //     rollData: this.actor.getRollData(),
+        //     relativeTo: this.actor
+        //   }
+        // );
         break;
       case 'effects': 
         context.tab = context.tabs[partId];
@@ -538,6 +531,12 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
   static async _deleteDocument(event, target) {
     const id = target.dataset.documentId;
+    
+    const item = this.actor.items.get(id);
+    if (item.type === "action" && item.system.isBaseAction) {
+      return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.CannotDeleteBaseAction"));
+    }
+
     await this.actor.deleteItem(this.actor.items.get(id));
   }
 
@@ -582,6 +581,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       case "spellcraft": 
         return new SpellcraftSheet({ actor: this.actor }).render(true);
       case "advancement":
+        if (this.actor.system.talentPoints.available > 0) 
+          return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.AdvancementPointsWarning"));
         return new AdvancementSheet({ actor: this.actor }).render(true);
       case "browser": 
         return new CompendiumBrowser({ actor: this.actor, type: target.dataset.documentType }).render(true);

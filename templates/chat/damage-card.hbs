@@ -26,9 +26,10 @@
   <div data-visibility="gm" class="card-buttons">
     {{#if (and (gt (length instances) 1) (eq system.damageDealt false))}}
       <a data-action="dealAllDamage" data-target="target" data-percent="100"><i class="fa-fw fas fa-sword"></i> Full Damage</a>
+      {{!-- <a data-action="dealHalfDamage" data-target="target" data-percent="100"><i class="fa-fw fas fa-sword"></i> Half Damage</a> --}}
       {{!-- <a data-action="dealAllDamage" data-target="target" data-percent="50"><i class="fa-fw fas fa-divide"></i> 1/2 Damage</a>
       <a data-action="dealAllDamage" data-target="target" data-percent="200"><i class="fa-fw fas fa-bomb"></i> Double Damage</a> --}}
-      <a data-action="dealAllDamage" data-target="owner" data-percent="100"><i class="fa-fw fas fa-user"></i> Damage Owner</a>
+      {{!-- <a data-action="dealAllDamage" data-target="owner" data-percent="100"><i class="fa-fw fas fa-user"></i> Damage Owner</a> --}}
     {{/if}}
   </div>
 

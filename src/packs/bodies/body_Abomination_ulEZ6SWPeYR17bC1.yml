@@ -1,0 +1,62 @@
+name: Abomination
+type: body
+_id: ulEZ6SWPeYR17bC1
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  baseDR: 3
+  shp: 5
+  dhp: 5
+  stamina: 5
+  traits:
+    - trait: dex
+      value: 2
+    - trait: pow
+      value: 2
+    - trait: for
+      value: 2
+  traitDefault: 1
+  defenses:
+    energy: 0
+    heat: 0
+    chill: 0
+    physical: 0
+    psyche: 0
+  dodge:
+    quantity: 1
+    size: 12
+  block:
+    quantity: 1
+    size: 4
+  grants:
+    - Compendium.utopia.favors.Item.AK8sZbJISmZlNNpj
+  harvest:
+    alwaysHarvestable: []
+    testTrait: eng
+    testDifficulty: ceil(@baseDR/5)
+    testHarvestable: []
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1746024788204
+  modifiedTime: 1746024889986
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!ulEZ6SWPeYR17bC1'
+

@@ -1,0 +1,67 @@
+folder: ptKwuJnxkXWM4Jxq
+name: Throw IV
+type: spellFeature
+_id: Lyaa4rZpHr4VFzdn
+img: systems/utopia/assets/icons/artistries/array.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The range of the spell increases by 1
+    kilometer.</p>
+  flavor: ''
+  art: array
+  cost: 1200
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: range
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 1
+    variable: ''
+    unit: kilometers
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769604307
+  modifiedTime: 1734769604307
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!Lyaa4rZpHr4VFzdn'
+

@@ -9,7 +9,7 @@
     <div class="turn-actions">
       {{#for system.turnActions.value}}
         <svg class="action-icon" data-action="roll" data-roll="{{action}}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" fill="green" stroke="black" />
+          <circle cx="12" cy="12" r="10" fill="#99ff99" stroke="black" stroke-width="2" />
         </svg>  
       {{/for}}
     </div>
@@ -17,7 +17,7 @@
     <div class="interrupt-actions">
       {{#for system.interruptActions.value}}
         <svg class="action-icon" data-action="roll" data-roll="{{action}}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" fill="yellow" stroke="black" />
+          <circle cx="12" cy="12" r="10" fill="#ff9999" stroke="black" stroke-width="2" />
         </svg>  
       {{/for}}
     </div>
@@ -105,15 +105,18 @@
       <div class="attribute-set-row">
         <div class="attribute body">
           <img class="box" src="systems/utopia/assets/attribute-box-body.png"/>
-          <input type="number" class="attribute" name="system.body" value="{{system.body}}" placeholder="BDY" readonly />
+          <span class="attribute">{{system.body}}</span>
+          {{!-- <input type="number" class="attribute" name="system.body" value="{{system.body}}" placeholder="BDY" readonly /> --}}
         </div>
         <div class="attribute mind">
           <img class="box" src="systems/utopia/assets/attribute-box-mind.png"/>
-          <input type="number" class="attribute" name="system.mind" value="{{system.mind}}" placeholder="MND" readonly />
+          <span class="attribute">{{system.mind}}</span>
+          {{!-- <input type="number" class="attribute" name="system.mind" value="{{system.mind}}" placeholder="MND" readonly /> --}}
         </div>
         <div class="attribute soul">
           <img class="box" src="systems/utopia/assets/attribute-box-soul.png"/>
-          <input type="number" class="attribute" name="system.soul" value="{{system.soul}}" placeholder="SOL" readonly />
+          <span class="attribute">{{system.soul}}</span>
+          {{!-- <input type="number" class="attribute" name="system.soul" value="{{system.soul}}" placeholder="SOL" readonly /> --}}
         </div>
       </div>
       <label class="attribute-label">BDY / MND / SOL</label>
@@ -143,10 +146,10 @@
 
   <div class="actions">
     {{#if isPlay}}
-      {{#if (eq system._speciesData.name "No Species")}}
-        <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="species" style="background-color: var(--utopia-color-maroon); color: white;"><i class="fa-fw fas fa-paw"></i> {{localize "UTOPIA.Actors.Actions.NoSpecies"}}</a>
-      {{else}}
+      {{#if (eq system._hasSpecies true)}}
         <a class="action-button" data-action="viewDocument" data-document-id="{{system._speciesData.id}}"><i class="fa-fw fas fa-paw"></i> {{system._speciesData.name}}</a>
+      {{else}}
+        <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="species" style="background-color: var(--utopia-color-maroon); color: white;"><i class="fa-fw fas fa-paw"></i> {{localize "UTOPIA.Actors.Actions.NoSpecies"}}</a>
       {{/if}}
     {{else}}   
       <a class="action-button" data-action="openApplication" data-application="browser" data-document-type="species"><i class="fa-fw fas fa-paw"></i> {{system._speciesData.name}}</a>
@@ -154,6 +157,8 @@
 
     {{#if (or system.canLevel (gt system.subtraitPoints.available 0))}}
       <a class="levelup-button action-button" data-action="openApplication" data-application="advancement"><i class="fa-fw fas fa-arrow-up"></i> {{localize "UTOPIA.Actors.Actions.LevelUp"}}</a>
+    {{else}}
+      <a class="action-button" data-action="openApplication" data-application="advancement"><i class="fa-fw fas fa-arrow-up"></i> {{localize "UTOPIA.Actors.Actions.ViewSubtraits"}}</a>
     {{/if}}
   </div>
 
@@ -217,11 +222,14 @@
     <details>
       <summary>{{localize "UTOPIA.Actors.SpecialtyChecks.Summary"}}</summary>
       <div class="details">
-        {{#each specialtyChecks as |check key|}}
-          <a data-action="viewDocument" data-document-type="specialtyCheck" data-check="{{check.key}}" class="check-name" style="color: black;"><i class="fa-fw {{check.icon}}"></i> {{localize check.label}}</a>
+        {{#each specialtyChecks as |specialtyCheck key|}}
+          {{log specialtyCheck}}
+          {{log key}}
+          <a data-action="viewDocument" data-document-type="specialtyCheck" data-check="{{key}}" class="check-name" style="color: black;"><i class="fa-fw {{specialtyCheck.icon}}"></i> {{localize specialtyCheck.label}}</a>
           {{#if ../isPlay}}
             <div class="check-formula">
-              <a data-action="roll" data-roll="check" class="formula trait-check" style="color: black;">{{check.formula}}</a>
+              {{log specialtyCheck.formula}}
+              <a data-action="roll" data-roll="check" data-check="{{specialtyCheck.key}}" class="formula specialty-check" style="color: black;">{{specialtyCheck.formula}}</a>
               <div class="sub-buttons">
                 <a data-action="roll" data-roll="check" data-specification="hostile" data-tooltip="vs. Hostile" class="sub-button trait-check" style="color: black;"><i class="fas fa-dragon"></i></a>
                 <a data-action="roll" data-roll="check" data-specification="neutral" data-tooltip="vs. Neutral" class="sub-button trait-check" style="color: black;"><i class="fas fa-handshake"></i></a>

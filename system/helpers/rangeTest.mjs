@@ -75,10 +75,20 @@ export async function rangeTest({item, target, trait = 'dex'}) {
       // Determine the appropriate dexterity check based on distance.
       if (distance <= closeRange) {
         // Within close range, use a favorable roll.
-        traitCheck = `4d6 + @${trait}.mod`;
+        if (item.parent.system.favors?.accuracy) {
+          const favorAmount = item.parent.system.favors.accuracy;
+          traitCheck = `${4 + favorAmount}d6 + @${trait}.mod`;
+        }
+        else 
+          traitCheck = `4d6 + @${trait}.mod`;
       } else if (distance <= farRange) {
         // Within far range, use a standard roll.
-        traitCheck = `2d6 + @${trait}.mod`;
+        if (item.parent.system.favors?.accuracy) {
+          const favorAmount = item.parent.system.favors.accuracy;
+          traitCheck = `${2 + favorAmount}d6 + @${trait}.mod`;
+        }
+        else
+          traitCheck = `2d6 + @${trait}.mod`;
       } else {
         // Beyond far range, the attack cannot proceed.
         ui.notifications.error("Target is out of range.");

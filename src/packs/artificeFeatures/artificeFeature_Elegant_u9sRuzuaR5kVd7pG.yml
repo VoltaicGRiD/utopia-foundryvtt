@@ -1,0 +1,52 @@
+name: Elegant
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>The weapon deals an additional amount of damage for each type it would
+    normally deal equal to the user’s subtrait modifier. The user’s Power
+    modifier is used if the weapon is melee, the user's Dexterity modifier is
+    used otherwise. </p><p>Not compatible with the Extravagant feature.
+    </p><p>+1 Material Componen</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 60
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: 0
+    material: 1
+    power: 0
+  costModifier: flat
+  incompatible:
+    - Compendium.utopia.artificeFeatures.Item.xukysIjjiaPRmFo6
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: '@pow.mod'
+    ranged: '@dex.mod'
+  affectsOthers: this
+  craftingPrompt: ''
+  costBonus: ''
+  tagline: + Power to Damage
+effects: []
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734984953745
+  modifiedTime: 1735601204497
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: u9sRuzuaR5kVd7pG
+sort: 900000
+_key: '!items!u9sRuzuaR5kVd7pG'
+

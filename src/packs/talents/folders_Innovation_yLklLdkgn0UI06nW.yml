@@ -1,0 +1,20 @@
+name: Innovation
+sorting: a
+folder: null
+type: Item
+_id: yLklLdkgn0UI06nW
+description: ''
+sort: 800000
+color: '#955723'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731695057429
+  modifiedTime: 1741977972794
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!folders!yLklLdkgn0UI06nW'
+

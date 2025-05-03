@@ -1,0 +1,48 @@
+name: 'Strike: Confusing'
+type: action
+img: icons/svg/sword.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  type: Standard
+  source: null
+  cost: double
+  stamina: 0
+  rules:
+    Blinding:
+      name: Blinding
+      content: |-
+        {
+            "onHit": {
+                "target": {
+                    "effect": {
+                        "condition": "blinded",
+                        "duration": "userTurn"
+                    }
+                }
+            }
+        }
+  trigger: ''
+  recharge: Immediate
+  target: Enemy
+  triggers: []
+effects: []
+folder: null
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734992200096
+  modifiedTime: 1743031962746
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: qybrUQnARNuYoKdH
+sort: 1400000
+_key: '!items!qybrUQnARNuYoKdH'
+

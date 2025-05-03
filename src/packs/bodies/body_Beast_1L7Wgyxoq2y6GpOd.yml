@@ -1,0 +1,68 @@
+name: Beast
+type: body
+_id: 1L7Wgyxoq2y6GpOd
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  baseDR: 5
+  shp: 10
+  dhp: 5
+  stamina: 10
+  traits:
+    - trait: spd
+      value: 2
+    - trait: dex
+      value: 2
+    - trait: pow
+      value: 2
+    - trait: awa
+      value: 3
+  traitDefault: 1
+  defenses:
+    energy: 1
+    heat: 1
+    chill: 1
+    physical: 1
+    psyche: 1
+  dodge:
+    quantity: 3
+    size: 12
+  block:
+    quantity: 2
+    size: 4
+  harvest:
+    testTrait: eng
+    testDifficulty: ceil(@baseDR/2)
+    componentFormula: 1d6
+    componentRarity: common
+    componentType: material
+    material: 1d6
+    alwaysHarvestable:
+      - component: material
+        quantity: 1d6
+    testHarvestable:
+      - component: material
+        quantity: 1d8
+      - component: refinement
+        quantity: 1d4
+effects: []
+folder: null
+sort: 100000
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743717044111
+  modifiedTime: 1746024730651
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!1L7Wgyxoq2y6GpOd'
+

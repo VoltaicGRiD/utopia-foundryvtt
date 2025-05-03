@@ -1,0 +1,42 @@
+folder: dZ7JRlPgNdhJbez4
+name: Versatile
+type: talent
+img: systems/utopia/assets/icons/talents/flexible.svg
+system:
+  formula: ''
+  description: ''
+  flexibility:
+    soul: 1
+    enabled: true
+    category: subspecies
+    body: 0
+    mind: 0
+    tier: 2
+  tags: []
+  favors: {}
+  body: 0
+  mind: 0
+  soul: 0
+  options:
+    choices: []
+    category: ''
+  macro: null
+  grants: []
+effects: []
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741876187797
+  modifiedTime: 1743333487484
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: EYL2shtyb4roSZJr
+sort: 0
+_key: '!items!EYL2shtyb4roSZJr'
+

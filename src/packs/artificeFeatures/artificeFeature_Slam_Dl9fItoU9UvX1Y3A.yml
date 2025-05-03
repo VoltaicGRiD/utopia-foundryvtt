@@ -1,0 +1,63 @@
+name: Slam
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>The weapon deals an additional 1d4 Physical damage. Damage dice may be
+    redistributed in any fashion as long as the maximum damage is the
+    same.</p><p>+1 Material Component for any number of stacks.</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 10
+  costMultiplier: flat
+  stackable: stackable
+  components:
+    material: 1
+    refinement: 0
+    power: 0
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  costBonus: ''
+  formulas:
+    melee: 1d4[Physical]
+    ranged: ''
+  categories: []
+  tagline: +1d4 Physical
+  requires: []
+  stacks: 1
+  maxStacks: 0
+  componentsPerStack: all
+  ammo:
+    quantity: 0
+    item: ''
+  affectsOthers: this
+  craftingPrompt: ''
+  grantsAction: null
+effects: []
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags:
+  exportSource:
+    world: utopiatest
+    system: utopia
+    coreVersion: '12.331'
+    systemVersion: 0.1.0
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1735588373679
+  modifiedTime: 1735601327315
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: Dl9fItoU9UvX1Y3A
+sort: 0
+_key: '!items!Dl9fItoU9UvX1Y3A'
+

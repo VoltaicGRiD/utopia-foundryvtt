@@ -1,0 +1,45 @@
+name: Anomalous 4 (Evolution)
+type: quirk
+system:
+  description: All specific armor slot types cannot be augmented on this species.
+  attributes:
+    - key: armors.unaugmentable.head
+      value: 'true'
+    - key: armors.unaugmentable.neck
+      value: 'true'
+    - key: armors.unaugmentable.back
+      value: 'true'
+    - key: armors.unaugmentable.chest
+      value: 'true'
+    - key: armors.unaugmentable.waist
+      value: 'true'
+    - key: armors.unaugmentable.hands
+      value: 'true'
+    - key: armors.unaugmentable.ring
+      value: 'true'
+    - key: armors.unaugmentable.feet
+      value: 'true'
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: rCZjn6vxpOZNXDor
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!rCZjn6vxpOZNXDor'
+

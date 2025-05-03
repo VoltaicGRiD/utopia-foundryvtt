@@ -1,0 +1,50 @@
+folder: 0ReMDsRTDtz3NbnA
+name: Stubborn
+type: talent
+img: systems/utopia/assets/icons/talents/stubborn.svg
+system:
+  formula: ''
+  description: >-
+    <p>You gain a point of favor on tests made to resist being influenced or
+    forced to commit to an action.</p>
+  soul: 1
+  grants:
+    - Compendium.utopia.favors.Item.xSNHZVp4agk0IAxd
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  body: 0
+  mind: 0
+  options:
+    choices: []
+    category: ''
+  selectedOption: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+effects: []
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1745981947200
+  modifiedTime: 1745981947200
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: TaK3oPVIuDuZgXEg
+sort: 0
+_key: '!items!TaK3oPVIuDuZgXEg'
+

@@ -1,0 +1,20 @@
+name: Automaton
+sorting: a
+folder: null
+type: Item
+_id: MZCiJ44v2rNmBggB
+description: ''
+sort: 1000000
+color: '#8fbdbc'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731887848382
+  modifiedTime: 1741977972794
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!folders!MZCiJ44v2rNmBggB'
+

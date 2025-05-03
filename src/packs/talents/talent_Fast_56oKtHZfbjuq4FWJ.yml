@@ -1,0 +1,78 @@
+folder: pH8oUZ1QgezUvXO0
+name: Fast
+type: talent
+_id: 56oKtHZfbjuq4FWJ
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  body: 2
+  mind: 0
+  soul: 0
+  options:
+    choices: []
+    category: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Fast
+    origin: Compendium.utopia.talents.Item.56oKtHZfbjuq4FWJ
+    img: icons/svg/aura.svg
+    type: passive
+    _id: JLhjQpzFQN45kGlF
+    system: {}
+    changes:
+      - key: system.travel.land.speed
+        mode: 2
+        value: '2'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1743030969242
+      modifiedTime: 1743030978008
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!56oKtHZfbjuq4FWJ.JLhjQpzFQN45kGlF'
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743030962760
+  modifiedTime: 1743030966310
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!56oKtHZfbjuq4FWJ'
+

@@ -1,0 +1,78 @@
+folder: Kbja2Jan2w3aVjsm
+name: Beautiful
+type: talent
+_id: 9F62JKnTmgEnTEkb
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  body: 0
+  mind: 0
+  soul: 3
+  options:
+    choices: []
+    category: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Beautiful
+    origin: Compendium.utopia.talents.Item.9F62JKnTmgEnTEkb
+    img: icons/svg/aura.svg
+    type: passive
+    _id: D1gJnWnHvKJncQHM
+    system: {}
+    changes:
+      - key: system.favorLocks.blockDisfavor.app
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1743031402553
+      modifiedTime: 1743031412072
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!9F62JKnTmgEnTEkb.D1gJnWnHvKJncQHM'
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743030926603
+  modifiedTime: 1743030933969
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!9F62JKnTmgEnTEkb'
+

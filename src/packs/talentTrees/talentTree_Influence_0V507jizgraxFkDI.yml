@@ -1,0 +1,100 @@
+name: Influence
+type: talentTree
+_id: 0V507jizgraxFkDI
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>Social conducts and misconducts can both be utilized using the influence
+    tree. A pratical usage of words can aid your allies and goad your opponents,
+    perhaps even convince them all that you're somebody else entirely.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  style:
+    foregroundColor: '#ffffff'
+    backgroundColor: '#000000'
+    headerColor: '#555555'
+  allowLooping: false
+  branchCount: 3
+  branches:
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.QPp2e51oCmUGsiqi
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.GbAHjfSNJ4YVg7oc
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.sVT23lkqPCQHG5Wg
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.MD0JymrjvywLWOlL
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.wWLGNssmhNmZTkrE
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.MQw6ahCea6Nx1rL9
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.lHwSZmFhnTgsVU6P
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.WDZtDr19nRJc3in3
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.na21StuNlttY7KrU
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.ndN6uUbGRSzAXMpL
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.G7i5AgiWFCO8JVzo
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.LWqziZMUfVtEfWtg
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741969804623
+  modifiedTime: 1741969893582
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!0V507jizgraxFkDI'
+

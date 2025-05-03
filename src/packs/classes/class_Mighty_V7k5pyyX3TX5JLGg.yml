@@ -1,0 +1,78 @@
+name: Mighty
+type: class
+system:
+  type: martial
+  points: 65
+  attributes:
+    - key: system.hitpoints.surface.max
+      value: '140'
+    - key: system.hitpoints.deep.max
+      value: '140'
+    - key: system.stamina.max
+      value: '35'
+    - key: system.innateDefenses.physical
+      value: '16'
+    - key: system.innateDefenses.energy
+      value: '14'
+    - key: system.innateDefenses.heat
+      value: '12'
+    - key: system.innateDefenses.chill
+      value: '12'
+    - key: system.innateDefenses.psyche
+      value: '10'
+    - key: system.subtraits.pow.value
+      value: '15'
+    - key: system.subtraits.spd.value
+      value: '10'
+    - key: system.subtraits.for.value
+      value: '10'
+    - key: system.subtraits.dex.value
+      value: '8'
+    - key: system.subtraits.res.value
+      value: '7'
+    - key: system.subtraits.awa.value
+      value: '7'
+    - key: system.subtraits.stu.value
+      value: '4'
+    - key: system.subtraits.por.value
+      value: '2'
+    - key: system.subtraits.app.value
+      value: '2'
+    - key: system.subtraits.lan.value
+      value: '2'
+    - key: system.dodge.quantity
+      value: '4'
+    - key: system.block.quantity
+      value: '8'
+    - key: system.interruptActions.max
+      value: '=3'
+    - key: system.turnActions.max
+      value: '=9'
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  grants: []
+  specialtyPassives: []
+  grantedEquipment: []
+  selectedChoices: {}
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1744059245719
+  modifiedTime: 1744132902708
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: V7k5pyyX3TX5JLGg
+sort: 300000
+_key: '!items!V7k5pyyX3TX5JLGg'
+

@@ -1,0 +1,33 @@
+name: Exo Body 1 (Evolution)
+type: quirk
+system:
+  description: >-
+    Armor cannot be worn in one specific armor slot types on this species. This
+    does not affect augmentable spaces.
+  attributes:
+    - key: armors.unequippable.count
+      value: '1'
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: b8JEASl89j5mBQN0
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!b8JEASl89j5mBQN0'
+

@@ -1,0 +1,35 @@
+name: Mage Mentality (Favor)
+type: favor
+_id: 2bxp6XIxw8QsEi9p
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  conditions:
+    - always
+  check: agi
+  checks:
+    - maintainFocus
+    - maintainConcentration
+  target: self
+  value: 1
+effects: []
+folder: null
+sort: 100000
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1742576796620
+  modifiedTime: 1743030576062
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!2bxp6XIxw8QsEi9p'
+

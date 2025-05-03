@@ -1,0 +1,23 @@
+name: Augment
+type: action
+_id: aaPlzzdvCbluIMkT
+img: icons/svg/item-bag.svg
+system: {}
+effects: []
+folder: null
+sort: 1000000
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1739007217478
+  modifiedTime: 1743031962746
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!aaPlzzdvCbluIMkT'
+

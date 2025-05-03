@@ -1,0 +1,90 @@
+name: Unbreakable Mind
+type: specialistTalent
+_id: ug3hokDWzOoxwO8s
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>Must be a Dwarf.</p><p>If you would make an Engineering or Memory test,
+    you may spend 10 stamina to make an Intellect test instead. If you would
+    make a Resolve or Awareness test, you may spend 10 stamina to make a Will
+    test instead.</p>
+  formula: ''
+  flavor: ''
+  resource:
+    resourceId: A0q7EzmJQjX3FvDn
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  action:
+    actionId: xGsPpBylqM0JAhHH
+    name: New Action
+    category: trait
+    type: turn
+    trait: agi
+    modifier: ''
+    cost: 0
+    stamina: 0
+    formula: ''
+    flavor: ''
+    template: none
+    resource: ''
+    consumed: 0
+    macro: null
+    actor: default
+  actions:
+    - name: Unbreakable Mind - Intellect
+      category: trait
+      type: turn
+      cost: 0
+      stamina: 10
+      trait: int
+      modifier: ''
+      resource: ''
+      consumed: 0
+      flavor: ''
+      actionId: xGsPpBylqM0JAhHH
+      formula: ''
+      template: none
+      macro: null
+      actor: default
+    - name: Unbreakable Mind - Will
+      category: trait
+      type: turn
+      cost: 0
+      stamina: 10
+      trait: wil
+      modifier: ''
+      resource: ''
+      consumed: 0
+      flavor: ''
+      actionId: xGsPpBylqM0JAhHH
+      formula: ''
+      template: none
+      macro: null
+      actor: default
+  requirements: []
+  grants: []
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1739005667119
+  modifiedTime: 1739005983049
+  lastModifiedBy: p7QOrF2iNLdEPi7z
+_key: '!items!ug3hokDWzOoxwO8s'
+

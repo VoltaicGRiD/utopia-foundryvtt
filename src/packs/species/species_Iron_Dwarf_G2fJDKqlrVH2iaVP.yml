@@ -1,0 +1,122 @@
+name: Iron Dwarf
+type: species
+_id: G2fJDKqlrVH2iaVP
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  name: Human
+  grants:
+    block: '3'
+    dodge: 1d12
+    constitution: 4
+    endurance: '6'
+    effervescence: 3
+    subtraits: mem,res,awa
+    languages: utopian,dwarvish
+  block:
+    quantity: 3
+    size: 4
+  subtraits:
+    - Memory
+    - Resolve
+    - Awareness
+  dodge:
+    size: 12
+  constitution: 4
+  endurance: 6
+  effervescence: 3
+  languages:
+    - Utopian
+    - Dwarvish
+  branches:
+    - category: species
+      talents:
+        - uuid: Compendium.utopia.talents.Item.LOHvaaiB7WN4H1pB
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.kSoW9QrGzUDseWI3
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.yWPKkopvU02X6ExT
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.sa0DeKMOLXmkZTvt
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - category: species
+      talents:
+        - uuid: Compendium.utopia.talents.Item.TOpJkP3dLyJCuyDT
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.NvyuLxk0CL2fAdxj
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.sPTl5m0ONhR5sKXz
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.eRmIRlmjfX2m1CXq
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - category: subspecies
+      talents:
+        - uuid: Compendium.utopia.talents.Item.k4KwFzsQqGXIFMYy
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.yqLcm9l22VFfbY5F
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.o4WY7QUQZo5F9sQ6
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+  quirkPoints: 18
+  gifts:
+    subtraits:
+      - memory
+      - resolve
+      - awareness
+  communication:
+    language:
+      languages:
+        - utopian,dwarvish
+effects: []
+folder: nyZo7R4Uko2akKfp
+sort: 100000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731343516429
+  modifiedTime: 1743032606999
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!G2fJDKqlrVH2iaVP'
+

@@ -1,0 +1,33 @@
+name: Odd Shape 3 (Evolution)
+type: quirk
+system:
+  description: >-
+    Armor and/or artifacts worn in 8 specific slot types that it can utilize
+    must be made custom in order for this species to equip. Armor may be
+    customized over 1 hour using a tool set. Only creatures able to craft items
+    of a similar rarity may customize items this way.
+  attributes: []
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: 5ie4yZNSJUoiAPY5
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!5ie4yZNSJUoiAPY5'
+

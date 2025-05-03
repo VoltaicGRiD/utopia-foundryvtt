@@ -1,0 +1,38 @@
+folder: 71oO6XkehSGdoFub
+name: Abomination (Favor)
+type: favor
+_id: AK8sZbJISmZlNNpj
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  conditions:
+    - always
+  check: agi
+  checks:
+    - resistInfluence
+  target: self
+  value: 1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1746024866968
+  modifiedTime: 1746024876227
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!AK8sZbJISmZlNNpj'
+

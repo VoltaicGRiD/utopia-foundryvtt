@@ -1,0 +1,119 @@
+name: Natural Healer
+type: specialistTalent
+_id: f2yj6xqyJklonMXr
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>Your Resolve score increases by 1. You have a number of Restoration
+    charges equal to your Resolve score. You may spend 3 turn actions and any
+    number of Restoration Charges to heal a touching creature 1d4 DHP per
+    Restoration Charge used. You regain all charges after completing a rest.</p>
+  formula: ''
+  flavor: ''
+  resource:
+    resourceId: IlI3DyUSdciDTo71
+    name: ''
+    max: 0
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources:
+    - name: Restoration Charges
+      amount: 0
+      max:
+        formula: '0'
+      recoverAmount: 0
+      recoverInterval: none
+      propagateToActor: true
+      resourceId: p9yLeO7dB3V1zcUx
+      secret: false
+  action:
+    actionId: BqqXqcyl69qDLv5c
+    name: New Action
+    category: trait
+    type: turn
+    trait: agi
+    modifier: ''
+    cost: 0
+    stamina: 0
+    formula: ''
+    flavor: ''
+    template: none
+    resource: ''
+    consumed: 0
+    macro: null
+    actor: default
+  actions:
+    - name: Natural Healer
+      category: damage
+      type: turn
+      cost: 3
+      stamina: 0
+      formula: (1d4 * -1)[DHP]
+      template: none
+      resource: Restoration Charges
+      consumed: 1
+      flavor: ''
+      actionId: q72oprRFfeJTRaq3
+      trait: agi
+      modifier: ''
+      macro: null
+      actor: default
+  requirements: []
+  grants: []
+effects:
+  - name: Natural Healer
+    origin: Compendium.utopia.specialistTalents.Item.f2yj6xqyJklonMXr
+    img: icons/svg/aura.svg
+    type: specialist
+    _id: OrYCSwryvH72SDoC
+    system: {}
+    changes:
+      - key: system.traits.wil.subtraits.res.bonus
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1738949038753
+      modifiedTime: 1739009795488
+      lastModifiedBy: p7QOrF2iNLdEPi7z
+    _key: '!items.effects!f2yj6xqyJklonMXr.OrYCSwryvH72SDoC'
+folder: null
+sort: 0
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1738949023042
+  modifiedTime: 1739009805703
+  lastModifiedBy: p7QOrF2iNLdEPi7z
+_key: '!items!f2yj6xqyJklonMXr'
+

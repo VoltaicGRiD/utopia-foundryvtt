@@ -1,0 +1,67 @@
+name: Expeditious
+type: specialistTalent
+_id: HWYIu18iZiZUm0WB
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>Your Speed score increases by 1. You may spend 3 stamina to take the
+    Travel action with no turn action cost, up to once per turn on your
+    turn.</p>
+  flavor: ''
+  requirements: []
+  grants: []
+effects:
+  - name: Expeditious
+    origin: Compendium.utopia.specialistTalents.Item.HWYIu18iZiZUm0WB
+    img: icons/svg/aura.svg
+    type: specialist
+    _id: T77vroBVzVPXfwbr
+    system: {}
+    changes:
+      - key: system.traits.agi.subtraits.spd.bonus
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1737033913965
+      modifiedTime: 1739009709051
+      lastModifiedBy: p7QOrF2iNLdEPi7z
+    _key: '!items.effects!HWYIu18iZiZUm0WB.T77vroBVzVPXfwbr'
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1737033884130
+  modifiedTime: 1737033909277
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!HWYIu18iZiZUm0WB'
+

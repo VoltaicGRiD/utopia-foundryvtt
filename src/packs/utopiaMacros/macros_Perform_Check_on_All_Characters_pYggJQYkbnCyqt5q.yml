@@ -1,0 +1,49 @@
+name: Perform Check on All Characters
+type: script
+_id: pYggJQYkbnCyqt5q
+author: p7QOrF2iNLdEPi7z
+img: systems/utopia/assets/Utopia-Logo.webp
+scope: global
+command: |-
+  const traits = game.utopia.buildTraitData()
+  const characters = game.actors.filter(a => a.type === "character")
+
+  const template = "systems/utopia/templates/macros/trait-select.hbs";
+  const templateData = { traits };
+  const html = await renderTemplate(template, templateData);
+  const dialog = new foundry.applications.api.DialogV2({
+    window: { title: "Choose a Trait" },
+    content: html,
+    buttons: [
+      {
+        action: "choice",
+        label: "Make Choice",
+        default: true,
+        // Return the selected character in the callback
+        callback: (event, button, dialog) => {
+          return [dialog.querySelector('#trait-select').selectedOptions[0].value, dialog.querySelector('#value-to-beat').value]
+        }
+      }
+    ],
+    // `result` will be the return value from whichever button callback was chosen
+    submit: (result) => {
+      characters.forEach(c => c.performCheck(result[0], { noDialog: true, toBeat: parseInt(result[1]) >= 0 ? parseInt(result[1]) : null }));
+    }
+  }).render({force: true});
+folder: null
+sort: 700000
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1738283699304
+  modifiedTime: 1741968233671
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!macros!pYggJQYkbnCyqt5q'
+

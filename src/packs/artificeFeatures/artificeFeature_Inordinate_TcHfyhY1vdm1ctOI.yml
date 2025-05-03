@@ -1,0 +1,90 @@
+name: Inordinate
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>This weapon takes up 27 slots. </p><p>Not compatible with the Compact or
+    Awkward features. </p><p>-2 Refinement Components</p>
+  flavor: ''
+  category: fastWeapon
+  cost: -30
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: -2
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible:
+    - Compendium.utopia.artificeFeatures.Item.RCS7B3ZbYoY8jcqU
+    - Compendium.utopia.artificeFeatures.Item.V4pI8fpRv61tOmzz
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  grantsAction: null
+  costBonus: ''
+  craftingPrompt: ''
+  tagline: +27 Slots
+effects:
+  - name: Inordinate
+    origin: Item.seJZKEwTVc9gslcL
+    img: icons/svg/aura.svg
+    type: gear
+    _id: 22UQxd632t8TSxKE
+    system: {}
+    changes:
+      - key: system.slots
+        mode: 5
+        value: '27'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: false
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: 1735333481509
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!TcHfyhY1vdm1ctOI.22UQxd632t8TSxKE'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734993157530
+  modifiedTime: 1735601378319
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: TcHfyhY1vdm1ctOI
+sort: 1300000
+_key: '!items!TcHfyhY1vdm1ctOI'
+

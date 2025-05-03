@@ -1,0 +1,20 @@
+name: Iron Dwarf
+sorting: a
+folder: 5XIAuYy1uhPhty5n
+type: Item
+_id: 69fbhTe194ZU14Au
+description: ''
+sort: 0
+color: '#823c03'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: 1731922681622
+  lastModifiedBy: 6Pk79J5bUCHatGG1
+_key: '!folders!69fbhTe194ZU14Au'
+

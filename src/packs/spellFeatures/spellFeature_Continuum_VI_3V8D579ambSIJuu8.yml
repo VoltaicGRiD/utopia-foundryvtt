@@ -1,0 +1,67 @@
+folder: MxNtWOKgZszC5ZGV
+name: Continuum VI
+type: spellFeature
+_id: 3V8D579ambSIJuu8
+img: systems/utopia/assets/icons/artistries/enchantment.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The spell remains active for X years after this
+    turn or until you spend 1 turn action or 1 interrupt action to dispel it</p>
+  flavor: ''
+  art: enchantment
+  cost: 1900
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables: {}
+  modifies: duration
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: years
+    requirements: none
+    dispelInterruptCost: 1
+    dispelActionCost: 1
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769605948
+  modifiedTime: 1734769605948
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!3V8D579ambSIJuu8'
+

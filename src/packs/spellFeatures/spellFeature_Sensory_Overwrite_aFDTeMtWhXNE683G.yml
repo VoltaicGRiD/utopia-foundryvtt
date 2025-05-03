@@ -1,0 +1,79 @@
+folder: KHSQSKTQfJSy9HeI
+name: Sensory Overwrite
+type: spellFeature
+_id: aFDTeMtWhXNE683G
+img: systems/utopia/assets/icons/artistries/illusion.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">A single sensation, feeling, or instinct of the
+    caster’s choice is modified for all affected creatures for the spell’s
+    duration. The caster may modify the sense in any way that does not outright
+    obscure it, given they can vividly imagine it. All affected creatures have
+    the same sense altered in the same way.</p>
+  flavor: ''
+  art: illusion
+  cost: 75
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: S
+      kind: text
+      description: ''
+      dice: ''
+      options: []
+      minimum: 0
+      maximum: 0
+      name: Sense
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 500000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769607685
+  modifiedTime: 1734827709889
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!aFDTeMtWhXNE683G'
+

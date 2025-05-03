@@ -1,0 +1,20 @@
+name: Angelic Cambion
+sorting: a
+folder: RhjRiIYBnnys1W2W
+type: Item
+_id: 0UAnpi8lui1DK8c3
+description: ''
+sort: 50000
+color: '#55b3e2'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: 1733078806974
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!0UAnpi8lui1DK8c3'
+

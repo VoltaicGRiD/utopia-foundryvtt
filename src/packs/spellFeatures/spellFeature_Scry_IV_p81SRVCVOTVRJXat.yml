@@ -1,0 +1,73 @@
+folder: 4dCfWgPfQgwtLbIC
+name: Scry IV
+type: spellFeature
+img: systems/utopia/assets/icons/artistries/divination.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster gains a prospect against all
+    affected creatures for the duration of the spell. When the caster makes a
+    roll that directly affects prospected creatures, including attacking, spell
+    damage, blocking, dodging, and tests, each die is potentially modified. If a
+    die would roll below half its maximum, rounded down, it’s treated as if it
+    rolled the half instead. </p><p style="text-align: left;">The caster may
+    give this prospect to other affected creatures, giving them the same bonuses
+    against affected creatures.</p>
+  flavor: ''
+  art: divination
+  cost: 120
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769605125
+  modifiedTime: 1734769605125
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: p81SRVCVOTVRJXat
+sort: 0
+_key: '!items!p81SRVCVOTVRJXat'
+

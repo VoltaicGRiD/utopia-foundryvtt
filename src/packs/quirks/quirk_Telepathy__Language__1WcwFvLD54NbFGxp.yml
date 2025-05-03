@@ -1,0 +1,33 @@
+name: Telepathy (Language)
+type: quirk
+system:
+  description: >-
+    This species can communicate telepathically with creatures that share a
+    language with it, a maximum range of 10 meters.
+  attributes:
+    - key: communication.types
+      value: speech,telepathy
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: 1WcwFvLD54NbFGxp
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!1WcwFvLD54NbFGxp'
+

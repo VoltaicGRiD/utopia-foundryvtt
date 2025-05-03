@@ -1,0 +1,71 @@
+folder: 4dCfWgPfQgwtLbIC
+name: Locate Object
+type: spellFeature
+_id: BEuR4zPnFc4IWrvU
+img: systems/utopia/assets/icons/artistries/divination.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster chooses a specific item that they
+    have made physical contact with or can vividly imagine, or a list of
+    specifications that an item may have. For the spell’s duration, the caster
+    knows the exact direction leading towards an item, regardless of obstacles
+    in between. </p><p style="text-align: left;">Unless a specific item was
+    chosen, the nearest item that matches the type chosen is located.</p>
+  flavor: ''
+  art: divination
+  cost: 100
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769605125
+  modifiedTime: 1734769605125
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!BEuR4zPnFc4IWrvU'
+

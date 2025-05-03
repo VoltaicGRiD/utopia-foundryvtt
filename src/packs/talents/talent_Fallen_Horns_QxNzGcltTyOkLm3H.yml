@@ -1,0 +1,75 @@
+folder: EzNELKOkcTjd7pOU
+name: Fallen Horns
+type: talent
+_id: QxNzGcltTyOkLm3H
+img: systems/utopia/assets/icons/talents/fallen_horns.svg
+system:
+  formula: ''
+  description: <p>Your weaponless attacks deal 2d8 Physical damage.</p>
+  flavor: ''
+  parent: ''
+  tree: Demonic Cambion
+  position: 2
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 0
+    soul: 1
+  ultimate: true
+  isSpecies: true
+  body: 1
+  soul: 1
+effects:
+  - name: Fallen Horns
+    origin: Compendium.utopia.talents.Item.QxNzGcltTyOkLm3H
+    img: icons/svg/aura.svg
+    type: passive
+    _id: Wioq3ZTUdPnisVAj
+    system: {}
+    changes:
+      - key: system.weaponlessAttacks.formula
+        mode: 5
+        value: 2d8
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1745777192414
+      modifiedTime: 1745777238252
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!QxNzGcltTyOkLm3H.Wioq3ZTUdPnisVAj'
+sort: 300000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731480937162
+  modifiedTime: 1743030460412
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!QxNzGcltTyOkLm3H'
+

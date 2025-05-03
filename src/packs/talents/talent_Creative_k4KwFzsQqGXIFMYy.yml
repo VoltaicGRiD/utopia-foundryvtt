@@ -1,0 +1,75 @@
+folder: 69fbhTe194ZU14Au
+name: Creative
+type: talent
+img: systems/utopia/assets/icons/talents/creative.svg
+system:
+  formula: ''
+  description: <p>Spells you cast cost 1 less stamina, minimum cost of 1.</p>
+  flavor: ''
+  parent: ''
+  tree: Iron Dwarf
+  position: 1
+  attributes:
+    cost: []
+  points:
+    body: '0'
+    mind: '1'
+    soul: '1'
+  isSpecies: true
+  choices: []
+  category: ''
+  soul: 2
+effects:
+  - name: Creative
+    origin: Item.wq9kJE3U9gA2zfzD
+    img: icons/svg/aura.svg
+    type: talent
+    _id: GeMm7ACXHX3dtsyx
+    system: {}
+    changes:
+      - key: system.spellcasting.discount
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: 1742576763049
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!k4KwFzsQqGXIFMYy.GeMm7ACXHX3dtsyx'
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734631385612
+  modifiedTime: 1742576772716
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: k4KwFzsQqGXIFMYy
+sort: 200000
+_key: '!items!k4KwFzsQqGXIFMYy'
+

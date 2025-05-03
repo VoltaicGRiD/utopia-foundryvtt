@@ -1,0 +1,51 @@
+name: Ship Wrecker
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>This weapon deals double damage to targets other than creatures.</p><p>+1
+    Material Component</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 10
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: 0
+    material: 1
+    power: 0
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  craftingPrompt: ''
+  tagline: 2x Damage to Non-Creatures
+  costBonus: ''
+effects: []
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734990461713
+  modifiedTime: 1735601595468
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: LKgFIS5mqUYQxwox
+sort: 2300000
+_key: '!items!LKgFIS5mqUYQxwox'
+

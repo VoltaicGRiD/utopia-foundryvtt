@@ -1,0 +1,82 @@
+folder: jLbboxpKvob6wmFc
+name: Elemental Matter
+type: spellFeature
+_id: 9Bik0XnMvdtAmE0M
+img: systems/utopia/assets/icons/artistries/evocation.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster produces a material, refinement, or
+    power component made out of pure elemental matter. One or more can be
+    conjured into an item as rare as Common that requires a similar number of
+    components. </p><p style="text-align: left;">The caster does not need to be
+    able to craft a given item normally in order to create an item this way.
+    </p><p style="text-align: left;">The elemental matter exists for the spell’s
+    duration. Upon being dispelled, the elemental matter dissipates with no
+    trace,</p>
+  flavor: ''
+  art: evocation
+  cost: 30
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: I
+      kind: text
+      description: ''
+      dice: ''
+      options: []
+      minimum: 0
+      maximum: 0
+      name: Item
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769606898
+  modifiedTime: 1734855486352
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!9Bik0XnMvdtAmE0M'
+

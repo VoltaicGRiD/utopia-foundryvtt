@@ -1,0 +1,45 @@
+folder: pezQjNuhQEYo2lBz
+name: Practice
+type: talent
+_id: 1FKQtyA44BPeIWSY
+img: systems/utopia/assets/icons/talents/practice.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">Choose one or two subtraits. If
+    one is chosen, it increases by 2 given it wouldn't increase past its
+    maximum. If two are chosen, they both increase by 1, given they aren't at
+    their maximum.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Prowess-2
+  position: 1
+  isSpecies: false
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 1
+    soul: 1
+  ultimate: true
+  category: ''
+  body: 1
+  mind: 1
+  soul: 1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731884772961
+  modifiedTime: 1743030059441
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!1FKQtyA44BPeIWSY'
+

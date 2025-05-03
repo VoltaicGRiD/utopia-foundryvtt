@@ -1,0 +1,75 @@
+folder: Y4hd0ZlpGgzjGCz7
+name: Iron Will
+type: talent
+_id: sPTl5m0ONhR5sKXz
+img: systems/utopia/assets/icons/talents/iron_will.svg
+system:
+  formula: ''
+  description: <p>Your Psyche defense increases by 4.</p>
+  flavor: ''
+  parent: ''
+  tree: Dwarf-2
+  position: 3
+  attributes:
+    cost: []
+  points:
+    body: 0
+    mind: 1
+    soul: 1
+  ultimate: true
+  isSpecies: true
+  mind: 1
+  soul: 1
+effects:
+  - name: Iron Will
+    origin: Compendium.utopia.talents.Item.sPTl5m0ONhR5sKXz
+    img: icons/svg/aura.svg
+    type: passive
+    _id: cmvwEAlezK6Tm1j0
+    system: {}
+    changes:
+      - key: system.innateDefenses.psyche
+        mode: 2
+        value: '4'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1742576003975
+      modifiedTime: 1742576015780
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!sPTl5m0ONhR5sKXz.cmvwEAlezK6Tm1j0'
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731923681862
+  modifiedTime: 1742576002146
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!sPTl5m0ONhR5sKXz'
+

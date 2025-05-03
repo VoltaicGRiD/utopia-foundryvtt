@@ -1,0 +1,32 @@
+name: Artificial 1 (Evolution)
+type: quirk
+system:
+  description: >-
+    This species isn’t considered a Construct and does not need to breathe, eat,
+    drink water, or sleep. It cannot be inflicted with points of Fatigue or
+    Unconsciousness. When resting, it remains conscious but Paralyzed.
+  attributes: []
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: NVE8JTIyxuZUmkx5
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!NVE8JTIyxuZUmkx5'
+

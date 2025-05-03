@@ -1,0 +1,75 @@
+folder: z3NOStowDhOnz0vd
+name: Tinkerer
+type: talent
+_id: NgTse4ptrxyBf6mf
+img: systems/utopia/assets/icons/talents/tinkerer.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">You can craft Common
+    items.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Innovation-2
+  position: 1
+  attributes:
+    cost: []
+  points:
+    body: 0
+    mind: 1
+    soul: 0
+  ultimate: true
+  mind: 1
+effects:
+  - name: Tinkerer
+    origin: Compendium.utopia.talents.Item.NgTse4ptrxyBf6mf
+    img: icons/svg/aura.svg
+    type: talent
+    _id: MZM2kdzBI446fAFL
+    system: {}
+    changes:
+      - key: system.artifice.level
+        mode: 4
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1737033079066
+      modifiedTime: 1743618639434
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!NgTse4ptrxyBf6mf.MZM2kdzBI446fAFL'
+sort: 300000
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731695702621
+  modifiedTime: 1743030274897
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!NgTse4ptrxyBf6mf'
+

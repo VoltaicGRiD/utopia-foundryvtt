@@ -1,0 +1,62 @@
+name: Perform Check on Targets / Controlled
+type: script
+author: p7QOrF2iNLdEPi7z
+img: systems/utopia/assets/Utopia-Logo.webp
+scope: global
+command: |-
+  const traits = game.utopia.buildTraitData()
+  const characters = [];
+
+  if (game.user.targets.size) {
+    characters.push(...[...game.user.targets].map(t => t.actor));
+  }
+
+  if (characters.length === 0) {
+    characters.push(...canvas.tokens.controlled.map(t => t.actor));
+  }
+
+  if (characters.length === 0) {
+    ui.notifications.error("You must have at least one token targeted (priority) or controlled, to use this macro.");
+  }
+  else {
+    const template = "systems/utopia/templates/macros/trait-select.hbs";
+    const templateData = { traits };
+    const html = await renderTemplate(template, templateData);
+    const dialog = new foundry.applications.api.DialogV2({
+      window: { title: "Choose a Trait" },
+      content: html,
+      buttons: [
+        {
+          action: "choice",
+          label: "Make Choice",
+          default: true,
+          // Return the selected character in the callback
+          callback: (event, button, dialog) => {
+            return [dialog.querySelector('#trait-select').selectedOptions[0].value, dialog.querySelector('#value-to-beat').value]
+          }
+        }
+      ],
+      // `result` will be the return value from whichever button callback was chosen
+      submit: (result) => {
+        characters.forEach(c => c.performCheck(result[0], { noDialog: true, toBeat: parseInt(result[1]) >= 0 ? parseInt(result[1]) : null }));
+      }
+    }).render({force: true});
+  }
+folder: null
+ownership:
+  default: 0
+  p7QOrF2iNLdEPi7z: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1738286122264
+  modifiedTime: 1741968233671
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: 3G8zsxSaY7bkxJMe
+sort: 100000
+_key: '!macros!3G8zsxSaY7bkxJMe'
+

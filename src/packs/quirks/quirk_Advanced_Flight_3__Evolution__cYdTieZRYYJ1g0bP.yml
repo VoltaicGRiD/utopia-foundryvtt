@@ -1,0 +1,35 @@
+name: Advanced Flight 3 (Evolution)
+type: quirk
+system:
+  description: >-
+    This species has an Air travel equal to double its Speed score. If it flies
+    for any amount of time during a turn, it loses 4 stamina.
+  attributes:
+    - key: travel.air
+      value: '@travel.speed * 2'
+    - key: travel.air.stamina
+      value: '4'
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: cYdTieZRYYJ1g0bP
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!cYdTieZRYYJ1g0bP'
+

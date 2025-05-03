@@ -1,0 +1,125 @@
+name: Biotech Cyborg
+type: species
+_id: UsfqQz8HpQds2Xjk
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  name: Human
+  grants:
+    block: 2d4
+    dodge: 2d12
+    constitution: 4
+    endurance: 5
+    effervescence: 3
+    subtraits: eng,mem,awa
+    languages: utopian,1
+  subtraits:
+    - Engineering
+    - Memory
+    - Awareness
+  block:
+    quantity: 2
+    size: 4
+  dodge:
+    quantity: 2
+    size: 12
+  constitution: 4
+  endurance: 5
+  effervescence: 3
+  languages:
+    - Utopian
+  quirkPoints: 19
+  gifts:
+    subtraits:
+      - engineering
+      - memory
+      - awareness
+  communication:
+    language:
+      choices: 1
+      languages:
+        - utopian
+    types:
+      - speech
+  branches:
+    - category: species
+      talents:
+        - uuid: Compendium.utopia.talents.Item.0CbLQBfb18QEYFfX
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.zc9j92Hsjfk2MkPk
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.8bjhCnvLJyTbFO5l
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.Udkakqrc54CyZlrd
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - category: species
+      talents:
+        - uuid: Compendium.utopia.talents.Item.ZJQ0Da39abxMwN05
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.LZAfQImtaa6CRuQ7
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.0xupeXZb2l0RObWz
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.5OPFBVNzZTlLio4v
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - category: subspecies
+      talents:
+        - uuid: Compendium.utopia.talents.Item.ljtMe5GsZtuWLy00
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.7BEL7NT9nTG9l42M
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.vdv2AjnjQQdJ7YON
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+effects: []
+folder: srMVQDLEzb2oLGzx
+sort: 100000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731343552056
+  modifiedTime: 1743032624318
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!UsfqQz8HpQds2Xjk'
+

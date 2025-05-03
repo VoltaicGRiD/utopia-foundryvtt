@@ -1,0 +1,20 @@
+name: Prowess
+sorting: a
+folder: null
+type: Item
+_id: lHTi6gl8F17xLDyl
+description: ''
+sort: 600000
+color: '#602775'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731884576457
+  modifiedTime: 1741977972794
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!folders!lHTi6gl8F17xLDyl'
+

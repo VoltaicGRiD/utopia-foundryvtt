@@ -1,0 +1,34 @@
+name: Valley Stalker (Favor)
+type: favor
+_id: lrl9zhEiNWupNrkv
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  conditions:
+    - always
+  check: agi
+  checks:
+    - disguise
+  target: self
+  value: 1
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743031898030
+  modifiedTime: 1743031912529
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!lrl9zhEiNWupNrkv'
+

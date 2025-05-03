@@ -1,0 +1,33 @@
+name: Artistry (Macro)
+type: script
+_id: AJsL8vsvQNJByjGo
+author: J3DseiXIgI97Cf1C
+img: systems/utopia/assets/icons/talents/novice_artistry.svg
+scope: global
+command: |-
+  const item = scope.item;
+  console.warn(item);
+
+  const choice = item.system.selectedOption;
+  const parsedChoice = choice.toLowerCase().trim();
+
+  actor.update({
+    [`system.spellcasting.artistries.${parsedChoice}.unlocked`]: true
+  });
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743322333996
+  modifiedTime: 1743358567847
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!macros!AJsL8vsvQNJByjGo'
+

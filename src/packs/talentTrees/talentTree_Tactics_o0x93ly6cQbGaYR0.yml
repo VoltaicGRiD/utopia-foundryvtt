@@ -1,0 +1,96 @@
+name: Tactics
+type: talentTree
+_id: o0x93ly6cQbGaYR0
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>The Tactics tree offers evasive maneuvers and technical outfittings. The
+    talents in this tree push superior movement and reflexive defense, including
+    not only increasing one's blocking and dodging capabilities, but also
+    offering alternative methods.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  style:
+    foregroundColor: '#1e7122'
+    backgroundColor: '#233e30'
+    headerColor: '#136d39'
+  allowLooping: false
+  branchCount: 3
+  branches:
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.7m4X0WRm63rndAxa
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.8L0Y2SPPmLWY89he
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.H3otEZ0HaZ6ZF6TU
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.qtdkH8DvbTepGg0C
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.qtdkH8DvbTepGg0C
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.Gxs8dRl5utCtWkeS
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.Gxs8dRl5utCtWkeS
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.FyDEMe5v045Fgob6
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.lxGvb0w6dkM3fGWa
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.F4pGzePaf28Qb2C2
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.RMVVaACiKkXaWmC5
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741966380663
+  modifiedTime: 1741968504582
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!o0x93ly6cQbGaYR0'
+

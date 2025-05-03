@@ -1,0 +1,67 @@
+folder: Oqds7vyg50vLegqY
+name: Finite Void
+type: spellFeature
+_id: TOFS01Kr3WlyyAup
+img: systems/utopia/assets/icons/artistries/wake.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The spell's wake ignores a specific object or
+    creature.</p>
+  flavor: ''
+  art: wake
+  cost: 10
+  allowRedistribution: 'false'
+  doesTarget: 'true'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769608985
+  modifiedTime: 1734769608985
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!TOFS01Kr3WlyyAup'
+

@@ -1,0 +1,125 @@
+name: Copper Dwarf
+type: species
+_id: eQ1Jg6XkwrYECEcf
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  name: Human
+  grants:
+    block: 3d4
+    dodge: 1d12
+    constitution: 4
+    endurance: '6'
+    effervescence: 3
+    subtraits: mem,res,eng
+    languages: utopian,dwarvish
+  block:
+    quantity: 3
+    size: 4
+  subtraits:
+    - Memory
+    - Resolve
+    - Engineering
+  dodge:
+    size: 12
+  constitution: 4
+  endurance: 6
+  effervescence: 3
+  languages:
+    - Utopian
+    - Dwarvish
+  communication:
+    types:
+      - speech
+    language:
+      languages:
+        - utopian
+        - dwarvish
+  quirkPoints: 20
+  branches:
+    - category: species
+      talents:
+        - uuid: Compendium.utopia.talents.Item.LOHvaaiB7WN4H1pB
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.kSoW9QrGzUDseWI3
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.yWPKkopvU02X6ExT
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.sa0DeKMOLXmkZTvt
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - category: species
+      talents:
+        - uuid: Compendium.utopia.talents.Item.TOpJkP3dLyJCuyDT
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.NvyuLxk0CL2fAdxj
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.sPTl5m0ONhR5sKXz
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.eRmIRlmjfX2m1CXq
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - category: subspecies
+      talents:
+        - uuid: Compendium.utopia.talents.Item.FAPaX9ACs3B8EFOk
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.3pSFuvkahjhKdRPE
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.2VymtJcIIQOsG5NC
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+  gifts:
+    subtraits:
+      - memory
+      - resolve
+      - engineering
+effects: []
+folder: nyZo7R4Uko2akKfp
+sort: 200000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731343479447
+  modifiedTime: 1743032609264
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!eQ1Jg6XkwrYECEcf'
+

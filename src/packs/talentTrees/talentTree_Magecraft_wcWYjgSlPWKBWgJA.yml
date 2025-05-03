@@ -1,0 +1,111 @@
+name: Magecraft
+type: talentTree
+_id: wcWYjgSlPWKBWgJA
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>Sometimes, mana teaches the caster and the magecraft tree allows for
+    this, the usage of magic and the arcane. Not only may one learn the arcane
+    arts, but also how to cast more efficient spells with lower costs to suit a
+    caster's needs.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  style:
+    foregroundColor: '#cca800'
+    backgroundColor: '#7f6900'
+    headerColor: '#aca936'
+  allowLooping: false
+  branches:
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.cIaGieRboywQMJ8x
+          overridden: true
+          body: 1
+          mind: 1
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.vV3yOhJTjRQ8MBpN
+          overridden: true
+          body: 1
+          mind: 2
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.8GL1DWDPq1Tr0Ick
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.oFPshDfNQj3i3GpW
+          overridden: true
+          body: 2
+          mind: 3
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.6fzUavsCF7AOco43
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.f45R4J0pYOk5NM0d
+          overridden: true
+          body: 0
+          mind: 2
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.3eIwBAsPiLHmGmcE
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.GnMUx182GbDngFwR
+          overridden: true
+          body: 0
+          mind: 4
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.QRCxmVKNjGXjRu1p
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - talents:
+        - uuid: Compendium.utopia.talents.Item.zeeDyd6UeXshCpJQ
+          overridden: true
+          body: 0
+          mind: 1
+          soul: 1
+        - uuid: Compendium.utopia.talents.Item.1GibFvSuq0iBcqJc
+          overridden: true
+          body: 0
+          mind: 2
+          soul: 1
+        - uuid: Compendium.utopia.talents.Item.22hRqk80RGV8aUD8
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.QUeos7NqB2oW2sNK
+          overridden: true
+          body: 0
+          mind: 3
+          soul: 2
+        - uuid: Compendium.utopia.talents.Item.knp2DhRBJZulDZqd
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+  branchCount: 3
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741964439334
+  modifiedTime: 1743029314697
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!wcWYjgSlPWKBWgJA'
+

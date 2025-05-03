@@ -1,0 +1,41 @@
+folder: 73v9AG2p8jPv1Bbf
+name: Terminal Drive
+type: talent
+_id: AvIkofwSbXJboNh8
+img: systems/utopia/assets/icons/talents/terminal_drive.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">When you make an attack with a
+    weapon, you may spend 7 stamina to reduce the number of turn actions
+    required by 1 any number of times, max reduction to 1 turn
+    actions.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Warfare-2
+  position: 4
+  attributes:
+    cost: []
+  points:
+    body: 4
+    mind: 3
+    soul: 0
+  ultimate: true
+  body: 6
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731693747199
+  modifiedTime: 1743029856028
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!AvIkofwSbXJboNh8'
+

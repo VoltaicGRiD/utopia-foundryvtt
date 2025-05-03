@@ -1,0 +1,38 @@
+folder: UOqvWas8iwkznSYJ
+name: Brawler
+type: talent
+_id: wqv4X5X3UnM9TVfy
+img: systems/utopia/assets/icons/talents/brawler.svg
+system:
+  formula: ''
+  description: <p>You gain a point of favor on tests made to grapple creatures.</p>
+  flavor: ''
+  parent: ''
+  tree: Warfare-1
+  position: 2
+  attributes:
+    cost: []
+  points:
+    body: 3
+    mind: 0
+    soul: 1
+  ultimate: true
+  body: 2
+  soul: 1
+effects: []
+sort: 200000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731481573410
+  modifiedTime: 1743029229779
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!wqv4X5X3UnM9TVfy'
+

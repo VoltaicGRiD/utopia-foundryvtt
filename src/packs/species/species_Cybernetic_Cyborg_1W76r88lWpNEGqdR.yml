@@ -1,0 +1,117 @@
+name: Cybernetic Cyborg
+type: species
+_id: 1W76r88lWpNEGqdR
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  name: Human
+  grants:
+    block: 2d4
+    dodge: 2d12
+    constitution: 4
+    endurance: 5
+    effervescence: 3
+    subtraits: eng,mem,pow
+    languages: utopian,1
+  block:
+    quantity: 2
+  subtraits:
+    - Engineering
+    - Power
+    - Memory
+  dodge:
+    quantity: 2
+    size: 12
+  endurance: 5
+  effervescence: 3
+  constitution: 4
+  languages:
+    - Utopian
+  quirkPoints: 17
+  gifts:
+    subtraits:
+      - engineering
+      - memory
+      - power
+  branches:
+    - category: species
+      talents:
+        - uuid: Compendium.utopia.talents.Item.0CbLQBfb18QEYFfX
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.zc9j92Hsjfk2MkPk
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.8bjhCnvLJyTbFO5l
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.Udkakqrc54CyZlrd
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - category: species
+      talents:
+        - uuid: Compendium.utopia.talents.Item.ZJQ0Da39abxMwN05
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.LZAfQImtaa6CRuQ7
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.0xupeXZb2l0RObWz
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.5OPFBVNzZTlLio4v
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+    - category: subspecies
+      talents:
+        - uuid: Compendium.utopia.talents.Item.bAi68hl8KvPjqKuC
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.sOqgNIJsNyKoC7wx
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+        - uuid: Compendium.utopia.talents.Item.HHDylYiMBPMDHLhF
+          overridden: false
+          body: 0
+          mind: 0
+          soul: 0
+effects: []
+folder: srMVQDLEzb2oLGzx
+sort: 200000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731343788435
+  modifiedTime: 1743332940421
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!1W76r88lWpNEGqdR'
+

@@ -19,27 +19,6 @@ export class NPC extends UtopiaActorBase {
     });
   }
 
-  static defineSchema() {
-    const fields = foundry.data.fields;
-    const schema = super.defineSchema();
-
-    const required = { required: true, nullable: false, initial: 0 }
-    const FormulaField = () => new fields.StringField({ required: true, nullable: true, validate: (v) => Roll.validate(v) });
-    const ResourceField = () => new fields.SchemaField({
-      value: new fields.NumberField({ ...required }),
-      max: new fields.NumberField({ ...required })
-    });
-
-    schema.level = new fields.NumberField({ ...required, initial: 10 });
-    schema.experience = new fields.NumberField({ ...required });
-
-    
-
-
-
-    return schema;
-  }
-
   prepareDerivedData() {
     super.prepareDerivedData();
 

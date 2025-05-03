@@ -83,6 +83,9 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         schema.favorLocks.fields.blockFavor[subtrait] = new fields.BooleanField({ required: true, nullable: false, initial: false });
       }
     }
+
+    schema.level = new fields.NumberField({ ...requiredInteger, initial: 10 });
+    schema.experience = new fields.NumberField({ ...requiredInteger });
     
     schema.travel = new fields.SchemaField({
       land: new fields.SchemaField({
@@ -265,10 +268,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       return returns;
     }
 
-    schema.constitution = new fields.NumberField({ ...requiredInteger, initial: 0 });
-    schema.endurance = new fields.NumberField({ ...requiredInteger, initial: 0 });
-    schema.effervescence = new fields.NumberField({ ...requiredInteger, initial: 0 });
-
     schema.communication = new fields.SchemaField({
       languages: new fields.SchemaField({
         ...languages()
@@ -381,12 +380,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       equipped: new fields.ArrayField(new fields.StringField({ required: true, nullable: false })),
     });
 
-    schema.slotCapacity = new fields.SchemaField({
-      bonus: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      total: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-    });
-    schema.slots = new fields.NumberField({ ...requiredInteger, initial: 0 });
-
     schema.turnOrder = new fields.StringField({ required: true, nullable: false, initial: "spd.mod" })
     schema.turnOrderOptions = new fields.StringField({
       traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['spd.mod'] }),
@@ -437,9 +430,28 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       grantedName: new fields.StringField({ required: true, nullable: false }), 
     }));
 
+    schema._talentTracking = new fields.ArrayField(new fields.SchemaField({
+      tree: new fields.DocumentUUIDField({ required: true, nullable: false }),
+      branch: new fields.NumberField({ required: true, nullable: false }),
+      tier: new fields.NumberField({ required: true, nullable: false }),
+      talent: new fields.DocumentUUIDField({ required: true, nullable: false }),
+    }))    
+    schema._talentOptions = new fields.ObjectField({ initial: {} });
+
     // schema.body = new fields.NumberField({ ...requiredInteger, initial: 0 });
     // schema.mind = new fields.NumberField({ ...requiredInteger, initial: 0 });
     // schema.soul = new fields.NumberField({ ...requiredInteger, initial: 0 });
+
+    schema.biography = new fields.SchemaField({
+      pronouns: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      age: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      height: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      weight: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      edicts: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      anathema: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      motivations: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      phobias: new fields.StringField({ required: true, nullable: false, initial: "" }),
+    });
 
     schema._speciesData = new fields.ObjectField({ required: true, nullable: false, initial: {} });
     schema._hasSpecies = new fields.BooleanField({ required: true, nullable: false, initial: false });
@@ -490,19 +502,31 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }
     }
 
-    this.talentPoints = {
-      spent: 0,
-      available: this.level
-    }
-
     this.hitpoints.surface.max = 0;
     this.hitpoints.deep.max = 0;
     this.stamina.max = 0;
 
+    this.giftPoints = {
+      spent: 0,
+      available: 0
+    }
     this.subtraitPoints = {
       spent: 0
     };
-    this.talentPoints = {};
+    this.talentPoints = {
+      spent: 0,
+      available: this.level
+    };
+    this.specialistPoints = {
+      spent: 0,
+      available: 0
+    }
+    this.languagePoints = {
+      spent: 0,
+      available: 0
+    };
+
+    this.slotCapacity = 0;
 
     this.turnActions.max = game.settings.get("utopia", "turnActionsMax");
     this.interruptActions.max = game.settings.get("utopia", "interruptActionsMax");
@@ -576,6 +600,15 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;
 
     this.spellcasting.spellcap = new Roll(`@${this.spellcasting.spellcapTrait}.total`, this.parent.getRollData()).evaluateSync().total;
+
+    if (["sm", "small"].includes(this.size)) 
+      this.slotCapacity = 2 * this.traits.str.total;
+    else if (["med", "medium"].includes(this.size))
+      this.slotCapacity = 5 * this.traits.str.total;
+    else if (["lg", "large"].includes(this.size)) 
+      this.slotCapacity = 15 * this.traits.str.total;
+    else 
+      this.slotCapacity = 0; // TODO - Implement other sizes
   }
 
   get body() {
@@ -590,227 +623,12 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     return this.parent.items.filter(i => i.type === "talent").reduce((acc, talent) => acc + talent.system.soul, 0);
   }
 
+  get slots() {
+    return this.parent.items.filter(i => ["gear", "generic"].includes(i.type) && i.system.slots && i.system.equipped).reduce((acc, item) => acc + item.system.slots, 0);
+  }
+
   get encumbered() {
-    return this.parent.items.filter(i => ["gear", "generic"].includes(i.type) && i.system.slots && !i.system.equipped).reduce((acc, item) => acc + item.system.slots, 0) > this.slotCapacity.total;
-  }
-
-  /**
-   * Currently only used to output the formula for blocks and dodges 
-   *
-   */
-  _prepareAutomation() {
-    this.block.formula = `${this.block.quantity}d${this.block.size}`;
-    this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
-
-    this.turnOrder = foundry.utils.getProperty(this.parent.getRollData(), this.turnOrder)
-    
-    let slots = 0;
-    for (const item of this.parent.items) {
-      if (item.system.slots && !item.system.equipped) {
-        slots += item.system.slots;
-      }
-    }
-    
-    this.encumbered = slots > this.slotCapacity.total;
-  }
-
-  /**
-   * Prepare travel data, including innate travel speeds and stamina costs.
-   * This method is called during the preparation of derived data.
-   */
-  _prepareTravel() {
-    this.travel = {}
-    
-    const landRoll = new Roll(this.innateTravel.land.speed, this.parent.getRollData()).evaluateSync().total;
-    const waterRoll = new Roll(this.innateTravel.water.speed, this.parent.getRollData()).evaluateSync().total;
-    const airRoll = new Roll(this.innateTravel.air.speed, this.parent.getRollData()).evaluateSync().total;
-
-    this.travel.land = {
-      speed: landRoll + (this.speciesTravel?.land?.speed ?? 0),
-      stamina: this.innateTravel.land.stamina + (this.speciesTravel?.land?.stamina ?? 0),
-    }
-    this.travel.water = {
-      speed: waterRoll + (this.speciesTravel?.water?.speed ?? 0),
-      stamina: this.innateTravel.water.stamina + (this.speciesTravel?.water?.stamina ?? 0),
-    }
-    this.travel.air = {
-      speed: airRoll + (this.speciesTravel?.air?.speed ?? 0),
-      stamina: this.innateTravel.air.stamina + (this.speciesTravel?.air?.stamina ?? 0),
-    }
-  }
-  
-  /**
-   * Adjust the actor's attributes (hitpoints, stamina) based on stats and current level.
-   * Helps enforce minimum/maximum values.
-   */
-  _prepareAttributes() {
-    this.hitpoints.surface.max += (this.body * this.constitution) + this.level;
-    this.hitpoints.deep.max += (this.soul * this.effervescence) + this.level;
-    this.stamina.max += (this.mind * this.endurance) + this.level;
-
-    this.hitpoints.surface.value = Math.min(this.hitpoints.surface.value, this.hitpoints.surface.max);
-    this.hitpoints.deep.value = Math.min(this.hitpoints.deep.value, this.hitpoints.deep.max);
-    this.stamina.value = Math.min(this.stamina.value, this.stamina.max);
-
-    this.canLevel = this.experience >= this.level * 100;
-  }
-
-  /**
-   * Handle the initialization and tracking of point pools (talents, specialists).
-   */
-  _preparePoints() {
-    this.talentPoints.spent = this.body + this.mind + this.soul;
-    this.talentPoints.available = this.level - this.talentPoints.spent + this.talentPoints.bonus;
-    
-    this.specialistPoints.spent = this.parent.items.filter(i => i.type === "specialist").length;
-    this.specialistPoints.available = Math.floor(this.level / 10) - this.specialistPoints.spent + this.specialistPoints.bonus;
-
-    Object.keys(this.subtraits).forEach(k =>{
-      this.subtraitPoints.spent += (this.subtraits[k].value - 1);
-      this.subtraitPoints.available = 5 + this.level - this.subtraitPoints.spent + this.subtraitPoints.bonus;
-    })
-  }
-
-  /**
-   * Process talents by iterating over talent trees, checking highest tiers acquired, and summing stats.
-   */
-  async _prepareTalents() {
-    const talents = this.parent.items.filter(i => i.type === "talent");
-    for (const talent of talents) {
-      this.body += talent.system.body;
-      this.mind += talent.system.mind;
-      this.soul += talent.system.soul;
-
-      if (talent.system.selectedOption.length !== 0) {
-        const category = talent.system.options.category;
-        this._talentOptions[category] ??= [];
-        this._talentOptions[category].push(talent.system.selectedOption);
-      }
-    }
-    
-    if (this._speciesData === undefined) return;
-
-    const species = this._speciesData.system.branches;
-    if (species) {
-      for (const branch of species) {
-        var highestTier = -1;
-        
-        for (var t = 0; t < branch.talents.length; t++) {
-          const branchTalent = await fromUuid(branch.talents[t].uuid);
-          
-          // We can compare points, name, and other properties, but can't compare
-          // the entire object because it's a different instance
-          for (const talent of talents) {
-            var match = true;
-            
-            if (talent.name !== branchTalent.name) match = false;
-            if (foundry.utils.objectsEqual(talent.system.toObject(), branchTalent.system.toObject()) === false) match = false;
-            
-            if (match) {
-              if (t > highestTier) highestTier = t;
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Aggregate innate and armor-based defenses for this actor.
-   */
-  _prepareDefenses() {
-    for (const [key, value] of Object.entries(this.equipmentSlots.equipped)) {
-      if (value && value.length > 0) {
-
-        for (const itemId of value) {
-          const item = this.parent.items.filter(i => i.id === itemId)[0];
-          if (!item) continue;
-          
-          const defenses = item.system.defenses;
-          if (defenses) {
-            for (const [defenseKey, defenseValue] of Object.entries(defenses)) {
-              if (this.armorDefenses[defenseKey] === undefined) this.armorDefenses[defenseKey] = 0;
-              this.armorDefenses[defenseKey] += defenseValue;
-            }
-          }
-        }
-      }
-    }
-
-    for (const [key, value] of Object.entries(this.augmentSlots.equipped)) {
-      if (value && value.length > 0) {
-
-        for (const itemId of value) {
-          const item = this.parent.items.filter(i => i.id === itemId)[0];
-          if (!item) continue;
-          
-          const defenses = item.system.defenses;
-          if (defenses) {
-            for (const [defenseKey, defenseValue] of Object.entries(defenses)) {
-              if (this.armorDefenses[defenseKey] === undefined) this.armorDefenses[defenseKey] = 0;
-              this.armorDefenses[defenseKey] += defenseValue;
-            }
-          }
-        }
-      }
-    }
-
-    // TODO - Convert to using the parsed damage types from `game.settings.get("utopia", "advancedSettings.damageTypes")`
-    this.defenses = {
-      energy:    this.innateDefenses.energy    + this.armorDefenses?.energy ?? 0,
-      heat:      this.innateDefenses.heat      + this.armorDefenses?.heat ?? 0,
-      chill:     this.innateDefenses.chill     + this.armorDefenses?.chill ?? 0,
-      physical:  this.innateDefenses.physical  + this.armorDefenses?.physical ?? 0,
-      psyche:    this.innateDefenses.psyche    + this.armorDefenses?.psyche ?? 0,
-    }
-  }
-
-  /**
-   * Compile trait values (including bonuses and mods) into final totals for calculations.
-   */
-  _prepareTraits() {
-    console.log(this);
-
-    for (const [key, trait] of Object.entries(this.traits)) {
-      trait.total = trait.value + trait.bonus;
-    }
-
-    for (const [key, subtrait] of Object.entries(this.subtraits)) {
-      subtrait.total = subtrait.value + subtrait.bonus;
-      if (subtrait.total === 0) subtrait.value = 1;
-      subtrait.total = subtrait.value + subtrait.bonus;
-      if (subtrait.gifted) {
-        this.giftPoints.available -= 1;
-        this.giftPoints.spent += 1;
-        subtrait.mod = Math.max(subtrait.total - 4, 0);
-      }
-      else subtrait.mod = subtrait.total - 4;
-      this.traits[subtrait.parent].total += subtrait.total;
-      //this.traits[subtrait.parent].mod = this.traits[subtrait.parent].total - 4;
-    }
-
-    for (const [key, trait] of Object.entries(this.traits)) {
-      trait.mod += trait.total;
-      trait.mod = trait.mod - 4;
-    }
-
-    // Slot capacity is calculated from size and strength
-    // TODO - Implement the other sizes
-    const str = this.traits.str.total;
-    switch (this.size) {
-      case "sm": 
-        this.slotCapacity.total = this.slotCapacity.bonus + (2 * str);
-        break;
-      case "med":
-        this.slotCapacity.total = this.slotCapacity.bonus + (5 * str);
-        break;
-      case "lg":
-        this.slotCapacity.total = this.slotCapacity.bonus + (15 * str);
-        break;
-    }
-
-    this.spellcasting.spellcap = this.subtraits.res.total;
+    return this.slots > this.slotCapacity;
   }
 
   /**

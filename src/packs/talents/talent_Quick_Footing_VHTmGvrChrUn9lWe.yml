@@ -1,0 +1,75 @@
+folder: KFlYO9mt368S0a8m
+name: Quick Footing
+type: talent
+_id: VHTmGvrChrUn9lWe
+img: systems/utopia/assets/icons/talents/quick_footing.svg
+system:
+  formula: ''
+  description: <p>Your Dodge Rating increase by 1d12</p>
+  flavor: ''
+  parent: ''
+  tree: Human-2
+  position: 2
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 0
+    soul: 1
+  ultimate: true
+  isSpecies: true
+  body: 1
+  mind: 1
+effects:
+  - name: Quick Footing
+    origin: Compendium.utopia.talents.Item.VHTmGvrChrUn9lWe
+    duration:
+      rounds: null
+      startTime: null
+      seconds: null
+      combat: null
+      turns: null
+      startRound: null
+      startTurn: null
+    disabled: false
+    img: icons/svg/aura.svg
+    _id: SlZ3Q6vbZWkr5kjC
+    type: base
+    system: {}
+    changes:
+      - key: system.dodge.quantity
+        mode: 2
+        value: '1'
+        priority: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1731922818298
+      modifiedTime: 1731922898827
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!VHTmGvrChrUn9lWe.SlZ3Q6vbZWkr5kjC'
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731887132345
+  modifiedTime: 1741958971735
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!VHTmGvrChrUn9lWe'
+

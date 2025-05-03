@@ -1,0 +1,87 @@
+folder: Vk9j7v3fEW1pBaWl
+name: Executant
+type: talent
+_id: MD0JymrjvywLWOlL
+img: systems/utopia/assets/icons/talents/exutant.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">Before you make a Portrayal,
+    Stunt, or Display test, you may choose to treat each 5 rolled as if it was a
+    6 when calculating critical successes. If you do, treat each 2 rolled as if
+    it was a 1 when calculating critical failures.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Influence-1
+  position: 4
+  attributes:
+    cost: []
+  points:
+    body: 4
+    mind: 0
+    soul: 4
+  ultimate: true
+  category: ''
+  body: 2
+  soul: 3
+effects:
+  - name: Executant
+    origin: Compendium.utopia.talents.Item.MD0JymrjvywLWOlL
+    img: icons/svg/aura.svg
+    type: passive
+    _id: MDcYjERD0K0r5AAm
+    system: {}
+    changes:
+      - key: system.traits.dis.critRisk
+        mode: 0
+        value: 'true'
+        priority: null
+      - key: system.subtraits.por.critRisk
+        mode: 0
+        value: 'true'
+        priority: null
+      - key: system.subtraits.stu.critRisk
+        mode: 0
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1741970840695
+      modifiedTime: 1741971045404
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!MD0JymrjvywLWOlL.MDcYjERD0K0r5AAm'
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731884085539
+  modifiedTime: 1743030109735
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!MD0JymrjvywLWOlL'
+

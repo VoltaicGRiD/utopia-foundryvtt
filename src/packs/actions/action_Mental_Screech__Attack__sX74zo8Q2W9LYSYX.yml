@@ -1,0 +1,67 @@
+name: Mental Screech (Attack)
+type: action
+_id: sX74zo8Q2W9LYSYX
+img: systems/utopia/assets/icons/talents/mental_screech.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  type: turn
+  category: damage
+  check: agi
+  checks: []
+  checkFavor: true
+  damages:
+    - formula: 2d6
+      type: psyche
+  validityCheck:
+    enabled: false
+    check: agi
+    favor: true
+    difficulty: '10'
+  consumed: 0
+  macro: null
+  actor: self
+  range: 5/10
+  template: none
+  cost: '1'
+  stamina: 0
+  secret: false
+  passive:
+    type: meleeRedirect
+    scaling:
+      enabled: false
+      resource: stamina
+      ratio: []
+    equipment:
+      enabled: false
+      mustBeEquipped: true
+      type: weapon
+      reduceActionCost: scalingRatio
+      reduceActionCostFlat: 0
+  resource: ''
+  damageModifier: mem
+  accuracyTrait: mem
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1745777713349
+  modifiedTime: 1745777997450
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!sX74zo8Q2W9LYSYX'
+

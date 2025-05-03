@@ -1,0 +1,20 @@
+name: Eldritch Cambion
+sorting: a
+folder: RhjRiIYBnnys1W2W
+type: Item
+_id: ddRZfVI9b2vrb3WA
+description: ''
+sort: 0
+color: '#55b3e2'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: 1731922896588
+  lastModifiedBy: 6Pk79J5bUCHatGG1
+_key: '!folders!ddRZfVI9b2vrb3WA'
+

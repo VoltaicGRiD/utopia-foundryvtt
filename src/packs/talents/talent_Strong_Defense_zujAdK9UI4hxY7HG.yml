@@ -1,0 +1,75 @@
+folder: KFlYO9mt368S0a8m
+name: Strong Defense
+type: talent
+_id: zujAdK9UI4hxY7HG
+img: systems/utopia/assets/icons/talents/strong_defense.svg
+system:
+  formula: ''
+  description: <p>Your Block Rating increase by 1d4</p>
+  flavor: ''
+  parent: ''
+  tree: Human-1
+  position: 3
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 0
+    soul: 1
+  ultimate: true
+  isSpecies: true
+  body: 1
+  soul: 1
+effects:
+  - name: Strong Defense
+    origin: Compendium.utopia.talents.Item.zujAdK9UI4hxY7HG
+    duration:
+      rounds: null
+      startTime: null
+      seconds: null
+      combat: null
+      turns: null
+      startRound: null
+      startTurn: null
+    disabled: false
+    img: icons/svg/aura.svg
+    _id: WZbcc67RmdkOeBya
+    type: base
+    system: {}
+    changes:
+      - key: system.block.quantity
+        mode: 2
+        value: '1'
+        priority: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1731922904700
+      modifiedTime: 1731922917295
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!zujAdK9UI4hxY7HG.WZbcc67RmdkOeBya'
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731887178330
+  modifiedTime: 1741958979177
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!zujAdK9UI4hxY7HG'
+

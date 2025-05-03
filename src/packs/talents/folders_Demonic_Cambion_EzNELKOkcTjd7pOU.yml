@@ -1,0 +1,20 @@
+name: Demonic Cambion
+sorting: a
+folder: RhjRiIYBnnys1W2W
+type: Item
+_id: EzNELKOkcTjd7pOU
+description: ''
+sort: 300000
+color: '#55b3e2'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731431493127
+  modifiedTime: 1731922890504
+  lastModifiedBy: 6Pk79J5bUCHatGG1
+_key: '!folders!EzNELKOkcTjd7pOU'
+

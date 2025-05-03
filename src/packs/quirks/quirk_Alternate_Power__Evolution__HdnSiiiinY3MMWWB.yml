@@ -1,0 +1,31 @@
+name: Alternate Power (Evolution)
+type: quirk
+system:
+  description: >-
+    This species may spend 2 turn actions and consume a Power component of any
+    rarity to regain 1 stamina.
+  attributes: []
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: HdnSiiiinY3MMWWB
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!HdnSiiiinY3MMWWB'
+

@@ -1,0 +1,81 @@
+name: Delay
+type: spellFeature
+img: systems/utopia/assets/icons/artistries/enchantment.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">All effects from the spell do not immediately
+    activate. Rather, the caster chooses a trigger within the spell’s effect
+    such as a code word or a creature touching the affected entity. The spell
+    activates upon the trigger happening, dispelling itself after X hours.
+    </p><p style="text-align: left;">If this spell affects an object or creature
+    that was already subject to the spell using this feature, the previous
+    effect is removed.</p>
+  flavor: ''
+  art: enchantment
+  cost: 10
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: T
+      kind: text
+      description: ''
+      dice: ''
+      options: []
+      minimum: 0
+      maximum: 0
+      name: Trigger
+  character: A
+  kind: none
+  modifies: duration
+  modifiedAoE:
+    shape: circle
+    value: 0
+    variable: X
+    unit: meters
+    measured: radius
+    type: point
+  modifiedRange:
+    value: 1
+    variable: ''
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: hours
+    requirements: none
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+folder: MxNtWOKgZszC5ZGV
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769605948
+  modifiedTime: 1734827142365
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: 7RM3SN4Q3qkoOYXU
+sort: 0
+_key: '!items!7RM3SN4Q3qkoOYXU'
+

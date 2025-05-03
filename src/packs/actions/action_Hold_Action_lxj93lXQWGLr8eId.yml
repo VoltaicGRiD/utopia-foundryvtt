@@ -1,0 +1,35 @@
+name: Hold Action
+type: action
+_id: lxj93lXQWGLr8eId
+img: icons/svg/hazard.svg
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  type: Standard
+  source: null
+  cost: 2
+  stamina: 0
+  rules: {}
+  trigger: ''
+  recharge: Immediate
+  target: None
+  triggers: []
+effects: []
+folder: null
+sort: 2100000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734257984902
+  modifiedTime: 1743031962746
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!lxj93lXQWGLr8eId'
+

@@ -1,0 +1,87 @@
+folder: RPsM9ukKML8mhqDI
+name: Adept Artistry
+type: talent
+_id: vV3yOhJTjRQ8MBpN
+img: systems/utopia/assets/icons/talents/adept_artistry.svg
+system:
+  formula: ''
+  description: >-
+    <p>Choose one between Array, Necromancy, and Divination that hasn't been
+    chosen by the <strong>Adept Artistry</strong> talent. You learn the chosen
+    arcane art.</p>
+  flavor: ''
+  parent: ''
+  tree: Magecraft-1
+  position: 2
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 2
+    soul: 0
+  ultimate: true
+  choices:
+    - Array
+    - Necromancy
+    - Divination
+  category: Adept Artistry
+  options:
+    choices:
+      - Array
+      - Necromancy
+      - Divination
+    category: Adept Artistry
+  macro: Compendium.utopia.utopiaMacros.Macro.AJsL8vsvQNJByjGo
+effects:
+  - name: Adept Artistry
+    origin: Compendium.utopia.talents.Item.vV3yOhJTjRQ8MBpN
+    img: icons/svg/aura.svg
+    type: talent
+    _id: EkGMYhBssQMuookl
+    system: {}
+    changes:
+      - key: flags.utopia.enableSpellcraft
+        mode: 2
+        value: ''
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1737033205710
+      modifiedTime: 1737033228963
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!vV3yOhJTjRQ8MBpN.EkGMYhBssQMuookl'
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731700446745
+  modifiedTime: 1743465193368
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!vV3yOhJTjRQ8MBpN'
+

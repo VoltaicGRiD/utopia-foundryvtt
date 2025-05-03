@@ -1,0 +1,29 @@
+name: Legendary Power Component
+type: artificeMaterial
+img: icons/commodities/biological/eye-purple.webp
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  quality: legendary
+  type: power
+  quantity: 0
+effects: []
+folder: m7UF7Y8aiXAg7Uft
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734916192936
+  modifiedTime: 1734916194211
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: EGTwdoamf8WD3WvT
+sort: 500000
+_key: '!items!EGTwdoamf8WD3WvT'
+

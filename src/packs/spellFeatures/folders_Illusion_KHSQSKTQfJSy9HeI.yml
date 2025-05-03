@@ -1,0 +1,20 @@
+name: Illusion
+sorting: a
+folder: null
+type: Item
+_id: KHSQSKTQfJSy9HeI
+description: ''
+sort: 200000
+color: '#94d2e1'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769607673
+  modifiedTime: 1734888678163
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!KHSQSKTQfJSy9HeI'
+

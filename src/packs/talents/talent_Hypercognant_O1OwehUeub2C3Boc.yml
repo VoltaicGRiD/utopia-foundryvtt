@@ -1,0 +1,110 @@
+name: Hypercognant
+type: talent
+_id: O1OwehUeub2C3Boc
+img: systems/utopia/assets/icons/talents/cambion_hypercognant.svg
+system:
+  formula: ''
+  description: >-
+    <p>You cannot be inflicted with Unconciousness unless you choose to, given
+    you have more than 0 stamina and more than 0 DHP.</p>
+  flavor: ''
+  parent: Compendium.utopia.species.Item.BoWN6px3m4QIZFjI
+  tree: Cambion-2
+  position: 1
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 1
+    soul: 0
+  parentItem:
+    name: Demonic Cambion
+    type: species
+    _id: BoWN6px3m4QIZFjI
+    img: icons/svg/item-bag.svg
+    system:
+      description: ''
+      name: Human
+      grants:
+        block: 2d4
+        dodge: 2d12
+        constitution: 4
+        endurance: '6'
+        effervescence: '2'
+        subtraits: 2
+        languages: utopian,primordial
+    effects: []
+    folder: null
+    sort: 0
+    ownership:
+      default: 0
+      nLkleFyXeCclB3Jg: 3
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1731344008598
+      modifiedTime: 1731344021043
+      lastModifiedBy: nLkleFyXeCclB3Jg
+  roll: ''
+  ultimate: true
+  isSpecies: true
+  body: 1
+  mind: 1
+effects:
+  - name: Hypercognant
+    origin: Compendium.utopia.talents.Item.O1OwehUeub2C3Boc
+    duration:
+      rounds: null
+      startTime: null
+      seconds: null
+      combat: null
+      turns: null
+      startRound: null
+      startTurn: null
+    disabled: false
+    img: icons/svg/aura.svg
+    _id: c0Yby38xKwdDtjOB
+    type: base
+    system: {}
+    changes:
+      - key: system.immunity
+        mode: 2
+        value: unconsciousness
+        priority: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1731391461091
+      modifiedTime: 1731391738411
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!O1OwehUeub2C3Boc.c0Yby38xKwdDtjOB'
+folder: WVIbwDRA5h8LBuJi
+sort: 200000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731391423207
+  modifiedTime: 1745777060226
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!O1OwehUeub2C3Boc'
+

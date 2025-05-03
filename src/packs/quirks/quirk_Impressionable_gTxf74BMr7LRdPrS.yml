@@ -1,0 +1,33 @@
+name: Impressionable
+type: quirk
+system:
+  description: >-
+    This species may have talents that copy the talents of another species,
+    costing the same number of talent points plus 1.
+  attributes:
+    - key: talents.copy
+      value: species
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: gTxf74BMr7LRdPrS
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!gTxf74BMr7LRdPrS'
+

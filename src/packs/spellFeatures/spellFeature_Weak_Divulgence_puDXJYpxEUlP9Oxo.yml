@@ -1,0 +1,78 @@
+folder: 4dCfWgPfQgwtLbIC
+name: Weak Divulgence
+type: spellFeature
+_id: puDXJYpxEUlP9Oxo
+img: systems/utopia/assets/icons/artistries/divination.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster chooses an affected object with a
+    binary capability, such as a coin or a wheel (able to show 2 definitive
+    options, such as heads and tails or left and right). The caster may ask any
+    questions that have only two potential answers, such as a yes or no
+    question, and attach a binary action to each answer. </p><p
+    style="text-align: left;">The object magically responds with an accurate,
+    definitive answer to the question, given it is able to. If the answer is
+    magically obstructed or the question is unanswerable, it may return "null”,
+    in which the object will respond with neither of the two premeditated
+    answers. If the question is unclear, details will either be assumed or the
+    object will return null. Answers are determined by the GM. </p><p
+    style="text-align: left;">If the answer requires knowledge of future events,
+    it responds with null.</p>
+  flavor: ''
+  art: divination
+  cost: 100
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 500000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769605125
+  modifiedTime: 1734769605125
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!puDXJYpxEUlP9Oxo'
+

@@ -1,0 +1,91 @@
+folder: rLZDXQGxQ9o55jd0
+name: Reshape Creature
+type: spellFeature
+_id: DZ5qd3Ov39rieSoy
+img: systems/utopia/assets/icons/artistries/alteration.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The physical form of any number of affected
+    creatures changes, such in a way that the caster can vividly imagine. This
+    cannot modify a creature in a way that would change its size category.
+    </p><p style="text-align: left;">The physical changes may have up to one of
+    the following effects, or something similar:</p><p style="text-align:
+    left;">Its Water travel becomes equal to its Speed score in meters. </p><p
+    style="text-align: left;">Its Air travel becomes equal to half its Speed
+    score rounded down in meters. </p><p style="text-align: left;">It gains the
+    ability to breathe underwater. </p><p style="text-align: left;">Its
+    weaponless attacks require 1 turn action and deal 2d8 Physical damage.
+    </p><p style="text-align: left;">It can no longer speak. </p><p
+    style="text-align: left;">Its Land travel becomes 1. </p><p
+    style="text-align: left;">Its Water or Air travel become 0. </p><p
+    style="text-align: left;">Increase or decrease its defenses by a total sum
+    of 4. </p><p style="text-align: left;">Increase or decrease its Block Rating
+    by 1 d4 or its Dodge Rating by 1d12, minimum of 0. </p><p style="text-align:
+    left;">Increase or decrease its subtrait scores by a total of 2, minimum of
+    0. </p><p style="text-align: left;">Other effects require GM discretion, and
+    may require one or more additional stacks of <strong>Reshape
+    Creature</strong>. </p><p style="text-align: left;">Affected creatures may
+    make a Will contest against the caster upon casting and, unless permanent,
+    at the beginning of each turn. Upon succeeding, the effect ends for the
+    creature. </p><p style="text-align: left;">The transformation persists for
+    the spell’s duration, or until it is transformed again. Upon dispelling, the
+    creature reverts back to its original form. For permanent spells, this
+    feature persists until it is permanently transformed again.</p>
+  flavor: ''
+  art: alteration
+  cost: 100
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769603326
+  modifiedTime: 1734769603326
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!DZ5qd3Ov39rieSoy'
+

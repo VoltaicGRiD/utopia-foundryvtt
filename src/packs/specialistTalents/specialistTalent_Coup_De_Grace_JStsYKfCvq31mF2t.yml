@@ -1,0 +1,32 @@
+name: Coup De Grace
+type: specialistTalent
+_id: JStsYKfCvq31mF2t
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>When you make an attack against a creature that doesn’t sense you, you
+    may spend 8 stamina. If you do and the attack deals more damage than than
+    the creature’s maximum DHP, its DHP is reduced to 0 instead. Otherwise, it
+    deals half as much damage, rounded down, instead.</p>
+  flavor: ''
+  requirements:
+    - '@stu.value >= 7'
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734394410045
+  modifiedTime: 1734395351399
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!JStsYKfCvq31mF2t'
+

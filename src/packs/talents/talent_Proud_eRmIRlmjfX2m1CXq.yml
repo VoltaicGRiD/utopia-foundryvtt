@@ -1,0 +1,42 @@
+folder: Y4hd0ZlpGgzjGCz7
+name: Proud
+type: talent
+_id: eRmIRlmjfX2m1CXq
+img: systems/utopia/assets/icons/talents/proud.svg
+system:
+  formula: ''
+  description: >-
+    <p>When you spend 5 or more stamina on something other than casting a spell,
+    you may make a Portrayal test. If the test succeeds the amount of stamina
+    spent, you regain 2 stamina. You may only make 1 Portrayal test per stamina
+    costing event.</p>
+  flavor: ''
+  parent: ''
+  tree: Dwarf-2
+  position: 4
+  attributes:
+    cost: []
+  points:
+    body: 0
+    mind: 0
+    soul: 2
+  ultimate: true
+  isSpecies: true
+  soul: 2
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731923936011
+  modifiedTime: 1742576154227
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!eRmIRlmjfX2m1CXq'
+

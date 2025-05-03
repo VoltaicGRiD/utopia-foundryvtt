@@ -1,0 +1,29 @@
+name: Mythical Power Component
+type: artificeMaterial
+img: icons/commodities/biological/eye-blue-gold.webp
+system:
+  formula: ''
+  description: ''
+  flavor: ''
+  quality: mythical
+  type: power
+  quantity: 0
+effects: []
+folder: m7UF7Y8aiXAg7Uft
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734916206248
+  modifiedTime: 1734916207453
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: YZO8oHgwKPjKYjjr
+sort: 600000
+_key: '!items!YZO8oHgwKPjKYjjr'
+

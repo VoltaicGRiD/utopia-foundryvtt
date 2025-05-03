@@ -1,0 +1,78 @@
+name: Sensory Negation
+type: spellFeature
+img: systems/utopia/assets/icons/artistries/illusion.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster chooses one of the following per
+    stack of this feature: affected creatures gain Blindness, affected creatures
+    gain Deafness, or affected creatures lose all capability in another sense of
+    choice for the spell’s duration.</p>
+  flavor: ''
+  art: illusion
+  cost: 70
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: C
+      kind: options
+      description: ''
+      dice: ''
+      options: Blindness,Deafness,Other
+      minimum: 0
+      maximum: 0
+      name: Effect
+  character: A
+  kind: none
+  modifies: none
+  modifiedAoE:
+    shape: circle
+    value: 0
+    variable: X
+    unit: meters
+    measured: radius
+    type: point
+  modifiedRange:
+    value: 1
+    variable: ''
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+folder: KHSQSKTQfJSy9HeI
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769607685
+  modifiedTime: 1734769607685
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: UeiDHXbzsbdvRUWb
+sort: 300000
+_key: '!items!UeiDHXbzsbdvRUWb'
+

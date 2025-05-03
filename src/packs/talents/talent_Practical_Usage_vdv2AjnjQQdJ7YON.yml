@@ -1,0 +1,88 @@
+folder: CO4XxoWCOTKS4BWE
+name: Practical Usage
+type: talent
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>When you regain stamina, SHP, or DHP from an item, you regain twice as
+    much instead.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  body: 2
+  mind: 1
+  soul: 0
+  options:
+    choices: []
+    category: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Practical Usage
+    origin: Item.KHtbTOn07B6iKiUp
+    img: icons/svg/aura.svg
+    type: passive
+    _id: xBuClv9o0o8VGoUV
+    system: {}
+    changes:
+      - key: system.healing.item.surfacePercent
+        mode: 4
+        value: '2'
+        priority: null
+      - key: system.healing.item.deepPercent
+        mode: 4
+        value: '2'
+        priority: null
+      - key: system.healing.item.staminaPercent
+        mode: 4
+        value: '2'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+    _key: '!items.effects!vdv2AjnjQQdJ7YON.xBuClv9o0o8VGoUV'
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1742604895860
+  modifiedTime: 1745819893397
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: vdv2AjnjQQdJ7YON
+sort: 100000
+_key: '!items!vdv2AjnjQQdJ7YON'
+

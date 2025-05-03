@@ -1,0 +1,38 @@
+name: Transform 1
+type: quirk
+system:
+  description: >-
+    This species may spend 6 turn actions to transform to or from its second
+    form for as long as it remains focused. While in its second form it gains
+    the following effects( It loses effects from all equipped items,  Its
+    weaponless attacks deal double damage, each defense is increased by 2, its
+    Block Rating is increased by 2d4, its Dodge Rating is increased by 2d12.)
+  attributes:
+    - key: transform.cost
+      value: '6'
+    - key: transform.type
+      value: wild
+  formula: ''
+  tags: []
+  favors: {}
+  points: 1
+_id: qQUhtp0P8KvtbL3W
+img: icons/svg/item-bag.svg
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741980527255
+  modifiedTime: 1741980527255
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!qQUhtp0P8KvtbL3W'
+

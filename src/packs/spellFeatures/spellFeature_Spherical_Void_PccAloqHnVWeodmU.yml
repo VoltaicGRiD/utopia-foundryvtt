@@ -1,0 +1,68 @@
+folder: Oqds7vyg50vLegqY
+name: Spherical Void
+type: spellFeature
+_id: PccAloqHnVWeodmU
+img: systems/utopia/assets/icons/artistries/wake.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The spell's wake ignores all objects and
+    creatures in a sphere with a radius of X meters, positioned anywhere within
+    the spell’s wake.</p>
+  flavor: ''
+  art: wake
+  cost: 10
+  allowRedistribution: 'false'
+  doesTarget: 'true'
+  targetType: template
+  templateType: circle
+  costMultiplier: multiply
+  templateAngle: 53.13
+  variables: {}
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769608985
+  modifiedTime: 1734769608985
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!PccAloqHnVWeodmU'
+

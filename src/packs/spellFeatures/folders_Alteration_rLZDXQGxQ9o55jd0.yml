@@ -1,0 +1,20 @@
+name: Alteration
+sorting: a
+folder: null
+type: Item
+_id: rLZDXQGxQ9o55jd0
+description: ''
+sort: 600000
+color: '#90c96b'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769603310
+  modifiedTime: 1734888678163
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!rLZDXQGxQ9o55jd0'
+

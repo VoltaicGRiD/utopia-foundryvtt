@@ -1,0 +1,86 @@
+name: Penetrative
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: <p>This weapon ignores defenses.</p><p>+2 Refinement Components</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 80
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: 2
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  craftingPrompt: >-
+    [{"value":"Heat"},{"value":"Chill"},{"value":"Energy"},{"value":"Physical"},{"value":"Psyche"}]
+  tagline: Ignore Defense Type
+  costBonus: ''
+effects:
+  - name: Penetrative
+    origin: Item.seJZKEwTVc9gslcL
+    img: icons/svg/aura.svg
+    type: gear
+    _id: Y2qWzY6yPSX8yCIg
+    system: {}
+    changes:
+      - key: system.ignoreDefenses
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+    _key: '!items.effects!RAZPsOPnI0GZ69d1.Y2qWzY6yPSX8yCIg'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734990291364
+  modifiedTime: 1735601472567
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: RAZPsOPnI0GZ69d1
+sort: 1700000
+_key: '!items!RAZPsOPnI0GZ69d1'
+

@@ -1,0 +1,80 @@
+folder: KHSQSKTQfJSy9HeI
+name: Create Medium Image
+type: spellFeature
+img: systems/utopia/assets/icons/artistries/illusion.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster creates an illusionary image that
+    the caster can vividly imagine that would fit in a 3 meter cube centered on
+    the maw for the spell’s duration. The image is visually realistic and exists
+    for the spell's duration. The caster may have it animate in a predetermined
+    way, such as breathing or running, as long as it stays within the illusion’s
+    boundaries.</p>
+  flavor: ''
+  art: illusion
+  cost: 60
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: I
+      kind: text
+      description: ''
+      dice: ''
+      options: []
+      minimum: 0
+      maximum: 0
+      name: Image
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769607685
+  modifiedTime: 1734827696527
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: JXzkRaJ7oUIsVXyB
+sort: 100000
+_key: '!items!JXzkRaJ7oUIsVXyB'
+

@@ -1,0 +1,20 @@
+name: Cambion
+sorting: a
+folder: null
+type: Item
+_id: RhjRiIYBnnys1W2W
+description: ''
+sort: 500000
+color: '#1c6d82'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731480807360
+  modifiedTime: 1741977972794
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!folders!RhjRiIYBnnys1W2W'
+

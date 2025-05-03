@@ -1,0 +1,41 @@
+folder: JbKCyJf9RwgCHhMn
+name: Quick Hands
+type: talent
+_id: Ai1MU0zo5pv18A9L
+img: systems/utopia/assets/icons/talents/quick_hands.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">When you make an attack with a
+    ranged weapon that must be loaded or charged, you may spend 10 stamina to
+    load or charge the weapon without paying the turn action cost.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Warfare-3
+  position: 3
+  attributes:
+    cost: []
+  points:
+    body: 5
+    mind: 0
+    soul: 1
+  ultimate: true
+  body: 2
+  mind: 2
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731694005169
+  modifiedTime: 1743029873906
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!Ai1MU0zo5pv18A9L'
+

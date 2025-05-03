@@ -1,0 +1,91 @@
+name: Blasting
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>Attacks made with this weapon affect all creatures within a 1 meter wide
+    line, originating from the user, extending out to the weapon's range. Tests
+    for accuracy do not need to be made. </p><p>Not compatible with the Booming
+    feature. </p><p>+1 Power Component</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 40
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: 0
+    material: 0
+    power: 1
+  costModifier: flat
+  incompatible:
+    - Compendium.utopia.artificeFeatures.Item.GDkQMVZO5aj7d7WF
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  grantsAction: null
+  costBonus: + (2 * system.range.far)
+  craftingPrompt: ''
+  tagline: Hits All in 1m Line in Range
+effects:
+  - name: Blasting
+    origin: Item.seJZKEwTVc9gslcL
+    img: icons/svg/aura.svg
+    type: gear
+    _id: bTkqBSI1RnYNyrPY
+    system: {}
+    changes:
+      - key: system.ignoreAccuracy
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+    _key: '!items.effects!2Wbqz2wLtKAoX5Oj.bTkqBSI1RnYNyrPY'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734992903750
+  modifiedTime: 1735359811603
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: 2Wbqz2wLtKAoX5Oj
+sort: 400000
+_key: '!items!2Wbqz2wLtKAoX5Oj'
+

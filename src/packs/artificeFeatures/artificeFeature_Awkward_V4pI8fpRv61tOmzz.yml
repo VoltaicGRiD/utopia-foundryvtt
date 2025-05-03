@@ -1,0 +1,90 @@
+name: Awkward
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>This weapon takes up 9 slots. </p><p>Not compatible with the Compact or
+    Inordinate features. </p><p>-1 Refinement Component</p>
+  flavor: ''
+  category: fastWeapon
+  cost: -10
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: -1
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible:
+    - Compendium.utopia.artificeFeatures.Item.RCS7B3ZbYoY8jcqU
+    - Compendium.utopia.artificeFeatures.Item.TcHfyhY1vdm1ctOI
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  grantsAction: null
+  costBonus: ''
+  craftingPrompt: ''
+  tagline: + 9 Slots
+effects:
+  - name: Awkward
+    origin: Item.seJZKEwTVc9gslcL
+    img: icons/svg/aura.svg
+    type: gear
+    _id: 22UQxd632t8TSxKE
+    system: {}
+    changes:
+      - key: system.slots
+        mode: 5
+        value: '9'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: false
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: 1735373803753
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!V4pI8fpRv61tOmzz.22UQxd632t8TSxKE'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734993083043
+  modifiedTime: 1735359299633
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: V4pI8fpRv61tOmzz
+sort: 300000
+_key: '!items!V4pI8fpRv61tOmzz'
+

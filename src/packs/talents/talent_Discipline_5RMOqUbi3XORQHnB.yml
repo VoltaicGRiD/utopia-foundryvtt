@@ -1,0 +1,45 @@
+folder: pezQjNuhQEYo2lBz
+name: Discipline
+type: talent
+_id: 5RMOqUbi3XORQHnB
+img: systems/utopia/assets/icons/talents/discipline.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">You become gifted in a subtrait
+    of your choice. If you are gifted in each subtrait, instead choose a
+    subtrait. It increases by 3, given it wouldn't increase past its
+    maximum.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Prowess-2
+  position: 2
+  isSpecies: false
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 1
+    soul: 1
+  ultimate: true
+  category: ''
+  body: 1
+  mind: 1
+  soul: 1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731884865114
+  modifiedTime: 1743030050485
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!5RMOqUbi3XORQHnB'
+

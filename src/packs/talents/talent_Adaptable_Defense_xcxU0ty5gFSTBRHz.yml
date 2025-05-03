@@ -1,0 +1,99 @@
+folder: 89TmmCCBH8ujkoMr
+name: Adaptable Defense
+type: talent
+_id: xcxU0ty5gFSTBRHz
+img: icons/svg/item-bag.svg
+system:
+  description: <p>Each of your defenses increase by 1.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  body: 1
+  mind: 1
+  soul: 0
+  options:
+    choices: []
+    category: ''
+  selectedOption: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Adaptable Defense
+    origin: Compendium.utopia.talents.Item.xcxU0ty5gFSTBRHz
+    img: icons/svg/aura.svg
+    type: passive
+    _id: gRaGT5BNJkIK65EQ
+    system: {}
+    changes:
+      - key: system.defenses.energy
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.defenses.physical
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.defenses.psyche
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.defenses.heat
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.defenses.chill
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1745981785846
+      modifiedTime: 1745981818991
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!xcxU0ty5gFSTBRHz.gRaGT5BNJkIK65EQ'
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1745981771170
+  modifiedTime: 1745981783850
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!xcxU0ty5gFSTBRHz'
+

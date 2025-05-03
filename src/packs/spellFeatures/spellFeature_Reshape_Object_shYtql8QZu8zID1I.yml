@@ -1,0 +1,82 @@
+folder: rLZDXQGxQ9o55jd0
+name: Reshape Object
+type: spellFeature
+_id: shYtql8QZu8zID1I
+img: systems/utopia/assets/icons/artistries/alteration.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The physical form of any number of affected
+    objects changes, such in a way that the caster can vividly imagine. The
+    physical changes may modify how the item operates. This feature cannot
+    modify an object in a way that would change its size category.</p><p
+    style="text-align: left;">This effect cannot change an item's rarity or what
+    substances it is already made of. The transformation persists for the
+    spell’s duration. Upon dispelling, the object reverts back to its original
+    form.</p>
+  flavor: ''
+  art: alteration
+  cost: 60
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: F
+      kind: text
+      description: ''
+      dice: ''
+      options: []
+      minimum: 0
+      maximum: 0
+      name: Form
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769603326
+  modifiedTime: 1734827093244
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!shYtql8QZu8zID1I'
+

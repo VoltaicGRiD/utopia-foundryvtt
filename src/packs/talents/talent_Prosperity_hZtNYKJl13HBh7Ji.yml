@@ -1,0 +1,43 @@
+folder: pezQjNuhQEYo2lBz
+name: Prosperity
+type: talent
+_id: hZtNYKJl13HBh7Ji
+img: systems/utopia/assets/icons/talents/prosperity.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">Increase either your
+    Constitution, Endurance, or Effervescence by 1.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Prowess-2
+  position: 3
+  isSpecies: false
+  attributes:
+    cost: []
+  points:
+    body: 2
+    mind: 2
+    soul: 2
+  ultimate: true
+  category: ''
+  body: 2
+  soul: 2
+  mind: 2
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731884909690
+  modifiedTime: 1743030068527
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!hZtNYKJl13HBh7Ji'
+

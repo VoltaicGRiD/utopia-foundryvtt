@@ -1,0 +1,94 @@
+name: Range
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>The weapon gains 1 meter of range. It’s still melee. </p><p>Not
+    compatible with the Range feature, maximum of 2 stacks. </p><p>+1 Material
+    Component</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 5
+  costMultiplier: flat
+  stackable: stackable
+  components:
+    refinement: 1
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible:
+    - Compendium.utopia.artificeFeatures.Item.GgWZnaHwlwV1SHDw
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  craftingPrompt: ''
+  componentsPerStack: one
+  tagline: +5 Close and +10 Far Range
+  costBonus: ''
+effects:
+  - name: Range
+    origin: Item.seJZKEwTVc9gslcL
+    img: icons/svg/aura.svg
+    type: gear
+    _id: FPQjdhn4Ql0r09ul
+    system: {}
+    changes:
+      - key: system.range.close
+        mode: 2
+        value: '5'
+        priority: null
+      - key: system.range.far
+        mode: 2
+        value: '10'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: >-
+      <p>Weapon gains an additional 5 meters of close range and 10 meters of far
+      range.</p>
+    tint: '#ffffff'
+    transfer: false
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+    _key: '!items.effects!hk8pnnxFHiZQQ73l.FPQjdhn4Ql0r09ul'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734985618810
+  modifiedTime: 1735601853204
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: hk8pnnxFHiZQQ73l
+sort: 1900000
+_key: '!items!hk8pnnxFHiZQQ73l'
+

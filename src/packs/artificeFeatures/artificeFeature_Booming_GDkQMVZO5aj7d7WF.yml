@@ -1,0 +1,91 @@
+name: Booming
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>Attacks made with this weapon affect all creatures within a 90-degree
+    cone, originating from the user, extending out to the weapon's range. Tests
+    for accuracy do not need to be made. </p><p>Not compatible with the Blasting
+    feature. </p><p>+2 Power Components</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 40
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: 0
+    material: 0
+    power: 2
+  costModifier: flat
+  incompatible:
+    - Compendium.utopia.artificeFeatures.Item.2Wbqz2wLtKAoX5Oj
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  grantsAction: null
+  costBonus: + (5 * system.range.far)
+  craftingPrompt: ''
+  tagline: Hits All in 90deg Cone in Range
+effects:
+  - name: Booming
+    origin: Item.seJZKEwTVc9gslcL
+    img: icons/svg/aura.svg
+    type: gear
+    _id: bTkqBSI1RnYNyrPY
+    system: {}
+    changes:
+      - key: system.ignoreAccuracy
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+    _key: '!items.effects!GDkQMVZO5aj7d7WF.bTkqBSI1RnYNyrPY'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734992904645
+  modifiedTime: 1735601071332
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: GDkQMVZO5aj7d7WF
+sort: 600000
+_key: '!items!GDkQMVZO5aj7d7WF'
+

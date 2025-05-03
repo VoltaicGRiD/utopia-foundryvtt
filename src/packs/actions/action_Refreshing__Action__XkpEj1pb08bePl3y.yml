@@ -1,0 +1,44 @@
+name: Refreshing (Action)
+type: action
+img: systems/utopia/assets/icons/talents/refreshing.svg
+system:
+  description: ''
+  formula: (max(@app.mod, 1))d6
+  tags: []
+  favors: {}
+  type: turn
+  category: damage
+  check: agi
+  checks:
+    - app
+  checkFavor: true
+  damages:
+    - formula: (max(@app.mod, 1))d6
+      type: restoreStamina
+  consumed: 0
+  macro: null
+  actor: self
+  template: target
+  cost: '6'
+  stamina: 0
+  secret: false
+  resource: ''
+effects: []
+folder: null
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1741973312434
+  modifiedTime: 1743031962746
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_id: XkpEj1pb08bePl3y
+sort: 800000
+_key: '!items!XkpEj1pb08bePl3y'
+

@@ -1,0 +1,66 @@
+name: Elemental (WIP)
+type: body
+_id: w69Td5yvj5HaqrKA
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  baseDR: 17
+  shp: 20
+  dhp: 45
+  stamina: 20
+  traits:
+    - trait: spd
+      value: 4
+    - trait: dex
+      value: 3
+    - trait: awa
+      value: 5
+    - trait: por
+      value: 5
+    - trait: stu
+      value: 2
+    - trait: app
+      value: 4
+  traitDefault: 1
+  defenses:
+    energy: 0
+    heat: 0
+    chill: 0
+    physical: 0
+    psyche: 0
+  dodge:
+    quantity: 4
+    size: 12
+  block:
+    quantity: 1
+    size: 4
+  harvest:
+    alwaysHarvestable: []
+    testTrait: eng
+    testDifficulty: ceil(@baseDR/5)
+    testHarvestable: []
+effects: []
+folder: null
+sort: 500000
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1745992094609
+  modifiedTime: 1746024730651
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!w69Td5yvj5HaqrKA'
+

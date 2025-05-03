@@ -1,0 +1,42 @@
+folder: HxsDSKRAaIEQon1L
+name: Strong Absorption
+type: talent
+_id: vhbEHGXcZZsYq3IF
+img: systems/utopia/assets/icons/talents/strong_absorption.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: Roboto, sans-serif">You may spend 1 turn action
+    to consume one Rare or rarer, power component to regain 12
+    stamina.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Automaton-1
+  position: 3
+  attributes:
+    cost: []
+  points:
+    body: 1
+    mind: 0
+    soul: 1
+  ultimate: true
+  isSpecies: true
+  body: 1
+  soul: 1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731888104541
+  modifiedTime: 1745819703091
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!vhbEHGXcZZsYq3IF'
+

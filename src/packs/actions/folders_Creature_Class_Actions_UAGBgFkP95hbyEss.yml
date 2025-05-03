@@ -1,0 +1,20 @@
+name: Creature Class Actions
+sorting: a
+folder: null
+type: Item
+_id: UAGBgFkP95hbyEss
+description: ''
+sort: 0
+color: '#007a29'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1744005781903
+  modifiedTime: 1744005787662
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!folders!UAGBgFkP95hbyEss'
+

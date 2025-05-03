@@ -1,0 +1,20 @@
+name: Wake
+sorting: a
+folder: null
+type: Item
+_id: Oqds7vyg50vLegqY
+description: ''
+sort: 400000
+color: '#f5a755'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769608974
+  modifiedTime: 1734888678163
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!folders!Oqds7vyg50vLegqY'
+

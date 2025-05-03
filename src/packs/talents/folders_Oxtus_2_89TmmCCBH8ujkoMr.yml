@@ -1,0 +1,20 @@
+name: Oxtus-2
+sorting: a
+folder: CpmRy6MagaiejRRV
+type: Item
+_id: 89TmmCCBH8ujkoMr
+description: ''
+sort: 0
+color: '#56824f'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: null
+  modifiedTime: null
+  lastModifiedBy: null
+_key: '!folders!89TmmCCBH8ujkoMr'
+

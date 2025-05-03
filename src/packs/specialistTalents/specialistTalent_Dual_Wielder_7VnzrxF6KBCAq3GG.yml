@@ -1,0 +1,48 @@
+name: Dual Wielder
+type: specialistTalent
+_id: 7VnzrxF6KBCAq3GG
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>When you make an attack with multiple weapons simultaneously, you may
+    spend 1 additional turn action and 8 stamina to have both weapons deal full
+    damage.</p>
+  flavor: ''
+  requirements:
+    - '@str.value >= 7'
+    - '@agi.value >= 7'
+  actions:
+    - name: Dual Wielder
+      category: generic
+      type: turn
+      cost: 1
+      stamina: 8
+      resource: ''
+      consumed: 0
+      flavor: Full damage on all weapons used simultaneously
+      actionId: nTbs36fwrqaOWqXG
+      trait: agi
+      modifier: ''
+      formula: ''
+      template: none
+      macro: null
+      actor: default
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734396859822
+  modifiedTime: 1738708907322
+  lastModifiedBy: p7QOrF2iNLdEPi7z
+_key: '!items!7VnzrxF6KBCAq3GG'
+

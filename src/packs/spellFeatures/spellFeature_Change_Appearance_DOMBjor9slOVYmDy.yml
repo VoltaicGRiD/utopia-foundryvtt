@@ -1,0 +1,79 @@
+folder: KHSQSKTQfJSy9HeI
+name: Change Appearance
+type: spellFeature
+_id: DOMBjor9slOVYmDy
+img: systems/utopia/assets/icons/artistries/illusion.svg
+system:
+  formula: ''
+  description: >-
+    <p style="text-align: left;">The caster chooses one between creatures or
+    objects per stack of this feature. Any number of affected entities of the
+    chosen variety take on a new appearance that the caster can vividly imagine
+    for the spell's duration. The new appearance does not change the size of
+    creatures or objects</p>
+  flavor: ''
+  art: illusion
+  cost: 50
+  allowRedistribution: 'false'
+  doesTarget: 'false'
+  targetType: point
+  templateType: circle
+  costMultiplier: flat
+  templateAngle: 53.13
+  variables:
+    variable0:
+      character: D
+      kind: text
+      description: ''
+      dice: ''
+      options: []
+      minimum: 0
+      maximum: 0
+      name: Appearance
+  modifies: none
+  modifiedAoE:
+    value: 0
+    variable: X
+    unit: meters
+    type: point
+    shape: circle
+    measured: radius
+  modifiedRange:
+    value: 0
+    variable: X
+    unit: meters
+  modifiedDuration:
+    value: 0
+    variable: X
+    unit: turns
+    requirements: focus
+    dispelInterruptCost: 0
+    dispelActionCost: 0
+  modifiedFormula:
+    how: add
+    value: ''
+    replace: ''
+  character: A
+  kind: none
+  dice: ''
+  minimum: 0
+  maximum: 0
+  variableName: Variable
+  variableDescription: ''
+effects: []
+sort: 700000
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734769607685
+  modifiedTime: 1734827220861
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!DOMBjor9slOVYmDy'
+

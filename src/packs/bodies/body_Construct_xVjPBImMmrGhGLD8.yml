@@ -1,0 +1,68 @@
+name: Construct
+type: body
+_id: xVjPBImMmrGhGLD8
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  baseDR: 5
+  shp: 15
+  dhp: 5
+  stamina: 5
+  traits:
+    - trait: spd
+      value: 2
+    - trait: pow
+      value: 2
+    - trait: for
+      value: 4
+    - trait: res
+      value: 2
+  traitDefault: 1
+  defenses:
+    energy: 2
+    heat: 0
+    chill: 1
+    physical: 4
+    psyche: 0
+  dodge:
+    quantity: 1
+    size: 12
+  block:
+    quantity: 1
+    size: 4
+  harvest:
+    alwaysHarvestable:
+      - component: material
+        quantity: 1d4
+    testTrait: eng
+    testDifficulty: ceil(@baseDR/4)
+    testHarvestable:
+      - component: material
+        quantity: 1d10
+      - component: power
+        quantity: 1d4
+effects: []
+folder: null
+sort: 600000
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1745992543955
+  modifiedTime: 1746024730651
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!xVjPBImMmrGhGLD8'
+

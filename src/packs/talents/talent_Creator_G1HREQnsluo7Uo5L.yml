@@ -1,0 +1,75 @@
+folder: z3NOStowDhOnz0vd
+name: Creator
+type: talent
+_id: G1HREQnsluo7Uo5L
+img: systems/utopia/assets/icons/talents/creator.svg
+system:
+  formula: ''
+  description: >-
+    <p><span style="font-family: docs-Rowdies">You can craft Mythical
+    items.</span></p>
+  flavor: ''
+  parent: ''
+  tree: Innovation-2
+  position: 5
+  attributes:
+    cost: []
+  points:
+    body: 0
+    mind: 9
+    soul: 0
+  ultimate: true
+  mind: 9
+effects:
+  - name: Creator
+    origin: Compendium.utopia.talents.Item.G1HREQnsluo7Uo5L
+    img: icons/svg/aura.svg
+    type: talent
+    _id: UadxDzcBr7ck5yN2
+    system: {}
+    changes:
+      - key: system.artifice.level
+        mode: 4
+        value: '5'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1737033190671
+      modifiedTime: 1743618688602
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!G1HREQnsluo7Uo5L.UadxDzcBr7ck5yN2'
+sort: 100000
+ownership:
+  default: 0
+  6Pk79J5bUCHatGG1: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1731695863547
+  modifiedTime: 1743030259639
+  lastModifiedBy: Pnkm0ukCGcb868zv
+_key: '!items!G1HREQnsluo7Uo5L'
+

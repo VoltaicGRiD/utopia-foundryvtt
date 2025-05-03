@@ -1,0 +1,89 @@
+name: Assisted
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>The weapon gains 1 meter of range. It’s still melee. </p><p>Not
+    compatible with the Range feature, maximum of 2 stacks. </p><p>+1 Material
+    Component</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 5
+  costMultiplier: flat
+  stackable: stackable
+  components:
+    refinement: 1
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires:
+    - Compendium.utopia.artificeFeatures.Item.hk8pnnxFHiZQQ73l
+  componentsPerStack: all
+  craftingPrompt: ''
+  tagline: + 1m Range
+  costBonus: ''
+effects:
+  - name: Assisted
+    origin: Compendium.utopia.artificeFeatures.Item.kVJNIhSCphFTlk9t
+    img: icons/svg/aura.svg
+    type: gear
+    _id: Li2huNHMjZvOp71L
+    system: {}
+    changes:
+      - key: system.range.close
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: false
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1735423191949
+      modifiedTime: 1735423206710
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!kVJNIhSCphFTlk9t.Li2huNHMjZvOp71L'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734989032096
+  modifiedTime: 1735598484796
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: kVJNIhSCphFTlk9t
+sort: 200000
+_key: '!items!kVJNIhSCphFTlk9t'
+

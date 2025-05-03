@@ -1,0 +1,66 @@
+name: Sage Slayer
+type: specialistTalent
+_id: RAZ3s4vYukfSEGG3
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>When you are affected by a spell, you know the effects of the spell and
+    may use interrupt actions before the effects resolve.</p>
+  flavor: ''
+  requirements:
+    - specialist("Mage Slayer")
+effects:
+  - name: Sage Slayer
+    origin: Compendium.utopia.specialistTalents.Item.RAZ3s4vYukfSEGG3
+    img: icons/svg/aura.svg
+    type: specialist
+    _id: yUtOPuwauBKoDNXu
+    system: {}
+    changes:
+      - key: flags.utopia.sageSlayer
+        mode: 2
+        value: ''
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1737029527735
+      modifiedTime: 1737029534783
+      lastModifiedBy: nLkleFyXeCclB3Jg
+    _key: '!items.effects!RAZ3s4vYukfSEGG3.yUtOPuwauBKoDNXu'
+folder: null
+sort: 0
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734394350178
+  modifiedTime: 1734396047701
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_key: '!items!RAZ3s4vYukfSEGG3'
+

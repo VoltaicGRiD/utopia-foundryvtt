@@ -1,0 +1,87 @@
+name: Exhausting
+type: artificeFeature
+img: icons/svg/item-bag.svg
+system:
+  formula: ''
+  description: >-
+    <p>When this weapon deals damage to a creature, that creature's stamina is
+    reduced an equal amount. </p><p>+2 Refinement Components</p>
+  flavor: ''
+  category: fastWeapon
+  cost: 50
+  costMultiplier: flat
+  stackable: unstackable
+  components:
+    refinement: 2
+    material: 0
+    power: 0
+  costModifier: flat
+  incompatible: []
+  range:
+    close: 0
+    far: 0
+  formulas:
+    melee: ''
+    ranged: ''
+  affectsOthers: this
+  maxStacks: 0
+  requires: []
+  componentsPerStack: all
+  craftingPrompt: ''
+  tagline: Also Reduce Stamina
+  costBonus: ''
+effects:
+  - name: Exhausting
+    origin: Item.seJZKEwTVc9gslcL
+    img: icons/svg/aura.svg
+    type: gear
+    _id: Y2qWzY6yPSX8yCIg
+    system: {}
+    changes:
+      - key: system.exhaust
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: null
+      modifiedTime: null
+      lastModifiedBy: null
+    _key: '!items.effects!OF79VqxAOKnDZlx5.Y2qWzY6yPSX8yCIg'
+folder: AibQR5dvHv8Z9Uoc
+ownership:
+  default: 0
+  nLkleFyXeCclB3Jg: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1734990160060
+  modifiedTime: 1735601290073
+  lastModifiedBy: nLkleFyXeCclB3Jg
+_id: OF79VqxAOKnDZlx5
+sort: 1000000
+_key: '!items!OF79VqxAOKnDZlx5'
+

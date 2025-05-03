@@ -1,0 +1,49 @@
+folder: UAGBgFkP95hbyEss
+name: Militant - Attack Melee
+type: action
+_id: iczuC9OYoaLyl942
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  type: turn
+  category: damage
+  check: agi
+  checks: []
+  checkFavor: true
+  damages:
+    - formula: 4d4
+      type: energy
+  validityCheck:
+    enabled: false
+    check: agi
+    favor: true
+    difficulty: '10'
+  consumed: 0
+  macro: null
+  actor: self
+  template: none
+  cost: '1'
+  stamina: 0
+  secret: false
+  resource: ''
+  range: 1/1
+effects: []
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1744005805958
+  modifiedTime: 1744006299827
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!iczuC9OYoaLyl942'
+

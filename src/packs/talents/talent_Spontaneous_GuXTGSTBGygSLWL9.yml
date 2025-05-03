@@ -1,0 +1,78 @@
+folder: pH8oUZ1QgezUvXO0
+name: Spontaneous
+type: talent
+_id: GuXTGSTBGygSLWL9
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  body: 2
+  mind: 0
+  soul: 0
+  options:
+    choices: []
+    category: ''
+  flexibility:
+    enabled: false
+    body: 0
+    mind: 0
+    soul: 0
+    category: subspecies
+    tier: 0
+  macro: null
+  grants: []
+effects:
+  - name: Spontaneous
+    origin: Compendium.utopia.talents.Item.GuXTGSTBGygSLWL9
+    img: icons/svg/aura.svg
+    type: passive
+    _id: bRrLfGC1FUMqv6We
+    system: {}
+    changes:
+      - key: system.turnOrder.trait
+        mode: 2
+        value: agi
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: 0.1.0
+      createdTime: 1743031062594
+      modifiedTime: 1743031142676
+      lastModifiedBy: J3DseiXIgI97Cf1C
+    _key: '!items.effects!GuXTGSTBGygSLWL9.bRrLfGC1FUMqv6We'
+sort: 0
+ownership:
+  default: 0
+  J3DseiXIgI97Cf1C: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: 0.1.0
+  createdTime: 1743031055870
+  modifiedTime: 1743031148754
+  lastModifiedBy: J3DseiXIgI97Cf1C
+_key: '!items!GuXTGSTBGygSLWL9'
+

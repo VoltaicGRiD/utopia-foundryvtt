@@ -65,15 +65,20 @@ export async function prepareSpeciesData(character) {
 
   character.augmentSlots.capacity = {};
   character.augmentSlots.capacity.head = character.evolution.head;
-  character.augmentSlots.capacity.neck = character.evolution.head;
-  character.augmentSlots.capacity.back = 1;
+  character.augmentSlots.capacity.neck = 0;
+  character.augmentSlots.capacity.back = 0;
   character.augmentSlots.capacity.chest = 1;
-  character.augmentSlots.capacity.waist = 1;
+  character.augmentSlots.capacity.waist = 0;
   character.augmentSlots.capacity.feet = character.evolution.feet / 2;
   character.augmentSlots.capacity.hands = character.evolution.hands / 2;
-  character.augmentSlots.capacity.ring = character.evolution.hands / 2;  
+  character.augmentSlots.capacity.ring = 0;  
 
   character.armors = species.armors;
+
+  character.armors.unaugmentable.neck = true;
+  character.armors.unaugmentable.back = true;
+  character.armors.unaugmentable.waist = true;
+  character.armors.unaugmentable.ring = true;
 
   character.handheldSlots.capacity = character.evolution.hands;
   character.handheldSlots.equipped = character.handheldSlots.equipped || [];

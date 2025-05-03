@@ -581,6 +581,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       case "spellcraft": 
         return new SpellcraftSheet({ actor: this.actor }).render(true);
       case "advancement":
+        if (this.actor.system.talentPoints.available > 0) 
+          return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.AdvancementPointsWarning"));
         return new AdvancementSheet({ actor: this.actor }).render(true);
       case "browser": 
         return new CompendiumBrowser({ actor: this.actor, type: target.dataset.documentType }).render(true);

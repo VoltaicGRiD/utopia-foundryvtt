@@ -10,7 +10,8 @@ export function registerConfig() {
       icon: 'fas fa-rabbit-running',
       color: '#005F5F',
       path: 'system.traits.agi',
-      subtraits: ['dex', 'spd']
+      subtraits: ['dex', 'spd'],
+      maximum: 'body'
     },
     str: {
       name: 'Strength',
@@ -20,7 +21,8 @@ export function registerConfig() {
       color: '#7F0D0D',
       label: 'UTOPIA.TRAITS.Strength',
       path: 'system.traits.str',
-      subtraits: ['pow', 'for']
+      subtraits: ['pow', 'for'],
+      maximum: 'body'
     },
     int: {
       name: 'Intellect',
@@ -30,7 +32,8 @@ export function registerConfig() {
       color: '#0D7F5F',
       label: 'UTOPIA.TRAITS.Intellect',
       path: 'system.traits.int',
-      subtraits: ['eng', 'mem']
+      subtraits: ['eng', 'mem'],
+      maximum: 'mind'
     },
     wil: {
       name: 'Will',
@@ -40,7 +43,8 @@ export function registerConfig() {
       color: '#7F0D5F',
       label: 'UTOPIA.TRAITS.Will',
       path: 'system.traits.wil',
-      subtraits: ['res', 'awa']
+      subtraits: ['res', 'awa'],
+      maximum: 'mind'
     },
     dis: {
       name: 'Display',
@@ -50,7 +54,8 @@ export function registerConfig() {
       color: '#7F5F0D',
       label: 'UTOPIA.TRAITS.Display',
       path: 'system.traits.dis',
-      subtraits: ['por', 'stu']
+      subtraits: ['por', 'stu'],
+      maximum: 'soul'
     },
     cha: {
       name: 'Charm',
@@ -60,7 +65,8 @@ export function registerConfig() {
       color: '#782355',
       label: 'UTOPIA.TRAITS.Charm',
       path: 'system.traits.cha',
-      subtraits: ['app', 'lan']
+      subtraits: ['app', 'lan'],
+      maximum: 'soul'
     }
   }
 

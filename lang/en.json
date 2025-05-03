@@ -189,7 +189,8 @@
       "CannotDeleteBaseAction": "You cannot delete a base action of an actor. This action is inherit to the system.",
       "ItemNotEquippable": "This item cannot be equipped.",
       "ItemCannotBeAugmented": "This item cannot be augmented.",
-      "SpellCostExceedsStamina": "Your spellcap is too low to be able to cast this spell."
+      "SpellCostExceedsStamina": "Your spellcap is too low to be able to cast this spell.",
+      "AdvancementPointsWarning": "You have unspend talent points. You cannot level up until you spend them."
     },
     "CHAT": {
       "Block": "Block",

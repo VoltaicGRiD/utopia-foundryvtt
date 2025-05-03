@@ -226,7 +226,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         ...artistries(),
       }),
       discount: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      spellcap: new fields.NumberField({ ...requiredInteger, initial: 0 }),
+      spellcapTrait: new fields.StringField({ required: true, nullable: false, initial: "res" }),
       bonuses: new fields.SchemaField({
         deepBreath: new fields.NumberField({ ...requiredInteger, initial: 0 }),
         consumeComponent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -506,6 +506,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     this.turnActions.max = game.settings.get("utopia", "turnActionsMax");
     this.interruptActions.max = game.settings.get("utopia", "interruptActionsMax");
+
+    this.spellcasting.spellcap = 0;
   }
 
 
@@ -572,6 +574,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     this.turnActions.available = this.turnActions.value + this.turnActions.temporary;
     this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;
+
+    this.spellcasting.spellcap = new Roll(`@${this.spellcasting.spellcapTrait}.total`, this.parent.getRollData()).evaluateSync().total;
   }
 
   get body() {

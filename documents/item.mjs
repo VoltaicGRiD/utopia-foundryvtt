@@ -551,6 +551,11 @@ export class UtopiaItem extends Item {
 
     cost = Math.floor(cost / 10);
 
+    // First and foremost, we need to validate the spell's stamina is less than the owner's spellcap
+    if (cost > owner.system.spellcasting.spellcap) {
+      return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.SpellCostExceedsSpellcap'));
+    }
+
     if (stamina < cost) {
       const proceed = await foundry.applications.api.DialogV2.confirm({
         content: game.i18n.format('UTOPIA.ERRORS.NotEnoughStamina', { dhp: Math.abs(cost - stamina) }),

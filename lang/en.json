@@ -188,7 +188,8 @@
       "Encumbered": "{actorName} is encumbered! They automatically have a point of fatigue applied to them.",
       "CannotDeleteBaseAction": "You cannot delete a base action of an actor. This action is inherit to the system.",
       "ItemNotEquippable": "This item cannot be equipped.",
-      "ItemCannotBeAugmented": "This item cannot be augmented."
+      "ItemCannotBeAugmented": "This item cannot be augmented.",
+      "SpellCostExceedsStamina": "Your spellcap is too low to be able to cast this spell."
     },
     "CHAT": {
       "Block": "Block",
@@ -402,7 +403,8 @@
         "ScaleLarger": "Scale (larger)",
         "HoldAction": "Hold Action (2 TA = 1 IA)",
         "Assist": "Assist (WIP)",
-        "ViewSubtraits": "View Subtraits"
+        "ViewSubtraits": "View Subtraits",
+        "Spellcap": "Spellcap"
       },
       "Items": {
         "Talents": "Talents",

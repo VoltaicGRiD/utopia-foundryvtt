@@ -654,6 +654,30 @@
           "hint": "The rarity of this item. This is used to determine the color of the item in the inventory and its value."
         }
       },
+      "Activity": {
+        "AddOperation": "Select an Operation to add",
+        "Operation": {
+          "selectOperation": "Select Specific Operation",
+          "attack": "Attack",
+          "castSpell": "Cast a Spell",
+          "condition": "Check For Condition",
+          "variable": "Variable"
+        },
+        "ActionType": {
+          "Turn": "Turn Action",
+          "Interrupt": "Interrupt Action",
+          "Current": "Current Action Type (if in combat, defaults to Turn Action)"
+        },
+        "Costs": {
+          "turnActions": "Turn Actions",
+          "interruptActions": "Interrupt Actions",
+          "stamina": "Stamina",
+          "shp": "Surface HP",
+          "dhp": "Deep HP"
+        },
+        "TotalCosts": "Total Costs",
+        "OperationHeader": "Base Operation Details"
+      },
       "Harvest": {
         "Name": "Harvest",
         "Header": "Post-combat Creature Harvesting",

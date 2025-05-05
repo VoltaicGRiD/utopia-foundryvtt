@@ -1,0 +1,26 @@
+<div>
+  <hr/>
+  <span class="operation-category">Cast a Spell:</span>
+  <div class="operation-content">
+    <label for="spell">Spell:</label>  
+    <select id="spell" name="spell">
+      {{#each choices as |name uuid|}}
+        <option value="{{uuid}}" {{#if (eq operation.spell uuid)}}selected{{/if}}>{{name}}</option>
+      {{/each}}
+    </select>
+  </div>
+  <div class="flexrow">
+    <div class="operation-content">
+      <label for="ignoreSpellcap">Ignore Stamina Cost:</label>
+      <input type="checkbox" id="ignoreSpellcap" name="ignoreSpellcap" {{#if operation.ignoreSpellcap}}checked{{/if}}>
+    </div>
+    <div class="operation-content">
+      <label for="ignoreStatusEffects">Ignore Status Effects:</label>
+      <input type="checkbox" id="ignoreStatusEffects" name="ignoreStatusEffects" {{#if operation.ignoreStatusEffects}}checked{{/if}}>
+    </div>
+    <div class="operation-content">
+      <label for="ignoreArtistries">Ignore Artistries:</label>
+      <input type="checkbox" id="ignoreArtistries" name="ignoreArtistries" {{#if operation.ignoreArtistries}}checked{{/if}}>
+    </div>
+  </div>
+</div>

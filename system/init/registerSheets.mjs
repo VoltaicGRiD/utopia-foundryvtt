@@ -9,6 +9,7 @@ import { GearSheet } from "../../applications/item/gear.mjs";
 import { Creature } from "../../applications/actor/creature.mjs";
 import { GearFeatureSheet } from "../../applications/item/gear-feature.mjs";
 import { Harvest } from "../../applications/item/harvest.mjs";
+import { ActivitySheet } from "../../applications/activity/activity-sheet.mjs";
 import { SpecialistTalent } from "../../applications/item/specialist-talent.mjs";
 
 export function registerItemSheets() {
@@ -56,7 +57,12 @@ export function registerItemSheets() {
     makeDefault: true,
     types: ["specialistTalent"],
     label: "UTOPIA.SheetLabels.specialistTalent",
-  })
+  });
+  Items.registerSheet("utopia", ActivitySheet, {
+    makeDefault: true,
+    types: ["activity"],
+    label: "UTOPIA.SheetLabels.activity",
+  });
 }
 
 export function registerActorSheets() {

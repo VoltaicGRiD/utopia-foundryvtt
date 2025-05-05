@@ -868,6 +868,48 @@ export class UtopiaActor extends Actor {
     return augmentable;
   }
 
+  async _canEquip(slot, item) {
+    const armors = this.system.armors;
+    let equippable = true;
+
+    if (armors.specialty[slot]) {
+      // Requires the item to be crafted specifically for this character
+      if (item.system.craftedFor !== this.uuid) {
+        ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresSpecialtyCrafting"));
+        equippable = false;
+      }
+    }
+
+    if (armors.unequippable[slot]) {
+      // The item cannot be equipped in this slot
+      ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresUnequippableSlot"));
+      equippable = false;
+    }
+
+    return equippable;
+  }
+
+  async _canAugment(slot, item) {
+    const armors = this.system.armors;
+    let augmentable = true;
+
+    if (armors.specialty[slot]) {
+      // Requires the item to be crafted specifically for this character
+      if (item.system.craftedFor !== this.uuid) {
+        ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresSpecialtyCrafting"));
+        augmentable = false;
+      }
+    }
+    
+    if (armors.unaugmentable[slot]) {
+      // The item cannot be augmented in this slot
+      ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.ItemRequiresUnaugmentableSlot"));
+      augmentable = false;
+    }
+
+    return augmentable;
+  }
+
   /**
    * Resets resources (implementation pending).
    * @param {string} type - The type of rest.
@@ -1426,11 +1468,11 @@ export class UtopiaActor extends Actor {
    * @param {DamageInstance} damage - The damage instance to retrieve damage information from.
    */
   async _applySiphons(damage) {
+    const effectiveSiphons = [];
+
     if (damage.target === this.uuid) { // We need to apply damage siphons (system.siphons)
       const damageType = damage.typeKey;
       const siphons = foundry.utils.getProperty(this.system.siphons, damageType);
-
-      const effectiveSiphons = [];
 
       if (siphons) {
         await this._siphons(siphons, damage.shpDamage + damage.dhpDamage);

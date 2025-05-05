@@ -10,7 +10,7 @@ export class DamageInstance {
    * @param {Object} param0.source - The source actor.
    * @param {Object} param0.target - The target actor.
    */
-  constructor({ type, value, source, target, block, dodged, roll, finalized = false }) {
+  constructor({ type, value, source, target, block, dodged, roll, finalized = false }, options = {}) {
     if (typeof type === "string") {
       this.type = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[type];
       this.typeKey = type;
@@ -46,12 +46,12 @@ export class DamageInstance {
     // Add the formula for displaying on chat cards
     this.roll = roll ?? new Roll(`${this.value}`).evaluateSync({strict: false});
     // Find out if the source item is non-lethal
-    this.nonLethal = source?.system.nonLethal ?? false;
+    this.nonLethal = options.nonLethal ?? source?.system.nonLethal ?? false;
     // Get percentage values for surface and deep hitpoints adjustments.
     this.shpPercent = 1;
     this.dhpPercent = 1;
     // Check if the damage should bypass defenses.
-    this.penetrate = false;
+    this.penetrate = options.penetrate ?? source?.system.penetrate ?? false;
     this.finalized = finalized;
     // Handle blocking
     this.blockTotal = block ?? 0;
@@ -74,7 +74,7 @@ export class DamageInstance {
   }
 
   async defenses() {
-    const target = await fromUuid(this.target);
+    const target = this.target instanceof UtopiaActor ? this.target : await fromUuid(this.target);
     const typeKey = this.typeKey;
     if (this.type.armor === false || this.penetrate === true)
       return 0;
@@ -85,7 +85,7 @@ export class DamageInstance {
   async handle(options = {}) {
     if (this.finalized) return this.final;
 
-    const target = await fromUuid(this.target);
+    const target = this.target instanceof UtopiaActor ? this.target : await fromUuid(this.target);
     const targetData = {
       shp: target.system.hitpoints.surface.value,
       dhp: target.system.hitpoints.deep.value,
@@ -226,8 +226,8 @@ export class DamageInstance {
     }
 
     const message = new UtopiaChatMessage({});
-
-    const target = await fromUuid(this.target);
+    
+    const target = this.target instanceof UtopiaActor ? this.target : await fromUuid(this.target);
     target.applyDamage(this, message) // TODO - Implement damage percentages
 
     return this.messageInstance;

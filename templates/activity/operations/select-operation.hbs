@@ -1,0 +1,18 @@
+<div>
+  <hr/>
+  <span class="operation-category">Select Operation:</span>
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="selectedOperations">Operations:</label>  
+      <multi-select name="selectedOperations">
+        {{#each choices as |name id|}}
+          <option value="{{id}}" {{#if (includes ../operation.selectedOperations id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </multi-select>
+    </div>
+    <div class="operation-content">
+      <label for="spell">Select multiple:</label>  
+      <input type="checkbox" id="selectMultiple" name="selectMultiple" {{#if (eq operation.selectMultiple true)}}checked{{/if}}>
+    </div>
+  </div>
+</div>

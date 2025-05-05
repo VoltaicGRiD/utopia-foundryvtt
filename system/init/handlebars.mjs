@@ -41,4 +41,8 @@ export function registerHandlebarsSettings() {
   Handlebars.registerHelper("length", function (value) {
     return value.length;
   })
+
+  Handlebars.registerHelper("includes", function (value, item) {
+    return Array.from(value).includes(item);
+  })
 }

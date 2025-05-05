@@ -171,12 +171,6 @@
   bottom: 0;
 }
 
-.chat-message .message-header {
-  color: white;
-}
-.chat-message .message-content {
-  color: white;
-}
 .chat-message footer {
   color: rgb(192, 192, 192);
 }
@@ -359,10 +353,6 @@
   text-align: center;
   font-weight: 900;
   font-size: var(--font-size-16);
-}
-
-.chat-message.whisper {
-  background: rgba(112, 0, 122, 0.7);
 }
 
 .skill-description {
@@ -873,7 +863,6 @@
 }
 .utopia.actor-sheet .window-header {
   background-color: white;
-  background-image: url(../assets/character-header.png);
   background-size: 1200px 800px;
   background-position: -110px 0;
   background-repeat: no-repeat;
@@ -882,7 +871,6 @@
 }
 .utopia.actor-sheet .window-content {
   background: var(--utopia-sheet-background-dark);
-  background-image: url(../assets/character-header.png);
   background-size: 1200px 800px;
   background-position: top;
   background-repeat: no-repeat;

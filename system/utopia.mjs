@@ -1,5 +1,3 @@
-const { game } = globalThis;
-
 import { FeatureBuilder } from "../applications/specialty/feature-builder.mjs";
 import { SpellcraftSheet } from "../applications/specialty/spellcraft.mjs";
 import { TalentBrowser } from "../applications/specialty/talent-browser.mjs";
@@ -26,11 +24,11 @@ globalThis.utopia = {
   }
 }
 
-Hooks.once("init", function () {
+Hooks.once("init", async function () {
   CONFIG.UTOPIA = {};
   registerConfig();
+  await init.registerGameSettings();
   init.registerHooks();
-  init.registerGameSettings();
   init.registerHandlebarsSettings();
   init.registerMeasuredTemplates();
   init.registerItemDataModels();
@@ -53,17 +51,6 @@ Hooks.once("init", function () {
 
   init.preloadHandlebarsTemplates();
 });
-
-Hooks.once("setup", function () {
-  console.log(game);
-  console.log(game.settings)
-
-  const settings = {};
-  settings.damageTypes = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
-  settings.subtraits = JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"));
-
-  init.registerFeatures(settings);
-})
 
 init.createDocMacro;
 init.rollItemMacro;

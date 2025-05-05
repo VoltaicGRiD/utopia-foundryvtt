@@ -1,6 +1,6 @@
 import { AdvancedSettingsMenu } from "../../applications/specialty/advanced-game-settings.mjs"
 
-export function registerGameSettings() {
+export async function registerGameSettings() {
   game.settings.registerMenu("utopia", "advancedSettings", {
     name: "UTOPIA.Settings.advancedSettingsMenu",
     label: "UTOPIA.Settings.advancedSettingsMenu",

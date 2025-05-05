@@ -1,6 +1,7 @@
 import { FeatureBuilder } from "../../applications/specialty/feature-builder.mjs";
 import { UtopiaChatMessage } from "../../documents/chat-message.mjs";
 import { registerDiceSoNice } from "../integrations/DiceSoNice/diceSoNice.mjs";
+import { registerFeatures } from "./features.mjs";
 
 export function registerHooks() {
   Hooks.once("ready", function () {
@@ -229,6 +230,12 @@ export function registerHooks() {
     Hooks.on("diceSoNiceReady", (dice3d) => {
       registerDiceSoNice(dice3d);
     });
+
+    const settings = {};
+    settings.damageTypes = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
+    settings.subtraits = JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"));
+
+    registerFeatures(settings);
   });
 
   Hooks.on('renderSettings', (settings) =>  {

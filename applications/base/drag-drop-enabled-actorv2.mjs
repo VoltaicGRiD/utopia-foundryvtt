@@ -408,9 +408,12 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       });
     });
 
-    // Move the tabs element from within the 'window-content' to the 'window' itself
-    const tabs = this.element.querySelector(".tabs");
-    if (tabs) this.element.prepend(tabs);
+    if (!this.minimized) {
+      // Move the tabs element from within the 'window-content' to the 'window' itself
+      const tabs = this.element.querySelector(".tabs");
+      if (tabs) this.element.prepend(tabs);
+    }
+    
     // Remove the original tabs container
     this.element.querySelector('.window-content').querySelectorAll(".tabs-container").forEach((c) => c.remove());
 
@@ -433,6 +436,26 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       this._traitCheckChange(null, check);
       check.addEventListener("change", (event) => this._traitCheckChange(event, check));
     });
+  }
+
+  async minimize() {
+    await super.minimize();
+
+    const tabs = this.element.querySelectorAll(".tabs");
+    tabs.forEach(t => t.style.display = "none"); // Hide the tabs when minimized
+
+    const editButton = this.element.querySelector(".edit-mode-button");
+    editButton.style.display = "none"; // Hide the edit button when minimized
+  }
+
+  async maximize() {
+    await super.maximize();
+
+    const tabs = this.element.querySelectorAll(".tabs");
+    tabs.forEach(t => t.style.display = "block"); // Show the tabs when maximized
+    
+    const editButton = this.element.querySelector(".edit-mode-button");
+    editButton.style.display = "block"; // Hide the edit button when minimized
   }
 
   changeTab(tab, group, {event, navElement, force=false, updatePosition=true}={}) {

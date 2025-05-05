@@ -660,8 +660,23 @@
           "selectOperation": "Select Specific Operation",
           "attack": "Attack",
           "castSpell": "Cast a Spell",
-          "condition": "Check For Condition"
-        }
+          "condition": "Check For Condition",
+          "variable": "Variable"
+        },
+        "ActionType": {
+          "Turn": "Turn Action",
+          "Interrupt": "Interrupt Action",
+          "Current": "Current Action Type (if in combat, defaults to Turn Action)"
+        },
+        "Costs": {
+          "turnActions": "Turn Actions",
+          "interruptActions": "Interrupt Actions",
+          "stamina": "Stamina",
+          "shp": "Surface HP",
+          "dhp": "Deep HP"
+        },
+        "TotalCosts": "Total Costs",
+        "OperationHeader": "Base Operation Details"
       },
       "Harvest": {
         "Name": "Harvest",

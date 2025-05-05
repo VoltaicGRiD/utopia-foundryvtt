@@ -5,8 +5,8 @@
     <div class="operation-content">
       <label for="selectedOperations">Operations:</label>  
       <multi-select name="selectedOperations">
-        {{#each choices as |name uuid|}}
-          <option value="{{uuid}}" {{#if (includes ../operation.selectedOperations uuid)}}selected{{/if}}>{{name}}</option>
+        {{#each choices as |name id|}}
+          <option value="{{id}}" {{#if (includes ../operation.selectedOperations id)}}selected{{/if}}>{{name}}</option>
         {{/each}}
       </multi-select>
     </div>

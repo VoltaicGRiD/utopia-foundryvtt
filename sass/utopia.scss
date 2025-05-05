@@ -155,19 +155,19 @@
 }
 
 .chat-message {
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 16px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(4.9px);
-  -webkit-backdrop-filter: blur(4.9px);
-  margin-top: 5px;
-  border: 2px groove black;
+  // background: rgba(0, 0, 0, 0.4);
+  // border-radius: 16px;
+  // box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  // backdrop-filter: blur(4.9px);
+  // -webkit-backdrop-filter: blur(4.9px);
+  // margin-top: 5px;
+  // border: 2px groove black;
 
   @import "general/chat.scss";
 }
 
 .chat-message.whisper {
-  background: rgba(112, 0, 122, 0.7);
+  //background: rgba(112, 0, 122, 0.7);
 }
 
 .skill-description {
@@ -229,7 +229,6 @@
   }
 }
 
-
 .utopia {
   @import "components/paper-doll.scss";
   @import "general/grid.scss";
@@ -247,7 +246,7 @@
     }
   }
 
-  &.activity-sheet, &.new-operation-sheet {
+  &.activity-sheet, &.new-operation-sheet, &.operation-sheet {
     @import "components/activity.scss";
   }
 

@@ -1,78 +1,89 @@
 <div class="operation-header">
   <input type="text" class="operation-name" name="name" value="{{operation.name}}" placeholder="Operation Name" />
 
+  <details>
+    <summary class="operation-summary">{{localize "UTOPIA.Items.Activity.OperationHeader"}}</summary>
   {{!-- Costs --}}
-  <span class="operation-category">Operation costs:</span>
-  <div class="operation-costs">
-    <div class="flexcol">
-      <label for="costs.actionType">Action Type:</label>
-      {{formGroup fields.costs.fields.actionType stacked=true classes="operation-cost-type"}}
+    <span class="operation-category">Operation costs:</span>
+    <div class="operation-costs">
+      <div class="flexcol">
+        <label for="costs.actionType">Action Type:</label>
+        <select name="costs.actionType">
+          <option value="turn">Turn Action</option>
+          <option value="interrupt">Interrupt Action</option>
+          <option value="current">Current Action (Combat)</option>
+        </select>
+      </div>
+      <div class="flexcol">
+        <label for="costs.actions">Actions:</label>
+        <input type="number" class="operation-cost" name="costs.actions" value="{{operation.costs.actions}}" />
+      </div>
+      <div class="flexcol">
+        <label for="costs.movement">Stamina:</label>
+        <input type="number" class="operation-cost" name="costs.stamina" value="{{operation.costs.stamina}}" />
+      </div>  
+      <div class="flexcol">
+        <label for="costs.shp">Surface HP:</label>
+        <input type="number" class="operation-cost" name="costs.shp" value="{{operation.costs.shp}}" />
+      </div>
+      <div class="flexcol">
+        <label for="costs.dhp">Deep HP:</label>
+        <input type="number" class="operation-cost" name="costs.dhp" value="{{operation.costs.dhp}}" />
+      </div>
     </div>
-    <div class="flexcol">
-      <label for="costs.actions">Actions:</label>
-      <input type="number" class="operation-cost" name="costs.actions" value="{{operation.costs.actions}}" />
-    </div>
-    <div class="flexcol">
-      <label for="costs.movement">Stamina:</label>
-      <input type="number" class="operation-cost" name="costs.stamina" value="{{operation.costs.stamina}}" />
-    </div>  
-    <div class="flexcol">
-      <label for="costs.shp">Surface HP:</label>
-      <input type="number" class="operation-cost" name="costs.shp" value="{{operation.costs.shp}}" />
-    </div>
-    <div class="flexcol">
-      <label for="costs.dhp">Deep HP:</label>
-      <input type="number" class="operation-cost" name="costs.dhp" value="{{operation.costs.dhp}}" />
-    </div>
-  </div>
 
-  {{!-- Performance --}}
-  <span class="operation-category">Operation performance:</span>
-  <div class="operation-performance">
-    <div class="flexcol">
-      <label for="performance.combatOnly">Combat Only</label>
-      <input type="checkbox" name="performance.combatOnly" {{#if operation.performance.combatOnly}}checked{{/if}} />
-    </div>
-    <div class="flexcol">
-      <label for="performance.isMyTurn">Available on my turn</label>
-      <input type="checkbox" name="performance.isMyTurn" {{#if operation.performance.isMyTurn}}checked{{/if}} />
-    </div>
-    <div class="flexcol">
-      <label for="performance.isNotMyTurn">Available when it's not my turn</label>
-      <input type="checkbox" name="performance.isNotMyTurn" {{#if operation.performance.isNotMyTurn}}checked{{/if}} />
+    {{!-- Performance --}}
+    <span class="operation-category">Operation performance:</span>
+    <div class="operation-performance">
+      <div class="flexcol">
+        <label for="performance.combatOnly">Combat Only</label>
+        <input type="checkbox" name="performance.combatOnly" {{#if operation.performance.combatOnly}}checked{{/if}} />
+      </div>
+      <div class="flexcol">
+        <label for="performance.isMyTurn">Available on my turn</label>
+        <input type="checkbox" name="performance.isMyTurn" {{#if operation.performance.isMyTurn}}checked{{/if}} />
+      </div>
+      <div class="flexcol">
+        <label for="performance.isNotMyTurn">Available when it's not my turn</label>
+        <input type="checkbox" name="performance.isNotMyTurn" {{#if operation.performance.isNotMyTurn}}checked{{/if}} />
+      </div>  
     </div>  
-  </div>  
 
-  {{!-- ActiveEffects --}}
-  <span class="operation-category">Operation Active Effects:</span>
-  {{#if (gt fields.toggleActiveEffects.fields.selectedEffects.elements.choices 0)}}
-  <div class="operation-active-effects">
+    {{!-- ActiveEffects --}}
+    <span class="operation-category">Operation Active Effects:</span>
+    {{#if (gt fields.toggleActiveEffects.fields.selectedEffects.elements.choices 0)}}
+    <div class="operation-active-effects">
       <label for="activeEffects.selectedEffects">Select Active Effects:</label>
-    {{formGroup fields.toggleActiveEffects.fields.selectedEffects}}
-    <input type="text" name="activeEffects.notificationMessage" value="{{operation.activeEffects.notificationMessage}}" placeholder="Notification Message" />
-    <div class="flexcol">
-      <input type="checkbox" name="activeEffects.displayNotification" {{#if operation.activeEffects.displayNotification}}checked{{/if}} />
-      <label for="activeEffects.displayNotification">Display Notification</label>
+      <multi-select name="toggleActiveEffects.">
+        {{#each effectsList as |name key|}}
+          <option value="{{key}}">{{name}}</option>
+        {{/each}}
+      </multi-select>
+      <input type="text" name="toggleActiveEffects.notificationMessage" value="{{operation.activeEffects.notificationMessage}}" placeholder="Notification Message" />
+      <div class="flexcol">
+        <input type="checkbox" name="toggleActiveEffects.displayNotification" {{#if operation.activeEffects.displayNotification}}checked{{/if}} />
+        <label for="toggleActiveEffects.displayNotification">Display Notification</label>
+      </div>
+      <div class="flexcol">
+        <input type="checkbox" name="toggleActiveEffects.displayInChat" id="toggleActiveEffects.displayInChat" {{#if operation.activeEffects.displayInChat}}checked{{/if}} />
+        <label for="toggleActiveEffects.displayInChat">Display in Chat</label>
+      </div>
     </div>
-    <div class="flexcol">
-      <input type="checkbox" name="activeEffects.displayInChat" id="activeEffects.displayInChat" {{#if operation.activeEffects.displayInChat}}checked{{/if}} />
-      <label for="activeEffects.displayInChat">Display in Chat</label>
+    {{else}}
+      <span style="color: var(--utopia-color-maroon)">No Active Effects found on activity or actor. If you want to be able to toggle Active Effects, create the effect first.</span>
+    {{/if}}
+    
+    {{!-- Priority --}}
+    <span class="operation-category">Operation execution:</span>
+    <div class="operation-execution">
+      <div class="flexcol">
+        <label for="executeImmediately">Execute immediately:</label>
+        <input type="checkbox" name="executeImmediately" {{#if operation.executeImmediately}}checked{{/if}} />
+      </div>
+      <div class="flexcol">
+        <label for="priority">Priority (sort order):</label>
+        <input type="number" class="operation-priority" name="priority" value="{{operation.priority}}" placeholder="Priority" />
+      </div>  
     </div>
-  </div>
-  {{else}}
-    <span style="color: var(--utopia-color-maroon)">No Active Effects found on activity or actor. If you want to be able to toggle Active Effects, create the effect first.</span>
-  {{/if}}
-  
-  {{!-- Priority --}}
-  <span class="operation-category">Operation execution:</span>
-  <div class="operation-execution">
-    <div class="flexcol">
-      <label for="executeImmediately">Execute immediately:</label>
-      <input type="checkbox" name="executeImmediately" {{#if operation.executeImmediately}}checked{{/if}} />
-    </div>
-    <div class="flexcol">
-      <label for="priority">Priority (sort order):</label>
-      <input type="number" class="operation-priority" name="priority" value="{{operation.priority}}" placeholder="Priority" />
-    </div>  
-  </div>
+  </details>
 </div>

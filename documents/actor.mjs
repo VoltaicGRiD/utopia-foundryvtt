@@ -70,7 +70,7 @@ export class UtopiaActor extends Actor {
         const bodyItem = this.items.find(i => i.type === "body");
         rollData.body = bodyItem.system;
       }
-      rollData.baseDR = rollData.body.baseDR;
+      rollData.baseDR = rollData.body?.baseDR ?? 0;
     }
 
     // Add paper doll data.

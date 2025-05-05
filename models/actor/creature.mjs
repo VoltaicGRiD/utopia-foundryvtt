@@ -21,6 +21,8 @@ export class Creature extends UtopiaActorBase {
   }
 
   static prepareBaseData() {
+    super.prepareBaseData();
+    
     this.harvest = this.parent.items.find(i => i.type === "body").system.harvest;
     this.difficulty = 0;
   }
@@ -32,7 +34,7 @@ export class Creature extends UtopiaActorBase {
     const required = { required: true, nullable: false }
 
     schema.difficulty = new fields.NumberField({ ...required, initial: 0 });
-    schema.exp = new fields.NumberField({ ...required });
+    schema.exp = new fields.NumberField({ ...required, initial: 0 });
     schema.harvested = new fields.BooleanField({ initial: false });
 
     return schema;

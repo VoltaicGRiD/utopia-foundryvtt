@@ -57,12 +57,12 @@ export function registerItemSheets() {
     makeDefault: true,
     types: ["specialistTalent"],
     label: "UTOPIA.SheetLabels.specialistTalent",
-  })
+  });
   Items.registerSheet("utopia", ActivitySheet, {
     makeDefault: true,
     types: ["activity"],
     label: "UTOPIA.SheetLabels.activity",
-  })
+  });
 }
 
 export function registerActorSheets() {

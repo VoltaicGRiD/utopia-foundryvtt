@@ -226,7 +226,7 @@ export class DamageInstance {
     }
 
     const message = new UtopiaChatMessage({});
-
+    
     const target = this.target instanceof UtopiaActor ? this.target : await fromUuid(this.target);
     target.applyDamage(this, message) // TODO - Implement damage percentages
 

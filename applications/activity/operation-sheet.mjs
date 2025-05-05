@@ -25,13 +25,17 @@ export class OperationSheet extends api.HandlebarsApplicationMixin(api.DocumentS
   static PARTS = {
     header: {
       template: "systems/utopia/templates/activity/operation-sheet-header.hbs",
-      scrollable: ['.effects-list']
+      scrollable: []
+    },
+    buttons: {
+      template: "systems/utopia/templates/activity/operation-sheet-buttons.hbs",
+      scrollable: []
     }
   };
 
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    options.parts = ["header", "operation"];
+    options.parts = ["header", "operation", "buttons"];
   }
 
   async _prepareContext(options) {
@@ -39,6 +43,8 @@ export class OperationSheet extends api.HandlebarsApplicationMixin(api.DocumentS
       activity: this.document,
       operation: this.operation,
       effects: this.document.effectCategories,
+      effectsList: this.document.system.getEffects(),
+      choices: this.document.system.operationChoices(this.operation.type) || {},
       fields: this.document.system.operationFields(this.operation.type) || {},
     }
 
@@ -47,15 +53,13 @@ export class OperationSheet extends api.HandlebarsApplicationMixin(api.DocumentS
     return context;
   }
 
-  _processFormData(formData) {
-    super._processFormData(formData);
-    
-    console.log(formData);
-
+  _processFormData(event, form, formData) {
     return {};
   }
 
-  static async submit(event, target) {
-    super.submit()
+  static async _submit(event, target) {
+    await (this.document.system.updateOperation(this.operation.id, new FormDataExtended(this.element)));
+    await this.document.sheet.render({ force: true });
+    await this.close();
   }
 }

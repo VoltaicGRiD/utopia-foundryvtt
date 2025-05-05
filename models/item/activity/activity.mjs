@@ -1,3 +1,8 @@
+import { CastSpellSheet } from "../../../applications/activity/operations/cast-spell-sheet.mjs";
+import { SelectOperationSheet } from "../../../applications/activity/operations/select-operation-sheet.mjs";
+import { ConditionSheet } from "../../../applications/activity/operations/condition-sheet.mjs";
+import { AttackSheet } from "../../../applications/activity/operations/attack-sheet.mjs";
+import { BaseOperation } from "./base-operation.mjs";
 import * as ops from "./_module.mjs";
 
 export class Activity extends foundry.abstract.TypeDataModel {
@@ -66,7 +71,7 @@ export class Activity extends foundry.abstract.TypeDataModel {
     
     for (const operation of operations) {
       if (operation.executeImmediately) {
-        if (await ops[operation.type].execute(activity, operation, options)) {
+        if (await ops[operation.type].execute(this.parent, operation, options)) {
           costs.turnActions += operation.costs.actionType === "turn" ? operation.costs.actions : 0;
           costs.interruptActions += operation.costs.actionType === "interrupt" ? operation.costs.actions : 0;
           costs.currentActions += operation.costs.actionType === "current" ? operation.costs.actions : 0;
@@ -81,19 +86,30 @@ export class Activity extends foundry.abstract.TypeDataModel {
     }
   }
 
-  static async executeSpecificOperation(activity, operationId, options = {}) {
-    const operation = activity.system.operations.find(op => op.id === operationId);
+  async executeSpecificOperation(operationId, options = {}) {
+    const operation = this.operations.find(op => op.id === operationId);
     
     if (!operation) {
       console.warn(`Operation with ID "${operationId}" not found in activity.`);
       return false;
     }
 
-    if (operation.executeImmediately) {
-      return await ops[operation.type].execute(activity, operation, options);
+    if (!operation.executeImmediately) {
+      return await ops[operation.type].execute(this.parent, operation, options);
     } else {
-      console.warn(`Operation "${operation.type}" does not execute immediately.`);
+      console.warn(`Operation "${operation.type}" executes immediately.`);
       return false;
+    }
+  }
+
+  prepareDerivedData() {
+    this.costs = {
+      turnActions: this.operations.reduce((sum, op) => sum + (op.costs?.actionType === "turn" ? op.costs.actions : 0), 0), 
+      interruptActions: this.operations.reduce((sum, op) => sum + (op.costs?.actionType === "interrupt" ? op.costs.actions : 0), 0),
+      currentActions: this.operations.reduce((sum, op) => sum + (op.costs?.actionType === "current" ? op.costs.actions : 0), 0),
+      stamina: this.operations.reduce((sum, op) => sum + (op.costs?.stamina || 0), 0),
+      shp: this.operations.reduce((sum, op) => sum + (op.costs?.shp || 0), 0),
+      dhp: this.operations.reduce((sum, op) => sum + (op.costs?.dhp || 0), 0),
     }
   }
 }

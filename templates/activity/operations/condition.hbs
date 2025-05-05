@@ -1,0 +1,24 @@
+<div>
+  <hr/>
+  <span class="operation-category">Check a condition:</span>
+  {{#each operation.conditions}}
+    <div class="operation-content-row">
+      <input type="text" name="conditions.{{@index}}.key" value="{{this.key}}" placeholder="Key" required>
+      <select name="conditions.{{@index}}.comparison" required>
+        <option value="==">Equals</option>
+        <option value="!=">Not Equals</option>
+        <option value=">">Greater Than</option>
+        <option value="<">Less Than</option>
+        <option value=">=">Greater Than or Equal</option>
+        <option value="<=">Less Than or Equal</option>
+        <option value="has">Has</option>
+        <option value="!has">Does Not Have</option>
+      </select> 
+      <input type="text" name="conditions.{{@index}}.value" value="{{this.value}}" placeholder="Comparison" required>
+      <button class="operation-button" type="button" data-condition="{{@index}}" data-action="removeCondition">Remove</button>
+    </div>
+  {{/each}}    
+  <div class="operation-content-row">
+    <button class="operation-button" type="button" data-action="addCondition">Add Condition</button>
+  </div>
+</div>

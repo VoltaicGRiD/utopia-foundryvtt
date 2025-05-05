@@ -1,0 +1,28 @@
+<div>
+  <hr/>
+  <span class="operation-category">Check a condition:</span>
+  {{#each operation.damages}}
+    <div class="operation-content-row">
+      <input type="text" name="damages.{{@index}}.formula" value="{{this.formula}}" placeholder="" required>
+      <select name="damages.{{@index}}.damageType" required>
+        <option value="physical" {{#if (eq this.damageType "physical")}}selected{{/if}}>Physical</option>
+        <option value="energy" {{#if (eq this.damageType "energy")}}selected{{/if}}>Energy</option>
+        <option value="heat" {{#if (eq this.damageType "heat")}}selected{{/if}}>Heat</option>
+        <option value="chill" {{#if (eq this.damageType "chill")}}selected{{/if}}>Chill</option>
+        <option value="psyche" {{#if (eq this.damageType "psyche")}}selected{{/if}}>Psyche</option>
+      </select> 
+      <div class="operation-content">
+        <label for="damages.{{@index}}.penetrate">Penetrate:</label>
+        <input type="checkbox" name="damages.{{@index}}.penetrate" {{#if this.penetrate}}checked{{/if}}>
+      </div>
+      <div class="operation-content">
+        <label for="damages.{{@index}}.nonLethal">Non-Lethal:</label>  
+        <input type="checkbox" name="damages.{{@index}}.nonLethal" {{#if this.nonLethal}}checked{{/if}}>
+      </div>
+      <button class="operation-button" type="button" data-damage="{{@index}}" data-action="removeDamage" {{#if (lt operation.damages.length 2)}}disabled{{/if}}>Remove</button>
+    </div>
+  {{/each}}    
+  <div class="operation-content-row">
+    <button class="operation-button" type="button" data-action="addDamage">Add Damage</button>
+  </div>
+</div>

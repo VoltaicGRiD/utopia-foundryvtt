@@ -1,3 +1,23 @@
+details {
+  margin-top: 10px;
+  width: 100%;
+  padding: 5px;
+  border: 4px groove #d3688a;
+  border-radius: 10px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 5px;
+  align-items: center;
+}
+
+.activity-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .activity-header {
   width: 100%;
   display: flex;
@@ -26,15 +46,108 @@
   flex-direction: column;
   gap: 5px;
   padding: 10px;
-  margin-top: 100px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .operation-item {
   border: 4px groove #d3688a;
   border-radius: 10px;
   text-align: center;
-  height: 50px;
   width: 100%;
+  position: relative;
+  padding: 10px;
+
+  .operation-name {
+    font-size: var(--font-size-20);
+  }
+
+  .operation-actions {
+    padding: 0 1rem;
+    display: flex;
+    height: 100%;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    right: 0;
+    top: 0;
+  }
+}
+
+
+section.window-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 750px;
+}
+
+.operation-costs,
+.operation-performance,
+.operation-active-effects,
+.operation-execution {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+  line-height: 20px;
+}
+
+.operation-cost-type {
+  width: 200px;
+  text-align: center;
+}
+
+.operation-cost {
+  width: 80px;
+  text-align: center;
+}
+
+.operation-category {
+  font-size: var(--font-size-20);
+  width: 100%;
+  text-align: start;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.operation-content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: start;
+  gap: 5px;
+  align-items: start;
+  padding: 5px;
+
+  select, multi-select, string-tags, input:not([type="checkbox"]) {
+    min-width: 150px;
+    width: 100%;
+  }
+}
+
+.operation-content-row {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+
+  select, multi-select, string-tags, input:not([type="checkbox"]) {
+    min-width: 100px;
+    width: 100%;
+  }
+}
+
+.operation-sheet-buttons {
+  margin-top: 10px;
+}
+
+.activity-category {
+  margin-top: 10px;
+  font-size: var(--font-size-20);
+  font-weight: bold;
 }

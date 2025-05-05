@@ -1,15 +1,27 @@
-<div>
+<div class="activity-content">
   <div class="activity-header">
     <img src="{{item.img}}" alt="{{item.name}} icon" class="profile-img" />
     <input type="text" class="activity-name" value="{{item.name}}" name="name" placeholder="Activity Name" data-action="updateName" />
+    <span class="activity-category">{{localize "UTOPIA.Items.Activity.TotalCosts"}}</span>
+    <span class="activity-costs">
+      {{#each item.system.costs as |cost key|}}
+        {{#if (gt cost 0)}}
+          <span class="activity-cost" data-cost="{{key}}">{{localize (concat "UTOPIA.Items.Activity.Costs." key)}} {{cost}}</span>
+        {{/if}}
+      {{/each}}
+    </span> 
   </div>
   
   <div class="operations-list">
     {{#each operations}}
       <div class="operation-item" data-action="openOperation" data-operation="{{this.id}}">
-        <h3>{{this.name}}</h3>
+        <span class="operation-name">{{this.name}}</span>
+        <div class="operation-actions">
+          <a data-action="removeOperation" data-operation="{{this.id}}"><i class="fas fa-trash-alt"></i></a>
+        </div>
       </div>
     {{/each}}
     <button type="button" data-action="addOperation"><i class="fas fa-plus-circle"></i> New Operation</button>
+    <button type="button" data-action="execute"><i class="fas fa-bolt"></i> Test Execution</button>
   </div>
 </div>

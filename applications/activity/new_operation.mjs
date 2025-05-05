@@ -1,4 +1,4 @@
-import { selectOperation } from "../../models/item/activity/select-operation.mjs";
+import { selectOperation } from "../../models/item/activity/operations/select-operation.mjs";
 
 const { api } = foundry.applications;
 
@@ -57,13 +57,10 @@ export class NewOperationSheet extends api.HandlebarsApplicationMixin(api.Applic
 
     if (!activity) return console.warn("No activity found to select operation from.");
 
-    const id = foundry.utils.randomID(16);
-    const operations = activity.system.operations;
-    const success = await activity.system.newOperation(operation);
-    if (!success) return console.warn(`Operation "${operation}" could not be created.`);
-    
-    // Close this sheet, and ensure the activity's sheet is rendered
-    await activity.sheet.render({ force: true });
+    const newOp = await activity.system.newOperation(operation);
+    if (!newOp) return console.warn(`Operation "${operation}" could not be created.`);
+
+    await this.activity.sheet.render({ force: true });
     await this.close();
   }
 }

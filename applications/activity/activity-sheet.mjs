@@ -16,6 +16,7 @@ export class ActivitySheet extends api.HandlebarsApplicationMixin(sheets.ItemShe
       addOperation: this._addOperation,
       openOperation: this._openOperation,
       removeOperation: this._removeOperation,
+      execute: this._execute,
     },
     form: {
       submitOnChange: true,
@@ -45,12 +46,27 @@ export class ActivitySheet extends api.HandlebarsApplicationMixin(sheets.ItemShe
   }
 
   _prepareContext(options) {
+    if (options.renderOperation) {
+      const operation = this.document.system.operations.find(op => op.id === options.renderOperation.id);
+      if (!operation) return console.warn("Operation not found in activity context.");
+
+      // Prepare the operation context
+      setTimeout(async () => {
+        await new this.item.system.TYPES[operation.type]({
+          operation: operation,
+          document: this.item,
+        }).render({ force: true });
+      }, 50);
+    }
+
     const context = {};
 
     context.item = this.document;
     context.systemFields = this.document.schema.fields;
     context.system = this.document.system;
     context.operations = this.document.system.operations || [];
+
+    console.log("Activity Sheet Context:", context);
 
     return context;
   }
@@ -83,15 +99,32 @@ export class ActivitySheet extends api.HandlebarsApplicationMixin(sheets.ItemShe
     await this.close();
   }
 
-  static async _removeOperation(event, target) {
-    event.preventDefault();
-    const operationId = target.closest(".operation").dataset.operationId;
+  static async _openOperation(event, target) {
+    const operationId = target.dataset.operation;
     const operation = this.item.system.operations.find(op => op.id === operationId);
     if (!operation) return;
+
+    // Create a new sheet for the operation
+    await new this.item.system.TYPES[operation.type]({
+      operation: operation,
+      document: this.item,
+    }).render({ force: true });
+  }
+
+  static async _removeOperation(event, target) {
+    const operationId = target.dataset.operation;
+    const operation = this.item.system.operations.find(op => op.id === operationId);
+    if (!operation) return;
+
+
 
     // Remove the operation from the item
     const operations = this.item.system.operations.filter(op => op.id !== operationId);
     await this.item.update({ "system.operations": operations });
+  }
+
+  static async _execute(event, target) {
+    await this.item.system.execute();
   }
 
   /**

@@ -1426,11 +1426,11 @@ export class UtopiaActor extends Actor {
    * @param {DamageInstance} damage - The damage instance to retrieve damage information from.
    */
   async _applySiphons(damage) {
+    const effectiveSiphons = [];
+
     if (damage.target === this.uuid) { // We need to apply damage siphons (system.siphons)
       const damageType = damage.typeKey;
       const siphons = foundry.utils.getProperty(this.system.siphons, damageType);
-
-      const effectiveSiphons = [];
 
       if (siphons) {
         await this._siphons(siphons, damage.shpDamage + damage.dhpDamage);

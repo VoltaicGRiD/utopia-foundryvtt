@@ -171,7 +171,6 @@
   bottom: 0;
 }
 
-footer {
 .chat-message footer {
   color: rgb(192, 192, 192);
 }
@@ -354,10 +353,6 @@ footer {
   text-align: center;
   font-weight: 900;
   font-size: var(--font-size-16);
-}
-
-.chat-message.whisper {
-  background: rgba(112, 0, 122, 0.7);
 }
 
 .skill-description {

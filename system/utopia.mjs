@@ -51,8 +51,19 @@ Hooks.once("init", function () {
   CONFIG.Item.documentClass = UtopiaItem;
   CONFIG.ChatMessage.documentClass = UtopiaChatMessage;
 
-  return init.preloadHandlebarsTemplates();
+  init.preloadHandlebarsTemplates();
 });
+
+Hooks.once("setup", function () {
+  console.log(game);
+  console.log(game.settings)
+
+  const settings = {};
+  settings.damageTypes = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
+  settings.subtraits = JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"));
+
+  init.registerFeatures(settings);
+})
 
 init.createDocMacro;
 init.rollItemMacro;

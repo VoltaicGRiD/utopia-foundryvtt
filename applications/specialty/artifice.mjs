@@ -115,6 +115,24 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     }
   }
 
+  _getFeatureSet() {
+    // Returns the set of features based on the type.
+    switch (this.type) {
+      case "weapon":
+        return ["fastWeapon", "moderateWeapon", "slowWeapon"];
+      case "armor":
+        return ["headArmor", "chestArmor", "waistArmor", "handsArmor", "feetArmor"];
+      case "shield":
+        return ["shield", "shields"];
+      case "consumable":
+        return ["consumable"];
+      case "artifact":
+        return ["ammunitionArtifact", "equippableArtifact", "handheldArtifact", "artifact"];
+      default:
+        return [];
+    }
+  }
+
   /**
    * Assigns attributes to a feature based on the classification key.
    * If the classification key corresponds to a sub-classification (weapon, armor, or artifact)

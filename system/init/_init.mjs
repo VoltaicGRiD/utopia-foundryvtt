@@ -6,3 +6,4 @@ export { UtopiaTemplates, registerMeasuredTemplates, isTokenInTemplate } from '.
 export { registerItemDataModels, registerActorDataModels } from './dataModels.mjs';
 export { registerItemSheets, registerActorSheets } from './registerSheets.mjs';
 export { preloadHandlebarsTemplates } from './preloadTemplates.mjs';
+export { registerFeatures } from './features.mjs';

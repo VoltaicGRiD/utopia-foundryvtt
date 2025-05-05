@@ -1,5 +1,3 @@
-import { UtopiaTemplates } from "./init/measuredTemplates.mjs"
-
 export function registerConfig() {
   CONFIG.UTOPIA.TRAITS = {
     agi: {
@@ -297,6 +295,9 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Energy',
+      penetrative: true,
+      harsh: true,
+      defensive: true,
       appliesTo: 'shp'
     },
     heat: {
@@ -308,6 +309,9 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Heat',
+      penetrative: true,
+      harsh: true,
+      defensive: true,
       appliesTo: 'shp'
     },
     chill: {
@@ -319,6 +323,9 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Chill',
+      penetrative: true,
+      harsh: true,
+      defensive: true,
       appliesTo: 'shp'
     },
     physical: {
@@ -330,6 +337,8 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Physical',
+      penetrative: true,
+      defensive: true,
       appliesTo: 'shp'
     },
     psyche: {
@@ -341,6 +350,8 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Psyche',
+      penetrative: true,
+      harsh: true,
       appliesTo: 'shp'
     },
     kinetic: {

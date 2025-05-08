@@ -204,7 +204,6 @@ export class DamageHandler {
     const message = await UtopiaChatMessage.create({
       content: content,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: game.i18n.localize("UTOPIA.Damage.Estimate"),
       speaker: ChatMessage.getSpeaker({ actor: this.source }),
       system: {
         handler: this.id, // Store the handler ID in the message system
@@ -215,13 +214,14 @@ export class DamageHandler {
   }
 
   async _createExactDamageMessage() {
-    const content = await renderTemplate("systems/utopia/templates/chat/new-damage-card.hbs", { damages: this.targetDamages });
+    const exact = this.damages.reduce((acc, damage) => acc + damage.result, 0); // Calculate the total exact damage
+
+    const content = await renderTemplate("systems/utopia/templates/chat/new-damage-card.hbs", { exact, damages: this.targetDamages });
 
     // Create an exact damage message based on the target damages
     const message = await UtopiaChatMessage.create({
       content: content,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-      flavor: game.i18n.localize("UTOPIA.Damage.Exact"),
       speaker: ChatMessage.getSpeaker({ actor: this.source }),
       system: {
         handler: this.id, // Store the handler ID in the message system
@@ -240,7 +240,6 @@ export class DamageHandler {
         id: foundry.utils.randomID(16), // Generate a random ID for the message
         content: content,
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        flavor: game.i18n.localize("UTOPIA.Damage.Target"),
         speaker: ChatMessage.getSpeaker({ actor: this.source }),
         whisper: [...game.users.filter(u => u.character === targetDamage.target.id), ...game.users.filter(u => u.isGM)], // Whisper the message to the target and GMs
         system: {

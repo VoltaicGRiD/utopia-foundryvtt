@@ -113,11 +113,9 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     })
 
     schema.block = new fields.SchemaField({
-      quantity: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       size: new fields.NumberField({ ...requiredInteger, initial: 4 }),
     });
     schema.dodge = new fields.SchemaField({
-      quantity: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       size: new fields.NumberField({ ...requiredInteger, initial: 12 }),
     });
 
@@ -539,6 +537,13 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.spellcasting.spellcap = 0;
 
     this.gearActions = [];
+
+    this.block.quantity = 0;
+    this.dodge.quantity = 0;
+
+    if (this._speciesData) {
+      prepareSpeciesData(this);
+    }
   }
 
 
@@ -555,7 +560,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         //ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.SpeciesDataNotFound"));
       }
       else {
-        prepareSpeciesData(this);
+        //prepareSpeciesData(this);
         this.prepareGearData();
         
         this.block.formula = `${this.block.quantity}d${this.block.size}`;

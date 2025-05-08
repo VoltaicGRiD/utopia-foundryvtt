@@ -3,6 +3,7 @@ import { DamageInstance } from "../system/oldDamage.mjs";
 import { isNumeric } from "../system/helpers/isNumeric.mjs";
 import { rangeTest } from "../system/helpers/rangeTest.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
+import { DamageHandler } from "../system/damage.mjs";
 
 /**
  * UtopiaActor extends Foundry's Actor to provide custom roll data, crafting, damage,
@@ -449,12 +450,12 @@ export class UtopiaActor extends Actor {
    * @param {boolean} [options.checkFavor=true] - Whether to include favor in the check.
    * @returns {Promise<ChatMessage>} The chat message with the roll result.
    */
-  async check(trait, { specification = "always", checkFavor = true, difficulty = 0 } = {}) {
+  async check(trait, { specification = "always", checkFavor = true, difficulty = 0, flavor = "" } = {}) {
     const check = JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))[trait] ?? {};
     if (Object.keys(check).length > 0) {
-      return this._checkSpecialty({ trait, check, specification, checkFavor, difficulty });
+      return this._checkSpecialty({ trait, check, specification, checkFavor, difficulty, flavor });
     } else {
-      return this._checkTrait({ trait, specification, checkFavor, difficulty });
+      return this._checkTrait({ trait, specification, checkFavor, difficulty, flavor });
     }
   }
 
@@ -469,7 +470,7 @@ export class UtopiaActor extends Actor {
    * @param {number} [params.difficulty=0] - The difficulty level of the check.
    * @returns {Promise<ChatMessage>}
    */
-  async _checkSpecialty({ trait, check, specification = "always", checkFavor = true, difficulty = 0 }) {
+  async _checkSpecialty({ trait, check, specification = "always", checkFavor = true, difficulty = 0, flavor }) {
     const formula = check.formula;
     const attribute = this.system.checks[trait].attribute;
     const netFavor = checkFavor ? (await this.checkForFavor(trait, specification)) || 0 : 0;
@@ -480,20 +481,23 @@ export class UtopiaActor extends Actor {
     // If the specification is not "always", append it to the label.
     if (specification !== "always") 
       label = label + ` vs. ${specification.capitalize()}`;    
+    
+    const roll = await new Roll(newFormula, this.getRollData(), { flavor: flavor || label }).alter(1, netFavor).evaluate();
 
     if (difficulty > 0) {
-      const roll = await new Roll(newFormula, this.getRollData()).evaluate();
       const success = roll.total >= difficulty;
+      await roll.toMessage({ flavor: flavor || label, speaker: ChatMessage.getSpeaker({ actor: this }) });
       await UtopiaChatMessage.create({
-        content: `<p>${label} ${success ? game.i18n.localize("UTOPIA.CHECKS.Success") : game.i18n.localize("UTOPIA.CHECKS.Failure")}</p>`,
-        flavor: label,
+        content: `<p>${label} ${success ? game.i18n.localize("UTOPIA.COMMON.success") : game.i18n.localize("UTOPIA.COMMON.failure")}</p>`,
+        flavor: flavor || label,
         roll: roll,
+        speaker: ChatMessage.getSpeaker({ actor: this }),
       });
 
       return success;
     }
 
-    return await new Roll(newFormula, this.getRollData()).alter(1, netFavor).toMessage({ flavor: label });
+    return roll;
   }
 
   /**
@@ -505,7 +509,7 @@ export class UtopiaActor extends Actor {
    * @param {boolean} [params.checkFavor=true] - Whether to apply favor bonuses.
    * @returns {Promise<ChatMessage>}
    */
-  async _checkTrait({ trait, specification = "always", checkFavor = true, difficulty = 0 }) {
+  async _checkTrait({ trait, specification = "always", checkFavor = true, difficulty = 0, flavor }) {
     const netFavor = checkFavor ? (await this.checkForFavor(trait, specification)) || 0 : 0;
     // Determine label based on whether the trait comes from traits or subtraits.
     var label = Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).includes(trait)
@@ -516,18 +520,21 @@ export class UtopiaActor extends Actor {
       label = label + ` vs. ${specification.capitalize()}`;
     const newFormula = `3d6 + @${trait}.mod`;
 
+    const roll = await new Roll(newFormula, this.getRollData(), { flavor: flavor || label }).alter(1, netFavor).evaluate();
+
     if (difficulty > 0) {
-      const roll = await new Roll(newFormula, this.getRollData()).evaluate();
       const success = roll.total >= difficulty;
+      await roll.toMessage({ flavor: flavor || label, speaker: ChatMessage.getSpeaker({ actor: this }) });
       await UtopiaChatMessage.create({
-        content: `<p>${label} ${success ? game.i18n.localize("UTOPIA.CHECKS.Success") : game.i18n.localize("UTOPIA.CHECKS.Failure")}</p>`,
-        flavor: label,
+        content: `<p>${label} ${success ? game.i18n.localize("UTOPIA.COMMON.success") : game.i18n.localize("UTOPIA.COMMON.failure")}</p>`,
+        flavor: flavor || label,
         roll: roll,
+        speaker: ChatMessage.getSpeaker({ actor: this }),
       });
       return success;
     }
 
-    return await new Roll(newFormula, this.getRollData()).alter(1, netFavor).toMessage({ flavor: label });
+    return roll;
   }
 
   /**
@@ -597,7 +604,7 @@ export class UtopiaActor extends Actor {
 
   async getFatigue(level = null) {
     let highestFatigue = 0;
-    for (const status of statuses) {
+    for (const status of this.statuses) {
       highestFatigue = Math.max(highestFatigue, parseInt(status.split("_")[1]));
     }
     return highestFatigue;
@@ -1169,6 +1176,9 @@ export class UtopiaActor extends Actor {
         case 'macro':
           result = await this._macro(item.system.macro, { item });
           break;
+        case 'passive': 
+          result = await this._passive(item);
+          break;
         default:
           result = null;
       }
@@ -1288,9 +1298,9 @@ export class UtopiaActor extends Actor {
 
   /** Encapsulate test actions with checks and finish */
   async _executeTestAction(item) {
-    await this._actionAgainst(item);
+    const targetRoll = (await this._actionAgainst(item)).total;
     for (const check of item.system.checks) {
-      this.check(check, item.system.checkFavor);
+      return await this.check(check, { difficulty: targetRoll });
     }
   }
 
@@ -1308,7 +1318,6 @@ export class UtopiaActor extends Actor {
    * @returns {Promise<Array<DamageInstance>>} Array of damage instances.
    */
   async _damageAction(item) {
-    const instances = [];
     const targets = [];
 
     if (["self"].includes(item.system.template)) {
@@ -1339,43 +1348,23 @@ export class UtopiaActor extends Actor {
 
     const finalTargets = targetsInRange.map(t => t.actor);
 
-    for (const damageData of item.system.damages) {
-      const modifier = item.system.damageModifier;
-      const damageType = damageData.type;
-      const roll = await new Roll(`${damageData.formula} + @${modifier}.mod`).evaluate();
-      const total = roll.total;
-
-      for (const target of finalTargets) {
-        const damage = new DamageInstance({
-          type: damageType ?? "physical",
-          value: total,
-          target: target.uuid,
-          source: this,
-          roll: roll,
-        });
-        
-        const handledDamage = await damage.handle();
-        const damageMessage = await damage.toMessage();
-
-        if (this.getFatigue(4) === true) { // Handle fatigue
-          await this.update({
-            "system.stamina.value": this.system.stamina.value - this.getFatigue()
-          })
-        }
-
-        console.warn(damage);
-        console.warn(damageMessage);
+    const damages = item.system.damages;
+    if (damages) {
+      if (Array.isArray(damages)) {
+        const damageHandler = new DamageHandler({ damages, targets: Array.from(game.user.targets), source: this.parent })
       }
     }
 
-    // Additional data can be passed for chat messages if needed.
-    const data = { item: item, instances: instances };
-    if (!["self", "none", "target"].includes(item.system.template))
-      data.template = item.system.template;
-    
-    for (const instance of instances) {
-      await instance.target.applyDamage(instance);
+    if (this.getFatigue(4) === true) { // Handle fatigue
+      await this.update({
+        "system.stamina.value": this.system.stamina.value - this.getFatigue()
+      })
     }
+
+    // Additional data can be passed for chat messages if needed.
+    // const data = { item: item, instances: instances };
+    // if (!["self", "none", "target"].includes(item.system.template))
+    //   data.template = item.system.template;
 
     this._finishAction(item);
   }
@@ -1426,6 +1415,28 @@ export class UtopiaActor extends Actor {
     this._finishAction(item);
   }
 
+  async _toggleEffects(item) {
+    const effects = this.effects.filter(e => e.origin === item.uuid);
+    for (const effect of effects) {
+      effect.update({
+        "disabled": !effect.disabled,
+      })
+    }
+
+    await UtopiaChatMessage.create({
+      content: `<p>${game.i18n.format("UTOPIA.Actors.Actions.ToggleEffects", { action: item.name })}</p>`,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+    });
+  }
+
+  async _passive(item) {
+    await UtopiaChatMessage.create({
+      content: `<p>${game.i18n.format("UTOPIA.Actors.Actions.PassiveAction", { action: item.name })}</p>`,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+    });
+    this._finishAction(item);
+  }
+
   /**
    * Executes a macro associated with an item.
    *
@@ -1433,7 +1444,7 @@ export class UtopiaActor extends Actor {
    * @param {object} options - Options that may contain the item.
    * @returns {Promise<void>}
    */
-  _macro(macro, { item = null }) {
+  async _macro(macro, { item = null }) {
     fromUuid(macro).then((macro) => {
       macro.execute(item?.system.macroData ?? {});
     });
@@ -1493,7 +1504,9 @@ export class UtopiaActor extends Actor {
       for (const target of Array.from(game.user.targets)) {
         const actor = target.actor ?? undefined;
         if (actor) {
-          actor.check(item.system.checkAgainstTrait);
+          const roll = await actor.check(item.system.checkAgainstTrait);
+          roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: actor }) });
+          return roll;
         }
       }
     }

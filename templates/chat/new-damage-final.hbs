@@ -1,0 +1,49 @@
+<div class="chat-card">
+  
+  <div class="card-header">
+    <img class="card-header-icon" src="systems/utopia/assets/damage.svg" title="Damage" width="30" height="30" />
+    <h3>Damage</h3>
+  </div>
+
+  {{#each rolls}} 
+    <div class="dice-roll" data-tooltip-class="utopia">
+      {{#if this.flavor~}}
+        <div class="dice-flavor">
+          {{this.flavor}}
+        </div>
+      {{~/if}}  
+      {{#if this.formula}}
+        <div class="dice-result">
+          <div class="dice-formula">{{this._formula}}</div>
+          {{{this.tooltip}}}
+          <h4 class="dice-total">{{this._total}}</h4>
+        </div>
+      {{/if}}
+    </div>
+  {{/each}}
+
+  <div class="card-content">
+    <span class="damage-shp">{{handledDamage.shpDamage}} {{{localize "UTOPIA.CHAT.SHPTaken"}}}</span>
+
+    {{#if (gt handledDamage.dhpDamage 0)}}
+      <span class="damage-dhp">{{handledDamage.dhpDamage}} {{{localize "UTOPIA.CHAT.DHPTaken"}}}</span>
+    {{/if}}
+  </div>
+
+  {{!-- {{#each rolls}}
+    <div class="dice-roll" data-tooltip-class="utopia">
+      {{#if this.flavor~}}
+        <div class="dice-flavor">
+          {{this.flavor}}
+        </div>
+      {{~/if}}  
+      {{#if this.formula}}
+        <div class="dice-result">
+          <div class="dice-formula">{{this.formula}}</div>
+          {{{this.tooltip}}}
+          <h4 class="dice-total">{{this.total}}</h4>
+        </div>
+      {{/if}}
+    </div>
+  {{/each}} --}}
+</div>

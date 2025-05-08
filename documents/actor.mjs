@@ -1,5 +1,5 @@
 import { ForageAndCrafting } from "../applications/specialty/forage-and-crafting.mjs";
-import { DamageInstance } from "../system/damage.mjs";
+import { DamageInstance } from "../system/oldDamage.mjs";
 import { isNumeric } from "../system/helpers/isNumeric.mjs";
 import { rangeTest } from "../system/helpers/rangeTest.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
@@ -1124,47 +1124,181 @@ export class UtopiaActor extends Actor {
    * @param {object} param0 - Object containing the item.
    * @returns {Promise<*>} The result of the action.
    */
-  async _performAction({ item }) {
-    if (this.system.encumbered) {
-      await UtopiaChatMessage.create({
-        content: `<p>${game.i18n.format("UTOPIA.ERRORS.Encumbered", {actorName: this.name})}</p>`,
-      });
+  /**
+   * Core action entry point, now modular and pluggable.
+   */
+  async _performAction(params) {
+    const item = params.item;
+    if (this.system.encumbered) return this._notifyEncumbered();
+    if (item && item.type !== 'action') return;
+
+    // Resolve action parameters
+    let actionType, cost, staminaCost;
+    if (item) {
+      ({ actionType, cost, staminaCost } = await this._resolveActionParams(item));
+    } else {
+      actionType = params.type;
+      cost = params.cost;
+      staminaCost = params.staminaCost ?? 0;
     }
 
-    if (item.type === "action") {
-      const formula = item.system.formula;
-      const category = item.system.category;
-
-      if (item.system.toggleActiveEffects) {
-        for (const effect of this.effects) {
-          if (effect.origin = item.uuid) {
-            await effect.update({ "disabled": !effect.disabled })
-          }
-        }
-      }
-
-      if (await this._canPerformAction({item}) === true) {
-        switch (category) {
-          case "damage":
-            return this._damageAction(item);
-          case "test": 
-            await this._actionAgainst(item);
-            for (const check of item.system.checks) {
-              this.check(check, item.system.checkFavor);
-            }
-            this._finishAction(item);
-            return;
-          case "utility":
-            return this._utility(item);
-          case "macro":
-            return this._macro(item.system.macro, { item: item });
-        }
-      }
-      else {
-        ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NotEnoughActions"));
-        return false;
-      }
+    // Toggle effects if applicable
+    if (item && item.system.toggleActiveEffects) {
+      await this._toggleEffects(item);
     }
+
+    // Verify resources
+    if (!this._hasSufficientResources(actionType, cost, staminaCost)) {
+      ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NotEnoughActions"));
+      return false;
+    }
+
+    // Execute behavior
+    let result;
+    if (item) {
+      switch (item.system.category) {
+        case 'damage':
+          result = await this._damageAction(item);
+          break;
+        case 'test':
+          result = await this._executeTestAction(item);
+          break;
+        case 'utility':
+          result = await this._utility(item);
+          break;
+        case 'macro':
+          result = await this._macro(item.system.macro, { item });
+          break;
+        default:
+          result = null;
+      }
+    } else {
+      // Raw action: optional callback or default success
+      result = params.execute ? await params.execute() : true;
+    }
+
+    // Consume resources
+    await this._consumeResources(actionType, cost, staminaCost);
+    return result;
+  }
+
+  /**
+   * Determine raw costs and base action type; apply exchange rules.
+   */
+  async _resolveActionParams(item) {
+    // Resolve numeric cost & stamina
+    const rawCost = item.system.cost;
+    const cost = isNumeric(rawCost)
+      ? parseInt(rawCost)
+      : (await new Roll(rawCost).evaluate()).total;
+    const staminaCost = item.system.stamina ?? 0;
+
+    // Determine base type (turn/interrupt/current)
+    let type = item.system.type;
+    if (type === 'current') type = this._determineBaseActionType();
+
+    // Exchange logic
+    this._exchange = null;
+    const { turnActions, interruptActions } = this.system;
+    if (type === 'interrupt' && this._isPlayersTurn()
+        && interruptActions.available < cost
+        && turnActions.available >= cost) {
+      this._exchange = { from: 'turn', to: 'interrupt', rate: 1 };
+    }
+    else if (type === 'turn' && !this._isPlayersTurn()
+        && turnActions.available < cost
+        && interruptActions.available >= cost * 2) {
+      this._exchange = { from: 'interrupt', to: 'turn', rate: 2 };
+    }
+
+    return { actionType: type, cost, staminaCost };
+  }
+
+  /**
+   * Check pools + stamina, considering any exchange rules.
+   */
+  _hasSufficientResources(type, cost, staminaCost) {
+    if (this.system.stamina.value < staminaCost) return false;
+    const { turnActions, interruptActions } = this.system;
+    if (type === 'turn') {
+      if (turnActions.available >= cost) return true;
+      if (this._exchange?.to === 'turn') {
+        return interruptActions.available >= cost * this._exchange.rate;
+      }
+      return false;
+    }
+    if (type === 'interrupt') {
+      if (interruptActions.available >= cost) return true;
+      if (this._exchange?.to === 'interrupt') {
+        return turnActions.available >= cost * this._exchange.rate;
+      }
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Deduct temporary & permanent pools, applying any exchange.
+   */
+  async _consumeResources(type, cost, staminaCost) {
+    const update = {};
+    // Deduct stamina
+    update['system.stamina.value'] = this.system.stamina.value - staminaCost;
+
+    // Choose primary pool
+    const poolKey = type === 'turn' ? 'turnActions' : 'interruptActions';
+    const pool = this.system[poolKey];
+    const tempKey = `${poolKey}.temporary`;
+    const valKey  = `${poolKey}.value`;
+    let remaining = cost;
+
+    // Use temporary first
+    if (pool.temporary > 0) {
+      const usedTemp = Math.min(pool.temporary, remaining);
+      remaining -= usedTemp;
+      update[tempKey] = pool.temporary - usedTemp;
+    }
+
+    // If exchange applies and still owe, deduct from other pool
+    if (remaining > 0 && this._exchange?.to === type) {
+      const otherKey = this._exchange.from === 'turn' ? 'turnActions' : 'interruptActions';
+      const otherVal = this.system[otherKey].value;
+      update[`${otherKey}.value`] = otherVal - remaining * this._exchange.rate;
+      remaining = 0;
+    }
+
+    // Deduct remainder from primary pool
+    if (remaining > 0) {
+      update[valKey] = pool.value - remaining;
+    }
+
+    await this.update(update);
+  }
+
+  /** Base type determination when item.system.type==='current' */
+  _determineBaseActionType() {
+    return (!this.inCombat) ? 'turn' : (this._isPlayersTurn() ? 'turn' : 'interrupt');
+  }
+
+  /** True if it's this actor's turn in the active combat */
+  _isPlayersTurn() {
+    const combat = game.combat;
+    return combat?.combatant?.actor?.id === this.id;
+  }
+
+  /** Encapsulate test actions with checks and finish */
+  async _executeTestAction(item) {
+    await this._actionAgainst(item);
+    for (const check of item.system.checks) {
+      this.check(check, item.system.checkFavor);
+    }
+  }
+
+  /** Notify and return false when encumbered */
+  _notifyEncumbered() {
+    return UtopiaChatMessage.create({
+      content: `<p>${game.i18n.format("UTOPIA.ERRORS.Encumbered",{actorName:this.name})}</p>`
+    });
   }
 
   /**
@@ -1365,7 +1499,7 @@ export class UtopiaActor extends Actor {
     }
   }
 
-  async _finishAction(item) {
+  async _finishAction(item = undefined) {
     const actionCost = item.system.cost;
     const type = item.system.type;
     let cost = 0;
@@ -1461,6 +1595,70 @@ export class UtopiaActor extends Actor {
     }    
 
     await this._applySiphons(damage);
+  }
+
+  async applyNewDamage({ result, damages, blockRoll = undefined, dodgeRoll = undefined}) {
+    const updateData = {
+      "system.hitpoints.surface.value": result > 0 ? Math.max(this.system.hitpoints.surface.value - result, 0) : this.system.hitpoints.surface.value,
+    }
+
+    const overflow = this.system.hitpoints.surface.value - result < 0 ? Math.abs(this.system.hitpoints.surface.value - result) : 0;
+    if (overflow > 0) {
+      updateData["system.hitpoints.deep.value"] = this.system.hitpoints.deep.value - overflow;
+    }
+
+    const rolls = [];
+
+    for (const damage of damages) {
+      const roll = damage.roll;
+      const tooltip = await roll.getTooltip();
+      const newRoll = foundry.utils.deepClone(roll);
+      newRoll.tooltip = tooltip;
+      newRoll.flavor = damage.type.capitalize() + " Damage";
+      newRoll._formula += ` - ${damage.targetDefenses[damage.type]}`
+      newRoll._total = damage.targetDamage; // Override the total to show the damage dealt, including defenses
+
+      rolls.push(newRoll);
+    }
+
+    if (blockRoll) {
+      const tooltip = await blockRoll.getTooltip();
+      const newRoll = foundry.utils.deepClone(blockRoll);
+      newRoll.tooltip = tooltip;
+      newRoll.flavor = "Block";
+
+      rolls.push(newRoll);
+
+      
+    }
+
+    if (dodgeRoll) {
+      const tooltip = await dodgeRoll.getTooltip();
+      const newRoll = foundry.utils.deepClone(dodgeRoll);
+      newRoll.tooltip = tooltip;
+      newRoll.flavor = "Dodge";
+
+      rolls.push(newRoll);
+    }
+
+    const handledDamage = {
+      shpDamage: this.system.hitpoints.surface.value - result < 0 ? this.system.hitpoints.surface.value : result,
+      dhpDamage: overflow,
+    }
+
+    const template = await renderTemplate("systems/utopia/templates/chat/new-damage-final.hbs", {
+      actor: this,
+      rolls: rolls,
+      handledDamage: handledDamage
+    });
+
+    await UtopiaChatMessage.create({
+      content: template,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: game.i18n.localize("UTOPIA.CHAT.DamageAppliedFlavor"),
+    });
+
+    await this.update(updateData);
   }
 
   /**

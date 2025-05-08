@@ -26,6 +26,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     actions: {
       image: this._image,
       createDocument: this._createDocument,
+      gear: this._gear,
       viewDocument: this._viewDocument,
       deleteDocument: this._deleteDocument,
       openApplication: this._openApplication,
@@ -271,12 +272,12 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     context.consumables = this.actor.items.filter(i => i.type === 'gear').filter(i => i.system.category === "consumable");
     context.talents = this.actor.items.filter(i => i.type === 'talent');
     context.spells = this.actor.items.filter(i => i.type === 'spell');
-    context.actions = this.actor.items.filter(i => i.type === 'action');
+    context.actions = [...this.actor.items.filter(i => i.type === 'action'), ...this.actor.system.gearActions ?? []];
     context.generic = this.actor.items.filter(i => i.type === 'generic');
     context.specialist = this.actor.items.filter(i => i.type === 'specialistTalent');
     context.kits = this.actor.items.filter(i => i.type === 'kit');
     context.classes = this.actor.items.filter(i => i.type === 'class');
-    
+
     return context;
   }
 
@@ -311,7 +312,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         const type = "equipmentSlots";
         const data = event.dataTransfer.getData('text/plain');
         const item = this.actor.items.get(data);
-        if (this.checkGearSlot(item, droppedSlot) && this.checkCanEquip(item, droppedSlot, type)) {
+        if (this.checkGearSlot(item, droppedSlot, type) && this.checkCanEquip(item, droppedSlot, type)) {
           const equippedItems = this.actor.system[type].equipped[droppedSlot] || [];
           const capacity = this.actor.system[type].capacity[droppedSlot] || 1;
           if (equippedItems.length >= capacity) {
@@ -346,7 +347,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         const type = "augmentSlots";
         const data = event.dataTransfer.getData('text/plain');
         const item = this.actor.items.get(data);
-        if (this.checkGearSlot(item, droppedSlot) && this.checkCanEquip(item, droppedSlot, type)) {
+        if (this.checkGearSlot(item, droppedSlot, type) && this.checkCanEquip(item, droppedSlot, type)) {
           const equippedItems = this.actor.system[type].equipped[droppedSlot] || [];
           const capacity = this.actor.system[type].capacity[droppedSlot] || 1;
           if (equippedItems.length >= capacity) {
@@ -547,6 +548,40 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     }
   }
 
+  static async _gear(event, target) {
+    const gear = this.actor.items.get(target.dataset.documentId);
+    if (!gear) return;
+    const type = gear.system.type;
+    var equipped = false;
+    
+    if (["handheldArtifact", "fastWeapon", "moderateWeapon", "slowWeapon", "shield"].includes(type)) {
+      for (const item of this.actor.system.handheldSlots.equipped) {
+        if (item === gear.id) {
+          equipped = true;
+          break;
+        }
+      }
+    }
+    else if (["headArmor", "chestArmor", "handsArmor", "feetArmor", "equippableArtifact"].includes(type)) {
+      for (const item of this.actor.system.equipmentSlots.equipped) {
+        if (item === gear.id) {
+          equipped = true;
+          break;
+        }
+      }
+      for (const item of this.actor.system.augmentSlots.equipped) {
+        if (item === gear.id) {
+          equipped = true;
+          break;
+        }
+      }
+    }
+
+    if (equipped) {
+      gear.system.use();
+    }
+  }
+
   static async _createDocument(event, target) {
     const type = target.dataset.documentType;
     await this.actor.createEmbeddedDocuments("Item", [{ name: target.innerText, type: type }]);
@@ -649,25 +684,24 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
   checkGearSlot(item, slot, slotType) {
     const type = item.system.type;
-    if ((type === "weapon" || type === "shield") && slotType.includes("handheld")) return true;
-    if (type === "armor") {
-      const armorSlot = item.system.armorType.replace("Armor", "");
-      if (slot === armorSlot.toLowerCase()) return true;
-    }
-    if (type === "artifact") {
-      const artifactType = item.system.artifactType.replace("Artifact", "");
-      if (artifactType === "handheld" && slot.includes("handheld")) return true;
-      if (artifactType === "equippable" && slot === item.system.equippableArtifactSlot) return true;
-      if (artifactType === "ammunition" && (slot === "waist" || slot === "back")) return true;
-    }
+
+    if (["fastWeapon", "moderateWeapon", "slowWeapon", "handheldArtifact", "shield"].includes(type) && slotType === "handheldSlots") return true;
+    if (["headArmor"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["head"].includes(slot)) return true;
+    if (["chestArmor"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["chest"].includes(slot)) return true;
+    if (["feetArmor"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["feet"].includes(slot)) return true;
+    if (["handsArmor"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["hands"].includes(slot)) return true;
+    if (["ammunitionArtifact"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["waist", "back"].includes(slot)) return true;
+    if (["equippableArtifact"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["ring", "neck", "waist", "back"].includes(slot)) return true;
 
     return false;
   }
 
   checkCanEquip(item, slot, slotType) {
-    const type = item.system.type;
+    if (!item) return false;
+
     const equippable = item.system.equippable ?? true;
-    const augmentable = item.system.augmentable ?? true;
+    const augmentable = item.system.augmentable ?? false;
+
     switch (slotType) {
       case "equipmentSlots":
         const slotEquippable = !this.actor.system.getPaperDoll()[slot].unequippable;

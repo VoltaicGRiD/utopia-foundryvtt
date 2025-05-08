@@ -1,6 +1,6 @@
 import { AdvancedSettingsMenu } from "../../applications/specialty/advanced-game-settings.mjs"
 
-export function registerGameSettings() {
+export async function registerGameSettings() {
   game.settings.registerMenu("utopia", "advancedSettings", {
     name: "UTOPIA.Settings.advancedSettingsMenu",
     label: "UTOPIA.Settings.advancedSettingsMenu",
@@ -258,6 +258,15 @@ export function registerGameSettings() {
     hint: "UTOPIA.Settings.restOnLevelUpHint",
     scope: "world",
     config: true,
+    type: Boolean,
+    default: false,
+  });
+
+  game.settings.register('utopia', 'requiresReset', {
+    name: "UTOPIA.Settings.requiresReset",
+    hint: "UTOPIA.Settings.requiresResetHint",
+    scope: "world",
+    config: false,
     type: Boolean,
     default: false,
   });

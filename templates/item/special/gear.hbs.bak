@@ -1,0 +1,137 @@
+<div class="gear-panel grid-span-2">
+  <div class="gear-icon">
+    <img src="{{item.img}}" data-action="image" class="gear-img" />
+  </div>
+
+  <div class="gear-name">
+    <input
+      name='name'
+      type='text'
+      value='{{item.name}}'
+      placeholder='Name'/>
+  </div>
+
+  <div class="gear-attributes">
+    <div class="gear-attribute">
+      <label for="type">{{localize 'UTOPIA.Items.Gear.FIELDS.Type.label'}}</label>
+      <select name="systemtype" data-action="update">
+        {{#each types as |option key|}}
+          <option value="{{key}}" {{#if (eq key ../type)}}selected{{/if}}>{{option}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    {{#if (eq type "weapon")}}
+      <div class="gear-attribute">
+        <label for="weaponType">{{localize 'UTOPIA.Items.Gear.FIELDS.WeaponType.label'}}</label>
+        <select name="weaponType" data-action="update">
+          {{#each weaponTypes as |option key|}}
+            <option value="{{key}}" {{#if (eq key ../weaponType)}}selected{{/if}}>{{option}}</option>
+          {{/each}}
+        </select>
+      </div>
+    {{/if}}
+    
+    {{#if (eq type "armor")}}
+      <div class="gear-attribute">
+        <label for="armorType">{{localize 'UTOPIA.Items.Gear.FIELDS.ArmorType.label'}}</label>
+        <select name="armorType" data-action="update">
+          {{#each armorTypes as |option key|}}
+            <option value="{{key}}" {{#if (eq key ../armorType)}}selected{{/if}}>{{option}}</option>
+          {{/each}}
+        </select>
+      </div>
+    {{/if}}
+
+    {{#if (eq type "artifact")}}
+      <div class="gear-attribute">
+        <label for="artifactType">{{localize 'UTOPIA.Items.Gear.FIELDS.ArtifactType.label'}}</label>
+        <select name="artifactType" data-action="update">
+          {{#each artifactTypes as |option key|}}
+            <option value="{{key}}" {{#if (eq key ../artifactType)}}selected{{/if}}>{{option}}</option>
+          {{/each}}
+        </select>
+      </div>
+    {{/if}}
+  </div>
+
+  <div class="gear-attributes">
+    <div class="gear-attribute">
+      {{#if (eq system.prototype true)}}
+        <span class="gear-prototype prototype"><i class="fas fa-hammer"></i>&nbsp;&nbsp;{{localize "UTOPIA.Items.Gear.Prototype.true"}}&nbsp;&nbsp;<i class="fas fa-hammer"></i></span>
+      {{else}}
+        <span class="gear-prototype"><i class="fas fa-hammer"></i>&nbsp;&nbsp;{{localize "UTOPIA.Items.Gear.Prototype.false"}}&nbsp;&nbsp;<i class="fas fa-hammer"></i></span>
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="gear-attributes">
+    <div class="gear-attribute">
+      <span class="gear-damage">{{localize 'UTOPIA.Artifice.Damage'}}</span>
+      <span class="gear-damage-value">{{system.damage}}</span>
+    </div>
+    <div class="gear-attribute">
+      <span class="gear-formula">{{localize 'UTOPIA.Artifice.Formula'}}</span>
+      <span class="gear-formula-value">{{system.formula}}</span>
+    </div>
+    <div class="gear-attribute">
+      <span class="gear-range">{{localize 'UTOPIA.Artifice.Range'}}</span>
+      <span class="gear-range-value">{{system.range}}</span>
+    </div>
+    <div class="gear-attribute">
+      <span class="gear-aoe">{{localize 'UTOPIA.Artifice.AoE'}}</span>
+      <span class="gear-aoe-value">{{system.aoe}}</span>
+    </div>
+    <div class="gear-attribute">
+      <span class="gear-rarity">{{localize 'UTOPIA.Artifice.Rarity'}}</span>
+      <span class="gear-rarity-value">{{system.rarity}}</span>
+    </div>
+  </div>
+
+  <div class="gear-features">
+    <ol class="selected-feature-list flexcol">
+      {{#each features as |feature key|}}
+        
+        <li class="feature" 
+          style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
+          data-id="{{key}}">
+          <img src="{{feature.img}}" class="feature-icon" />
+          <button type="button" class="remove-feature hidden">
+            <i class="fa-fw fas fa-times"></i>
+          </button>
+          <span class="feature-name">{{feature.name}} (<span id="cost" class="cost">{{feature.system.final.cost}}</span>)</span>
+          <div class="feature-controls">
+            <div class="flexrow feature-variable">
+              <!-- <input type="number" 
+                  min="1" 
+                  max="{{feature.system.final.maxStacks}}" 
+                  value="{{feature.system.final.stacks}}" />
+              <span class="feature-variable-character"><i class="fa-solid fa-cubes-stacked"></i></span> -->
+              {{#with (lookup ../system.featureSettings key) as |featureSettings|}}
+                <input type="number" 
+                  min="1" 
+                  max="{{featureSettings.stacks.maximum}}" 
+                  value="{{featureSettings.stacks.value}}" readonly />
+                <span class="feature-variable-character"><i class="fa-solid fa-cubes-stacked"></i></span>
+              {{/with}}
+            </div>
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+  </div>
+  <div class="gear-flavor">
+    <textarea name="system.flavor" placeholder="{{localize 'UTOPIA.Item.flavor'}}"></textarea>
+  </div>
+  <div class="gear-controls">
+    {{#if (or (eq system.prototype true) (eq type "consumable") (eq type "artifact"))}}
+      <a type="button" data-action="craft"><i class="fa-solid fa-hammer"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Craft"}}</a>
+    {{/if}}
+    {{#if (or (and (eq type "consumable") (gt quantity 0)) (eq system.prototype false))}}
+      <a type="button" data-action="use"><i class="fa-solid fa-sword"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Use"}}</a>
+      <a type="button" data-action="equip"><i class="fa-solid fa-person-circle-plus"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Equip"}}</a>
+      <a type="button" data-action="augment"><i class="fa-solid fa-bolt"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Augment"}}</a>
+    {{/if}}
+    <a type="button" data-action="edit"><i class="fa-solid fa-puzzle-piece"></i> {{localize "UTOPIA.Items.Gear.BUTTONS.Artifice"}}</a>
+  </div>
+</div>  

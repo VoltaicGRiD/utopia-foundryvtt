@@ -1,291 +1,389 @@
 import { UtopiaActor } from "../documents/actor.mjs";
 import { UtopiaChatMessage } from "../documents/chat-message.mjs";
 
-export class DamageInstance {
-  /**
-   * Constructs a DamageInstance.
-   * @param {Object} param0 - The damage parameters.
-   * @param {Object} param0.type - The damage type.
-   * @param {number} param0.value - The incoming damage value.
-   * @param {Object} param0.source - The source actor.
-   * @param {Object} param0.target - The target actor.
-   */
-  constructor({ type, value, source, target, block, dodged, roll, finalized = false }, options = {}) {
-    if (typeof type === "string") {
-      this.type = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))[type];
-      this.typeKey = type;
-    }
-    else {
-      this.type = type;
-      const systemTypes = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
-      // Find the key that matches the type object.
-      const key = Object.entries(systemTypes).find(([key, config]) => foundry.utils.objectsEqual(config, type))?.[0];
-      this.typeKey = key;
-    }
-    this.value = value ?? 0;
-    this.source = source ?? null;
-    this.target = target ?? null;
-    //this.target = typeof(target) === "object" ? new UtopiaActor(target) : target; // TODO - Convert target and source to use UUIDs
-    // If no target is provided, use an "Unknown" actor or create a default target.
-    if (target === null || target === undefined) {
-      if (game.actors.getName("Unknown"))
-        this.target = game.actors.getName("Unknown");
-      else { // TODO - Implement tracking of configurable damage types
-        this.target = {};
-        foundry.utils.setProperty(this.target, "system.hitpoints.surface.value", 0);
-        foundry.utils.setProperty(this.target, "system.hitpoints.deep.value", 0);
-        foundry.utils.setProperty(this.target, "system.defenses.energy", 0);
-        foundry.utils.setProperty(this.target, "system.defenses.heat", 0);
-        foundry.utils.setProperty(this.target, "system.defenses.chill", 0);
-        foundry.utils.setProperty(this.target, "system.defenses.physical", 0);
-        foundry.utils.setProperty(this.target, "system.defenses.psyche", 0);
-        // Assume target has a stamina value as well.
-        foundry.utils.setProperty(this.target, "system.stamina.value", 10);
-      }
-    }
-    // Add the formula for displaying on chat cards
-    this.roll = roll ?? new Roll(`${this.value}`).evaluateSync({strict: false});
-    // Find out if the source item is non-lethal
-    this.nonLethal = options.nonLethal ?? source?.system.nonLethal ?? false;
-    // Get percentage values for surface and deep hitpoints adjustments.
-    this.shpPercent = 1;
-    this.dhpPercent = 1;
-    // Check if the damage should bypass defenses.
-    this.penetrate = options.penetrate ?? source?.system.penetrate ?? false;
-    this.finalized = finalized;
-    // Handle blocking
-    this.blockTotal = block ?? 0;
-    this.dodged = dodged ?? false;
+export const DAMAGE_STATE = {
+  INIT: 0,
+  PENDING: 1,
+  RESOLVED: 2,
+  CANCELLED: 3,
+}
 
-    this.dodgable = this.type.dodge ?? false;
-    this.blockable = this.type.block ?? 0 > 0 ? true : false;
-  }
-
-  /**
-   * Getter for chat data.
-   * Renders the damage-instance template if the damage isn't finalized.
-   */
-  get chatData() {
-    if (!this.finalized) {
-      renderTemplate("systems/utopia/templates/chat/damage-instance.hbs", this.final).then((content) => {
-        return content;
-      });
+export class Damage {
+  constructor({ formula = "", type = "", target, options = {} }) {
+    this.formula = formula; // The damage formula (e.g., "2d6 + 3")
+    this.type = type; // The type of damage (e.g., "fire", "cold")
+    this.options = options; // Additional options for the damage instance
+    this.target = target; // The target actor or token
+    this.flags = {
+      blockers: [], // Actors that have blocked the damage (reduces damage by amount blocked)
+      dodgers: [], // Actors that have dodged the damage (negates damage completely)
     }
   }
 
-  async defenses() {
-    const target = this.target instanceof UtopiaActor ? this.target : await fromUuid(this.target);
-    const typeKey = this.typeKey;
-    if (this.type.armor === false || this.penetrate === true)
-      return 0;
-    else 
-      return target.system.defenses[typeKey];
+  async _initialize() {
+    // Set up any necessary properties or methods for the damage instance
+    this.roll = await this._rollFormula(this.formula);
+    this.result = this.roll.total; // The total result of the roll
   }
 
-  async handle(options = {}) {
-    if (this.finalized) return this.final;
+  async _rollFormula() {
+    // Roll the formula using the Roll class from FoundryVTT
+    const roll = new Roll(this.formula); // Create a new Roll instance with the formula
+    await roll.evaluate(); // Evaluate the roll asynchronously
+    return roll; // Return the evaluated roll
+  }
 
-    const target = this.target instanceof UtopiaActor ? this.target : await fromUuid(this.target);
-    const targetData = {
-      shp: target.system.hitpoints.surface.value,
-      dhp: target.system.hitpoints.deep.value,
-      stamina: target.system.stamina.value,
-      defenses: target.system.defenses,
+  async _handle() {
+    // Ensure the roll is completed before handling damage
+    if (!this.result) {
+      await this._initialize(); // Re-initialize to ensure result is set
     }
 
-    const appliesTo = this.type.appliesTo ?? "shp";
-
-    if (!(this.roll instanceof Roll)) 
-      this.roll = Roll.fromData(this.roll);
-    this.rollTooltip = await this.roll.getTooltip();
-
-    // Check if our damage type can be blocked or dodged
-    const dodgable = this.type.dodge ?? false;
-    const blockPercent = this.type.block ?? 1;
-
-    if (Object.keys(options).includes("block")) {
-      const blockRoll = options.blockRoll;
-      this.blockTooltip = await blockRoll.getTooltip();
-      this.blocked = true;
-    }
+    // Handle the damage application to the target
+    const targetDefenses = this.target.system.defenses;
+    const damageType = this._getDamageTypes()[this.type]; // Get the damage type from the configuration
+    if (!damageType) return {}; // If the damage type is not valid, exit
+    var targetDamage = this.result - targetDefenses[this.type]; // Calculate the effective damage after applying defenses
     
-    if (Object.keys(options).includes("dodge")) {  
-      const dodgeRoll = options.dodgeRoll;
-      this.dodgeTooltip = await dodgeRoll.getTooltip();
-      this.dodged = true;
+    // Check for resistances
+    if (this.target.system.resistances) {
+      const resistances = this.target.system.resistances[damageType] ?? 0; // Get the target's resistances
+      targetDamage -= resistances; // Reduce the damage by the resistances
     }
 
-    // If the damage type applies to "shp", we will apply the damage to surface HP.
-    if (appliesTo === "shp") {
-      // Take the damage (this.value) and apply it to the target's surface HP, any overflow goes to deep HP.
-      // When damage overflows, we track the overflow, but also set the surface damage dealt to the maximum possible.
-      let overflow = 0;
-      let shpDamage = (this.value - await this.defenses() - ((options.block ?? 0) * blockPercent)) * this.shpPercent;
-      
-      // Check if our damage was dodged. If so, no damage is taken.
-      if (dodgable && Object.keys(options).includes("dodged") && options.dodged >= shpDamage) {
-        shpDamage = 0;
-      }
-
-      // We dealt more damage than the target has surface HP
-      if (shpDamage > targetData.shp) {
-        overflow = Math.abs(targetData.shp - shpDamage);
-        shpDamage = targetData.shp;
-      }
-
-      // Apply overflow to deep HP
-      const dhpDamage = overflow * this.dhpPercent;
-
-      const absorbedEntirely = shpDamage + dhpDamage <= 0 && this.value > 0 ? true : false;
-      const absorbed = await this.defenses();
-
-      this.final = { shpDamage, dhpDamage, staminaDamage: 0, total: this.value, absorbedEntirely, absorbed };
-      return this.final;
-    }
-
-    // If the damage type applies to "dhp", we will apply the damage to deep HP.
-    if (appliesTo === "dhp") {
-      // Deep HP damage is applied directly, we don't have to worry about any overflow
-      let dhpDamage = (this.value - await this.defenses() - ((options.block ?? 0) * blockPercent)) * this.dhpPercent;
-
-      // Check if our damage was dodged. If so, no damage is taken.
-      if (dodgable && Object.keys(options).includes("dodged") && options.dodged >= dhpDamage) {
-        dhpDamage = 0;
-      }
-
-      // We dealt more damage than the target has deep HP
-      // But DHP can go below 0, so we don't need to track overflow.
-
-      const absorbedEntirely = dhpDamage <= 0 && this.value > 0 ? true : false;
-      const absorbed = await this.defenses();
-
-      this.final = { shpDamage: 0, dhpDamage, staminaDamage: 0, total: this.value, absorbedEntirely, absorbed };
-      return this.final;
-    }
-
-    // If the damage type applies to "stamina", we will apply the damage to stamina.
-    if (appliesTo === "stamina") {
-      // Take the damage (this.value) and apply it to the target's stamina, any overflow goes to deep HP.
-      // When damage overflows, we track the overflow, but also set the stamina damage dealt to the maximum possible.
-      let overflow = 0;
-      let staminaDamage = (this.value);
-
-      // Check if our damage was dodged. If so, no damage is taken.
-      // Typically, stamina damage is not dodgable, but we can check for it for homebrew.
-      if (dodgable && Object.keys(options).includes("dodged") && options.dodged >= staminaDamage) {
-        staminaDamage = 0;
-      }
-
-      // We dealt more damage than the target has stamina
-      if (staminaDamage > targetData.stamina) {
-        overflow = Math.abs(targetData.stamina - staminaDamage);
-        staminaDamage = targetData.stamina;
-      }
-
-      // Apply overflow to deep HP
-      const dhpDamage = overflow * this.dhpPercent;
-
-      const absorbedEntirely = dhpDamage + staminaDamage <= 0 && this.value > 0 ? true : false;
-      const absorbed = await this.defenses();
-
-      this.final = { shpDamage: 0, dhpDamage, staminaDamage, total: this.value, absorbedEntirely, absorbed };
-      return this.final;
-    } 
+    this.targetDefenses = targetDefenses; // Store the target defenses for later use
+    this.targetDamage = targetDamage; // Store the target damage for later use
   }
 
-  async toMessage() {
-    // We have to allow the target to block or dodge before displaying the damage dealt
-    this.damageDisplay = game.settings.get("utopia", "displayDamage");
+  static estimate(formula) {
+    // Calculate the estimated damage based on the roll and target defenses
+    const simulations = game.settings.get("utopia", "estimateDamageSimulations") || 100; // Get the number of simulations from the settings
+    return Roll.simulate(formula, simulations);
+  }
 
-    // If set to 1 - we estimate the damage
-    if (this.damageDisplay === 1) {
-      const simulation = await Roll.simulate(this.roll._formula, game.settings.get("utopia", "estimateDamageSimulations"));
-      // Simulations produce an array of numbers, we add them together, then divide by the number of simulations to get the average
-      const total = Math.round(simulation.reduce((a, b) => a + b, 0) / simulation.length);
-      this.simulationResult = total;
+  _shp({ target, targetDamage }) {
+    // Calculate overflow based on the target's current SHP and max SHP
+    const targetShp = target.system.hitpoints.surface;
+    const overflow = targetShp.value - targetDamage > 0 ? 0 : Math.abs(targetShp - targetDamage);
+
+    // Return the targets new SHP value, and apply overflow to DHP if necessary
+    return {
+      surface: Math.max(targetShp.value - targetDamage, 0), // Set the new SHP value (cannot go below 0)
+      overflow: overflow > 0 ? overflow : 0, // Set the overflow value (if any)
+    };
+  }
+
+  _dhp({ target, targetDamage }) {
+    // DHP cannot overflow, but it can go negative
+    const targetDhp = target.system.hitpoints.deep;
+
+    // Return the targets new DHP value, and apply overflow to SHP if necessary
+    return {
+      deep: targetDhp - targetDamage, // Set the new DHP value (cannot go below 0)
+    };
+  }
+
+  _stamina({ target, targetDamage }) {
+    // Calculate overflow based on the target's current stamina and max stamina
+    const targetStamina = target.system.stamina;
+    const overflow = targetStamina.value - targetDamage > 0 ? 0 : Math.abs(targetStamina - targetDamage);
+
+    // Return the targets new stamina value, and apply overflow to SHP if necessary
+    return {
+      stamina: Math.max(targetStamina.value - targetDamage, 0), // Set the new stamina value (cannot go below 0)
+      overflow: overflow > 0 ? overflow : 0, // Set the overflow value (if any)
+    };
+  }
+
+  _getDamageTypes() {
+    return {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {}),
     }
-    const content = await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [this], item: this.source, targets: this.target });
+  }
+}
 
-    this.messageInstance = UtopiaChatMessage.create({
-      content,
-      rolls: [ this.roll ],
-      speaker: {
-        user: game.user._id,
-        speaker: ChatMessage.getSpeaker(),
-        content: content
-      },
-      system: { instance: this, source: this.source, target: this.target }
+export class DamageHandler {
+  targetDamages = []; // Array to store the target damages
+  targetMessages = []; // Array to store the target messages
+
+  constructor({ damages = [], targets = [], state = DAMAGE_STATE.INIT, source = undefined }, options = {}) {
+    this.damages = damages; // Array of damage objects
+    this.state = state; // State of the damage instance
+    this.options = options; // Additional options for the damage instance
+
+    this._initializeSource(source).then(source => {
+      this.source = source; // The source of the damage (e.g., the actor or item causing the damage)
+      this._initializeTargets(targets).then(targets => {
+        for (const target of targets) {
+          this.targetDamages.push({ target, damages: damages }); // Initialize the target damages array for each target
+        }
+        this._initialize(); // Initialize the damage instance after targets are set
+      });
     });
-
-    return this.messageInstance;
   }
 
-  async toFinalMessage() {
-    if (!this.finalized) {
-      await this.handle();
+  /* ====== Initialization ====== */
+  // Initialize the source of the damage
+  async _initializeSource(source) {
+    if (typeof source === "string")  // Assume the source is a UUID string
+      return fromUuid(source);
+    return source;
+  }
+
+  // Initialize the targets of the damage
+  async _initializeTargets(targets) {
+    const resolvedTargets = [];
+    for (const target of targets) {
+      if (typeof target === "string")  // Assume the target is a UUID string
+        resolvedTargets.push(await fromUuid(target));
+      else if (target instanceof UtopiaActor)  // Check if the target is an actor instance
+        resolvedTargets.push(target);
+      else if (target instanceof Token)  // Check if the target is a token instance
+        resolvedTargets.push(target.actor);  // Get the actor from the token
+    }
+    return resolvedTargets;
+  }
+
+  // Initialize the damage instances
+  _initialize() {
+    // Set up any necessary properties or methods for the damage instance
+    for (const td of this.targetDamages) {
+      td.damages = td.damages.map(d => new Damage({ ...d, target: td.target })); // Create a new Damage instance for each damage object
     }
 
-    const message = new UtopiaChatMessage({});
+    this.id = foundry.utils.randomID(16);  // Generate a random ID for the handler
+    globalThis.utopia.damageHandlers.push(this);  // Add the handler to the global damage handlers array
+  
+    this.handle(); // Call handle after initialization is complete
+  }
+
+  /* ====== Damage Handling ====== */
+  // Handle damage application
+  async handle() {
+    if (!this.targetDamages || this.targetDamages.length === 0) throw new Error("Targets are not initialized yet."); // Ensure targets are defined
+
+    for (const target of this.targetDamages) {
+      for (let i = 0; i < target.damages.length; i++) {
+        target.damages[i]._handle()
+      }
+    }
+
+    await this._outputDamageResults();
+  }
+
+  /* ====== Outputting Damage Results ====== */
+  // Output the damage results to the chat
+  async _outputDamageResults() {
+    // Check game settings for outputting damage results
+    const outputSetting = game.settings.get("utopia", "displayDamage");
+    if (outputSetting === 0) return;  // If the setting is 0, do not output anything
+    if (outputSetting === 1) {  // If the setting is 1, output an estimate of the damage
+      this.message = await this._createEstimateDamageMessage();  // Create an estimate damage message
+    } else if (outputSetting === 2) {  // If the setting is 2, output the exact damage results
+      this.message = await this._createExactDamageMessage();  // Create an exact damage message
+    }
+
+    // TODO - Replace with a socket connection message to the target actors
+    await this._createTargetMessages(this.message, this.targetDamages);  // Create target messages based on the damage results
+
+    this.state = DAMAGE_STATE.PENDING;  // Set the state to pending (waiting for actor responses)
+  }
+
+  async _createEstimateDamageMessage() {
+    const estimateRolls = (await Promise.all(this.damages.map(async (damage) => {
+      return Damage.estimate(damage.formula); // Wait for the estimate to be calculated
+    }))).reduce((acc, estimate) => acc + estimate, 0); // Sum the estimates for all damages
+    const estimate = Math.round(estimateRolls.split(",").map(v => parseInt(v)).reduce((acc, v) => acc + v, 0) / estimateRolls.split(",").length); // Calculate the total estimate
+
+    const content = await renderTemplate("systems/utopia/templates/chat/new-estimate-damage-card.hbs", { estimate, damages: this.targetDamages });
+
+    // Create an estimate damage message based on the target damages
+    const message = await UtopiaChatMessage.create({
+      content: content,
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+      flavor: game.i18n.localize("UTOPIA.Damage.Estimate"),
+      speaker: ChatMessage.getSpeaker({ actor: this.source }),
+      system: {
+        handler: this.id, // Store the handler ID in the message system
+      }
+    });
     
-    const target = this.target instanceof UtopiaActor ? this.target : await fromUuid(this.target);
-    target.applyDamage(this, message) // TODO - Implement damage percentages
-
-    return this.messageInstance;
+    return message;
   }
 
-  applyBlock(block) {
-    this.blockTotal += block;
+  async _createExactDamageMessage() {
+    const content = await renderTemplate("systems/utopia/templates/chat/new-damage-card.hbs", { damages: this.targetDamages });
 
-    if (this.messageInstance) {
-      this.messageInstance.update({
-        "system.instance.blockedDamage": this.blockTotal
+    // Create an exact damage message based on the target damages
+    const message = await UtopiaChatMessage.create({
+      content: content,
+      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+      flavor: game.i18n.localize("UTOPIA.Damage.Exact"),
+      speaker: ChatMessage.getSpeaker({ actor: this.source }),
+      system: {
+        handler: this.id, // Store the handler ID in the message system
+      }
+    });
+    
+    return message;
+  }
+
+  async _createTargetMessages() {
+    for (const targetDamage of this.targetDamages) {
+      const content = await renderTemplate("systems/utopia/templates/chat/new-target-damage-card.hbs", { targetDamage });
+
+      // Create a target damage message based on the target damages
+      const message = await UtopiaChatMessage.create({
+        id: foundry.utils.randomID(16), // Generate a random ID for the message
+        content: content,
+        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+        flavor: game.i18n.localize("UTOPIA.Damage.Target"),
+        speaker: ChatMessage.getSpeaker({ actor: this.source }),
+        whisper: [...game.users.filter(u => u.character === targetDamage.target.id), ...game.users.filter(u => u.isGM)], // Whisper the message to the target and GMs
+        system: {
+          target: targetDamage.target.uuid, // Store the target's UUID in the message system
+          damage: targetDamage,
+          handler: this.id,
+        }
       });
-    }
 
-    this.finalized = true;
+      this.targetMessages.push(message.id); // Store the target message in the target messages array
+    }
   }
 
-  applyDodge(dodge) {
-    if (dodge > this.damage) {
-      this.dodged = true;
-    }
+  // Handle the final damage application to the targets
+  async handleFinalDamage() {
+    for (const target of this.targetDamages) {
+      var totalDamage = 0;
+      const blocked = target.blocked || 0; // Get the blocked amount for the target
+      const dodged = target.dodged || false; // Get the dodged amount for the target
 
-    if (this.messageInstance) {
-      this.messageInstance.update({
-        "system.instance.dodged": this.dodged
-      });
-    }
+      if (blocked) totalDamage -= blocked; // Reduce the total damage by the blocked amount
 
-    this.finalized = true;
+      for (const damage of target.damages) {
+        totalDamage += damage.targetDamage;
+      }
+
+      if (dodged) totalDamage = 0; // If the target dodged, set total damage to 0
+
+      await target.target.applyNewDamage({ result: totalDamage, damages: target.damages, blockRoll: target.blockRoll ?? undefined, dodgeRoll: target.dodgeRoll ?? undefined }); // Apply the final damage to the target
+    }
   }
 
-  finalize() {
-    this.finalized = true;
-  }
+  /* ====== Response Methods ====== */
+  // Handle a block response from the target
+  async handleBlockResponse({ target }) {
+    // Check if the target is valid and the damage handler is in the pending state
+    if (!target || this.state !== DAMAGE_STATE.PENDING) return;
+    
+    const formula = target.system.block.formula;
+    const roll = await new Roll(formula, target.getRollData()).evaluate();
 
-  static fromObject(data) {
-    const instance = new DamageInstance(data);
-
-    for (const [key, value] of Object.entries(data)) {
-      instance[key] = value;
+    const amount = roll.total; // Get the amount to block from the roll
+    if (this.targetDamages.find(td => td.target.id).blocked) return; // If the target has already blocked, exit
+    else {
+      this.targetDamages.find(td => td.target.id === target.id).blocked = amount; // Set the blocked amount for the target damage
+      this.targetDamages.find(td => td.target.id === target.id).blockRoll = roll; // Set the blocked amount for the target damage
     }
-
-    return instance;
   }
 
-  /**
-   * Static helper to create multiple DamageInstance objects simultaneously.
-   * @param {Array} damagesArray - Array of damage objects ({ type, value }).
-   * @param {Object} source - The source actor.
-   * @param {Object} target - The target actor.
-   * @returns {Array} An array of DamageInstance objects.
-   */
-  static createMultiple(damagesArray, source, target) {
-    return damagesArray.map(dmg => new DamageInstance({
-      type: dmg.type,
-      value: dmg.value,
-      source,
-      target
-    }));
+  // Handle a dodge response from the target
+  async handleDodgeResponse({ target }) {
+    // Check if the target is valid and the damage handler is in the pending state
+    if (!target || this.state !== DAMAGE_STATE.PENDING) return;
+
+    const formula = target.system.dodge.formula;
+    const roll = await new Roll(formula, target.getRollData()).evaluate();
+    
+    const amount = roll.total; // Get the amount to dodge from the roll
+    const targetDamageEntry = this.targetDamages.find(td => td.target.id === target.id);
+    if (!targetDamageEntry) return; // Exit if no matching target is found
+
+    if (amount >= targetDamageEntry.damages.map(d => d.result).reduce((acc, d) => acc + d, 0)) { // If the amount is greater than the total damage, the dodge is successful
+      if (targetDamageEntry.dodged) return; // If the target has already dodged, exit
+      else {
+         this.targetDamages.find(td => td.target.id === target.id).dodged = true; // Set the dodged amount for the target damage
+         this.targetDamages.find(td => td.target.id === target.id).dodgeRoll = roll; // Set the blocked amount for the target damage to 0
+      }
+    } 
+    else {
+      this.targetDamages.find(td => td.target.id === target.id).dodgeRoll = roll; // Set the blocked amount for the target damage to 0
+      return; // If the amount is not greater than the total damage, exit
+    }
+  }
+
+  // Handle a cancel response from the source or the GM
+  async handleCancelResponse() {
+    // Check if the damage handler is in the pending state
+    if (this.state !== DAMAGE_STATE.PENDING) return;
+
+    for (const targetMessage of this.targetMessages) {
+      // Update the target messages with the resolved state
+      await ChatMessage.get(targetMessage).delete(); // Delete the target message
+    }
+    
+    this.state = DAMAGE_STATE.CANCELLED; // Set the state to cancelled
+  }
+
+  // Handle a resolve response from the GM
+  async handleResolveResponse() {
+    // Check if the damage handler is in the pending state
+    if (this.state !== DAMAGE_STATE.PENDING) return;
+
+    for (const targetMessage of this.targetMessages) {
+      // Update the target messages with the resolved state
+      try { await ChatMessage.get(targetMessage).delete(); }
+      catch (err) { // Delete the target message
+        console.error("Unable to delete resposne message(s). The message may have already been deleted") 
+      }
+    }
+    
+    await this.handleFinalDamage(); // Handle the final damage application to the targets
+    
+    this.state = DAMAGE_STATE.RESOLVED; // Set the state to resolved
+  }
+
+  /* ====== Utility Methods ====== */
+  // Handle a target blocking the damage
+  static get(id) {
+    // Find an instance of the damage handler by ID
+    return globalThis.utopia.damageHandlers.find(handler => handler.id === id);
+  }
+
+  _shp({ target, targetDamage }) {
+    // Calculate overflow based on the target's current SHP and max SHP
+    const targetShp = target.system.hitpoints.surface;
+    const overflow = targetShp.value - targetDamage > 0 ? 0 : Math.abs(targetShp - targetDamage);
+
+    // Return the targets new SHP value, and apply overflow to DHP if necessary
+    return {
+      surface: Math.max(targetShp.value - targetDamage, 0), // Set the new SHP value (cannot go below 0)
+      overflow: overflow > 0 ? overflow : 0, // Set the overflow value (if any)
+    };
+  }
+
+  _dhp({ target, targetDamage }) {
+    // DHP cannot overflow, but it can go negative
+    const targetDhp = target.system.hitpoints.deep;
+
+    // Return the targets new DHP value, and apply overflow to SHP if necessary
+    return {
+      deep: targetDhp - targetDamage, // Set the new DHP value (cannot go below 0)
+    };
+  }
+
+  _stamina({ target, targetDamage }) {
+    // Calculate overflow based on the target's current stamina and max stamina
+    const targetStamina = target.system.stamina;
+    const overflow = targetStamina.value - targetDamage > 0 ? 0 : Math.abs(targetStamina - targetDamage);
+
+    // Return the targets new stamina value, and apply overflow to SHP if necessary
+    return {
+      stamina: Math.max(targetStamina.value - targetDamage, 0), // Set the new stamina value (cannot go below 0)
+      overflow: overflow > 0 ? overflow : 0, // Set the overflow value (if any)
+    };
   }
 }

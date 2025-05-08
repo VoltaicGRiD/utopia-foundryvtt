@@ -1,8 +1,9 @@
-import { DamageInstance } from "../system/damage.mjs";
+import { DamageInstance } from "../system/oldDamage.mjs";
 import { UtopiaUserVisibility } from "../system/helpers/userVisibility.mjs";
 import { UtopiaTemplates } from "../system/init/measuredTemplates.mjs";
 import { UtopiaActor } from "./actor.mjs";
 import { UtopiaItem } from "./item.mjs";
+import { DamageHandler } from "../system/damage.mjs";
 
 const { api } = foundry.applications
 
@@ -86,37 +87,77 @@ export class UtopiaChatMessage extends ChatMessage {
 
     let blockButton = html.querySelector('[data-action="block"]');
     blockButton?.addEventListener('click', async (event) => {
-      const target = await fromUuid(this.system.target);
-      const instance = DamageInstance.fromObject(this.system.instance);
-      const newInstance = await target.blockDamageInstance(instance);
-      const newMessage = UtopiaChatMessage.create({
-        content: await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [newInstance], item: this.system.source, targets: [target] }),
-        speaker: {
-          user: game.user._id,
-          speaker: ChatMessage.getSpeaker(),
-          content: this.content
-        },
-        system: { instance: newInstance, source: this.system.source, target: this.system.target }
-      });
-      await this.delete();
+      // New damage system 
+      if (this.system.damage) {
+        const target = await fromUuid(this.system.target);
+        const handler = DamageHandler.get(this.system.handler);
+        handler.handleBlockResponse({ target });
+        await this.delete();
+      }
+
+      // Old damage system
+      else if (this.system.instance) {
+        const target = await fromUuid(this.system.target);
+        const instance = DamageInstance.fromObject(this.system.instance);
+        const newInstance = await target.blockDamageInstance(instance);
+        const newMessage = UtopiaChatMessage.create({
+          content: await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [newInstance], item: this.system.source, targets: [target] }),
+          speaker: {
+            user: game.user._id,
+            speaker: ChatMessage.getSpeaker(),
+            content: this.content
+          },
+          system: { instance: newInstance, source: this.system.source, target: this.system.target }
+        });
+        await this.delete();
+      }
     });
 
     let dodgeButton = html.querySelector('[data-action="dodge"]');  
     dodgeButton?.addEventListener('click', async (event) => {
-      const target = await fromUuid(this.system.target);
-      const instance = DamageInstance.fromObject(this.system.instance);
-      const newInstance = await target.dodgeDamageInstance(instance);
-      const newMessage = UtopiaChatMessage.create({
-        content: await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [newInstance], item: this.system.source, targets: [target] }),
-        speaker: {
-          user: game.user._id,
-          speaker: ChatMessage.getSpeaker(),
-          content: this.content
-        },
-        system: { instance: newInstance, source: this.system.source, target: this.system.target }
-      });
-      await this.delete();
-    });          
+      // New damage system 
+      if (this.system.damage) {
+        const target = await fromUuid(this.system.target);
+        const handler = DamageHandler.get(this.system.handler);
+        handler.handleDodgeResponse({ target });
+        await this.delete();
+      }
+
+      // Old damage system
+      else if (this.system.instance) {
+        const target = await fromUuid(this.system.target);
+        const instance = DamageInstance.fromObject(this.system.instance);
+        const newInstance = await target.dodgeDamageInstance(instance);
+        const newMessage = UtopiaChatMessage.create({
+          content: await renderTemplate("systems/utopia/templates/chat/damage-card.hbs", { instances: [newInstance], item: this.system.source, targets: [target] }),
+          speaker: {
+            user: game.user._id,
+            speaker: ChatMessage.getSpeaker(),
+            content: this.content
+          },
+          system: { instance: newInstance, source: this.system.source, target: this.system.target }
+        });
+        await this.delete();
+      }
+    });         
+    
+    let cancelButton = html.querySelector('[data-action="cancel"]');
+    cancelButton?.addEventListener('click', async (event) => {
+      const handler = DamageHandler.get(this.system.handler);
+      if (handler) {
+        handler.handleCancelResponse();
+        await this.delete();
+      }
+    });
+
+    let resolveButton = html.querySelector('[data-action="resolve"]');
+    resolveButton?.addEventListener('click', async (event) => {
+      const handler = DamageHandler.get(this.system.handler);
+      if (handler) {
+        handler.handleResolveResponse(this.system.instance);
+        await this.delete();
+      }
+    });
 
     let deleteTemplateButtons = html.querySelectorAll('[data-action="deleteTemplate"]');
     for (let button of deleteTemplateButtons) {
@@ -387,6 +428,13 @@ export class UtopiaChatMessage extends ChatMessage {
       });
     }
 
+    let resetSettingsButton = html.querySelector('[data-action="resetSettings"]');
+    resetSettingsButton?.addEventListener('click', async (event) => {
+      await utopia.utilities.resetSettings();
+      await this.delete();
+      location.reload();
+    });
+
     const visibilityHtml = UtopiaUserVisibility.process(html, { document: actor ?? this, message: this });
 
     return $(visibilityHtml);
@@ -394,7 +442,7 @@ export class UtopiaChatMessage extends ChatMessage {
 
   static async create(message, data = {}) {
     const chatData = await super.create(message, data);
-    return this;
+    return chatData;
   }
 
   /** Get the actor associated with this chat message */

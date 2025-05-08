@@ -1,4 +1,3 @@
-import { getTextContrastHex } from "../../system/helpers/textContrast.mjs";
 import { ArtificeSheet } from "../specialty/artifice.mjs";
 import { SpellcraftSheet } from "../specialty/spellcraft.mjs";
 
@@ -15,7 +14,7 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
 
   // Default configuration options.
   static DEFAULT_OPTIONS = {
-    classes: ["utopia", "artifice"],
+    classes: ["utopia", "gear-sheet"],
     position: { width: 500, height: 600 },
     actions: {
       image: this._image,
@@ -35,6 +34,7 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
   static PARTS = {
     details: { template: "systems/utopia/templates/item/special/gear.hbs" },
   };
+
     
   static async _image(event) {
     event.preventDefault();
@@ -101,57 +101,46 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
   /*  Data Preparation Methods                    */
   /* -------------------------------------------- */
 
-  getRollData() {
-    const rollData = {};
-    if (Object.keys(this.item.system.features).length > 0) {
-      Object.values(this.item.system.features).forEach((feature) => {
-        for (const key of feature.keys) {
-          if (key.key === "range") {
-            rollData["range"] = rollData["range"] || {};
-            rollData["range"]["close"] = feature.output.value.split('/')[0].trim();
-            rollData["range"]["far"] = feature.output.value.split('/')[1].trim();
-          }
-          else {
-            rollData[key.key] = feature.output.value;
-          }
-        }
-      });
-    }
-
-    // Mark ranged if either close or far range is greater than 3
-    if (rollData.range && (rollData.range.close > 3 || rollData.range.far > 3)) {
-      rollData.ranged = true;
-    }
-
-    return rollData;
-  }
-
   /**
    * Prepares context data for rendering the gear sheet.
    * @param {object} options - Options passed to the sheet.
    * @returns {object} The complete context for rendering.
    */
   async _prepareContext(options) {
-    const features = this.item.system.features || {};
-    const activations = this.item.system.activations || {};
-    const type = this.item.system.type;
+    // Build localized options for gear types.
+    const fields = CONFIG.Item.dataModels.gear.schema.fields;
+    const typeOptions = this._buildLocalizedChoices(fields.type.choices);
+    const weaponTypeOptions = this._buildLocalizedChoices(fields.weaponType.choices);
+    const armorTypeOptions = this._buildLocalizedChoices(fields.armorType.choices);
+    const artifactTypeOptions = this._buildLocalizedChoices(fields.artifactType.choices);
 
-    const artifice = this.item.system.artifice || {};
-    const rollData = this.getRollData() || {};
+    // Construct type data from the current item.
+    const typeData = {
+      type: this.item.system.type,
+      weaponType: this.item.system.weaponType,
+      armorType: this.item.system.armorType,
+      artifactType: this.item.system.artifactType,
+      types: typeOptions,
+      weaponTypes: weaponTypeOptions,
+      armorTypes: armorTypeOptions,
+      artifactTypes: artifactTypeOptions,
+    };
 
+    // Prepare the full context for rendering.
     const context = {
-      features,
-      activations,
-      artifice,
-      rollData,
+      featureSettings: this.item.system.featureSettings,
+      features: this.item.system.features,
+      systemFields: CONFIG.Item.dataModels.gear.schema.fields,
+      ...typeData,
+      system: this.item.system,
+      quantity: this.item.system.quantity,
       item: this.item,
-      types: ["fastWeapon", "moderateWeapon", "slowWeapon", "shields", "headArmor", "chestArmor", "handsArmor", "feetArmor", "consumable", "equippableArtifact", "handheldArtifact", "ammunitionArtifact"],
-      type: type,
-      isArtifact: ["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(type), 
-    }
+      actor: this.item.parent || null,
+    };
 
-    console.log("GearSheet context:", context);
-
+    this._log("Context prepared", context);
+    this._log("Options", options);
+    this._log("Sheet instance", this);
     return context;
   }
 
@@ -223,11 +212,6 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
         this._update(event, selectEl);
       });
     });
-
-    const header = this.element.querySelector('.window-header');
-    header.style.backgroundColor = this.item.system.artifice.rarity.color;
-    header.style.color = getTextContrastHex(this.item.system.artifice.rarity.color, "#000000", "#FFFFFF");
-    header.querySelector('.window-title').style.color = getTextContrastHex(this.item.system.artifice.rarity.color, "#000000", "#FFFFFF");
   }
 
   /**

@@ -1,6 +1,9 @@
+import { ArtificeSheet } from "../../applications/specialty/artifice.mjs";
 import { FeatureBuilder } from "../../applications/specialty/feature-builder.mjs";
 import { UtopiaChatMessage } from "../../documents/chat-message.mjs";
+import { getTextContrastHex } from "../helpers/textContrast.mjs";
 import { registerDiceSoNice } from "../integrations/DiceSoNice/diceSoNice.mjs";
+import { registerFeatures } from "./features.mjs";
 
 export function registerHooks() {
   Hooks.once("ready", function () {
@@ -229,6 +232,32 @@ export function registerHooks() {
     Hooks.on("diceSoNiceReady", (dice3d) => {
       registerDiceSoNice(dice3d);
     });
+
+    const settings = {};
+    settings.artistries = JSON.parse(game.settings.get("utopia", "advancedSettings.artistries"));
+    settings.damageTypes = JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"));
+    settings.traits = JSON.parse(game.settings.get("utopia", "advancedSettings.traits"));
+    settings.subtraits = JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"));
+
+    registerFeatures(settings);
+
+    if (game.system.flags.configurationReset ??= false === false) {
+      const content = document.createElement("div");
+      content.innerHTML = `<h3 style="color: red"><strong>System Configuration Changes</strong></h3><p><strong>The Utopia system recently received changes to the initial configuration of the system.</strong></p><p>You will not receive these changes, until you reset the advanced settings in the game settings.</p><p>Please keep in mind, that doing so will overwrite any custom settings you have made.</p><p>It is recommended to make a backup of your settings before doing so, and modifying / applying your custom changes accordingly.</p><p>If you have any questions, or need assistance doing this, please reach out to @voltaicgrid on the Utopia TTRPG Discord (link on the settings tab).</p>`;
+      const button = document.createElement("button");
+      button.innerText = "Reset Advanced Settings (permanent).";
+      button.addEventListener("click", async () => {
+        utopia.utilities.resetSettings();
+      });
+      button.dataset.action = "resetSettings";
+      content.appendChild(button);
+
+      UtopiaChatMessage.create({
+        speaker: "Utopia",
+        content: content.innerHTML,
+        whisper: game.users.filter(u => u.isGM).map(u => u.id),
+      })
+    }
   });
 
   Hooks.on('renderSettings', (settings) =>  {
@@ -332,13 +361,33 @@ export function registerHooks() {
       browserButton.style.height = "28px";
       browserButton.style.lineHeight = "26px";
       browserButton.style.margin = "4px";
-      browserButton.append(browserIcon, game.i18n.localize("UTOPIA.Settings.Buttons.FeatureBuilder"));
+      browserButton.append(browserIcon, game.i18n.localize("UTOPIA.Settings.Buttons.Artifice"));
       browserButton.addEventListener("click", () => {
-        const browser = new FeatureBuilder();
+        const browser = new ArtificeSheet();
         browser.render(true);
       });  
 
       tab.element[0].querySelector(".directory-footer.action-buttons")?.append(browserButton);
+
+      const items = tab.element[0].querySelectorAll(".directory-item.item");
+      for (const item of items) { 
+        const itemId = item.dataset.documentId;
+        const itemData = game.items.get(itemId);
+        if (itemData && itemData.type === "gear") {
+          const rarity = itemData.system.rarity;
+          const rarityColor = itemData.system.artifice.rarity.color;
+          item.style.backgroundColor = rarityColor;
+          item.style.color = getTextContrastHex(rarityColor);
+
+          const icon = item.querySelector(".thumbnail");
+          if (icon) {
+            icon.style.backgroundColor = "black";
+            icon.style.borderRadius = "4px";
+            icon.style.padding = "2px";
+            icon.style.margin = "2px";
+          }
+        }
+      }
     }
 
     if (tab.tabName !== "compendium") return;

@@ -61,7 +61,7 @@
   --utopia-color-character-setup: #079c57;
   --utopia-color-talents: #a9a235;
   --utopia-color-gameplay: #b3722c;
-  --utopia-color-attribute-max: #ef4136;
+  --utopia-color-CC: #ef4136;
   --utopia-background-25: rgb(0 0 0 / 25%);
   --utopia-background-10: rgb(0 0 0 / 10%);
   --utopia-background-5: rgb(0 0 0 / 5%);
@@ -275,6 +275,8 @@
   &.gear-sheet, 
   &.artifice {
     border-radius: 0 25px 0 25px ;
+    overflow: visible;
+    padding: 0;
 
     @import "components/gear.scss";
     @import "components/artifice.scss";

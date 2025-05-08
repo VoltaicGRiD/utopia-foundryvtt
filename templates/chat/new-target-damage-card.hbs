@@ -1,0 +1,13 @@
+<div class="chat-card">
+  
+  <div class="card-header">
+    <img class="card-header-icon" src="systems/utopia/assets/damage.svg" title="Damage" width="30" height="30" />
+    <h3>Damage Response</h3>
+  </div>
+
+  <div class="card-actions">
+    <button data-action="block"><i class="fas fa-shield"></i> {{localize "UTOPIA.CHAT.Block"}} {{targetDamage.target.system.blockFormula}}</button>
+    <button data-action="dodge"><i class="fas fa-person-running"></i> {{localize "UTOPIA.CHAT.Dodge"}} {{targetDamage.target.system.dodgeFormula}}</button>
+    <button data-action="takeCover"><i class="fas fa-brick-block"></i> {{localize "UTOPIA.CHAT.TakeCover"}}</button>
+  </div>
+</div>

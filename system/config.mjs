@@ -1,5 +1,3 @@
-import { UtopiaTemplates } from "./init/measuredTemplates.mjs"
-
 export function registerConfig() {
   CONFIG.UTOPIA.TRAITS = {
     agi: {
@@ -11,7 +9,8 @@ export function registerConfig() {
       color: '#005F5F',
       path: 'system.traits.agi',
       subtraits: ['dex', 'spd'],
-      maximum: 'body'
+      maximum: 'body',
+      splash: true
     },
     str: {
       name: 'Strength',
@@ -22,7 +21,8 @@ export function registerConfig() {
       label: 'UTOPIA.TRAITS.Strength',
       path: 'system.traits.str',
       subtraits: ['pow', 'for'],
-      maximum: 'body'
+      maximum: 'body',
+      splash: true
     },
     int: {
       name: 'Intellect',
@@ -297,6 +297,11 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Energy',
+      penetrative: true,
+      harsh: true,
+      defensive: true,
+      destructive: true,
+      resistance: true,
       appliesTo: 'shp'
     },
     heat: {
@@ -308,6 +313,11 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Heat',
+      penetrative: true,
+      harsh: true,
+      defensive: true,
+      destructive: true,
+      resistance: true,
       appliesTo: 'shp'
     },
     chill: {
@@ -319,6 +329,11 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Chill',
+      penetrative: true,
+      harsh: true,
+      defensive: true,
+      destructive: true,
+      resistance: true,
       appliesTo: 'shp'
     },
     physical: {
@@ -330,6 +345,9 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Physical',
+      penetrative: true,
+      defensive: true,
+      destructive: true,
       appliesTo: 'shp'
     },
     psyche: {
@@ -341,6 +359,9 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Psyche',
+      penetrative: true,
+      harsh: true,
+      resistance: true,
       appliesTo: 'shp'
     },
     kinetic: {
@@ -406,6 +427,7 @@ export function registerConfig() {
       long: 'alteration',
       color: '#90c96b',
       label: 'UTOPIA.ARTISTRIES.Alteration',
+      classification: 'major',
     },
     array: {
       name: 'Array',
@@ -413,6 +435,7 @@ export function registerConfig() {
       long: 'array',
       color: '#f3ec68',
       label: 'UTOPIA.ARTISTRIES.Array',
+      classification: 'modest',
     },
     enchantment: {
       name: 'Enchantment',
@@ -420,6 +443,7 @@ export function registerConfig() {
       long: 'enchantment',
       color: '#ee92b7',
       label: 'UTOPIA.ARTISTRIES.Enchantment',
+      classification: 'minor',
     },
     evocation: {
       name: 'Evocation',
@@ -427,6 +451,7 @@ export function registerConfig() {
       long: 'evocation',
       color: '#ee6448',
       label: 'UTOPIA.ARTISTRIES.Evocation',
+      classification: 'minor',
     },
     divination: {
       name: 'Divination',
@@ -434,6 +459,7 @@ export function registerConfig() {
       long: 'divination',
       color: '#62b4ae',
       label: 'UTOPIA.ARTISTRIES.Divination',
+      classification: 'modest',
     },
     illusion: {
       name: 'Illusion',
@@ -441,6 +467,7 @@ export function registerConfig() {
       long: 'illusion',
       color: '#94d2e1',
       label: 'UTOPIA.ARTISTRIES.Illusion',
+      classification: 'minor',
     },
     necromancy: {
       name: 'Necromancy',
@@ -448,6 +475,7 @@ export function registerConfig() {
       long: 'necromancy',
       color: '#a75aa2',
       label: 'UTOPIA.ARTISTRIES.Necromancy',
+      classification: 'modest',
     },
     wake: {
       name: 'Wake',
@@ -455,6 +483,7 @@ export function registerConfig() {
       long: 'wake',
       color: '#f5a755',
       label: 'UTOPIA.ARTISTRIES.Wake',
+      classification: 'major',
     },
   }
 

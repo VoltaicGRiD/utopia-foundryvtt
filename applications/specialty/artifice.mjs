@@ -1,6 +1,7 @@
 import { gatherItems } from '../../system/helpers/gatherItems.mjs';
 import { isNumeric } from '../../system/helpers/isNumeric.mjs';
 import { getTextContrast } from '../../system/helpers/textContrast.mjs';
+import { parseFeature } from '../../system/init/features.mjs';
 
 const { api } = foundry.applications;
 
@@ -10,27 +11,23 @@ const { api } = foundry.applications;
  */
 export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.ApplicationV2) {
   // Class properties
-  selected = {};
-  allFeatures = {};
-  features = {};
-  secretFeatures = {};
-  filter = "";
-  actor = {};
-  items = [];
-  featureSettings = {};
-  name = "Unnamed gear";
-  originalSystem = {};
+  actor = null;
 
-  /**
-   * Creates an instance of ArtificeSheet.
-   * @param {object} options - Options for the sheet.
-   */
+  selected = {};
+  features = {};
+  type = "fastWeapon";
+
+  artifactFeatures = {};
+  artifact = {
+    activations: {},
+    passive: {},
+  }
+
   constructor(options = {}) {
     super(options);
-    this.type = "";
-    this.weaponType = "";
-    this.armorType = "";
-    this.artifactType = "";
+    if (options.actor) {
+      this.actor = options.actor;
+    }
   }
 
   // Default options for the application.
@@ -41,9 +38,8 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       height: 800,
     },
     actions: {
-      image: this._image,
-      save: this._save,
-      chat: this._chat, 
+      delete: this._delete,
+      craft: this._craft,
     },
     window: {
       title: "UTOPIA.SheetLabels.artifice",
@@ -67,85 +63,117 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     options.parts = ["content"];
   }
 
-  /**
-   * Centralized logging method.
-   * @param {string} message - The log message.
-   * @param {...any} args - Additional data to log.
-   */
-  _log(message, ...args) {
-    console.log(`[ArtificeSheet] ${message}`, ...args);
+  getStackLimits() {
+    return {
+      crude: 10,
+      common: 20,
+      extraordinary: 30,
+      rare: 40,
+      legendary: 50,
+      mythic: 60,
+    }
   }
 
-  /**
-   * Centralized error logging method.
-   * @param {string} message - The error message.
-   * @param {...any} args - Additional data to log.
-   */
-  _error(message, ...args) {
-    console.error(`[ArtificeSheet ERROR] ${message}`, ...args);
-  }
-
-  /**
-   * Builds a localized choices object from field choices.
-   * @param {object} choices - The raw choices from the schema.
-   * @returns {object} Localized choices.
-   */
-  _buildLocalizedChoices(choices) {
-    const localized = {};
-    Object.entries(choices).forEach(([key, value]) => {
-      localized[key] = game.i18n.localize(value);
-    });
-    return localized;
-  }
-
-  /**
-   * Determines the relevant classification key based on this.type.
-   * @returns {string} The classification key.
-   */
-  _getRelevantClassificationKey() {
+  getDefaults() {
     switch (this.type) {
-      case "weapon":
-        return this.weaponType;
-      case "armor":
-        return this.armorType;
-      case "artifact":
-        return this.artifactType;
-      default:
-        return this.type;
+      case "fastWeapon":
+        return {
+          hands: 1,
+          actions: 1,
+          slots: 3,
+        }
+      case "moderateWeapon":
+        return {
+          hands: 1,
+          actions: 2,
+          slots: 3,
+        }
+      case "slowWeapon":
+        return {
+          hands: 1,
+          actions: 3,
+          slots: 3,
+        }
+      case "shields":
+        return {
+          hands: 1,
+          actions: 1,
+          slots: 3,
+        }
+      case "headArmor":
+        return {
+          hands: 0,
+          actions: 0,
+          slots: 3,
+        }
+      case "chestArmor":
+        return {
+          hands: 0,
+          actions: 0,
+          slots: 3,
+        }
+      case "handsArmor":
+        return {
+          hands: 0,
+          actions: 0,
+          slots: 3,
+        }
+      case "feetArmor":
+        return {
+          hands: 0,
+          actions: 0,
+          slots: 3,
+        }
+      case "consumable":
+        return {
+          hands: 1,
+          actions: 2,
+          slots: 3,
+        }
+      case "equippableArtifact":
+        return {
+          hands: 1,
+          actions: 0,
+          slots: 1,
+        }
+      case "handheldArtifact":
+        return {
+          hands: 1,
+          actions: 0,
+          slots: 1,
+        }
+      case "ammunitionArtifact":
+        return {
+          hands: 1,
+          actions: 0,
+          slots: 1,
+        }
     }
   }
 
-  /**
-   * Assigns attributes to a feature based on the classification key.
-   * If the classification key corresponds to a sub-classification (weapon, armor, or artifact)
-   * and mergeShared is true, it will merge the shared attributes.
-   *
-   * @param {object} feature - The feature to update.
-   * @param {string} classificationKey - The key to match.
-   * @param {object} [options] - Options for assignment.
-   * @param {boolean} [options.mergeShared=false] - Whether to merge with the "shared" classification.
-   */
-  _assignAttributes(feature, classificationKey, { mergeShared = false } = {}) {
-    // Check if the feature has the desired classification.
-    if (!feature.system.classifications[classificationKey]) return;
-
-    // If mergeShared is enabled and the classification key is one of the sub-classifications,
-    // merge the specific classification with any shared attributes.
-    if (
-      mergeShared &&
-      feature.system.classifications.shared
-    ) {
-      feature.system.attributes = foundry.utils.mergeObject(
-        feature.system.classifications[classificationKey],
-        feature.system.classifications.shared,
-        feature.system.costs[classificationKey]
-      );
-    } else {
-      feature.system.attributes = foundry.utils.mergeObject(
-        feature.system.classifications[classificationKey],
-        feature.system.costs[classificationKey]
-      )
+  getRollData() {
+    const rollData = {};
+    if (Object.keys(this.selected).length > 0) {
+      Object.values(this.selected).forEach((feature) => {
+        for (const key of feature.keys) {
+          if (key.key === "range") {
+            rollData["range"] = rollData["range"] || {};
+            rollData["range"]["close"] = feature.output.value.split('/')[0].trim();
+            rollData["range"]["far"] = feature.output.value.split('/')[1].trim();
+          }
+          else {
+            rollData[key.key] = feature.output.value;
+          }
+        }
+      });
     }
+
+    // Mark ranged if either close or far range is greater than 3
+    if (rollData.range && (rollData.range.close > 3 || rollData.range.far > 3)) {
+      rollData.ranged = true;
+    }
+
+    return rollData;
   }
 
   /**
@@ -154,601 +182,631 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
    * @returns {object} The prepared context.
    */
   async _prepareContext(options) {
-    if (options.item) {
-      this.items.push(options.item);
-      this.originalSystem = options.item.system;
-      this.name = options.item.name;
-    }
-    
-    // Gather gear features.
-    const features = await gatherItems({ type: "gearFeature", gatherFromActor: false, gatherFolders: false });
+    this.features = CONFIG.UTOPIA.FEATURES[this.type] || CONFIG.UTOPIA.FEATURES["fastWeapon"];
+    this.features = Object.entries(this.features || {}).reduce((acc, [key, value]) => {
+      acc[key] = {
+        ...value,
+        stacks: 1,
+      };
+      return acc;
+    }, {});
 
-    // Build localized choice objects.
-    const fields = CONFIG.Item.dataModels.gear.schema.fields;
-    const types = this._buildLocalizedChoices(fields.type.choices);
-    const weaponTypes = this._buildLocalizedChoices(fields.weaponType.choices);
-    const armorTypes = this._buildLocalizedChoices(fields.armorType.choices);
-    const artifactTypes = this._buildLocalizedChoices(fields.artifactType.choices);
-
-    // If an item is provided, set the type and subtypes.
-    const item = options.item ?? null;
-    if (item) {
-      this.selected = item.system.features;
-      this.featureSettings = item.system.featureSettings;
-      this.type = item.system.type;
-      this.weaponType = item.system.weaponType;
-      this.armorType = item.system.armorType;
-      this.artifactType = item.system.artifactType;
-    }
-
-    // Filter features based on the type.
-    let filteredFeatures = [];
-    switch (this.type) {
-      case "weapon":
-        filteredFeatures = features.filter(f =>
-          ["fastWeapon", "moderateWeapon", "slowWeapon"].some(r =>
-            Object.keys(f.system.classifications).includes(r)
-          )
-        );
-        break;
-      case "armor":
-        filteredFeatures = features.filter(f =>
-          ["headArmor", "chestArmor", "waistArmor", "handsArmor", "feetArmor"].some(r =>
-            Object.keys(f.system.classifications).includes(r)
-          )
-        );
-        break;
-      case "shield":
-        filteredFeatures = features.filter(f =>
-          ["shield", "shields"].some(r =>
-            Object.keys(f.system.classifications).includes(r)
-          )
-        );
-        break;
-      case "consumable":
-        filteredFeatures = features.filter(f =>
-          ["consumable"].some(r =>
-            Object.keys(f.system.classifications).includes(r)
-          )
-        );
-        break;
-      case "artifact":
-        filteredFeatures = features.filter(f =>
-          ["ammunitionArtifact", "equippableArtifact", "handheldArtifact", "artifact"].some(r =>
-            Object.keys(f.system.classifications).includes(r)
-          )
-        );
-        break;
-      default:
-        break;
-    }
-
-    // Process selected features: assign attributes.
-    const relevantKey = this._getRelevantClassificationKey();
-    for (const [id, feature] of Object.entries(this.selected)) {
-      this._assignAttributes(feature, relevantKey);
-      if (this.featureSettings[id]) {
-        this.featureSettings[id].stacks.maximum = feature.system.attributes.maxStacks;
-      }
-    }
-
-    // Process available features: assign attributes (merge shared for weapons).
-    for (const feature of filteredFeatures) {
-      this._assignAttributes(feature, relevantKey, { mergeShared: true });
-    }
-    
-    // Process stacks for each selected feature.
-    for (const [id, feature] of Object.entries(this.selected)) {
-      const featureResponse = await this.processStacks(feature, this.featureSettings[id].stacks.value);
-      this.selected[id].system.final = featureResponse;
-      this._log("Processed feature stacks:", featureResponse);
-    }
-
-    // Update gear attributes based on selected features.
-    const gear = await this.updateGear();
-
-    // Process non-selected features: assign attributes.
-    for (const feature of filteredFeatures) {
-      if (!this.selected[feature.uuid]) {
-        this._assignAttributes(feature, relevantKey);
-      }
-    }
-
-    this.features = filteredFeatures;
-
-    // Build type data for the context.
-    const typeData = {
-      type: this.type,
-      weaponType: this.weaponType,
-      armorType: this.armorType,
-      artifactType: this.artifactType,
-      types: types,
-      weaponTypes: weaponTypes,
-      armorTypes: armorTypes,
-      artifactTypes: artifactTypes,
+    if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
+      const active = CONFIG.UTOPIA.FEATURES["activeArtifact"];
+      this.artifactFeatures.active = Object.entries(active).reduce((acc, [key, value]) => {
+        acc[key] = {
+          ...value,
+          stacks: 1,
+        };
+        return acc;
+      }, {});
+      const passive = CONFIG.UTOPIA.FEATURES["passiveArtifact"];
+      this.artifactFeatures.passive = Object.entries(passive).reduce((acc, [key, value]) => {
+        acc[key] = {
+          ...value,
+          stacks: 1,
+        };
+        return acc;
+      }, {});
+      this.artifactFeatures.activations = CONFIG.UTOPIA.FEATURES["artifactActivations"];
     };
+
+    const defaults = this.getDefaults();
+
+    var slots = defaults.slots || 3;
+    var actions = defaults.actions || 1;
+    var hands = defaults.hands || 1;
+
+    let attributes = {};
+    if (Object.keys(this.selected).length > 0) {
+      this.selected = Object.entries(this.selected).reduce((acc, [key, value]) => {
+        const feature = parseFeature(value);
+        const data = this.handleFeature(feature);
+        slots = data.slots || slots;
+        actions = data.actions || actions;
+        hands = data.hands || hands;
+
+        const handledFeature = data.feature;
+        const keys = data.keys || [];
+        
+        if (handledFeature) {
+          acc[key] = {
+            ...handledFeature,
+            keys,
+            stacks: handledFeature.stacks || 1,
+          };
+        }
+        return acc;
+      }, {});
+    }
+
+    for (const [id, activation] of Object.entries(this.artifact.activations)) {
+      const activationFeature = activation.activation;
+      const activationActives = activation.features || [];
+      
+      for (const [key, feature] of Object.entries(activation.features)) {
+        const featureData = parseFeature(feature);
+        const data = this.handleFeature(feature);
+        slots = data.slots || slots;
+        actions = data.actions || actions;
+        hands = data.hands || hands;
+
+        const handledFeature = data.feature;
+        const keys = data.keys || [];
+        
+        if (handledFeature) {
+          this.artifact.activations[id].features[key] = {
+            ...handledFeature,
+            keys,
+            stacks: handledFeature.stacks || 1,
+          };
+        }
+      }
+    }
+
+    for (const [id, feature] of Object.entries(this.artifact.passive)) {
+      const featureData = parseFeature(feature);
+      const data = this.handleFeature(feature);
+        slots = data.slots || slots;
+        actions = data.actions || actions;
+        hands = data.hands || hands;
+
+        const handledFeature = data.feature;
+        const keys = data.keys || [];
+
+      if (handledFeature) {
+        this.artifact.passive[id] = {
+          ...handledFeature,
+          keys,
+          stacks: handledFeature.stacks || 1,
+        };
+      }
+    }
+
+    let totalRP = 0;
+    let variableRPFeatures = [];
+
+    if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
+      totalRP = Object.values(this.artifact.activations).reduce((acc, activation) => {
+        const activationMult = activation.activation.activation.costMultiplier || 1;
+        const activationRP = Object.values(activation.features).reduce((acc, feature) => {
+          const featureRP = typeof feature.output.cost.RP !== "string" ? feature.output.cost.RP : 0;
+          return acc + featureRP;
+        }, 0);
+        return acc + (activationRP * activationMult);
+      }, 0);
+
+      totalRP += Object.values(this.artifact.passive).reduce((acc, feature) => {
+        const featureRP = typeof feature.output.cost.RP !== "string" ? feature.output.cost.RP : 0;
+        return acc + featureRP;
+      }, 0);
+
+      // If any of the selected features have a string value for RP, we need to parse it
+      variableRPFeatures = Object.values(this.selected).filter((feature) => typeof feature.output.cost.RP === "string" && feature.output.cost.RP.includes("@"));
+    }
+    else {
+      totalRP = Object.values(this.selected)
+      .map((feature) => typeof feature.output.cost.RP !== "string" ? feature.output.cost.RP : 0)
+      .reduce((acc, value) => acc + value, 0);
+      
+      // If any of the selected features have a string value for RP, we need to parse it
+      variableRPFeatures = Object.values(this.selected).filter((feature) => typeof feature.output.cost.RP === "string" && feature.output.cost.RP.includes("@"));
+    }
+
+    const rollData = this.getRollData();
+
+    // There are no additional values we need to parse
+    if (variableRPFeatures.length > 0) {
+      for (const feature of variableRPFeatures) {
+        const featureRP = feature.output.cost.RP;
+
+        // If the RP value is a string, we need to parse it
+        if (typeof featureRP === "string") {
+          const roll = new Roll(featureRP, rollData).evaluateSync();
+          totalRP += roll.total;
+        }
+      }
+    }
+
+    const rarities = Object.values(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")));
+    const rarity = rarities.find((r) => totalRP >= r.points.minimum && totalRP <= r.points.maximum) || rarities[0];
+
+    let componentCosts = {}
+    if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
+      componentCosts.material = Math.max(Math.floor(totalRP / 25), 1);
+      componentCosts.refinement = Math.max(Math.floor(totalRP / 40), 1);
+      componentCosts.power = Math.max(Math.floor(totalRP / 50), 0);
+    }
+    else {
+      componentCosts = Object.values(this.selected).reduce((acc, feature) => {
+        ["material", "refinement", "power"].forEach((key) => {
+          if (feature.output.cost[key]) {
+            acc[key] = acc[key] || 0;
+            acc[key] += feature.output.cost[key];
+          }
+        });
+        return acc;
+      }, {});
+    }
+
+    const artifice = {
+      RP: totalRP,
+      rarity,
+      value: totalRP * rarity.points.multiplier,
+      slots,
+      actions,
+      hands,
+      material: componentCosts.material || 0,
+      refinement: componentCosts.refinement || 0,
+      power: componentCosts.power || 0,
+    }
 
     const context = {
-      name: this.name,
-      features: filteredFeatures,
-      featureSettings: this.featureSettings,
+      features: this.features,
+      artifactFeatures: this.artifactFeatures,
       selected: this.selected,
-      systemFields: CONFIG.Item.dataModels.gear.schema.fields,
-      ...typeData,
-      ...gear,
-    };
+      artifice,
+      rollData,
+      artifact: this.artifact,
+      types: ["fastWeapon", "moderateWeapon", "slowWeapon", "shields", "headArmor", "chestArmor", "handsArmor", "feetArmor", "consumable", "equippableArtifact", "handheldArtifact", "ammunitionArtifact"],
+      type: this.type,
+      isArtifact: ["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type), 
+    }
 
-    this._log("Context prepared", context);
-    this._log("Options", options);
-    this._log("Sheet instance", this);
+    console.log("ArtificeSheet | _prepareContext | context", context);
 
     return context;
   }
 
-  /**
-   * Prepares additional context for a specific part.
-   * @param {string} partId - The part identifier.
-   * @param {object} context - The current context.
-   * @returns {object} The updated context.
-   */
-  async _preparePartContext(partId, context) {
-    if (partId === "column") {
-      // Placeholder for future column-specific context modifications.
-    }
-    return context;
-  }
-
-  /**
-   * Sets up event listeners after the sheet is rendered.
-   * @param {object} context - The render context.
-   * @param {object} options - Render options.
-   */
-  async _onRender(context, options) {
-    // Setup select element change listeners.
-    this.element.querySelectorAll("select[data-action='update']").forEach(s => {
-      s.addEventListener("change", async (event) => {
-        this._update(event, s);
-      });
-    });
-
-    // Setup drag-and-drop for available features.
-    this.element.querySelectorAll(".available-feature").forEach(f => {
-      f.draggable = true;
-      f.addEventListener("dragstart", (event) => {
-        event.dataTransfer.setData("text", JSON.stringify({ id: f.dataset.id, type: "feature" }));
-      });
-    });
-
-    // Setup drag-and-drop for gear items.
-    this.element.querySelectorAll(".gear").forEach(s => {
-      s.draggable = true;
-      s.addEventListener("dragstart", (event) => {
-        event.dataTransfer.setData("text", JSON.stringify({ id: s.dataset.id, type: "gear" }));
-      });
-    });
-
-    // Setup hover listeners on features for showing/hiding controls.
-    this.element.querySelectorAll(".feature").forEach(f => {
-      f.addEventListener("mouseover", () => {
-        const list = f.closest("ol");
-        if (list.classList.contains("selected-feature-list")) {
-          f.querySelector(".remove-feature").classList.remove("hidden");
-        }
-        if (list.classList.contains("feature-list")) {
-          f.querySelector(".favorite-feature").classList.remove("hidden");
-        }
-      });
-      f.addEventListener("mouseout", () => {
-        const list = f.closest("ol");
-        if (list.classList.contains("selected-feature-list")) {
-          f.querySelector(".remove-feature").classList.add("hidden");
-        }
-        if (list.classList.contains("feature-list")) {
-          f.querySelector(".favorite-feature").classList.add("hidden");
-        }
-      });
-    });
-
-    // Setup remove-feature button listeners.
-    this.element.querySelectorAll(".remove-feature").forEach(b => {
-      b.addEventListener("click", (event) => {
-        const id = event.target.closest("li").dataset.id;
-        delete this.selected[id];
-        this.render();
-      });
-    });
-
-    // Setup favorite-feature button listeners.
-    this.element.querySelectorAll(".favorite-feature").forEach(b => {
-      b.addEventListener("click", async (event) => {
-        const li = event.target.closest("li");
-        const id = li.dataset.id;
-        const feature = this.features[id];
-        if (feature.favorite === true) {
-          await this.removeFavorite(feature);
-        } else {
-          await this.addFavorite(feature);
-        }
-        this.render();
-      });
-    });
-
-    // Setup drag events on the main element for styling.
-    this.element.addEventListener("dragover", () => {
-      this.element.querySelector('.gear-panel').classList.add("dragging");
-    });
-    this.element.addEventListener("dragleave", () => {
-      this.element.querySelector('.gear-panel').classList.remove("dragging");
-    });
-    this.element.addEventListener("drop", () => {
-      this.element.querySelector('.gear-panel').classList.remove("dragging");
-    });
-
-    // Setup scroll listener for feature list.
-    const gearFeaturesList = this.element.querySelector('.feature-list');
-    const itemHeight = 25;
-    const itemGap = 5;
-    const scrollAmount = itemHeight + itemGap;
-    gearFeaturesList.addEventListener('wheel', (event) => {
-      event.preventDefault();
-      const delta = Math.sign(event.deltaY);
-      gearFeaturesList.scrollBy({ top: delta * scrollAmount, behavior: 'auto' });
-    });
-
-    // Setup drag-and-drop for gear panel.
-    const gear = this.element.querySelector(".gear-panel");
-    gear.addEventListener("dragover", (event) => event.preventDefault());
-    gear.addEventListener("drop", async (event) => {
-      event.preventDefault();
-      const data = JSON.parse(event.dataTransfer.getData("text"));
-      if (data.type === "feature") {
-        const id = data.id;
-        const feature = this.features[id];
-        const selectedId = foundry.utils.randomID();
-        // Create a deep clone of the feature so each instance is independent.
-        this.selected[selectedId] = foundry.utils.deepClone(feature);
-        // ...
-        this.featureSettings[selectedId] = { 
-          stacks: {
-            variableName: "stacks",
-            variableDescription: "Stacks",
-            character: "@",
-            kind: "number",
-            minimum: 1,
-            value: 1
-          }
-        };
-        this.render();
-      } else if (data.type === "gear") {
-        const id = data.id;
-        const gear = this.worldSpells[id];
-        if (!gear) return;
-        await this.addSpell(gear);
-        this.render();
-      }
-    });
-
-    // Setup input listeners.
-    this.element.querySelector("input[name='name']").addEventListener("change", (event) => {
-      this.name = event.target.value;
-    });
-    this.element.querySelectorAll("input[type='number']").forEach(v => {
-      v.addEventListener("change", async (event) => {
-        const featureItem = event.target.closest("li");
-        const featureId = featureItem.dataset.id;
-        const value = parseInt(event.target.value);
-        this.featureSettings[featureId].stacks.value = value;
-        this.render();
-      });
-    });    
-    this.element.querySelector("input[name='filter']").addEventListener("change", (event) => {
-      this.filter = event.target.value;
-      this.render();
-    });
-    this.element.querySelector("textarea[name='flavor']").addEventListener("change", (event) => {
-      this.flavor = event.target.value;
-      this.render();
-    });
-  }
-
-  /**
-   * Updates the gear based on selected features.
-   * @returns {object} An object containing calculated gear attributes.
-   */
-  async updateGear() {
-    const item = new Item({ name: this.name ?? "Unnamed Gear", type: "gear", system: {} });
-    const costs = {};
-    const relevantKey = this._getRelevantClassificationKey();
-
-    
-    // Merge attributes and costs from each selected feature.
-    for (const [id, feature] of Object.entries(this.selected)) {
-      const final = await this.processStacks(feature, this.featureSettings[id].stacks.value);
-
-      if (final) {
-        // Merge attributes.
-        Object.entries(final).forEach(([key, value]) => {
-          if (item.system[key] !== undefined) {
-            // If both values are strings, join them with a plus operator.
-            if (typeof item.system[key] === "string" && typeof value === "string") {
-              item.system[key] = `${item.system[key]} + ${value}`;
-            }
-            // If both values are numbers, add them.
-            else if (typeof item.system[key] === "number" && typeof value === "number") {
-              item.system[key] += value;
-            }
-            // Otherwise, default to the new value.
-            else {
-              item.system[key] = value;
-            }
-          } else {
-            item.system[key] = value;
-          }
-        });
-        // Merge costs.
-        Object.entries(feature.system.costs[relevantKey]).forEach(([key, value]) => {
-          if (costs[key] !== undefined) {
-            if (typeof costs[key] === "string" && typeof value === "string") {
-              costs[key] = `${costs[key]} + ${value}`;
-            } else if (typeof costs[key] === "number" && typeof value === "number") {
-              costs[key] += value;
-            } else {
-              costs[key] = value;
-            }
-          } else {
-            costs[key] = value;
-          }
-        });
-      }
+  _onRender(context, options) {
+    this.element.querySelector(".window-content").style.position = "relative";
+    if (options.isFirstRender) {
+      const div = document.createElement("div");
+      div.classList.add("artifice-craft-div");
+      const button = document.createElement("button");
+      button.dataset.action = "craft";
+      button.classList.add("artifice-craft-button");
+      button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="height: 512px; width: 512px;"><defs><filter id="shadow-3" height="300%" width="300%" x="-100%" y="-100%"><feFlood flood-color="rgba(255, 0, 0, 1)" result="flood"></feFlood><feComposite in="flood" in2="SourceGraphic" operator="atop" result="composite"></feComposite><feGaussianBlur in="composite" stdDeviation="15" result="blur"></feGaussianBlur><feOffset dx="5" dy="5" result="offset"></feOffset><feComposite in="SourceGraphic" in2="offset" operator="over"></feComposite></filter></defs><g class="" transform="translate(0,1)" style=""><g><path d="M413.375 69.906L336.937 191.47L328.687 158.78L298.469 247.75L361.124 218.375L361.344 247.813L488.374 196.875L417.561 194.905L465.343 126.219L391.873 165.469L413.373 69.905Z" class="" fill="#0097f8" fill-opacity="1"></path><path d="M210.22 102.094L178.22 116.5L195.094 172.156L17.281 252.186L29.845 280.062L207.656 200L238.062 249.47L287.375 227.28L266.031 156.937L210.221 102.094Z" class="selected" fill="#000000" fill-opacity="1" filter="url(#shadow-3)" stroke="#fff8f8" stroke-opacity="1" stroke-width="8"></path><path d="M197.593 266.78L197.593 287.125L108.687 287.125C124.681 325.932 159.912 352.555 197.593 361.405L197.593 394.375L256.155 394.375C244.037 424.903 222.65 450.059 197.685 471.969L172.22 471.969L172.22 490.655L456.56 490.655L456.56 471.97L429.154 471.97C400.42 450.075 379.099 424.952 367.529 394.375L431.187 394.375L431.187 365.187C450.935 358.192 470.687 345.677 490.437 328.5C470.625 310.977 451.207 301.25 431.187 296.562L431.187 266.782L197.594 266.782Z" class="" fill="#000000" fill-opacity="1"></path></g></g></svg>`;
+      div.append(button);
+      this.element.append(div);
     }
 
-    const damage = item.system.damage ?? "N/A";
-    const formula = item.system.formula ?? "N/A";
-    const close = item.system.closeRange ?? 0;
-    const far = item.system.farRange ?? 0;
-    const range = `${close}/${far}`;
-    const aoe = "N/A";
-    const rarityOut = "TODO";
-
-    return { damage, formula, aoe, range, rarity: rarityOut };
-  }
-
-  /**
-   * Updates a property based on a select input change.
-   * @param {Event} event - The change event.
-   * @param {HTMLElement} target - The select element.
-   */
-  async _update(event, target) {
-    const confirm = await foundry.applications.api.DialogV2.confirm({
-      window: { title: "UTOPIA.COMMON.confirmDialog" }, 
-      content: game.i18n.localize("UTOPIA.COMMON.confirmUpdateGearType"),
-      modal: true
-    }) 
-
-    if (confirm) {
+    this.element.querySelector("select[name='type']").addEventListener("change", (event) => {
+      this.type = event.target.value;
       this.selected = {};
-      this[target.name] = target.selectedOptions[0].value;
-      this.render(true);  
-    }
-  }
+      this.render(true);
+    });
 
-  /**
-   * Saves the current gear configuration.
-   */
-  static async _save() {
-    if (Object.keys(this.selected).length === 0) return;
-
-    const { selected, name, featureSettings, type, weaponType, armorType, artifactType } = this;
-    const gear = {
-      name,
-      type: "gear",
-      system: {
-        features: selected,
-        featureSettings,
-        type,
-        weaponType,
-        armorType,
-        artifactType
-      },
-    };
-
-    this._log("Saving gear", gear);
-
-    if (this.actor && Object.keys(this.actor).length > 0) {
-      await this.actor.createEmbeddedDocuments("Item", [gear]);
-    } else if (this.items.length === 1) {
-      if (foundry.utils.objectsEqual(this.items[0].system, gear.system))
-        return ui.notifications.error(game.i18n.localize("UTOPIA.COMMON.gearAlreadyExists"));
-
-      // Update existing gear.
-      await this.items[0].update({
-        name,
-        system: {
-          prototype: true,
-          features: selected,
-          featureSettings,
-          type,
-          weaponType,
-          armorType,
-          artifactType
-        },
+    this.element.querySelectorAll("tr[data-drag]").forEach((row) => {
+      row.addEventListener("dragstart", (event) => {
+        event.stopPropagation();
+        event.dataTransfer.setData("text/plain", JSON.stringify(row.dataset.id));
       });
+    });
 
-      this.items[0].sheet.render(true);
-      this.close();
-    } else {
-      if (game.user.isGM) {
-        const doc = await Item.create(gear);
-        await game.packs.get('utopia.items').importDocument(doc);
-        await doc.delete();
-      }
-    }
+    this.element.querySelector("[data-drop]").addEventListener("drop", (event) => {
+      event.preventDefault();
+      const data = event.dataTransfer.getData("text/plain");
+      const id = JSON.parse(data);
 
-    // TODO: Swap these when creating SRD content
-    this.close();
-    //this.render(true); 
-  }
+      if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
+        const isActive = this.artifactFeatures.active[id] || false;
+        const isPassive = this.artifactFeatures.passive[id] || false;
+        const isActivation = this.artifactFeatures.activations[id] || false;
 
-  /**
-   * Filters available features based on the filter input.
-   */
-  async applyFilter() {
-    let terms = this.filter.includes(" ") ? this.filter.split(" ") : [this.filter];
-    const availableFeatures = this.features;
-    const remainingFeatures = {};
-
-    Object.values(availableFeatures).forEach(feature => {
-      if (terms.length === 0 || terms[0] === "") {
-        remainingFeatures[feature.uuid] = feature;
-      } else {
-        // Check if the feature matches the filter terms.
-        const matches = terms.map(t => {
-          let isInverse = false;
-          if (t.startsWith("!")) {
-            isInverse = true;
-            t = t.substring(1);
+        const feature = this.artifactFeatures.active[id] || this.artifactFeatures.passive[id] || this.artifactFeatures.activations[id];
+        if (feature) {
+          if (isActivation) {
+            this.artifact.activations[id] = {
+              activation: feature,
+              features: {},
+            };
           }
-          const nameMatch = feature.name.toLowerCase().includes(t.toLowerCase());
-          const descriptionMatch = feature.system.description.toLowerCase().includes(t.toLowerCase());
-          const variablesMatch = feature.system.variables.length > 0 &&
-            Object.values(feature.system.variables).some(v => v.name.toLowerCase().includes(t.toLowerCase()));
-          const variableOptionsMatch = Object.values(feature.system.variables).some(v => {
-            if (!v.options) return false;
-            let options = typeof v.options === "string" ? v.options.split(',') : v.options;
-            return options.some(o => o.toLowerCase().includes(t.toLowerCase()));
-          });
-          const costMatch = feature.cost.toString().toLowerCase().includes(t.toLowerCase());
-          const durationMatch = feature.system.modifies === "duration" ?
-            feature.system.modifiedDuration.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
-          const rangeMatch = feature.system.modifies === "range" ?
-            feature.system.modifiedRange.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
-          const aoeMatch = feature.system.modifies === "aoe" ?
-            feature.system.modifiedAoE.value.toString().toLowerCase().includes(t.toLowerCase()) : false;
-          const criteria = [nameMatch, descriptionMatch, variablesMatch, variableOptionsMatch, costMatch, durationMatch, rangeMatch, aoeMatch];
-          return isInverse ? !criteria.some(Boolean) : criteria.includes(true);
-        });
-        if (matches.some(Boolean)) {
-          remainingFeatures[feature.uuid] = feature;
+
+          if (isActive) {
+            const dropzone = event.target.closest("[data-drop]").dataset.dropzone;
+            if (Object.keys(this.artifact.activations).includes(dropzone)) {
+              const activation = this.artifact.activations[dropzone];
+              if (activation) {
+                if (feature) {
+                  const newID = foundry.utils.randomID(16);
+                  activation.features[newID] = feature;
+                }
+              }
+            }
+          }
+
+          if (isPassive) {
+            const newID = foundry.utils.randomID(16);
+            this.artifact.passive[newID] = feature;
+          }
+
+          return this.render(true);
         }
+      }
+
+      const feature = structuredClone(this.features[id]);
+      if (feature) {
+        const featuresToAdd = [feature];
+
+        for (const requirements of Object.values(this.selected)) {
+          if (requirements.incompatible && requirements.incompatible.includes(id)) {
+            ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.IncompatibleFeature"));
+            return;
+          }
+        }
+
+        if (feature.requires) {
+          for (const requirement of feature.requires) {
+            const requiredFeature = this.features[requirement];
+            let alreadyPresent = false;
+            for (const feature of Object.values(this.selected)) {
+              if (feature.name === requiredFeature.name) {
+                // Feature is already present, continue
+                alreadyPresent = true;
+              }
+            }
+            if (!alreadyPresent) {
+              // Feature is not present, add it to the list of features to add
+              featuresToAdd.push(requiredFeature);
+            }
+          }
+        }
+
+        for (const feature of featuresToAdd) {
+          const id = foundry.utils.randomID(16);
+          this.selected[id] = feature;
+        }
+
+        return this.render(true);
       }
     });
-    this.remainingFeatures = remainingFeatures;
-  }
 
-  /**
-   * Retrieves favorite features for the current user.
-   */
-  async getFavorites() {
-    const favorites = game.user.getFlag('utopia', 'favorites') || {};
-    const gearFeatures = favorites["gearFeature"] || [];
-    for (const feature of Object.values(this.features)) {
-      feature.favorite = gearFeatures.includes(feature._id);
-    }
-  }
+    this.element.querySelectorAll("input").forEach((input) => {
+      input.addEventListener("change", (event) => {
+        const id = input.dataset.id;
 
-  /**
-   * Removes a feature from favorites.
-   * @param {object} feature - The feature to remove.
-   */
-  async removeFavorite(feature) {
-    let favorites = game.user.getFlag('utopia', 'favorites') || {};
-    if (!favorites["gearFeature"]) favorites["gearFeature"] = [];
-    favorites["gearFeature"] = favorites["gearFeature"].filter(f => f !== feature._id);
-    await game.user.setFlag('utopia', 'favorites', favorites);
-  }
-
-  /**
-   * Adds a feature to favorites.
-   * @param {object} feature - The feature to add.
-   */
-  async addFavorite(feature) {
-    let favorites = game.user.getFlag('utopia', 'favorites') || {};
-    if (!favorites["gearFeature"]) favorites["gearFeature"] = [];
-    if (!favorites["gearFeature"].includes(feature._id)) {
-      favorites["gearFeature"].push(feature._id);
-    }
-    await game.user.setFlag('utopia', 'favorites', favorites);
-  }
-
-  /**
-   * Casts the gear as a temporary item.
-   * @param {Event} event - The triggering event.
-   * @param {HTMLElement} target - The target element.
-   */
-  static async _chat(event, target) {
-    const gear = await Item.create({
-      name: this.name,
-      type: "gear",
-      system: {
-        type: this.type,
-        weaponType: this.weaponType,
-        armorType: this.armorType,
-        artifactType: this.artifactType,
-        features: this.selected,
-        featureSettings: this.featureSettings
-      }
-    }, { temporary: true });
-    
-    await gear.use();
-  }
-
-  /**
-   * Processes feature stacks and calculates simulation values.
-   * @param {object} feature - The feature being processed.
-   * @param {number} [stackCount=1] - The number of stacks.
-   * @returns {object} Simulation results.
-   */
-  async processStacks(feature, stackCount = 1) {
-    const attributes = feature.system.attributes;
-    const costs = feature.system.costs[this._getRelevantClassificationKey()];
-    let material, refinement, power, cost = 0;
-    const componentsPerStack = costs.componentsPerStack ?? true;
-    
-    if (componentsPerStack) {
-      material = (costs.material ?? 0) * stackCount;
-      refinement = (costs.refinement ?? 0) * stackCount;
-      power = (costs.power ?? 0) * stackCount;
-    } else {
-      material = costs.material ?? 0;
-      refinement = costs.refinement ?? 0;
-      power = costs.power ?? 0;
-    }
-
-    const costFormula = await new Roll(String(costs.costFormula) ?? "0", { ...attributes, ...costs }).evaluate({ async: true });
-    cost = costFormula.total * stackCount;
-  
-    const simulation = {
-      stacks: stackCount,
-      material,
-      refinement,
-      power,
-      cost,
-    };
-
-    for (const [key, value] of Object.entries(attributes)) {
-      if (value && value.length > 0) {
-        if (isNumeric(value)) {
-          simulation[key] = parseFloat(value) * stackCount;
-        } else if (typeof value === "string" && value !== "\u0000" && !isNumeric(value)) {
-          try {
-            if (Roll.validate(value)) {
-              const extraRoll = await new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0).evaluate({ async: true });
-              simulation[key] = extraRoll.formula;
+        if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
+          for (const [activationId, activation] of Object.entries(this.artifact.activations)) {
+            if (activation.features[id]) {
+              const feature = activation.features[id];
+              if (feature) {
+                const value = event.target.value;
+                this.artifact.activations[activationId].features[id].stacks = isNumeric(value) ? parseInt(value) : 1;
+          
+                return this.render(true);
+              }
             }
-            else {
-              simulation[key] = value;
-            }
-          } catch (error) {
-            this._error(`Error evaluating roll for attribute ${key}:`, error);
-            const extraRoll = await new Roll(value, { ...attributes, ...costs }).evaluate({ async: true });
-            simulation[key] = extraRoll.total;
           }
-        } else if (typeof value === "number" && !isNaN(value)) {
-          simulation[key] = value * stackCount;
+
+          for (const [id, feature] of Object.entries(this.artifact.passive)) {
+            if (feature) {
+              const value = event.target.value;
+              this.artifact.passive[id].stacks = isNumeric(value) ? parseInt(value) : 1;
+              
+              return this.render(true);
+            }
+          }
+        }
+
+        const feature = this.selected[id];
+        if (feature) {
+          const value = event.target.value;
+          this.selected[id].stacks = isNumeric(value) ? parseInt(value) : 1;
+          this.render(true);
+        }
+      });
+    });
+  }
+
+  static async _delete(event, target) {
+    event.preventDefault();
+    const id = target.dataset.id;
+    const feature = this.selected[id];
+    if (feature) {
+      for (const requirements of Object.values(this.selected)) {
+        // Check if any selected features require the feature being deleted
+        if (requirements.requires && requirements.requires.includes(feature.key)) {
+          ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.RequiredFeature"));
+          return;
+        }
+      }
+
+      delete this.selected[id];
+      this.render(true);
+    }
+  }
+
+  static async _craft(event, target) {
+    if (!this.actor && !game.user.isGM && !game.user.character) {
+      console.warn("No actor found for attack operation.");
+      return;
+    }
+
+    if (game.settings.get("utopia", "targetRequired") && game.user.targets.size === 0 && !game.user.isGM) {
+      ui.notifications.warn(game.i18n.localize("UTOPIA.Activity.Attack.NoTargets"));
+      return;
+    }
+
+    // We need to iterate through all of our features, 
+    // and go through the process of assigning values to things that don't have them
+    for (const [id, feature] of [...Object.entries(this.selected), ...Object.entries(this.artifact.passive)]) {
+      if (feature.options && Object.keys(feature.options).length > 1) {
+        if (feature.handler === "distributed" || feature.handler === "Xd4") {
+          const optionKey = Object.values(feature.options)[0].key;
+          const options = Object.entries(feature.options).map(([key, option]) => {
+            return {
+              key: option.key,
+              label: game.i18n.localize(option.name),
+              value: option.value,
+            };
+          });
+
+          const container = document.createElement("div");
+          const amount = document.createElement("span");
+          amount.innerText = `${game.i18n.localize("UTOPIA.ArtificeSheet.DistributedAmount")}: ${feature.stacks}`;
+          container.append(amount);
+          const inputContainer = document.createElement("div");
+          inputContainer.style.display = "flex";
+          inputContainer.style.flexDirection = "row";
+          inputContainer.style.gap = "5px";
+          inputContainer.style.marginBottom = "10px";
+          inputContainer.style.marginTop = "10px";
+          inputContainer.style.alignItems = "center";
+          for (const option of options) {
+            const label = document.createElement("label");
+            label.innerHTML = `<input type="number" name="${option.key}" data-key="${option.value}"> ${game.i18n.localize(option.label)}`;
+            label.style.width = "60px";
+            inputContainer.append(label);
+          }
+          container.append(inputContainer);
+
+          let response;
+          try {
+            response = await foundry.applications.api.DialogV2.prompt({
+              window: { title: `Distribute stacks for ${game.i18n.localize(feature.name)}` },
+              content: container.outerHTML,
+              ok: {
+                label: "Submit",
+                callback: (event, button, dialog) => dialog,
+              }
+            });
+          } catch (error) {
+            console.error("Error in dialog:", error);
+            return;
+          }
+
+          if (response) {
+            const featureKey = feature.keys.find((k) => k.key === feature.parentKey ? `${feature.parentKey}.${optionKey}` : optionKey);
+            let keys = this.selected[id].keys.filter((k) => k.key !== featureKey.key);
+            if (feature.handler === "Xd4")
+              keys = [];
+            if (featureKey) {
+              response.querySelectorAll("input").forEach((input) => {
+                if (parseInt(input.value) > 0) {
+                  if (feature.handler === "distributed") {
+                    keys.push({
+                      display: `${input.name.capitalize()} ${feature.key.capitalize()}`,
+                      key: `${feature.key}.${input.name}`,
+                      value: parseInt(input.value) || 0,
+                      specialLabel: featureKey.specialLabel || false,
+                    })
+                  }
+                  else {
+                    keys.push({
+                      parts: [{
+                        display: `${feature.parentKey.capitalize()} ${feature.key.capitalize()}`,
+                        key: `${feature.parentKey}.${feature.key}`, // Formula key
+                        value: `${parseInt(input.value)}d4` || 0,
+                      }, {
+                        display: `${input.name.capitalize()}`,
+                        key: `${feature.parentKey}.${optionKey}`, // Type key
+                        value: input.dataset.key || 0,
+                      }]
+                    })
+                  }
+                }
+              })
+              this.selected[id].keys = keys;
+            }
+          }
+        }
+        else {
+          const optionKey = Object.values(feature.options)[0].key;
+          const options = Object.entries(feature.options).map(([key, value]) => {
+            return {
+              label: game.i18n.localize(value.name),
+              value: value.value,
+            };
+          });
+
+          const select = foundry.applications.fields.createSelectInput({
+            name: "select",
+            options,
+            type: "single",
+            autofocus: true,
+            required: true,
+          })
+
+          let response;
+          try {
+            response = await foundry.applications.api.DialogV2.prompt({
+              window: { title: `Select a value for ${game.i18n.localize(feature.name)}` },
+              content: select.outerHTML,
+              ok: {
+                label: "Submit",
+                callback: (event, button, dialog) => button.form.elements.select.value,
+              }
+            });
+          } catch (error) {
+            console.error("Error in dialog:", error);
+            return;
+          }
+          
+          if (response) {
+            const selectedOption = options.find((option) => option.value === response);
+            if (selectedOption) {
+              this.selected[id].output.selectedOption = response;
+              let key = this.selected[id].parentKey ? `${this.selected[id].parentKey}.${optionKey}` : optionKey;
+              if (!key) {
+                key = this.selected[id].key;
+              }
+              this.selected[id].keys.find((k) => k.key === key).value = selectedOption.value;
+            }
+          }
+        }
+
+        if (feature.crafting) {
+          const type = feature.crafting.type;
+          const limit = feature.stacks || 1;
+          const key = feature.crafting.key
+
+          const items = (await gatherItems({ type, gatherFolders: false, gatherFromActor: true })).filter(i => i.system[key] && i.system[key] <= limit);
+          if (items.length > 0) {
+            const options = items.map((item) => {
+              return {
+                label: item.name,
+                value: item.uuid,
+              };
+            })
+
+            const select = foundry.applications.fields.createSelectInput({
+              name: "select",
+              options,
+              type: "single",
+              autofocus: true,
+              required: true,
+            })
+
+            let response;
+            try {
+              response = await foundry.applications.api.DialogV2.prompt({
+                window: { title: `Select a ${type.capitalize()} for ${game.i18n.localize(feature.name)}` },
+                content: select.outerHTML,
+                ok: {
+                  label: "Submit",
+                  callback: (event, button, dialog) => button.form.elements.select.value,
+                }
+              });
+            } catch (error) {
+              console.error("Error in dialog:", error);
+              return;
+            }
+
+            if (response) {
+              feature.crafting.item = response;
+            }
+          }
+          else {
+            ui.notifications.error(game.i18n.localize("UTOPIA.ArtificeSheet.NoAvailableCraftings"));
+            return;
+          }          
         }
       }
     }
-  
-    return simulation;
+
+    // Create the item and put it in the game's world
+    if (game.user.isGM) {
+      const item = await Item.create({
+        name: "New Gear",
+        type: "gear",
+        system: {
+          type: this.type,
+          features: ["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type) ? this.artifact.passive : this.selected,
+          activations: this.artifact.activations,
+        }
+      });
+    }
+
+    const actor = game.user.character || this.actor;
+    
+  }
+
+  handleFeature(feature) {
+    const keys = [];
+
+    const output = feature.output || feature;
+    let handledOptions = false;
+    if (feature.value && output.value && typeof output.value !== "boolean") {
+      keys.push({
+        display: output.display,
+        key: output.key,
+        value: output.value === "distributed" ? "Distributed" : output.value,
+        specialLabel: output.specialLabel || false,
+      });
+      if (output.value === "distributed") {
+        handledOptions = true;
+      }
+    }
+    else if (!feature.value && !output.value && output.options) {
+      keys.push({
+        display: output.display,            
+        key: output.key,
+        value: feature.handler === "distributed" ? "Distributed" : Object.keys(output.options).length > 1 ? "Variable" : Object.values(output.options)[0].value,
+        specialLabel: output.specialLabel || false,
+      })
+      handledOptions = true;
+    }
+    
+    if (Object.keys(output.options).length > 0 && !handledOptions) {
+      if (Object.keys(output.options).length === 1) {
+        const option = Object.values(output.options)[0];
+        keys.push({
+          display: option.display,
+          key: output.parentKey ? `${option.parentKey}.${option.key}` : option.key,
+          value: option.value,
+          specialLabel: option.specialLabel || false,
+        });
+      }
+      else {
+        const option = Object.values(output.options)[0];
+        keys.push({
+          display: option.display,
+          key: option.parentKey ? `${option.parentKey}.${option.key}` : option.key,
+          value: feature.handler === "distributed" ? "Distributed" : "Variable",
+          specialLabel: option.specialLabel || false,
+        });
+      }
+    }
+
+    if (keys.length === 0) {
+      keys.push({
+        display: output.display,
+        key: output.key,
+        value: "",
+        specialLabel: output.specialLabel || false,
+      })
+    }
+
+    let { slots, actions, hands } = this.getDefaults();
+
+    if (feature.output.key === "slots") 
+      slots = feature.output.value;
+    if (feature.output.key === "actions")
+      actions = feature.output.value;
+    if (feature.output.key === "hands")
+      hands = feature.output.value;
+
+    return {feature, keys, slots, actions, hands};
   }
 }

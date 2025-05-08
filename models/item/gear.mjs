@@ -1,9 +1,10 @@
+import { DamageHandler } from "../../system/damage.mjs";
 import { isNumeric } from "../../system/helpers/isNumeric.mjs";
 import UtopiaItemBase from "../base-item.mjs";
 
 const fields = foundry.data.fields;
 
-export class Gear extends UtopiaItemBase {
+export class Gear extends foundry.abstract.TypeDataModel {
   prepareBaseData() {
     this.equippable = true;
     this.augmentable = true;
@@ -11,276 +12,333 @@ export class Gear extends UtopiaItemBase {
 
   /** @override */
   static defineSchema() {
-    const schema = super.defineSchema();
+    const schema = {};
       
-    schema.type = new fields.StringField({ required: true, nullable: false, initial: "weapon", choices: {
-      "weapon": "UTOPIA.Items.Gear.FIELDS.Type.Weapon",
-      "shield": "UTOPIA.Items.Gear.FIELDS.Type.Shield",
-      "armor": "UTOPIA.Items.Gear.FIELDS.Type.Armor",
-      "consumable": "UTOPIA.Items.Gear.FIELDS.Type.Consumable",
-      "artifact": "UTOPIA.Items.Gear.FIELDS.Type.Artifact",
-    }});
-
-    schema.weaponType = new fields.StringField({ required: false, nullable: true, initial: "fastWeapon", choices: {
-      "fastWeapon": "UTOPIA.Items.Gear.FIELDS.WeaponType.Fast",
-      "moderateWeapon": "UTOPIA.Items.Gear.FIELDS.WeaponType.Moderate",
-      "slowWeapon": "UTOPIA.Items.Gear.FIELDS.WeaponType.Slow",
-    }});
-
-    schema.armorType = new fields.StringField({ required: false, nullable: true, initial: "headArmor", choices: {
-      "headArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Head",
-      "neckArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Neck",
-      "chestArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Chest",
-      "backArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Back",
-      "waistArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Waist",
-      "ringArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Ring",
-      "handsArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Hands",
-      "feetArmor": "UTOPIA.Items.Gear.FIELDS.ArmorType.Feet",
-    }});
-
-    schema.artifactType = new fields.StringField({ required: false, nullable: true, initial: "handheldArtifact", choices: {
-      "handheldArtifact": "UTOPIA.Items.Gear.FIELDS.ArtifactType.Handheld",
-      "equippableArtifact": "UTOPIA.Items.Gear.FIELDS.ArtifactType.Equippable",
-      "ammunitionArtifact": "UTOPIA.Items.Gear.FIELDS.ArtifactType.Ammunition",
-    }});
-
-    schema.equippableArtifactSlot = new fields.StringField({ required: false, nullable: true, initial: "head", choices: {
-      "head": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Head",
-      "neck": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Neck",
-      "chest": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Chest",
-      "back": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Back",
-      "waist": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Waist",
-      "ring": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Ring",
-      "hands": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Hands",
-      "feet": "UTOPIA.Items.Gear.FIELDS.EquippableArtifactSlot.Feet",
-    }});
-
-    schema.value = new fields.NumberField({ required: true, nullable: false, initial: 0 });
-    schema.features = new fields.ObjectField();
-    schema.featureSettings = new fields.ObjectField();
-
-    const components = {};
-    Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components"))).forEach(([component, _]) => {
-      components[`${component}`] = new fields.SchemaField({});
-
-      Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities"))).forEach(([rarity, _]) => {
-        components[`${component}`].fields[`${rarity}`] = new fields.NumberField({ required: true, nullable: false, initial: 0 });
-      });
+    schema.prototype = new fields.BooleanField({ 
+      required: true,
+      nullable: false,
+      initial: false,
     });
-    console.warn(components);
 
-    schema.craftedFor = new fields.DocumentUUIDField({ required: false, nullable: true, initial: null });
+    schema.type = new fields.StringField({
+      required: true,
+      nullable: false,
+      initial: "fastWeapon",
+    });
 
-    schema.prototype = new fields.BooleanField({ required: true, nullable: false, initial: true });
-    schema.contributedComponents = new fields.SchemaField({});
-    for (const [component, componentValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components")))) {
-      schema.contributedComponents[component] = new fields.SchemaField({});
-      for (const [rarity, rarityValue] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")))) {
-        schema.contributedComponents[component][rarity] = new fields.NumberField({required: true, nullable: false, initial: 0});
-      }
-    }  
-    
-    schema.quantity = new fields.NumberField({ required: true, nullable: false, initial: 1 });
+    schema.features = new fields.ObjectField({
+      required: true,
+      nullable: false,
+      initial: {},
+    });
+
+    schema.activations = new fields.ObjectField({
+      required: true,
+      nullable: false,
+      initial: {},
+    });
 
     return schema;
   }  
 
-  static migrateData(source) {
-    if (source.weaponType === "fast")
-      source.weaponType = "fastWeapon";
-    if (source.armorType === "head")
-      source.armorType = "headArmor";
+  getRollData() {
+    const rollData = {};
+    if (Object.keys(this.features).length > 0) {
+      Object.values(this.features).forEach((feature) => {
+        for (const key of feature.keys) {
+          if (key.key === "range") {
+            rollData["range"] = rollData["range"] || {};
+            rollData["range"]["close"] = feature.output.value.split('/')[0].trim();
+            rollData["range"]["far"] = feature.output.value.split('/')[1].trim();
+          }
+          else {
+            rollData[key.key] = feature.output.value;
+          }
+        }
+      });
+    }
 
-    return source;
+    // Mark ranged if either close or far range is greater than 3
+    if (rollData.range && (rollData.range.close > 3 || rollData.range.far > 3)) {
+      rollData.ranged = true;
+    }
+
+    return rollData;
   }
 
   prepareDerivedData() {
-    super.prepareDerivedData();
+    let slots = 0;
+    let actions = 0;
+    let hands = 0;
 
-    try { this._prepareFeatures(); } catch (err) { console.error(err); }
-  }
+    let totalRP = 0;
+    let variableRPFeatures = [];
 
-   /**
-   * Determines the relevant classification key based on this.type.
-   * @returns {string} The classification key.
-   */
-   _getRelevantClassificationKey() {
-    switch (this.type) {
-      case "weapon":
-        return this.weaponType;
-      case "armor":
-        return this.armorType;
-      case "artifact":
-        return this.artifactType;
-      default:
-        return this.type;
+    // for (const feature of Object.values(this.features)) {
+    //   if ((feature.appliesTo && feature.appliesTo === "this") || ["fastWeapon", "moderateWeapon", "slowWeapon"].includes(this.type)) {
+    //     for (const key of feature.keys) {
+    //       const handlers = {
+    //         add: /\+X/g,
+    //         subtract: /\-X/g,
+    //         multiply: /([0-9]+)X(?!\/)/g, // Ensure it doesn't match '5X/10X'
+    //         range: /([0-9]+)X\/([0-9]+)X/g,
+    //         multiplyTo: /\*([0-9]+)X/g,
+    //         divide: /^\/([0-9]+)X/g, // Ensure it only matches if '/' is the first character
+    //         divideFrom: /([0-9]+)\/X/g,
+    //         formula: /Xd([0-9]+)/g,
+    //         override: /override/g,
+    //         distributed: /distributed/g,
+    //       };
+
+    //       function handle(data, featureHandler, key, value) {
+    //         for (const [handler, regex] of Object.entries(handlers)) {
+    //           if (featureHandler.match(regex)) {
+    //             if (typeof value === "string" && isNumeric(value)) {
+    //               value = parseInt(value);
+    //             }
+    //             if (!foundry.utils.getProperty(data, key)) {
+    //               return foundry.utils.setProperty(data, key, value);
+    //             }
+    //             const dataValue = foundry.utils.getProperty(data, key);
+    //             value = featureHandler.replace(regex, (match, p1, p2) => {
+    //               switch (handler) {
+    //                 case "add":
+    //                   return foundry.utils.setProperty(data, key, dataValue + value);
+    //                 case "subtract":
+    //                   return foundry.utils.setProperty(data, key, dataValue - value);
+    //                 case "multiply":
+    //                   return foundry.utils.setProperty(data, key, dataValue * value);
+    //                 case "range":
+    //                   return foundry.utils.setProperty(data, key, dataValue * value);
+    //                 case "multiplyTo":
+    //                   return foundry.utils.setProperty(data, key, dataValue * parseInt(p1) || 1);
+    //                 case "divide":
+    //                   return foundry.utils.setProperty(data, key, dataValue / value);
+    //                 case "divideFrom":
+    //                   return foundry.utils.setProperty(data, key, value / dataValue);
+    //                 case "formula":
+    //                   return foundry.utils.setProperty(data, key, value.replace(/d/g, "*") + "d" + p1);
+    //                 case "override":
+    //                   return foundry.utils.setProperty(data, key, value);
+    //                 case "distributed":
+    //                   return foundry.utils.setProperty(data, key, dataValue + value);
+    //                 default:
+    //                   return;
+    //               }
+    //             });
+    //           }
+    //         }
+    //       }
+
+    //       handle(this, feature.handler, key.key, key.value);
+    //     }
+    //   }
+    // }
+
+    if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
+      totalRP = Object.values(this.activations).reduce((acc, activation) => {
+        const activationMult = activation.activation.activation.costMultiplier || 1;
+        const activationRP = Object.values(activation.features).reduce((acc, feature) => {
+          const featureRP = typeof feature.output.cost.RP !== "string" ? feature.output.cost.RP : 0;
+          return acc + featureRP;
+        }, 0);
+        return acc + (activationRP * activationMult);
+      }, 0);
+
+      totalRP += Object.values(this.features).reduce((acc, feature) => {
+        const featureRP = typeof feature.output.cost.RP !== "string" ? feature.output.cost.RP : 0;
+        return acc + featureRP;
+      }, 0);
+
+      // If any of the selected features have a string value for RP, we need to parse it
+      variableRPFeatures = Object.values(this.features).filter((feature) => typeof feature.output.cost.RP === "string" && feature.output.cost.RP.includes("@"));
     }
-  }
+    else {
+      totalRP = Object.values(this.features)
+      .map((feature) => typeof feature.output.cost.RP !== "string" ? feature.output.cost.RP : 0)
+      .reduce((acc, value) => acc + value, 0);
+      
+      // If any of the selected features have a string value for RP, we need to parse it
+      variableRPFeatures = Object.values(this.features).filter((feature) => typeof feature.output.cost.RP === "string" && feature.output.cost.RP.includes("@"));
+    }
 
-  /**
- * Updates the gear based on selected features.
- * @returns {object} An object containing calculated gear attributes.
- */
-  _prepareFeatures() {
-    const costs = {};
-    const relevantKey = this._getRelevantClassificationKey();
+    const rollData = this.getRollData();
 
-    // Merge attributes and costs from each selected feature.
-    for (const [id, feature] of Object.entries(this.features)) {
-      const parsedFeature = this._prepareFeatureTypes(feature);
-      const final = this.processStacks(parsedFeature, this.featureSettings[id].stacks.value);
-      parsedFeature.system.final = final;
-      parsedFeature.variables = this.featureSettings[id];
+    // There are no additional values we need to parse
+    if (variableRPFeatures.length > 0) {
+      for (const feature of variableRPFeatures) {
+        const featureRP = feature.output.cost.RP;
 
-      if (final) {
-        // Merge attributes.
-        Object.entries(final).forEach(([key, value]) => {
-          if (this[key] !== undefined) {
-            // If both values are strings and are a valid roll formula, join them with a plus operator.
-            if (typeof this[key] === "string" && typeof value === "string" && Roll.validate(value)) {
-              this[key] = `${this[key]} + ${value}`;
-            }
-            // If both values are strings, and are not a valid roll formula, create an array.
-            else if (typeof this[key] === "string" && typeof value === "string") {
-              this[key] = [...this[key], value];
-            }
-            // If both values are numbers, add them.
-            else if (typeof this[key] === "number" && typeof value === "number") {
-              this[key] += value;
-            }
-            // If the value is a boolean, set it.
-            else if (typeof value === "boolean") {
-              this[key] = value;
-            }
-            // Otherwise, default to the new value.
-            else {
-              this[key] = value;
-            }
-          } else {
-            this[key] = value;
+        // If the RP value is a string, we need to parse it
+        if (typeof featureRP === "string") {
+          const roll = new Roll(featureRP, rollData).evaluateSync();
+          totalRP += roll.total;
+        }
+      }
+    }
+
+    const rarities = Object.values(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")));
+    const rarity = rarities.find((r) => totalRP >= r.points.minimum && totalRP <= r.points.maximum) || rarities[0];
+
+    let componentCosts = {}
+    if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
+      componentCosts.material = Math.max(Math.floor(totalRP / 25), 1);
+      componentCosts.refinement = Math.max(Math.floor(totalRP / 40), 1);
+      componentCosts.power = Math.max(Math.floor(totalRP / 50), 0);
+    }
+    else {
+      componentCosts = Object.values(this.features).reduce((acc, feature) => {
+        ["material", "refinement", "power"].forEach((key) => {
+          if (feature.output.cost[key]) {
+            acc[key] = acc[key] || 0;
+            acc[key] += feature.output.cost[key];
           }
         });
-        // Merge costs.
-        Object.entries(parsedFeature.system.costs[relevantKey]).forEach(([key, value]) => {
-          if (costs[key] !== undefined) {
-            if (typeof costs[key] === "string" && typeof value === "string") {
-              costs[key] = `${costs[key]} + ${value}`;
-            } else if (typeof costs[key] === "number" && typeof value === "number") {
-              costs[key] += value;
-            } else {
-              costs[key] = value;
-            }
-          } else {
-            costs[key] = value;
-          }
-        });
+        return acc;
+      }, {});
+    }
+
+    for (const value of Object.values(this.features).filter(f => f.key === "slots")) {
+      slots = parseInt(value.output.value);
+    }
+
+    this.artifice = {
+      RP: totalRP,
+      rarity,
+      value: totalRP * rarity.points.multiplier,
+      slots,
+      actions,
+      hands,
+      material: componentCosts.material || 0,
+      refinement: componentCosts.refinement || 0,
+      power: componentCosts.power || 0,
+    }
+
+    this.handleFeatures();
+  }  
+
+  handleFeatures() {
+    if (["fastWeapon", "moderateWeapon", "slowWeapon"].includes(this.type)) {
+      const damageFeatures = Object.values(this.features).filter(f => f.parentKey === "damage");
+      const damages = [];
+      for (const keys of [...Object.values(damageFeatures).map(k => k.keys)]) { 
+        for (const key of keys) {
+          const parts = key.parts;
+          damages.push({
+            formula: parts.find(k => k.key === "damage.formula").value,
+            type: parts.find(k => k.key === "damage.type").value,
+          })
+        }
       }
 
-      this.attributes ??= [];
-      this.attributes.push(parsedFeature.system.final);
+      this.damages = damages;
     }
-
-    // this.damage = this.damage ?? "N/A";
-    // this.formula = this.formula ?? "N/A";
-    // this.close = this.closeRange ?? 0;
-    // this.far = this.farRange ?? 0;
-    this.closeRange ??= 1;
-    this.farRange ??= 1;
-    this.range = `${this.closeRange}/${this.farRange}`;
-    this.aoe = "N/A";
-    this.rarityOut = "TODO";
+    else if (["headArmor", "chestArmor", "handsArmor", "feetArmor"].includes(this.type)) {
+      const armorFeatures = Object.values(this.features).filter(f => f.appliesTo && f.appliesTo === "this");
+      for (const feature of armorFeatures) {
+        for (const key of feature.keys) {
+          this.handle(this, feature.handler, key.key, key.value)
+        }
+      }
+    }
+    else if (["shields"].includes(this.type)) {
+      const shieldFeatures = Object.values(this.features).filter(f => f.appliesTo && f.appliesTo === "this");
+      for (const feature of shieldFeatures) {
+        for (const key of feature.keys) {
+          this.handle(this, feature.handler, key.key, key.value)
+        }
+      }
+    }
+    else if (["consumable"].includes(this.type)) {
+      const consumableFeatures = Object.values(this.features).filter(f => f.appliesTo && f.appliesTo === "this");
+      for (const feature of consumableFeatures) {
+        for (const key of feature.keys) {
+          this.handle(this, feature.handler, key.key, key.value)
+        }
+      }
+    }
+    else if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
+      const artifactFeatures = Object.values(this.features).filter(f => f.appliesTo && f.appliesTo === "this");
+      for (const feature of artifactFeatures) {
+        for (const key of feature.keys) {
+          this.handle(this, feature.handler, key.key, key.value)
+        }
+      }
+    }
   }
 
-  /**
-   * Processes feature stacks and calculates simulation values.
-   * @param {object} feature - The feature being processed.
-   * @param {number} [stackCount=1] - The number of stacks.
-   * @returns {object} Simulation results.
-   */
-  processStacks(feature, stackCount = 1) {
-    const attributes = feature.system.classifications[this._getRelevantClassificationKey()];
-    const costs = feature.system.costs[this._getRelevantClassificationKey()];
-    let material, refinement, power, cost = 0;
-    const componentsPerStack = costs?.componentsPerStack ?? true;
-    
-    // Components per stack indicates whether the components are multiplied by the stack count.
-    if (componentsPerStack) {
-      material = (costs.material ?? 0) * stackCount;
-      refinement = (costs.refinement ?? 0) * stackCount;
-      power = (costs.power ?? 0) * stackCount;
-    } else {
-      material = costs.material ?? 0;
-      refinement = costs.refinement ?? 0;
-      power = costs.power ?? 0;
-    }
-
-    const costFormula = new Roll(String(costs.costFormula) ?? "0", { ...attributes, ...costs }).evaluateSync({ strict: false });
-    cost = costFormula.total * stackCount;
-  
-    const simulation = {
-      stacks: stackCount,
-      material,
-      refinement,
-      power,
-      cost,
+  handle(data, featureHandler, key, value) {
+    const handlers = {
+      add: /\+X/g,
+      subtract: /\-X/g,
+      multiply: /([0-9]+)X(?!\/)/g, // Ensure it doesn't match '5X/10X'
+      range: /([0-9]+)X\/([0-9]+)X/g,
+      multiplyTo: /\*([0-9]+)X/g,
+      divide: /^\/([0-9]+)X/g, // Ensure it only matches if '/' is the first character
+      divideFrom: /([0-9]+)\/X/g,
+      formula: /Xd([0-9]+)/g,
+      override: /override/g,
+      distributed: /distributed/g,
     };
 
-    const flattenedAttributes = foundry.utils.flattenObject(attributes);
-
-    for (const [key, value] of Object.entries(flattenedAttributes)) {
-      if (value && (!Array.isArray(value) || value.length > 0 || value === true || value === false)) {
-        if (isNumeric(value)) {
-          simulation[key] = parseFloat(value) * stackCount;
-        } else if (typeof value === "string" && value !== "\u0000" && !isNumeric(value)) {
-          try {
-            if (Roll.validate(value)) {
-              const extraRoll = new Roll(value, { ...attributes, ...costs }).alter(stackCount, 0);
-              simulation[key] = extraRoll.formula;
-            }
-            else {
-              simulation[key] = value;
-            }
-          } catch (error) {
-            this._error(`Error evaluating roll for attribute ${key}:`, error);
-            const extraRoll = new Roll(value, { ...attributes, ...costs }).evaluateSync({ strict: false });
-            simulation[key] = extraRoll.total;
-          }
-        } else if (typeof value === "number" && !isNaN(value)) {
-          simulation[key] = value * stackCount;
-        } else if (value === true || value === false) {
-          simulation[key] = value;
+    for (const [handler, regex] of Object.entries(handlers)) {
+      if (featureHandler.match(regex)) {
+        if (typeof value === "string" && isNumeric(value)) {
+          value = parseInt(value);
         }
-      } else if (value === true || value === false) {
-        simulation[key] = value;
+        if (!foundry.utils.getProperty(data, key)) {
+          foundry.utils.setProperty(data, key, "");
+        }
+        const dataValue = foundry.utils.getProperty(data, key);
+        value = featureHandler.replace(regex, (match, p1, p2) => {
+          switch (handler) {
+            case "add":
+              return foundry.utils.setProperty(data, key, dataValue + value);
+            case "subtract":
+              return foundry.utils.setProperty(data, key, dataValue - value);
+            case "multiply":
+              return foundry.utils.setProperty(data, key, dataValue * value);
+            case "range":
+              return foundry.utils.setProperty(data, key, dataValue * value);
+            case "multiplyTo":
+              return foundry.utils.setProperty(data, key, dataValue * parseInt(p1) || 1);
+            case "divide":
+              return foundry.utils.setProperty(data, key, dataValue / value);
+            case "divideFrom":
+              return foundry.utils.setProperty(data, key, value / dataValue);
+            case "formula":
+              return foundry.utils.setProperty(data, key, value.replace(/d/g, "*") + "d" + p1);
+            case "override":
+              return foundry.utils.setProperty(data, key, value);
+            case "distributed":
+              return foundry.utils.setProperty(data, key, dataValue + value);
+            default:
+              return;
+          }
+        });
       }
     }
-  
-    return simulation;
   }
 
-  _prepareFeatureTypes(feature) {
-    for (const classification of Object.keys(feature.system.classifications)) {
-      if (classification === "shared") continue;
-
-      feature.system.classifications[classification] = foundry.utils.mergeObject( feature.system.classifications[classification], feature.system.classifications["shared"]);
-    }
-
-    const parsedFeature = this._prepareFeatureCost(feature);
-    return parsedFeature;
+  use() {
+    if (["fastWeapon", "moderateWeapon", "slowWeapon"].includes(this.type)) {
+      this._useWeapon();
+    }    
   }
 
-  _prepareFeatureCost(feature) {
-    feature.system.costs = {};
-    for (const classification of Object.keys(feature.system.classifications)) {
-      feature.system.costs[classification] = {};
-
-      const costKeys = ["material", "refinement", "power", "costFormula", "componentsPerStack"];
-      for (const key of costKeys) {
-        feature.system.costs[classification][key] = feature.system.classifications[classification]?.[key] ?? 0;
-        delete feature.system.classifications[classification]?.[key];
+  _useWeapon() {
+    if (game.settings.get("utopia", "targetRequired")) {
+      if (game.user.targets.size === 0) {
+        ui.notifications.error(game.i18n.localize("UTOPIA.Error.noTarget"));
+        return;
       }
     }
-    
-    return feature;
+
+    const damages = this.damages;
+    if (damages) {
+      if (Array.isArray(damages)) {
+        const damageHandler = new DamageHandler({ damages, targets: Array.from(game.user.targets), source: this.parent })
+      }
+    }
   }
 }

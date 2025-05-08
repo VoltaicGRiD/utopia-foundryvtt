@@ -1,5 +1,3 @@
-const { game } = globalThis;
-
 import { FeatureBuilder } from "../applications/specialty/feature-builder.mjs";
 import { SpellcraftSheet } from "../applications/specialty/spellcraft.mjs";
 import { TalentBrowser } from "../applications/specialty/talent-browser.mjs";
@@ -10,11 +8,12 @@ import { UtopiaTokenHUD } from "../documents/hud/token-hud.mjs";
 import { UtopiaToken } from "../documents/hud/token.mjs";
 import { UtopiaItem } from "../documents/item.mjs";
 import { registerConfig } from "./config.mjs";
+import { DamageHandler } from "./damage.mjs";
 import * as init from "./init/_init.mjs";
 
 globalThis.utopia = {
   documents: {
-
+    damage: DamageHandler
   },
   applications: {
     talentBrowser: TalentBrowser,
@@ -22,15 +21,23 @@ globalThis.utopia = {
     spellcraft: SpellcraftSheet
   },
   utilities: {
-
-  }
+    resetSettings: async () => {
+      await game.settings.set("utopia", "advancedSettings.traits", CONFIG.UTOPIA.TRAITS);
+      await game.settings.set("utopia", "advancedSettings.subtraits", CONFIG.UTOPIA.SUBTRAITS);
+      await game.settings.set("utopia", "advancedSettings.damageTypes", CONFIG.UTOPIA.DAMAGE_TYPES);
+      await game.settings.set("utopia", "advancedSettings.specialtyChecks", CONFIG.UTOPIA.SPECIALTY_CHECKS);
+      await game.settings.set("utopia", "advancedSettings.artistries", CONFIG.UTOPIA.ARTISTRIES);
+      await game.settings.set("utopia", "advancedSettings.rarities", CONFIG.UTOPIA.RARITIES);
+    },
+  },
+  damageHandlers: globalThis.utopia?.damageHandlers || [],
 }
 
-Hooks.once("init", function () {
+Hooks.once("init", async function () {
   CONFIG.UTOPIA = {};
   registerConfig();
+  await init.registerGameSettings();
   init.registerHooks();
-  init.registerGameSettings();
   init.registerHandlebarsSettings();
   init.registerMeasuredTemplates();
   init.registerItemDataModels();
@@ -51,7 +58,7 @@ Hooks.once("init", function () {
   CONFIG.Item.documentClass = UtopiaItem;
   CONFIG.ChatMessage.documentClass = UtopiaChatMessage;
 
-  return init.preloadHandlebarsTemplates();
+  init.preloadHandlebarsTemplates();
 });
 
 init.createDocMacro;

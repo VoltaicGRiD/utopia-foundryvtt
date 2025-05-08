@@ -1,4 +1,4 @@
-import { DamageInstance } from "../../../../system/damage.mjs";
+import { DamageInstance } from "../../../../system/oldDamage.mjs";
 import { BaseOperation } from "../base-operation.mjs";
 
 const fields = foundry.data.fields;

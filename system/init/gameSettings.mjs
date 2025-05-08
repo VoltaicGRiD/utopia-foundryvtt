@@ -262,12 +262,11 @@ export async function registerGameSettings() {
     default: false,
   });
 
-  game.settings.register('utopia', 'requiresReset', {
-    name: "UTOPIA.Settings.requiresReset",
-    hint: "UTOPIA.Settings.requiresResetHint",
+  game.settings.register('utopia', 'lastSeenVersion', {
+    name: "UTOPIA.Settings.lastSeenVersion",
     scope: "world",
     config: false,
-    type: Boolean,
+    type: String,
     default: false,
   });
 }

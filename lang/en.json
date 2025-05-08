@@ -207,7 +207,9 @@
       "Harvest": "Harvest Creatures",
       "PlaceTemplate": "Place Template",
       "FinishCasting": "Finish Casting Spell",
-      "DamagePreDefenses": "Rolls below indicate damage before defenses are applied."
+      "DamagePreDefenses": "Rolls below indicate damage before defenses are applied.",
+      "EstimatedDamage": "Estimated Damage: {damage}",
+      "DamageResponse": "You're being targeted to recieve the above damage, how will you respond. If you don't wish to respond, you can ignore this message."
     },
     "Features": {
       "Slam": "Slam",
@@ -537,7 +539,9 @@
         "HoldAction": "Hold Action (2 TA = 1 IA)",
         "Assist": "Assist (WIP)",
         "ViewSubtraits": "View Subtraits",
-        "Spellcap": "Spellcap"
+        "Spellcap": "Spellcap",
+        "PassiveAction": "Performing Passive Action: {action}",
+        "ToggleEffects": "Toggled Effects for {action}"
       },
       "Items": {
         "Talents": "Talents",

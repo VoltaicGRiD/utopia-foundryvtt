@@ -330,7 +330,9 @@
       "flags": {}
     }
   ],
-  "flags": {},
+  "flags": {
+    "lastConfigurationResetVersion": "1.04"
+  },
   "packFolders": [
     {
       "name": "Official SRD Content",

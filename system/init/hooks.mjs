@@ -241,7 +241,11 @@ export function registerHooks() {
 
     registerFeatures(settings);
 
-    if (game.system.flags.configurationReset ??= false === false) {
+    if (game.settings.get("utopia", "lastSeenVersion") === undefined) {
+      game.settings.set("utopia", "lastSeenVersion", game.system.version);
+    }
+
+    if (parseFloat(game.system.flags.lastConfigurationResetVersion) > parseFloat(game.settings.get("utopia", "lastSeenVersion"))) {
       const content = document.createElement("div");
       content.innerHTML = `<h3 style="color: red"><strong>System Configuration Changes</strong></h3><p><strong>The Utopia system recently received changes to the initial configuration of the system.</strong></p><p>You will not receive these changes, until you reset the advanced settings in the game settings.</p><p>Please keep in mind, that doing so will overwrite any custom settings you have made.</p><p>It is recommended to make a backup of your settings before doing so, and modifying / applying your custom changes accordingly.</p><p>If you have any questions, or need assistance doing this, please reach out to @voltaicgrid on the Utopia TTRPG Discord (link on the settings tab).</p>`;
       const button = document.createElement("button");
@@ -257,6 +261,8 @@ export function registerHooks() {
         content: content.innerHTML,
         whisper: game.users.filter(u => u.isGM).map(u => u.id),
       })
+
+      game.settings.set("utopia", "lastSeenVersion", game.system.version);
     }
   });
 

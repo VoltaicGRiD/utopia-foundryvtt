@@ -1,6 +1,7 @@
 // Provide a clear description of this import and constant usage.
 const fields = foundry.data.fields;
 const requiredInteger = { required: true, nullable: false, initial: 0 }
+import { isNumeric } from "../system/helpers/isNumeric.mjs";
 import { BiographyField as TextareaField } from "./fields/biography-field.mjs";
 import { SchemaArrayField } from "./fields/schema-set-field.mjs";
 import { getPaperDollContext } from "./utility/paper-doll-utils.mjs";
@@ -536,6 +537,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.interruptActions.max = game.settings.get("utopia", "interruptActionsMax");
 
     this.spellcasting.spellcap = 0;
+
+    this.gearActions = [];
   }
 
 
@@ -553,9 +556,181 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }
       else {
         prepareSpeciesData(this);
+        this.prepareGearData();
+        
+        this.block.formula = `${this.block.quantity}d${this.block.size}`;
+        this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
       }
     } catch (err) {
       console.error("Error preparing derived data:", err);
+    }
+  }
+
+  prepareGearData() {
+    for (const item of this.parent.items.filter(i => i.type === "gear")) {
+      const data = item.system;
+      const features = data.features;
+      const type = data.type;
+      let equipped = false;
+
+      for (const [key, value] of Object.entries(this.equipmentSlots.equipped)) {
+        if (value.includes(item.id)) {
+          equipped = true;
+        } 
+      }
+
+      if (data.augmentable) {
+        for (const [key, value] of Object.entries(this.augmentSlots.equipped)) {
+          if (value.includes(item.id)) {
+            equipped = true;
+          }
+        }
+      }
+
+      if (["handheldArtifact", "fastWeapon", "moderateWeapon", "slowWeapon"].includes(type)) {
+        for (const [key, value] of Object.entries(this.handheldSlots.equipped)) {
+          if (value && value.includes(item.id)) {
+            equipped = true;
+          }
+        }
+      }
+
+      if (!equipped) continue;
+
+      if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(type)) {
+        const activations = data.activations;
+        for (const action of activations) {
+          const name = game.i18n.localize(activation.name);
+          const activation = action.activation;
+          const cost = activation.cost;
+          const division = activation.division;
+          const actives = activation.features;
+          
+          // TODO - Convert to Activities
+          // ! This is only for artifact types
+          // ! And is hardcoded as such
+          // We need to find out if there is a damage key in the activation,
+          // if there is, we have to check all other actives, and combine any other
+          // feature that also has a damage key
+          if (Object.values(actives).any(a => a.parentKey === "damage")) {
+            const matchingActives = Object.values(actives).filter(a => a.parentKey === "damage");
+            let damages = [];
+            let modifiers = [];
+
+            for (const active of matchingActives) {
+              if (active.keys.find(k => k.key === "damage.formula") && active.keys.find(k => k.key === "damage.type")) {
+                const formula = active.keys.find(k => k.key === "damage.formula").value;
+                const type = active.keys.find(k => k.key === "damage.type").value;
+                damages.push({
+                  type: type,
+                  formula: formula,
+                })
+              }
+              if (active.keys.find(k => k.key === "damage.modifier")) {
+                const modifier = active.keys.find(k => k.key === "damage.modifier").value;
+                modifiers.push(modifier);
+              }
+            }
+
+            this.gearActions.push({
+              name: `${item.name}: ${name}`,
+              type: "action",
+              system: {
+                cost: cost,
+                type: division === "turn" ? "turn" : "long",
+                category: "damage",
+                damages,
+                counters: counters,
+              },
+              parent: this.parent
+            }); 
+          }
+
+          // ! Spelltech hard-coding
+          if (Object.values(actives).any(a => a.key === "spelltech")) {         
+            const craftingItem = fromUuid(actives.find(a => a.key === "spelltech").crafting.item);
+            this.gearActions.push({
+              name: `${item.name}: ${name}`,
+              type: "action",
+              system: {
+                cost: cost,
+                type: division === "turn" ? "turn" : "long",
+                category: "spelltech",
+                spell: craftingItem,
+              },
+              parent: this.parent
+            })
+          }
+        }
+      }
+      else {
+        // Weapons don't affect the actor, but the gear item itself
+        if (["fastWeapon", "moderateWeapon", "slowWeapon"].includes(type)) 
+          continue;
+        else {
+          for (const feature of Object.values(features)) {
+            const handlers = {
+              add: /\+X/g,
+              subtract: /\-X/g,
+              multiply: /([0-9]+)X(?!\/)/g, // Ensure it doesn't match '5X/10X'
+              range: /([0-9]+)X\/([0-9]+)X/g,
+              multiplyTo: /\*([0-9]+)X/g,
+              divide: /^\/([0-9]+)X/g, // Ensure it only matches if '/' is the first character
+              divideFrom: /([0-9]+)\/X/g,
+              formula: /Xd([0-9]+)/g,
+              override: /override/g,
+              distributed: /distributed/g,
+            };
+
+            function handle(data, featureHandler, key, value) {
+              for (const [handler, regex] of Object.entries(handlers)) {
+                if (featureHandler.match(regex)) {
+                  if (typeof value === "string" && isNumeric(value)) {
+                    value = parseInt(value);
+                  }
+                  if (!foundry.utils.getProperty(data, key)) {
+                    return foundry.utils.setProperty(data, key, value);
+                  }
+                  const dataValue = foundry.utils.getProperty(data, key);
+                  value = featureHandler.replace(regex, (match, p1, p2) => {
+                    switch (handler) {
+                      case "add":
+                        return foundry.utils.setProperty(data, key, dataValue + value);
+                      case "subtract":
+                        return foundry.utils.setProperty(data, key, dataValue - value);
+                      case "multiply":
+                        return foundry.utils.setProperty(data, key, dataValue * value);
+                      case "range":
+                        return foundry.utils.setProperty(data, key, dataValue * value);
+                      case "multiplyTo":
+                        return foundry.utils.setProperty(data, key, dataValue * parseInt(p1) || 1);
+                      case "divide":
+                        return foundry.utils.setProperty(data, key, dataValue / value);
+                      case "divideFrom":
+                        return foundry.utils.setProperty(data, key, value / dataValue);
+                      case "formula":
+                        return foundry.utils.setProperty(data, key, value.replace(/d/g, "*") + "d" + p1);
+                      case "override":
+                        return foundry.utils.setProperty(data, key, value);
+                      case "distributed":
+                        return foundry.utils.setProperty(data, key, dataValue + value);
+                      default:
+                        return;
+                    }
+                  });
+                }
+              }
+            }
+
+            if (feature.appliesTo === "this" || ["fastWeapon", "moderateWeapon", "slowWeapon"].includes(item.system.type)) continue; // Applies to the gear item itself
+            const keys = feature.keys;
+            const handler = feature.handler;
+            for (const key of keys) {
+              handle(this, handler, key.key, key.value);
+            }
+          }
+        }
+      }
     }
   }
 

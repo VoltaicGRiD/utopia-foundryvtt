@@ -1,0 +1,158 @@
+<div class="tab attributes {{tab.cssClass}} artifice">
+  {{!-- <div class="flexrow built-in-filters">
+    <span class="filter">{{localize 'UTOPIA.CommonTerms.filter'}}</span>
+    <button type="button" class="filter" data-filter="all">{{localize 'UTOPIA.CommonTerms.all'}}</button>
+    <button type="button" class="filter" data-filter="favorite">{{localize 'UTOPIA.CommonTerms.favorite'}}</button>
+    <button type="button" class="filter" data-filter="available">{{localize 'UTOPIA.CommonTerms.available'}}</button>
+    <button type="button" class="filter" data-filter="locked">{{localize 'UTOPIA.CommonTerms.locked'}}</button>
+  </div> --}}
+  <div class="artifice-content">
+    <div class="feature-select flexcol">
+      <input type="text" name="filter" class="filter" value="{{filter}}" placeholder="{{localize 'UTOPIA.CommonTerms.filter'}}" />
+      <ol class="feature-list">
+        {{#each features as |feature key|}}
+          
+          <li class="feature available-feature {{#if (eq feature.hidden true)}}hidden{{/if}}" 
+          data-name="{{feature.name}}" 
+          style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
+          data-id="{{key}}">
+            <img src="{{feature.img}}" class="feature-icon" />
+            <button type="button" class="remove-feature hidden">
+              <i class="fa-fw fa-solid fa-times"></i>
+            </button>
+            <button type="button" class="favorite-feature hidden {{#if (eq feature.favorite true)}}favorite{{/if}}">
+              <i class="fa-fw fa-solid fa-star"></i>
+            </button>
+            <span class="feature-name">
+              <span data-tooltip="{{feature.system.description}}" data-tooltip-direction="DOWN"><i class="fa-fw fa-solid fa-circle-info"></i></span>
+              {{feature.name}} 
+              (<span id="cost" class="cost">{{feature.system.attributes.costFormula}}</span>)
+            </span> 
+          </li>
+          
+        {{/each}}
+      </ol>
+    </div>
+    <div class="gear-panel grid-span-2">
+      <div class="gear-name">
+        <input
+          name='name'
+          type='text'
+          value='{{name}}'
+          data-action="update"
+          placeholder='Name'/>
+      </div>
+
+      <div class="gear-attributes">
+        <div class="gear-attribute">
+          <label for="type">{{localize 'UTOPIA.Items.Gear.FIELDS.Type.label'}}</label>
+          <select name="type" data-action="update">
+            {{#each types as |option key|}}
+              <option value="{{key}}" {{#if (eq key ../type)}}selected{{/if}}>{{option}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        {{#if (eq type "weapon")}}
+          <div class="gear-attribute">
+            <label for="weaponType">{{localize 'UTOPIA.Items.Gear.FIELDS.WeaponType.label'}}</label>
+            <select name="weaponType" data-action="update">
+              {{#each weaponTypes as |option key|}}
+                <option value="{{key}}" {{#if (eq key ../weaponType)}}selected{{/if}}>{{option}}</option>
+              {{/each}}
+            </select>
+          </div>
+        {{/if}}
+        
+        {{#if (eq type "armor")}}
+          <div class="gear-attribute">
+            <label for="armorType">{{localize 'UTOPIA.Items.Gear.FIELDS.ArmorType.label'}}</label>
+            <select name="armorType" data-action="update">
+              {{#each armorTypes as |option key|}}
+                <option value="{{key}}" {{#if (eq key ../armorType)}}selected{{/if}}>{{option}}</option>
+              {{/each}}
+            </select>
+          </div>
+        {{/if}}
+
+        {{#if (eq type "artifact")}}
+          <div class="gear-attribute">
+            <label for="artifactType">{{localize 'UTOPIA.Items.Gear.FIELDS.ArtifactType.label'}}</label>
+            <select name="artifactType" data-action="update">
+              {{#each artifactTypes as |option key|}}
+                <option value="{{key}}" {{#if (eq key ../artifactType)}}selected{{/if}}>{{option}}</option>
+              {{/each}}
+            </select>
+          </div>
+        {{/if}}
+      </div>
+
+      <div class="gear-attributes">
+        <div class="gear-attribute">
+          <span class="gear-damage">{{localize 'UTOPIA.Artifice.Damage'}}</span>
+          <span class="gear-damage-value">{{damage}}</span>
+        </div>
+        <div class="gear-attribute">
+          <span class="gear-formula">{{localize 'UTOPIA.Artifice.Formula'}}</span>
+          <span class="gear-formula-value">{{formula}}</span>
+        </div>
+        <div class="gear-attribute">
+          <span class="gear-range">{{localize 'UTOPIA.Artifice.Range'}}</span>
+          <span class="gear-range-value">{{range}}</span>
+        </div>
+        <div class="gear-attribute">
+          <span class="gear-aoe">{{localize 'UTOPIA.Artifice.AoE'}}</span>
+          <span class="gear-aoe-value">{{aoe}}</span>
+        </div>
+        <div class="gear-attribute">
+          <span class="gear-rarity">{{localize 'UTOPIA.Artifice.Rarity'}}</span>
+          <span class="gear-rarity-value">{{rarity}}</span>
+        </div>
+        <!-- <div class="gear-attribute">
+          <span class="gear-cost">{{localize 'UTOPIA.Artifice.Cost'}}</span>
+          <span class="gear-cost-value">{{cost}}</span>
+        </div> -->
+      </div>
+
+      <div class="gear-features">
+        <ol class="selected-feature-list flexcol">
+          {{#each selected as |feature key|}}
+            
+            <li class="feature" 
+              style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
+              data-id="{{key}}">
+              <img src="{{feature.img}}" class="feature-icon" />
+              <button type="button" class="remove-feature hidden">
+                <i class="fa-fw fas fa-times"></i>
+              </button>
+              <span class="feature-name">{{feature.name}} (<span id="cost" class="cost">{{feature.system.final.cost}}</span>)</span>
+              <div class="feature-controls">
+                <div class="flexrow feature-variable">
+                  <!-- <input type="number" 
+                      min="1" 
+                      max="{{feature.system.final.maxStacks}}" 
+                      value="{{feature.system.final.stacks}}" />
+                  <span class="feature-variable-character"><i class="fa-solid fa-cubes-stacked"></i></span> -->
+                  {{#with (lookup ../featureSettings key) as |featureSettings|}}
+                    <input type="number" 
+                      min="1" 
+                      max="{{featureSettings.stacks.maximum}}" 
+                      value="{{featureSettings.stacks.value}}" />
+                    <span class="feature-variable-character"><i class="fa-solid fa-cubes-stacked"></i></span>
+                  {{/with}}
+                </div>
+              </div>
+            </li>
+          {{/each}}
+        </ol>
+      </div>
+      <div class="gear-flavor">
+        <textarea name="flavor" placeholder="{{localize 'UTOPIA.Artifice.Flavor'}}"></textarea>
+      </div>
+      <div class="gear-controls">
+        <button type="button" data-action="chat">{{localize 'UTOPIA.Artifice.Chat'}}</button>
+        <button type="button" data-action="save">{{localize 'UTOPIA.Artifice.Save'}}</button>
+      </div>
+    </div>  
+  </div>
+</div>

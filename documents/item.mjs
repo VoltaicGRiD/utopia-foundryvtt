@@ -1,5 +1,5 @@
 import { prepareGearDataPostActorPrep } from "../models/utility/gear-utils.mjs";
-import { DamageInstance } from "../system/damage.mjs";
+import { DamageInstance } from "../system/oldDamage.mjs";
 import { UtopiaTemplates } from "../system/init/measuredTemplates.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
 
@@ -447,9 +447,6 @@ export class UtopiaItem extends Item {
       content: html,
       system: { item: this }
     });
-
-    // TODO - Remove
-    console.warn(this);
 
     // We should only perform attacks if the item has 'system.damage' or 'system.formula' populated
     if ((!this.system.damage && !this.system.formula) || (!this.system.damage.length === 0 && !this.system.formula.length === 0)) {
@@ -913,36 +910,6 @@ export class UtopiaItem extends Item {
    * Item data preparation to take place after actor data preparation.
    */
   prepareDataPostActorPrep() {
-    // Double check this item is owned
-    if (this.parent) { 
-      if (this.type === "talent") {
-        // const actorSystem = this.parent.system;
-        
-        // actorSystem.body = this.system.body ?? actorSystem.body;
-        // actorSystem.mind = this.system.mind ?? actorSystem.mind;
-        // actorSystem.soul = this.system.soul ?? actorSystem.soul;
-
-        // actorSystem.hitpoints.surface.max += (actorSystem.body * actorSystem.constitution) + actorSystem.level;
-        // actorSystem.hitpoints.deep.max += (actorSystem.soul * actorSystem.effervescence) + actorSystem.level;
-        // actorSystem.stamina.max += (actorSystem.mind * actorSystem.endurance) + actorSystem.level;
-
-        // actorSystem.hitpoints.surface.value = Math.min(actorSystem.hitpoints.surface.value, actorSystem.hitpoints.surface.max);
-        // actorSystem.hitpoints.deep.value = Math.min(actorSystem.hitpoints.deep.value, actorSystem.hitpoints.deep.max);
-        // actorSystem.stamina.value = Math.min(actorSystem.stamina.value, actorSystem.stamina.max);
-
-        // if (this.system.selectedOption.length > 0) {
-        //   const category = this.system.options.category;
-
-        //   actorSystem._talentOptions[category] ??= [];
-        //   actorSystem._talentOptions[category].push(this.system.selectedOption);
-        // }
-      }
-
-      if (this.type === "gear") {
-        actor._gearData = [...actor._gearData, this.toObject()];
-
-        prepareGearDataPostActorPrep(this.parent.system, this);
-      }
-    }
+    return;
   }
 }

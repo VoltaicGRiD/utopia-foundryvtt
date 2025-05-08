@@ -60,56 +60,68 @@ Notes:
   - cost: The action cost to attempt the counter.
 */
 
+const harshDamage = Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
+  if (!value.harsh) return acc; // Only include harsh subtraits
+  acc[key] = {
+    name: value.label,
+    key: "type",
+    value: key,
+  };
+  return acc;
+}, {})
+
 function FastWeapon(settings) {
   console.log(settings);
 
   return {
     slam: {
-      name: "UTOPIA.Features.Slam",
-      stackable: true,
-      maxStacks: 0,
-      parentKey: "damage",
-      key: "formula",
-      value: "1d4",
-      handler: "Xd4",
-      componentsLocked: true,
+      meta: {
+        name: "UTOPIA.Features.Slam",
+        maxStacks: Infinity,
+        tags: ["damage"]
+      },
+      effects: [{
+        target: "item",
+        path: "damage.formula",
+        base: "1d4",
+        handler: {
+          type: "dice",
+        }
+      }, {
+        target: "item",
+        path: "damage.type",
+        base: "physical",
+      }],
       cost: {
         RP: 10,
         material: 1,
-      },
-      options: {
-        physical: {
-          name: "UTOPIA.Settings.physical",
-          key: "type",
-          value: "physical",
-        },
-      },
+        perStack: false,
+      }
     },
     harsh: {
-      name: "UTOPIA.Features.Harsh",
-      stackable: true,
-      maxStacks: 0,
-      parentKey: "damage",
-      key: "formula",
-      value: "1d4",
-      handler: "Xd4",
-      componentsLocked: true,
-      combined: true,
+      meta: {
+        name: "UTOPIA.Features.Harsh",
+        maxStacks: Infinity,
+        tags: ["damage"]
+      },
+      effects: [{
+        target: "item",
+        path: "damage.formula",
+        base: "1d4",
+        handler: {
+          type: "distributed",
+        }
+      }, {
+        target: "item",
+        path: "damage.type",
+        base: "energy",
+        options: harshDamage,
+      }],
       cost: {
-        RP: 15,
-        power: 1,
-      },
-      options: {
-        ...Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
-          if (!value.harsh) return acc; // Only include harsh subtraits
-          acc[key] = {
-            name: value.label,
-            key: "type",
-            value: key,
-          };
-          return acc;
-        }, {}),
-      },
+        RP: 10,
+        material: 1,
+        perStack: false,
+      }
     },
     compact: {
       name: "UTOPIA.Features.Compact",
@@ -1560,7 +1572,7 @@ function ChestArmor(settings) {
       name: "UTOPIA.Features.Magus",
       stackable: true,
       maxStacks: 0,
-      key: "spellcasting.discount",
+      key: "spellcasting.staminaDiscount",
       value: 1,
       handler: "+X",
       cost: {
@@ -1774,7 +1786,7 @@ function HeadArmor(settings) {
       name: "UTOPIA.Features.Magus",
       stackable: true,
       maxStacks: 0,
-      key: "spellcasting.discount",
+      key: "spellcasting.staminaDiscount",
       value: 1,
       handler: "+X",
       cost: {
@@ -2018,7 +2030,7 @@ function HandsArmor(settings) {
       name: "UTOPIA.Features.Magus",
       stackable: true,
       maxStacks: 0,
-      key: "spellcasting.discount",
+      key: "spellcasting.staminaDiscount",
       value: 1,
       handler: "+X",
       cost: {
@@ -2264,7 +2276,7 @@ function FeetArmor(settings) {
       name: "UTOPIA.Features.Magus",
       stackable: true,
       maxStacks: 0,
-      key: "spellcasting.discount",
+      key: "spellcasting.staminaDiscount",
       value: 1,
       handler: "+X",
       componentsLocked: true,
@@ -2575,7 +2587,7 @@ function Shield(settings) {
       name: "UTOPIA.Features.Magus",
       stackable: true,
       maxStacks: 0,
-      key: "spellcasting.discount",
+      key: "spellcasting.staminaDiscount",
       value: 1,
       handler: "+X",
       componentsLocked: true,
@@ -3307,7 +3319,7 @@ function PassiveArtifact(settings) {
       name: "UTOPIA.Features.Magus",
       stackable: true,
       maxStacks: 0,
-      key: "spellcasting.discount",
+      key: "spellcasting.staminaDiscount",
       value: 1,
       handler: "+X",
       cost: {

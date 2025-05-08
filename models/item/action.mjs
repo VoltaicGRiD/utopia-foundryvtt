@@ -15,6 +15,7 @@ export class Action extends UtopiaItemBase {
       "turn": "UTOPIA.Items.Action.Type.turn",
       "interrupt": "UTOPIA.Items.Action.Type.interrupt",
       "free": "UTOPIA.Items.Action.Type.free",
+      "long": "UTOPIA.Items.Action.Type.long",
       //"special": "UTOPIA.Items.Action.Type.special",
     }});
 

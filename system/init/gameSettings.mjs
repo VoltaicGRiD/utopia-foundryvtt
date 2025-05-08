@@ -261,4 +261,13 @@ export async function registerGameSettings() {
     type: Boolean,
     default: false,
   });
+
+  game.settings.register('utopia', 'requiresReset', {
+    name: "UTOPIA.Settings.requiresReset",
+    hint: "UTOPIA.Settings.requiresResetHint",
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false,
+  });
 }

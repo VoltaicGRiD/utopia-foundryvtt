@@ -1,7 +1,7 @@
 import { UtopiaActor } from "../documents/actor.mjs";
 import { UtopiaChatMessage } from "../documents/chat-message.mjs";
 
-export class OldDamageInstance {
+export class DamageInstance {
   /**
    * Constructs a DamageInstance.
    * @param {Object} param0 - The damage parameters.

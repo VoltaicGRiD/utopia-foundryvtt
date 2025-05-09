@@ -24,7 +24,10 @@
       "thumbnail": "systems/utopia/assets/Utopia-Logo.webp"
     }
   ],
-  "version": "0.1.0",
+  "version": "1.04",
+  "flags": {
+    "lastConfigurationResetVersion": "1.04"
+  },
   "compatibility": {
     "minimum": 12,
     "verified": "12.331"
@@ -330,9 +333,6 @@
       "flags": {}
     }
   ],
-  "flags": {
-    "lastConfigurationResetVersion": "1.04"
-  },
   "packFolders": [
     {
       "name": "Official SRD Content",

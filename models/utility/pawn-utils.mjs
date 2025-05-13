@@ -2,7 +2,7 @@ import { isNumeric } from "../../system/helpers/isNumeric.mjs";
 
 export async function prepareBodyData(pawn) {
   if (pawn.parent.items.filter(i => i.type === "body").length === 0) {
-    return pawn._bodyData = undefined;
+    return;
   }
 
   const body = pawn.parent.items.find(i => i.type === "body");
@@ -15,8 +15,6 @@ export async function prepareBodyData(pawn) {
   pawn.stamina.max = body.system.stamina;
   // pawn.stamina.value = body.system.stamina; // TODO - This can't be updated on every actor update cycle
 
-  pawn.dr = body.system.baseDR;
-
   pawn.block.size = body.system.block.size;
   pawn.block.quantity = body.system.block.quantity;
 
@@ -24,6 +22,12 @@ export async function prepareBodyData(pawn) {
   pawn.dodge.quantity = body.system.dodge.quantity;
 
   pawn.harvest = body.system.harvest;
+
+  for (const damageType of Object.keys(pawn.innateDefenses)) {
+    if (body.system.defenses[damageType]) {
+      pawn.innateDefenses[damageType] = body.system.defenses[damageType];
+    }
+  }
 
   const bodyTraits = body.system.traits.map(trait => {
     return trait.trait;
@@ -45,15 +49,19 @@ export async function prepareBodyData(pawn) {
       data.value += body.system.traitDefault;
     }
     
-    pawn.traits[data.parent].value += data.value;
-    pawn.traits[data.parent].mod = pawn.traits[data.parent].value - 4;
+    console.log("Subtrait", pawnTrait, data);
+
+    pawn.subtraits[pawnTrait].value += data.value;
+    pawn.subtraits[pawnTrait].mod = pawn.subtraits[pawnTrait].value - 4;
     data.mod = data.value - 4;
   }
+
+  prepareClassData(pawn);
 }  
 
 export async function prepareClassData(pawn) {
   if (pawn.parent.items.filter(i => i.type === "class").length === 0) {
-    return pawn._classData = [];
+    return prepareKitData(pawn);
   }
 
   // A pawn can have multiple classes, depending on the classes they are,
@@ -74,7 +82,7 @@ export async function prepareClassData(pawn) {
   for (const item of classItems) {
     classCount[item.system.type] += 1;
 
-    pawn.dr += item.system.points;
+    pawn.difficulty += item.system.points;
 
     if (item.system.type !== "innate" && classCount[item.system.type] > 1) continue;
     
@@ -105,11 +113,13 @@ export async function prepareClassData(pawn) {
       );
     }
   }
+
+  prepareKitData(pawn);
 }
 
 export async function prepareKitData(pawn) {
   if (pawn.parent.items.filter(i => i.type === "kit").length === 0) {
-    return pawn._kitData = [];
+    return prepareRemainingData(pawn);
   }
 
   // Pawns can have any number of kits
@@ -118,7 +128,7 @@ export async function prepareKitData(pawn) {
   pawn._kitData = kits;
 
   for (const kit of kits) {
-    pawn.dr += kit.system.points;
+    pawn.difficulty += kit.system.points;
 
     // TODO - Implement this
     // Attributes SHOULD be implemented via ActiveEffect, but there may be
@@ -145,6 +155,16 @@ export async function prepareKitData(pawn) {
       key = key.replace("system.", "");
       const originalValue = foundry.utils.getProperty(pawn, key);
       foundry.utils.setProperty(pawn, key, originalValue + value);
+    }
+  }
+
+  prepareRemainingData(pawn);
+}
+
+export async function prepareRemainingData(pawn) {
+  for (const key of Object.keys(pawn.innateDefenses)) {
+    if (pawn.innateDefenses[key]) {
+      pawn.defenses[key] += pawn.innateDefenses[key];
     }
   }
 }

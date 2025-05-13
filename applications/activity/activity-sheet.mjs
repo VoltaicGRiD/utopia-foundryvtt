@@ -17,6 +17,10 @@ export class ActivitySheet extends api.HandlebarsApplicationMixin(sheets.ItemShe
       openOperation: this._openOperation,
       removeOperation: this._removeOperation,
       execute: this._execute,
+      viewEffect: this._viewEffect,
+      createEffect: this._createEffect,
+      deleteEffect: this._deleteEffect,
+      toggleEffect: this._toggleEffect,  
     },
     form: {
       submitOnChange: true,
@@ -65,6 +69,7 @@ export class ActivitySheet extends api.HandlebarsApplicationMixin(sheets.ItemShe
     context.systemFields = this.document.schema.fields;
     context.system = this.document.system;
     context.operations = this.document.system.operations || [];
+    context.effects = this.document.effectCategories || [];
 
     console.log("Activity Sheet Context:", context);
 
@@ -86,6 +91,43 @@ export class ActivitySheet extends api.HandlebarsApplicationMixin(sheets.ItemShe
 
   _onRender(options, context) {
     super._onRender(options, context);
+
+    const operationItems = this.element.querySelectorAll(".operation-item");
+    operationItems.forEach(item => {
+      item.addEventListener("dragstart", (event) => {
+        const dragData = {
+          type: "Operation",
+          id: item.dataset.operation,
+        };
+        event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+      });
+      item.addEventListener("dragover", (event) => {
+        event.preventDefault();
+      });
+      item.addEventListener("drop", async (event) => {
+        event.preventDefault();
+        const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+        if (data.type === "Operation") {
+          const draggedOperationId = data.id;
+          const targetOperationId = item.dataset.operation;
+
+          const operations = this.document.system.operations;
+          const draggedOperationIndex = operations.findIndex(op => op.id === draggedOperationId);
+          const targetOperationIndex = operations.findIndex(op => op.id === targetOperationId);
+
+          if (draggedOperationIndex === -1 || targetOperationIndex === -1) return;
+
+          // Remove the dragged operation from its current position
+          const [draggedOperation] = operations.splice(draggedOperationIndex, 1);
+
+          // Insert the dragged operation above the target operation
+          operations.splice(targetOperationIndex, 0, draggedOperation);
+
+          // Update the document with the new operations order
+          await this.document.update({ "system.operations": operations });
+        }
+      });
+    })
   }
 
   /**

@@ -3,7 +3,10 @@ type: specialistTalent
 _id: e2DOyXvEuUz1w2xb
 img: icons/svg/item-bag.svg
 system:
-  description: ''
+  description: >-
+    <p>Your Portrayal score increases by 1. When you make a test to replicate
+    the behavior of a creature and roll less than a 10 before modifiers, you
+    roll a 10 instead.</p>
   formula: ''
   flavor: ''
   resource:
@@ -43,7 +46,7 @@ effects:
     _id: hfrpXw8cq44WqL04
     system: {}
     changes:
-      - key: system.traits.dis.subtraits.por.bonus
+      - key: system.subtraits.por.value
         mode: 2
         value: '1'
         priority: null
@@ -69,11 +72,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1738948839384
-      modifiedTime: 1739009750720
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1746933981639
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!e2DOyXvEuUz1w2xb.hfrpXw8cq44WqL04'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 103125
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -83,9 +86,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1738948824688
-  modifiedTime: 1738948824688
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014918176
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!e2DOyXvEuUz1w2xb'
 

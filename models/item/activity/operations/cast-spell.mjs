@@ -19,10 +19,19 @@ export class castSpell extends BaseOperation {
     }
   }
 
-  static getChoices(activity) {
-    return gatherItemsSync({ type: "spell", gatherFromActor: true, gatherFromWorld: true, gatherFolders: true }).reduce((acc, spell) => { 
-      acc[spell.uuid] = spell.name;
-      return acc;
-    }, {})
+  static async getChoices(activity) {
+    return {
+      ...gatherItemsSync({ type: "spell", gatherFromActor: true, gatherFromWorld: true, gatherFolders: true }).reduce((acc, spell) => { 
+        acc[spell.uuid] = spell.name;
+        return acc;
+      }, {}),
+      ...activity.operations.reduce((acc, operation) => {
+        if (operation.type === "selectOption") {
+          acc[operation.id] = `Inherit from ${operation.name}`;
+        }
+        return acc;
+      }, {})    }
   }
+
+  // TODO - Implement the execute function
 }

@@ -30,8 +30,8 @@ command: |-
       characters.forEach(c => c.performCheck(result[0], { noDialog: true, toBeat: parseInt(result[1]) >= 0 ? parseInt(result[1]) : null }));
     }
   }).render({force: true});
-folder: null
-sort: 700000
+folder: DinhpY2w40EXHS76
+sort: 200000
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -43,7 +43,7 @@ _stats:
   systemId: utopia
   systemVersion: 0.1.0
   createdTime: 1738283699304
-  modifiedTime: 1741968233671
-  lastModifiedBy: J3DseiXIgI97Cf1C
+  modifiedTime: 1747150886032
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!macros!pYggJQYkbnCyqt5q'
 

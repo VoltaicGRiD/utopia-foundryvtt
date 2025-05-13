@@ -54,6 +54,8 @@ export class UtopiaActor extends Actor {
       rollData[key] = subtrait;
     }
 
+    rollData["turnOrder"] = new Roll(`@${this.system.turnOrder}`).evaluateSync().total;
+
     if (!ignoreTarget) {
       // If the owner has any targets, use the first target's roll data.
       const owner = game.users.find(u => u.character?.name === this.name);
@@ -252,6 +254,8 @@ export class UtopiaActor extends Actor {
    * @returns {Promise<*>} Notification message.
    */
   async addItem(item, showNotification = false, trackDecendant = false, parent = undefined) {
+    if (parent) 
+      item.system.origin = parent.uuid;
     const newItems = await this.createEmbeddedDocuments("Item", [item]);
 
     if (showNotification)
@@ -450,12 +454,12 @@ export class UtopiaActor extends Actor {
    * @param {boolean} [options.checkFavor=true] - Whether to include favor in the check.
    * @returns {Promise<ChatMessage>} The chat message with the roll result.
    */
-  async check(trait, { specification = "always", checkFavor = true, difficulty = 0, flavor = "" } = {}) {
+  async check(trait, { specification = "always", checkFavor = true, difficulty = 0, flavor = "", override = undefined } = {}) {
     const check = JSON.parse(game.settings.get("utopia", "advancedSettings.specialtyChecks"))[trait] ?? {};
     if (Object.keys(check).length > 0) {
-      return this._checkSpecialty({ trait, check, specification, checkFavor, difficulty, flavor });
+      return this._checkSpecialty({ trait, check, specification, checkFavor, difficulty, flavor, override });
     } else {
-      return this._checkTrait({ trait, specification, checkFavor, difficulty, flavor });
+      return this._checkTrait({ trait, specification, checkFavor, difficulty, flavor, override });
     }
   }
 
@@ -470,7 +474,7 @@ export class UtopiaActor extends Actor {
    * @param {number} [params.difficulty=0] - The difficulty level of the check.
    * @returns {Promise<ChatMessage>}
    */
-  async _checkSpecialty({ trait, check, specification = "always", checkFavor = true, difficulty = 0, flavor }) {
+  async _checkSpecialty({ trait, check, specification = "always", checkFavor = true, difficulty = 0, flavor, override }) {
     const formula = check.formula;
     const attribute = this.system.checks[trait].attribute;
     const netFavor = checkFavor ? (await this.checkForFavor(trait, specification)) || 0 : 0;
@@ -480,9 +484,17 @@ export class UtopiaActor extends Actor {
     var label = game.i18n.localize(check.label);
     // If the specification is not "always", append it to the label.
     if (specification !== "always") 
-      label = label + ` vs. ${specification.capitalize()}`;    
+      label = label + ` vs. ${specification.capitalize()}`;
     
-    const roll = await new Roll(newFormula, this.getRollData(), { flavor: flavor || label }).alter(1, netFavor).evaluate();
+    let roll = undefined;
+    if (override) {
+      if (override.beforeModifiers) 
+        roll = await new Roll(`max(${newFormula.split(' + @')[0]}, ${override.setTo})`).alter(1, netFavor).evaluate();
+      else 
+        roll = await new Roll(`max(${newFormula}, ${override.setTo})`).alter(1, netFavor).evaluate();
+    }
+    else
+      roll = await new Roll(newFormula, this.getRollData(), { flavor: flavor || label }).alter(1, netFavor).evaluate();
 
     if (difficulty > 0) {
       const success = roll.total >= difficulty;
@@ -509,7 +521,7 @@ export class UtopiaActor extends Actor {
    * @param {boolean} [params.checkFavor=true] - Whether to apply favor bonuses.
    * @returns {Promise<ChatMessage>}
    */
-  async _checkTrait({ trait, specification = "always", checkFavor = true, difficulty = 0, flavor }) {
+  async _checkTrait({ trait, specification = "always", checkFavor = true, difficulty = 0, flavor, override }) {
     const netFavor = checkFavor ? (await this.checkForFavor(trait, specification)) || 0 : 0;
     // Determine label based on whether the trait comes from traits or subtraits.
     var label = Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).includes(trait)
@@ -520,8 +532,16 @@ export class UtopiaActor extends Actor {
       label = label + ` vs. ${specification.capitalize()}`;
     const newFormula = `3d6 + @${trait}.mod`;
 
-    const roll = await new Roll(newFormula, this.getRollData(), { flavor: flavor || label }).alter(1, netFavor).evaluate();
-
+    let roll = undefined;
+    if (override) {
+      if (override.beforeModifiers) 
+        roll = await new Roll(`max(${newFormula.split(' + @')[0]}, ${override.setTo})`).alter(1, netFavor).evaluate();
+      else 
+        roll = await new Roll(`max(${newFormula}, ${override.setTo})`).alter(1, netFavor).evaluate();
+    }
+    else
+      roll = await new Roll(newFormula, this.getRollData(), { flavor: flavor || label }).alter(1, netFavor).evaluate();
+    
     if (difficulty > 0) {
       const success = roll.total >= difficulty;
       await roll.toMessage({ flavor: flavor || label, speaker: ChatMessage.getSpeaker({ actor: this }) });
@@ -1046,7 +1066,14 @@ export class UtopiaActor extends Actor {
     await this.update(updateData);
 
     const formula = this.system.block.formula;
-    const roll = await new Roll(formula, this.getRollData()).evaluate();
+
+    let protections = 0;
+    if (this.getFlag("utopia", "protections")) {
+      protections = this.getFlag("utopia", "protections");
+      await this.unsetFlag("utopia", "protections");
+    }
+
+    const roll = await new Roll(formula, this.getRollData()).alter(1, protections).evaluate();
     await damageInstance.handle({ block: roll.total, blockRoll: roll });
     damageInstance.finalize();
     this._applySiphons(damageInstance);
@@ -1108,7 +1135,14 @@ export class UtopiaActor extends Actor {
     }
 
     const formula = this.system.dodge.formula;
-    const roll = await new Roll(formula, this.getRollData()).evaluate();
+
+    let protections = 0;
+    if (this.getFlag("utopia", "protections")) {
+      protections = this.getFlag("utopia", "protections");
+      await this.unsetFlag("utopia", "protections");
+    }
+
+    const roll = await new Roll(formula, this.getRollData()).alter(1, protections).evaluate();
     await damageInstance.handle({ dodge: roll.total, dodgeRoll: roll });
     damageInstance.finalize();
     this._applySiphons(damageInstance);

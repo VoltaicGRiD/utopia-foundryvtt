@@ -10,6 +10,7 @@ export class AdvancementSheet extends DragDropAppV2 {
         ...subtrait,
         gifted: this.actor.system.subtraits[subtrait.short].gifted,
         value: this.actor.system.subtraits[subtrait.short].value,
+        max: this.actor.system.subtraits[subtrait.short].max,
         newValue: this.actor.system.subtraits[subtrait.short].value,
         newMod: this.actor.system.subtraits[subtrait.short].mod,
       }
@@ -19,7 +20,7 @@ export class AdvancementSheet extends DragDropAppV2 {
   static DEFAULT_OPTIONS = {
     classes: ["utopia", "advancement-sheet"],
     position: {
-      width: 500,
+      width: 600,
     },
     actions: {
       // next: this._next,

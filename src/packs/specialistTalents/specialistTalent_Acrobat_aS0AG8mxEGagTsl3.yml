@@ -3,7 +3,9 @@ type: specialistTalent
 _id: aS0AG8mxEGagTsl3
 img: icons/svg/item-bag.svg
 system:
-  description: ''
+  description: >-
+    <p>Your stunt score increases by 1. You gain a point of favor on tests made
+    to climb and traverse obstacles and difficult terrain.</p>
   formula: ''
   flavor: ''
   resource:
@@ -43,17 +45,9 @@ effects:
     _id: cVBaHJJppphUKSW0
     system: {}
     changes:
-      - key: system.traits.dis.subtraits.stu.bonus
+      - key: system.subtraits.stu.value
         mode: 2
         value: '1'
-        priority: null
-      - key: system.favors
-        mode: 2
-        value: difficultTerrain
-        priority: null
-      - key: system.favors
-        mode: 2
-        value: traversal
         priority: null
     disabled: false
     duration:
@@ -77,11 +71,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1738948704458
-      modifiedTime: 1739009742348
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1746933173392
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!aS0AG8mxEGagTsl3.cVBaHJJppphUKSW0'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 100000
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -91,9 +85,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1738948681505
-  modifiedTime: 1738948681505
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1746937222478
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!aS0AG8mxEGagTsl3'
 

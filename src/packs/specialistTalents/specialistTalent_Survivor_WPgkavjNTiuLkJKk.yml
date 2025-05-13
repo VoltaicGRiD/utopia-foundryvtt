@@ -43,7 +43,7 @@ effects:
     _id: FkV4ZexdZTEc5rky
     system: {}
     changes:
-      - key: system.traits.wil.subtraits.awa.bonus
+      - key: system.subtraits.awa.value
         mode: 2
         value: '1'
         priority: null
@@ -69,11 +69,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1738710475378
-      modifiedTime: 1739009733790
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1747014871074
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!WPgkavjNTiuLkJKk.FkV4ZexdZTEc5rky'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 96875
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -85,7 +85,7 @@ _stats:
   systemId: utopia
   systemVersion: 0.1.0
   createdTime: 1738710460932
-  modifiedTime: 1738710460932
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014913899
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!WPgkavjNTiuLkJKk'
 

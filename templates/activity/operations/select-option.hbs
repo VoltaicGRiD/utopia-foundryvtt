@@ -1,0 +1,20 @@
+<div>
+  <hr/>
+  <span class="operation-category">Select Option:</span>
+  {{#each operation.options}}
+    <div class="operation-content-row">
+      <div class="operation-content">
+        <label for="options.{{@index}}.key">Key:</label>
+        <input type="text" name="options.{{@index}}.key" placeholder="Key" value="{{this.key}}" required/>
+      </div>
+      <div class="operation-content">
+        <label for="options.{{@index}}.name">Name:</label>  
+        <input type="text" name="options.{{@index}}.name" placeholder="Name" value="{{this.name}}" required/>
+      </div>
+      <button class="operation-button" type="button" data-damage="{{@index}}" data-action="removeOption" {{#if (lt operation.options.length 2)}}disabled{{/if}}>Remove</button>
+    </div>
+  {{/each}}    
+  <div class="operation-content-row">
+    <button class="operation-button" type="button" data-action="addOption">Add Option</button>
+  </div>
+</div>

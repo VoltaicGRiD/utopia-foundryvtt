@@ -46,13 +46,9 @@ effects:
     _id: XFZpJJ15d9NZYviY
     system: {}
     changes:
-      - key: system.traits.cha.subtraits.lan.bonus
+      - key: system.subtraits.lan.value
         mode: 2
         value: '1'
-        priority: null
-      - key: system.languages
-        mode: 2
-        value: self-made
         priority: null
     disabled: false
     duration:
@@ -76,11 +72,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1738948944838
-      modifiedTime: 1739009787475
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1746937242798
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!igZJgdF24UpyMx9N.XFZpJJ15d9NZYviY'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 105469
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -92,7 +88,7 @@ _stats:
   systemId: utopia
   systemVersion: 0.1.0
   createdTime: 1738948942809
-  modifiedTime: 1738949015683
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014926257
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!igZJgdF24UpyMx9N'
 

@@ -1,6 +1,16 @@
 export { attack } from "./operations/attack.mjs";
+export { heal } from "./operations/heal.mjs";
 export { selectOperation } from "./operations/select-operation.mjs";
 export { selectOption } from "./operations/select-option.mjs";
 export { condition } from "./operations/condition.mjs";
 export { castSpell } from "./operations/cast-spell.mjs";
 export { variable } from "./operations/variable.mjs";
+export { check } from "./operations/check.mjs";
+export { test } from "./operations/test.mjs";
+export { use } from "./operations/use.mjs";
+export { setFlag } from "./operations/set-flag.mjs";
+export { createResource } from "./operations/create-resource.mjs";
+export { consumeResource } from "./operations/consume-resource.mjs";
+export { travel } from "./operations/travel.mjs";
+export { consumption } from "./operations/consumption.mjs";
+export { generic } from "./operations/generic.mjs";

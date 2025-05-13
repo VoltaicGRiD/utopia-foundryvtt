@@ -16,6 +16,8 @@ export default class UtopiaItemBase extends foundry.abstract.TypeDataModel {
     schema.power = new fields.NumberField({ required: true, nullable: false, initial: 0 });
     schema.equipped = new fields.BooleanField({ required: true, nullable: false, initial: false });
     
+    schema.origin = new fields.DocumentUUIDField({ required: false, nullable: true, initial: null });
+
     return schema;
   }
 

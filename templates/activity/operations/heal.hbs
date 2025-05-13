@@ -1,0 +1,19 @@
+<div>
+  <hr/>
+  <span class="operation-category">Heal:</span>
+  
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="formula">Formula:</label>
+      <input type="text" name="formula" value="{{operation.formula}}" placeholder="Formula" required/>
+    </div>
+    <div class="operation-content">
+      <label for="hitpoints">Hitpoints:</label>
+      <select name="hitpoints" required>
+        {{#each choices as |name id|}}
+          <option value="{{id}}" {{#if (eq ../operation.hitpoints id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select> 
+    </div>
+  </div>
+</div>

@@ -15,6 +15,13 @@ export class ConditionSheet extends OperationSheet {
     },
   };
 
+  async _prepareContext(options) {
+    const context = super._prepareContext(options);
+    context.keys = await this.document.system.runFunction(this.operation, "keys", this.document.parent);
+    console.log("ConditionSheet._prepareContext", context.keys);
+    return context;
+  }
+
   static PARTS = {
     ...super.PARTS,
     operation: {
@@ -27,9 +34,6 @@ export class ConditionSheet extends OperationSheet {
     await this.document.system.runFunction(this.operation, "addCondition");
     await this.document.render({ renderOperation: this.operation, force: true });
     await this.close();
-    // const button = this.element.querySelector("button[data-action='addCondition']");
-    // button.dataset.action = "reloadConditions";
-    // button.innerHTML = `<i class="fas fa-sync"></i> ${game.i18n.localize("UTOPIA.Items.Activity.Operation.Condition.ReloadConditions")}`;    
   }
 
   static async _removeCondition(event, target) { 

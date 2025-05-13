@@ -1,9 +1,6 @@
-import { CastSpellSheet } from "../../../applications/activity/operations/cast-spell-sheet.mjs";
-import { SelectOperationSheet } from "../../../applications/activity/operations/select-operation-sheet.mjs";
-import { ConditionSheet } from "../../../applications/activity/operations/condition-sheet.mjs";
-import { AttackSheet } from "../../../applications/activity/operations/attack-sheet.mjs";
 import { BaseOperation } from "./base-operation.mjs";
 import * as ops from "./_module.mjs";
+import * as sheets from "../../../applications/activity/operations/_module.mjs";
 
 export class Activity extends foundry.abstract.TypeDataModel {
   static LOCALIZATION_PREFIXES = [...super.LOCALIZATION_PREFIXES, "UTOPIA.Items.Activity"];
@@ -18,11 +15,21 @@ export class Activity extends foundry.abstract.TypeDataModel {
 
     schema.operations = new fields.ArrayField(new fields.TypedSchemaField({
       ...ops.selectOperation.defineSchema(),
-      ...ops.attack.defineSchema(),
       ...ops.selectOption.defineSchema(),
+      ...ops.heal.defineSchema(),
+      ...ops.attack.defineSchema(),
       ...ops.condition.defineSchema(),
       ...ops.castSpell.defineSchema(),
+      ...ops.consumption.defineSchema(),
       ...ops.variable.defineSchema(),
+      ...ops.check.defineSchema(),
+      ...ops.test.defineSchema(),
+      ...ops.use.defineSchema(),
+      ...ops.setFlag.defineSchema(),
+      ...ops.createResource.defineSchema(),
+      ...ops.consumeResource.defineSchema(),
+      ...ops.travel.defineSchema(),
+      ...ops.generic.defineSchema(),
     }), { required: true, nullable: false, initial: [] });
 
     return schema;
@@ -37,13 +44,13 @@ export class Activity extends foundry.abstract.TypeDataModel {
     }
   }
 
-  operationChoices(operation) {
+  async operationChoices(operation) {
     if (ops[operation]) {
       if (typeof ops[operation].getChoices !== "function") {
         console.warn(`Operation "${operation}" does not have a getChoices method.`);
         return null;
       }
-      return ops[operation].getChoices(this) || null;
+      return await ops[operation].getChoices(this) || null;
     } else {
       console.warn(`Operation "${operation}" is not defined.`);
       return null;
@@ -61,12 +68,23 @@ export class Activity extends foundry.abstract.TypeDataModel {
 
   get TYPES() {
     return {
-      "castSpell": CastSpellSheet,
-      "attack": AttackSheet,
-      "selectOperation": SelectOperationSheet,
-      "condition": ConditionSheet,
+      "castSpell": sheets.CastSpellSheet,
+      "attack": sheets.AttackSheet,
+      "heal": sheets.HealSheet, 
+      "selectOperation": sheets.SelectOperationSheet,
+      "consumption": sheets.ConsumptionSheet,
+      "condition": sheets.ConditionSheet,
+      "check": sheets.CheckSheet,
+      "test": sheets.TestSheet,
+      "use": sheets.UseSheet,
+      "setFlag": sheets.SetFlagSheet,
+      "createResource": sheets.CreateResourceSheet,
+      "consumeResource": sheets.ConsumeResourceSheet,
+      "variable": sheets.VariableSheet,
+      "travel": sheets.TravelSheet,
+      "selectOption": sheets.SelectOptionSheet,
+      "generic": sheets.GenericSheet,
       //"variable": VariableSheet,
-      //"selectOption": SelectOptionSheet,
     }
   }
 
@@ -86,7 +104,7 @@ export class Activity extends foundry.abstract.TypeDataModel {
   }
 
   get allOperations() {
-    return ["attack", "castSpell", "selectOperation", "condition"];
+    return ["attack", "heal", "travel", "consumption", "castSpell", "use", "selectOption", "generic", "selectOperation", "condition", "test", "check", "setFlag", "variable", "createResource", "consumeResource"];
   }
 
   async newOperation(operation) {
@@ -119,6 +137,8 @@ export class Activity extends foundry.abstract.TypeDataModel {
   async execute(options = {}) {
     const { operations } = this;
 
+    var fullExecution = true;
+
     // Create a running tally of costs for each operation that executes successfully
     const costs = { 
       turnActions: 0,
@@ -132,17 +152,35 @@ export class Activity extends foundry.abstract.TypeDataModel {
     for (const operation of operations) {
       if (operation.executeImmediately) {
         if (await ops[operation.type].execute(this.parent, operation, options)) {
-          costs.turnActions += operation.costs.actionType === "turn" ? operation.costs.actions : 0;
-          costs.interruptActions += operation.costs.actionType === "interrupt" ? operation.costs.actions : 0;
-          costs.currentActions += operation.costs.actionType === "current" ? operation.costs.actions : 0;
-          costs.stamina += operation.costs.stamina;
-          costs.shp += operation.costs.shp;
-          costs.dhp += operation.costs.dhp;
+          costs.turnActions = operation.costs.actionType === "turn" ? operation.costs.actions : 0;
+          costs.interruptActions = operation.costs.actionType === "interrupt" ? operation.costs.actions : 0;
+          costs.currentActions = operation.costs.actionType === "current" ? operation.costs.actions : 0;
+          costs.stamina = operation.costs.stamina;
+          costs.shp = operation.costs.shp;
+          costs.dhp = operation.costs.dhp;
+
+          await this.parent.parent._consumeResources(operation.costs.actionType, operation.costs.actions, operation.costs.stamina);
+
           continue;
         }
-        else 
+        else {
+          fullExecution = false;
           break;
+        }
       }
+
+    }
+
+    // If all operations executed successfully, update the parent actor with the costs
+    if (fullExecution) {
+      await this.parent.update({
+        "system.actions.turnActions": this.parent.system.actions.turnActions - costs.turnActions,
+        "system.actions.interruptActions": this.parent.system.actions.interruptActions - costs.interruptActions,
+        "system.actions.currentActions": this.parent.system.actions.currentActions - costs.currentActions,
+        "system.stamina": this.parent.system.stamina - costs.stamina,
+        "system.shp": this.parent.system.shp - costs.shp,
+        "system.dhp": this.parent.system.dhp - costs.dhp
+      });
     }
   }
 
@@ -155,10 +193,33 @@ export class Activity extends foundry.abstract.TypeDataModel {
     }
 
     if (!operation.executeImmediately) {
-      return await ops[operation.type].execute(this.parent, operation, options);
+      await ops[operation.type].execute(this.parent, operation, options);
+      await this.parent.parent._consumeResources(operation.costs.actionType, operation.costs.actions, operation.costs.stamina);
+      await this.continueExecutionFrom(operationId, options);
+      return true;
     } else {
       console.warn(`Operation "${operation.type}" executes immediately.`);
       return false;
+    }
+  }
+
+  async continueExecutionFrom(operationId, options = {}) {
+    const index = this.operations.findIndex(op => op.id === operationId);
+    for (let i = index + 1; i < this.operations.length; i++) {
+      const operation = this.operations[i];
+      if (operation.executeImmediately) {
+        if (await ops[operation.type].execute(this.parent, operation, options)) {
+          await this.parent.parent._consumeResources(operation.costs.actionType, operation.costs.actions, operation.costs.stamina);
+          continue;
+        } else {
+          console.warn(`Operation "${operation.type}" failed to execute.`);
+          return false;
+        }
+      }
+      else {
+        console.warn(`Operation "${operation.type}" does not execute immediately.`);
+        return false;
+      }
     }
   }
 

@@ -1,21 +1,19 @@
 name: Illusive
 type: script
 author: J3DseiXIgI97Cf1C
-img: icons/svg/dice-target.svg
+img: systems/utopia/assets/icons/talents/illusive.svg
 scope: global
 command: |-
-  console.log(scope);
-
   const fields = foundry.applications.fields;
 
   const selectInput = fields.createSelectInput({
     options: [
       {
-        label: "UTOPIA.Macros.BlockRating.label",
+        label: "Block Rating",
         value: "block",
       },
       {
-        label: "UTOPIA.Macros.DodgeRating.label",
+        label: "Dodge Rating",
         value: "dodge",
       },
     ],
@@ -76,7 +74,7 @@ command: |-
       },
     },
   });
-folder: null
+folder: C4UM6vIV3xSPvNHR
 ownership:
   default: 0
   J3DseiXIgI97Cf1C: 3
@@ -88,8 +86,8 @@ _stats:
   systemId: utopia
   systemVersion: 0.1.0
   createdTime: 1741968233646
-  modifiedTime: 1745263007540
-  lastModifiedBy: J3DseiXIgI97Cf1C
+  modifiedTime: 1747150870840
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _id: XXB68BrXlhNB03Xq
 sort: 200000
 _key: '!macros!XXB68BrXlhNB03Xq'

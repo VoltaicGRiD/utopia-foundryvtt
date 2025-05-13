@@ -11,6 +11,8 @@ system:
   requirements:
     - '@awa.value >= 7'
   grants: []
+  attributeRequirements:
+    - subtraits.awa.total >= 7
 effects:
   - name: Split Focus
     origin: Compendium.utopia.specialistTalents.Item.6MoM6Gd6HBdadDnh
@@ -48,8 +50,8 @@ effects:
       modifiedTime: 1738710084483
       lastModifiedBy: p7QOrF2iNLdEPi7z
     _key: '!items.effects!6MoM6Gd6HBdadDnh.Q3cFPoz9lb1ZBOt1'
-folder: null
-sort: 0
+folder: cDFyAqFrp5cBSEdu
+sort: 800000
 ownership:
   default: 0
   nLkleFyXeCclB3Jg: 3
@@ -59,9 +61,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1737028553340
-  modifiedTime: 1737029267962
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747112939404
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!6MoM6Gd6HBdadDnh'
 

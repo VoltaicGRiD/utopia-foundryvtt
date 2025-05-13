@@ -129,7 +129,6 @@ function FastWeapon(settings) {
       stackable: false,
       maxStacks: 1,
       parentKey: "damage",
-      key: "modifier",
       upgrade: [
         {
           key: "rarity",
@@ -142,12 +141,15 @@ function FastWeapon(settings) {
           value: false,
           comparison: "==",
           output: "@pow.mod",
+          outputKey: "modifier",
+          default: true
         },
         {
           key: "ranged",
           value: true,
           comparison: "==",
           output: "@dex.mod",
+          outputKey: "modifier"
         },
       ],
       handler: "override",
@@ -157,13 +159,15 @@ function FastWeapon(settings) {
       },
       incompatible: ["extravagant"],
       options: {
-        ...Object.entries(settings.subtraits).reduce((acc, [key, value]) => {
+        ...Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
+          if (!value.elegant) return acc; // Only include elegant subtraits
           acc[key] = {
             name: value.label,
-            value: `@${key}.mod`,
+            key: "modifierType",
+            value: key,
           };
           return acc;
-        }, {}),
+        }, {})
       },
     },
     extravagant: {
@@ -171,7 +175,6 @@ function FastWeapon(settings) {
       stackable: false,
       maxStacks: 1,
       parentKey: "damage",
-      key: "modifier",
       upgrade: [
         {
           key: "rarity",
@@ -184,15 +187,25 @@ function FastWeapon(settings) {
         refinement: 1,
       },
       incompatible: ["elegant"],
-      options: {
+      options: [{
         ...Object.entries(settings.subtraits).reduce((acc, [key, value]) => {
           acc[key] = {
             name: value.label,
+            key: "modifier",
             value: `@${key}.mod`,
           };
           return acc;
         }, {}),
-      },
+      }, {
+        ...Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
+          acc[key] = {
+            name: value.label,
+            key: "modifierType",
+            value: key,
+          };
+          return acc;
+        }, {})
+      }],
     },
     reach: {
       name: "UTOPIA.Features.Reach",
@@ -213,6 +226,9 @@ function FastWeapon(settings) {
       maxStacks: 0,
       key: "range",
       value: "5/10",
+      flag: {
+        ranged: true,
+      },
       handler: "5X/10X",
       cost: {
         RP: 5,
@@ -596,7 +612,6 @@ function ModerateWeapon(settings) {
       stackable: false,
       maxStacks: 1,
       parentKey: "damage",
-      key: "modifier",
       upgrade: [
         {
           key: "rarity",
@@ -609,12 +624,15 @@ function ModerateWeapon(settings) {
           value: false,
           comparison: "==",
           output: "@pow.mod",
+          outputKey: "modifier",
+          default: true
         },
         {
           key: "ranged",
           value: true,
           comparison: "==",
           output: "@dex.mod",
+          outputKey: "modifier"
         },
       ],
       handler: "override",
@@ -623,13 +641,23 @@ function ModerateWeapon(settings) {
         material: 1,
       },
       incompatible: ["extravagant"],
+      options: {
+        ...Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
+          if (!value.elegant) return acc; // Only include elegant subtraits
+          acc[key] = {
+            name: value.label,
+            key: "modifierType",
+            value: key,
+          };
+          return acc;
+        }, {})
+      },
     },
     extravagant: {
       name: "UTOPIA.Features.Extravagant",
       stackable: false,
       maxStacks: 1,
       parentKey: "damage",
-      key: "modifier",
       upgrade: [
         {
           key: "rarity",
@@ -642,15 +670,27 @@ function ModerateWeapon(settings) {
         refinement: 1,
       },
       incompatible: ["elegant"],
-      options: {
+      options: [{
         ...Object.entries(settings.subtraits).reduce((acc, [key, value]) => {
+          if (!value.elegant) return acc; // Only include elegant subtraits
           acc[key] = {
             name: value.label,
+            key: "modifier",
             value: `@${key}.mod`,
           };
           return acc;
         }, {}),
-      },
+      }, {
+        ...Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
+          if (!value.elegant) return acc; // Only include elegant subtraits
+          acc[key] = {
+            name: value.label,
+            key: "modifierType",
+            value: key,
+          };
+          return acc;
+        }, {})
+      }],
     },
     reach: {
       name: "UTOPIA.Features.Reach",
@@ -671,6 +711,9 @@ function ModerateWeapon(settings) {
       maxStacks: 0,
       key: "range",
       value: "5/10",
+      flag: {
+        ranged: true,
+      },
       handler: "1X/1X",
       cost: {
         RP: 4,
@@ -1065,12 +1108,15 @@ function SlowWeapon(settings) {
           value: false,
           comparison: "==",
           output: "@pow.mod",
+          outputKey: "modifier",
+          default: true
         },
         {
           key: "ranged",
           value: true,
           comparison: "==",
           output: "@dex.mod",
+          outputKey: "modifier"
         },
       ],
       handler: "override",
@@ -1079,13 +1125,22 @@ function SlowWeapon(settings) {
         material: 1,
       },
       incompatible: ["extravagant"],
+      options: {
+        ...Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
+          acc[key] = {
+            name: value.label,
+            key: "modifierType",
+            value: key,
+          };
+          return acc;
+        }, {})
+      },
     },
     extravagant: {
       name: "UTOPIA.Features.Extravagant",
       stackable: false,
       maxStacks: 1,
       parentKey: "damage",
-      key: "modifier",
       upgrade: [
         {
           key: "rarity",
@@ -1098,15 +1153,24 @@ function SlowWeapon(settings) {
         refinement: 1,
       },
       incompatible: ["elegant"],
-      options: {
+      options: [{
         ...Object.entries(settings.subtraits).reduce((acc, [key, value]) => {
           acc[key] = {
-            name: value.label,
+            key: "modifier",
             value: `@${key}.mod`,
           };
           return acc;
         }, {}),
-      },
+      }, {
+        ...Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
+          acc[key] = {
+            name: value.label,
+            key: "modifierType",
+            value: key,
+          };
+          return acc;
+        }, {})
+      }],
     },
     reach: {
       name: "UTOPIA.Features.Reach",
@@ -1127,6 +1191,9 @@ function SlowWeapon(settings) {
       maxStacks: 0,
       key: "range",
       value: "5/10",
+      flag: {
+        ranged: true,
+      },
       handler: "1X/1X",
       cost: {
         RP: 3,
@@ -3048,6 +3115,7 @@ function PassiveArtifact(settings) {
       maxStacks: 0,
       key: "range",
       value: "5/10",
+      setFlag: "ranged",
       handler: "5X/10X",
       appliesTo: "this",
       cost: {
@@ -3781,6 +3849,10 @@ export function parseFeature(feature) {
   function createKeyDisplay(feature, key) {
     let display = "";
     let keyDisplay = "";
+
+    if (feature.conditions && !key) {
+      key = feature.conditions[0].outputKey;
+    }
 
     if (key.includes(".")) {
       keyDisplay = key

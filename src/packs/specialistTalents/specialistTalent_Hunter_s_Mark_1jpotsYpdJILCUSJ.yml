@@ -10,15 +10,18 @@ system:
   flavor: ''
   requirements:
     - '@dex.value >= 7'
+  attributeRequirements:
+    - subtraits.dex.total >= 7
 effects:
   - name: Hunter's Mark
-    _id: SS04ow9I1gXwpcRs
-    img: null
-    type: base
+    origin: Compendium.utopia.specialistTalents.Item.1jpotsYpdJILCUSJ
+    img: icons/svg/aura.svg
+    type: passive
+    _id: 9f6hx5FHOEnxgN75
     system: {}
     changes:
-      - key: system.accuracy
-        mode: 0
+      - key: system.checks.accuracy.attribute
+        mode: 5
         value: agi
         priority: null
     disabled: false
@@ -31,7 +34,6 @@ effects:
       startRound: null
       startTurn: null
     description: ''
-    origin: null
     tint: '#ffffff'
     transfer: true
     statuses: []
@@ -42,13 +44,13 @@ effects:
       duplicateSource: null
       coreVersion: '12.331'
       systemId: utopia
-      systemVersion: 0.1.0
-      createdTime: 1734490111888
-      modifiedTime: 1734490155944
-      lastModifiedBy: nLkleFyXeCclB3Jg
-    _key: '!items.effects!1jpotsYpdJILCUSJ.SS04ow9I1gXwpcRs'
-folder: null
-sort: 0
+      systemVersion: '1.04'
+      createdTime: 1747066176724
+      modifiedTime: 1747066516830
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!1jpotsYpdJILCUSJ.9f6hx5FHOEnxgN75'
+folder: cDFyAqFrp5cBSEdu
+sort: 500000
 ownership:
   default: 0
   nLkleFyXeCclB3Jg: 3
@@ -58,9 +60,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1734396073037
-  modifiedTime: 1734396839449
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747066154663
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!1jpotsYpdJILCUSJ'
 

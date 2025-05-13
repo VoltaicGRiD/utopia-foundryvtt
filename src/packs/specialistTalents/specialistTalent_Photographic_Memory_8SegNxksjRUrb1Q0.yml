@@ -37,7 +37,8 @@ system:
     actor: default
   actions: []
   requirements: []
-  grants: []
+  grants:
+    - Compendium.utopia.actions.Item.HK0C94ki3IAY3qeB
 effects:
   - name: Photographic Memory
     origin: Compendium.utopia.specialistTalents.Item.8SegNxksjRUrb1Q0
@@ -46,7 +47,7 @@ effects:
     _id: I0E2mTu8isxXY0hC
     system: {}
     changes:
-      - key: system.traits.int.subtraits.mem.bonus
+      - key: system.subtraits.mem.value
         mode: 2
         value: '1'
         priority: null
@@ -72,11 +73,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1738710396002
-      modifiedTime: 1739009725806
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1747014585744
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!8SegNxksjRUrb1Q0.I0E2mTu8isxXY0hC'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 93750
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -86,9 +87,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1738710389913
-  modifiedTime: 1738710448732
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014910773
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!8SegNxksjRUrb1Q0'
 

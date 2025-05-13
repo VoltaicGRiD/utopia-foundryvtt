@@ -5,6 +5,9 @@ const fields = foundry.data.fields;
 export class selectOperation extends BaseOperation {
   static defineSchema() {
     const baseActivity = super.defineSchema();
+    // TODO - Add a way to remove the baseActivity fields from the schema
+    //delete baseActivity.costs;
+    //delete baseActivity.toggleActiveEffects;
 
     return {
       selectOperation: new fields.SchemaField({
@@ -36,9 +39,10 @@ export class selectOperation extends BaseOperation {
     const buttons = Array.from(operation.selectedOperations).length > 0 ? Array.from(operation.selectedOperations).map((op) => {
       const opData = activity.system.operations.find(o => o.id === op);
       return {
+        action: op,
         label: opData.name,
         callback: () => {
-          activity.system.executeSpecificOperation(opData.id, options);
+          op
         }
       };
     }) : [];
@@ -47,7 +51,9 @@ export class selectOperation extends BaseOperation {
       title: game.i18n.localize("UTOPIA.Activity.SelectOperation.Title"),
       content: `<p>${game.i18n.localize("UTOPIA.Activity.SelectOperation.Description")}</p>`,
       buttons: buttons,
-      options: { width: 400, height: "auto" }
+      submit: async result => {
+        await activity.system.executeSpecificOperation(result, options);
+      }
     }).render(true);
   }
 }

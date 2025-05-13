@@ -9,10 +9,11 @@ export const DAMAGE_STATE = {
 }
 
 export class Damage {
-  constructor({ formula = "", type = "", target, options = {} }) {
+  constructor({ formula = "", type = "", source = {}, target, options = {} }) {
     this.formula = formula; // The damage formula (e.g., "2d6 + 3")
     this.type = type; // The type of damage (e.g., "fire", "cold")
     this.options = options; // Additional options for the damage instance
+    this.source = source;
     this.target = target; // The target actor or token
     this.flags = {
       blockers: [], // Actors that have blocked the damage (reduces damage by amount blocked)
@@ -28,7 +29,7 @@ export class Damage {
 
   async _rollFormula() {
     // Roll the formula using the Roll class from FoundryVTT
-    const roll = new Roll(this.formula); // Create a new Roll instance with the formula
+    const roll = new Roll(this.formula, await this.source.getRollData()); // Create a new Roll instance with the formula
     await roll.evaluate(); // Evaluate the roll asynchronously
     return roll; // Return the evaluated roll
   }
@@ -39,12 +40,17 @@ export class Damage {
       await this._initialize(); // Re-initialize to ensure result is set
     }
 
-    // Handle the damage application to the target
-    const targetDefenses = this.target.system.defenses;
-    const damageType = this._getDamageTypes()[this.type]; // Get the damage type from the configuration
-    if (!damageType) return {}; // If the damage type is not valid, exit
-    var targetDamage = this.result - targetDefenses[this.type]; // Calculate the effective damage after applying defenses
-    
+    var targetDamage = this.result; // Initialize target damage with the result of the roll
+
+    // Check if the source of the damage has 'penetrative'
+    if (!this.source.system.penetrative) {
+      // Handle the damage application to the target
+      const targetDefenses = this.target.system.defenses;
+      const damageType = this._getDamageTypes()[this.type]; // Get the damage type from the configuration
+      if (!damageType) return {}; // If the damage type is not valid, exit
+      targetDamage -= targetDefenses[this.type]; // Calculate the effective damage after applying defenses
+    }
+
     // Check for resistances
     if (this.target.system.resistances) {
       const resistances = this.target.system.resistances[damageType] ?? 0; // Get the target's resistances
@@ -151,7 +157,7 @@ export class DamageHandler {
   _initialize() {
     // Set up any necessary properties or methods for the damage instance
     for (const td of this.targetDamages) {
-      td.damages = td.damages.map(d => new Damage({ ...d, target: td.target })); // Create a new Damage instance for each damage object
+      td.damages = td.damages.map(d => new Damage({ ...d, target: td.target, source: this.source })); // Create a new Damage instance for each damage object
     }
 
     this.id = foundry.utils.randomID(16);  // Generate a random ID for the handler
@@ -267,6 +273,12 @@ export class DamageHandler {
       }
 
       if (dodged) totalDamage = 0; // If the target dodged, set total damage to 0
+
+      if (totalDamage < 0) totalDamage = 0; // Ensure total damage is not negative
+
+      if (totalDamage > 0 && this.source.system.exhausting) {
+        this.targetDamages.push({ target: target.target, damages: target.damages.map(d => d._dhp({ target: target.target, targetDamage: totalDamage })) }); // Push the damage to the target damages array
+      }
 
       await target.target.applyNewDamage({ result: totalDamage, damages: target.damages, blockRoll: target.blockRoll ?? undefined, dodgeRoll: target.dodgeRoll ?? undefined }); // Apply the final damage to the target
     }

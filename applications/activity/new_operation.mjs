@@ -23,7 +23,7 @@ export class NewOperationSheet extends api.HandlebarsApplicationMixin(api.Applic
       closeOnSubmit: true,
     },
     position: {
-      width: 400,
+      width: 500,
       height: 750
     },
   };

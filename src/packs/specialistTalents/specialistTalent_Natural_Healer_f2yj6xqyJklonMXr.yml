@@ -19,16 +19,7 @@ system:
     propagateToActor: true
     recoverAmount: 0
     recoverInterval: none
-  resources:
-    - name: Restoration Charges
-      amount: 0
-      max:
-        formula: '0'
-      recoverAmount: 0
-      recoverInterval: none
-      propagateToActor: true
-      resourceId: p9yLeO7dB3V1zcUx
-      secret: false
+  resources: []
   action:
     actionId: BqqXqcyl69qDLv5c
     name: New Action
@@ -62,7 +53,8 @@ system:
       macro: null
       actor: default
   requirements: []
-  grants: []
+  grants:
+    - Compendium.utopia.actions.Item.fkVAbVEuF6EtpBtk
 effects:
   - name: Natural Healer
     origin: Compendium.utopia.specialistTalents.Item.f2yj6xqyJklonMXr
@@ -100,8 +92,8 @@ effects:
       modifiedTime: 1739009795488
       lastModifiedBy: p7QOrF2iNLdEPi7z
     _key: '!items.effects!f2yj6xqyJklonMXr.OrYCSwryvH72SDoC'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 105860
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -111,9 +103,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1738949023042
-  modifiedTime: 1739009805703
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014928523
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!f2yj6xqyJklonMXr'
 

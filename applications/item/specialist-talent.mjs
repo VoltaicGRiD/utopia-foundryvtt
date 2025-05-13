@@ -38,12 +38,9 @@ export class SpecialistTalent extends DragDropItemV2 {
       createEffect: this._createEffect,
       deleteEffect: this._deleteEffect,
       toggleEffect: this._toggleEffect,
-      addItem: this._addItem,
-      deleteResource: this._deleteResource,
-      deleteAction: this._deleteAction,
     },
     form: {
-      submitOnChange: false,
+      submitOnChange: true,
     },
     window: {
       title: "UTOPIA.SheetLabels.specialistTalent",
@@ -146,10 +143,19 @@ export class SpecialistTalent extends DragDropItemV2 {
         case 'tabs':
           return tabs;
         case 'attributes':
+          tab.id = 'attributes';
+          tab.label += 'Attributes';
+          tab.icon = 'fas fa-fw fa-book';
+          break;
         case 'description':
+          tab.id = 'description';
+          tab.label += 'Description';
+          tab.icon = 'fas fa-fw fa-align-left';
+          break;
         case 'effects':
-          tab.id = partId;
-          tab.label += partId;
+          tab.id = 'effects';
+          tab.label += 'Effects';
+          tab.icon = 'fas fa-fw fa-bolt';
           break;
         default:
       }
@@ -172,69 +178,6 @@ export class SpecialistTalent extends DragDropItemV2 {
         });
       },
     }).browse();
-  }
-
-  static async _addItem(event) {
-    const type = this.element.querySelector('#addOptions').selectedOptions[0].value;
-    console.log("Creating ", type);
-    switch (type) {
-      case 'resource':
-        this._addResource();
-        break;
-      case 'action':
-        this._addAction();
-        break;
-    }
-
-    this.render();
-  }
-
-  async _addResource() {
-    const resources = this.item.system.resources;
-    const resource = {
-      name: `New Resource ${resources.length + 1}`,
-    }
-    resources.push(resource);
-
-    await this.item.update({
-      [`system.resources`]: resources,
-    });
-  }
-
-  static async _deleteResource(event) {
-    const index = event.target.dataset.index;
-
-    const resources = this.item.system.resources;
-
-    resources.splice(index, 1);
-
-    await this.item.update({
-      [`system.resources`]: resources,
-    });
-  }
-
-  async _addAction() {
-    const actions = this.item.system.actions;
-    const action = {
-      name: `${this.item.name} ${actions.length === 0 ? '' : actions.length + 1}`,
-    }
-    actions.push(action);
-
-    await this.item.update({
-      [`system.actions`]: actions,
-    });
-  }
-
-  static async _deleteAction(event) {
-    const index = event.target.dataset.index;
-
-    const actions = this.item.system.actions;
-
-    actions.splice(index, 1);
-
-    await this.item.update({
-      [`system.actions`]: actions,
-    });
   }
 
   /**

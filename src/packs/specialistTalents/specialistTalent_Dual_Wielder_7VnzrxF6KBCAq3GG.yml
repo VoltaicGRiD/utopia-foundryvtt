@@ -28,9 +28,14 @@ system:
       template: none
       macro: null
       actor: default
+  attributeRequirements:
+    - traits.str.total >= 7
+    - traits.agi.total >= 7
+  grants:
+    - Compendium.utopia.actions.Item.Zb1bvSTeARZaorpJ
 effects: []
-folder: null
-sort: 0
+folder: cDFyAqFrp5cBSEdu
+sort: 600000
 ownership:
   default: 0
   nLkleFyXeCclB3Jg: 3
@@ -40,9 +45,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1734396859822
-  modifiedTime: 1738708907322
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747112704068
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!7VnzrxF6KBCAq3GG'
 

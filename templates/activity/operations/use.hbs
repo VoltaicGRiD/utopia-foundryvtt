@@ -1,0 +1,60 @@
+<div>
+  <hr/>
+  <span class="operation-category">Use item:</span>
+  
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="useItem">Item:</label>
+      <select name="useItem">
+        {{#each choices.items as |group|}}
+          <optgroup label="{{group.name}}">
+            {{#each group.choices as |name id|}}
+              <option value="{{id}}" {{#if (eq ../../operation.useItem id)}}selected{{/if}}>{{localize name.label}}</option>
+            {{/each}}
+          </optgroup>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="operation-content">
+      <label for="useSlot">Slot:</label>
+      <select name="useSlot">
+        {{#each choices.slots as |group|}}
+          <optgroup label="{{group.name}}">
+            {{#each group.choices as |name id|}}
+              <option value="{{id}}" {{#if (eq ../../operation.useSlot id)}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </optgroup>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="useSlotLimit">Slot use limit:</label>
+      <input type="number" name="useSlotLimit" value="{{operation.useSlotLimit}}" placeholder="0"/>
+      <span class="hint">Will use items in the specified slot until the limit is reached. Specify '0' to use all items in the specified slot.</span>
+    </div>
+
+    <div class="operation-content">
+      <label for="useSlotIndex">Start at slot index (0 for first item):</label>
+      <input type="number" name="useSlotIndex" value="{{operation.useSlotIndex}}" placeholder="0"/>
+      <span class="hint">Will use the item present at the specified index in the array of equipped items in the specified slot. If there is no item at that index, it will use the first item available.</span>
+    </div>
+  </div>
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="useItemActions">Use item actions:</label>
+      <input type="checkbox" name="useItemActions" {{#if operation.useItemActions}}checked{{/if}}/>
+      <span class="hint">If checked, item actions will be deducted upon use, along with any actions specified for this operation.</span>
+    </div>
+
+    <div class="operation-content">
+      <label for="maximizeOutput">Maximize rolls:</label>
+      <input type="checkbox" name="maximizeOutput" {{#if operation.maximizeOutput}}checked{{/if}}/>
+      <span class="hint">If checked, any rolls this item uses will produce their maximum possible value.</span>
+    </div>
+  </div>
+</div>

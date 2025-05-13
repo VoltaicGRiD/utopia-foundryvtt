@@ -1,0 +1,37 @@
+<div>
+  <hr/>
+  <span class="operation-category">Create a resource, if it does not exist:</span>
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="resourceName">Resource name:</label>
+      <input type="text" name="resourceName" value="{{operation.resourceName}}" placeholder="Resource name" required/>
+    </div>
+    <div class="operation-content">
+      <label for="resourceType">Source (optional):</label>
+      <input type="text" name="source" value="{{operation.source}}" placeholder="Source" />
+    </div>
+    <div class="operation-content">
+      <label for="maximumFormula">Maximum value (allows formulas):</label>
+      <input type="text" name="maximumFormula" value="{{operation.maximumFormula}}" placeholder="Max (Formula)" required/>
+    </div>
+    <div class="operation-content">
+      <label for="startFull">Start full:</label>
+      <input type="checkbox" name="startFull" {{#if operation.startFull}}checked{{/if}} />
+    </div>
+  </div>
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="negative">Can go negative:</label>
+      <input type="checkbox" name="negative" {{#if operation.negative}}checked{{/if}} />
+    </div>
+    <div class="operation-content">
+      <label for="resetOnRest.enabled">Reset on rest:</label>
+      <input type="checkbox" name="resetOnRest.enabled" {{#if operation.resetOnRest.enabled}}checked{{/if}} />
+  </div>
+
+  <div class="operation-content">
+    <label for="description">Resource description:</label>
+    <input type="text" name="description" value="{{operation.description}}" placeholder="Description" />
+  </div>
+</div>

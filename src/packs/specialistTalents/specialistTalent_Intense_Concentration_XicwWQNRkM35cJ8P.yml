@@ -4,14 +4,18 @@ _id: XicwWQNRkM35cJ8P
 img: icons/svg/item-bag.svg
 system:
   formula: ''
-  description: ''
+  description: >-
+    <p>While concentrating, you may cast spells and take the Attack, Block, and
+    Dodge action.</p>
   flavor: ''
   requirements:
     - '@res.value >= 7'
   grants: []
+  attributeRequirements:
+    - subtraits.res.total >= 7
 effects: []
-folder: null
-sort: 0
+folder: cDFyAqFrp5cBSEdu
+sort: 700000
 ownership:
   default: 0
   nLkleFyXeCclB3Jg: 3
@@ -21,9 +25,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1737027390690
-  modifiedTime: 1737028434110
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747112763355
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!XicwWQNRkM35cJ8P'
 

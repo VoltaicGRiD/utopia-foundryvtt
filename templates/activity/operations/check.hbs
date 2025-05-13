@@ -1,0 +1,39 @@
+<div>
+  <hr/>
+  <span class="operation-category">Perform a check:</span>
+  
+  <div class="operation-content-row">
+    <select name="check" required>
+      {{#each choices as |group|}}
+        {{log group}}
+        <optgroup label="{{group.name}}">
+          {{#each group.choices as |name id|}}
+            <option value="{{id}}" {{#if (eq ../../operation.check id)}}selected{{/if}}>{{localize name.label}}</option>
+          {{/each}}
+        </optgroup>
+      {{/each}}
+    </select>
+  </div>  
+
+  <div class="operation-content-row">
+    <div class="flexcol">
+      <label for="overrideRoll.enabled">Override roll:</label>
+      <input type="checkbox" name="overrideRoll.enabled" {{#if operation.overrideRoll.enabled}}checked{{/if}}/>
+    </div>
+
+    <div class="flexcol">
+      <label for="overrideRoll.ifLessThan">If less than:</label>
+      <input type="number" name="overrideRoll.ifLessThan" value="{{operation.overrideRoll.ifLessThan}}"/>
+    </div>
+
+    <div class="flexcol">
+      <label for="overrideRoll.setTo">Set to:</label>
+      <input type="number" name="overrideRoll.setTo" value="{{operation.overrideRoll.setTo}}"/>
+    </div>
+
+    <div class="flexcol">
+      <label for="overrideRoll.beforeModifiers">Before modifiers:</label>
+      <input type="checkbox" name="overrideRoll.beforeModifiers" {{#if operation.overrideRoll.beforeModifiers}}checked{{/if}}/>
+    </div>
+  </div>
+</div>

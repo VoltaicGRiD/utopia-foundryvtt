@@ -182,6 +182,30 @@ export function registerConfig() {
   }
 
   CONFIG.UTOPIA.SPECIALTY_CHECKS = {
+    devices: {
+      defaultAttribute: "eng",
+      formula: "3d6 + @eng.mod",
+      tags: ["engineering", "devices", "device", "hack", "hacking"],
+      label: "UTOPIA.SPECIALTY_CHECKS.Devices.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Devices.description",
+      icon: "fas fa-plug"
+    },
+    accuracy: {
+      defaultAttribute: "dex",
+      formula: "3d6 + @dex.mod",
+      tags: ["dexterity", "accuracy", "aim", "aiming", "shoot", "shooting"],
+      label: "UTOPIA.SPECIALTY_CHECKS.Accuracy.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.Accuracy.description",
+      icon: "fas fa-bullseye"
+    },
+    traverseDifficultTerrain: {
+      defaultAttribute: "stu",
+      formula: "3d6 + @stu.mod",
+      tags: ["stunt", "traverse", "difficultTerrain", "climb", "climbing", "jump", "jumping", "obstacles"],
+      label: "UTOPIA.SPECIALTY_CHECKS.TraverseDifficultTerrain.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.TraverseDifficultTerrain.description",
+      icon: "fas fa-mountain"
+    },
     stealth: {
       defaultAttribute: "stu",
       formula: "3d6 + @stu.mod",
@@ -297,6 +321,7 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Energy',
+      elegant: true,
       penetrative: true,
       harsh: true,
       defensive: true,
@@ -313,6 +338,7 @@ export function registerConfig() {
       dodge: true,
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Heat',
+      elegant: true,
       penetrative: true,
       harsh: true,
       defensive: true,
@@ -330,6 +356,7 @@ export function registerConfig() {
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Chill',
       penetrative: true,
+      elegant: true,
       harsh: true,
       defensive: true,
       destructive: true,
@@ -346,6 +373,7 @@ export function registerConfig() {
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Physical',
       penetrative: true,
+      elegant: true,
       defensive: true,
       destructive: true,
       appliesTo: 'shp'
@@ -360,6 +388,7 @@ export function registerConfig() {
       armor: true,
       label: 'UTOPIA.DAMAGE_TYPES.Psyche',
       penetrative: true,
+      elegant: true,
       harsh: true,
       resistance: true,
       appliesTo: 'shp'

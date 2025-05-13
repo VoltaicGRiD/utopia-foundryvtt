@@ -38,6 +38,7 @@ system:
   actions: []
   requirements: []
   grants: []
+  speciesRequirements: human
 effects:
   - name: Adept
     origin: Compendium.utopia.specialistTalents.Item.hMYjR5wasKFWltLg
@@ -46,7 +47,7 @@ effects:
     _id: cFyzrtEWHhvqJz4y
     system: {}
     changes:
-      - key: system.points.gifted.bonus
+      - key: system.giftPoints.available
         mode: 2
         value: '1'
         priority: null
@@ -72,11 +73,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1739005570233
-      modifiedTime: 1739009652176
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1747014974868
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!hMYjR5wasKFWltLg.cFyzrtEWHhvqJz4y'
-folder: null
-sort: 0
+folder: QHESWU1hFDNX4X2W
+sort: 100000
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -86,9 +87,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1739005547761
-  modifiedTime: 1739005623694
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747015116525
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!hMYjR5wasKFWltLg'
 

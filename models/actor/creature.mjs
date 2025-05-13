@@ -1,4 +1,5 @@
 import UtopiaActorBase from "../base-actor.mjs";
+import { prepareBodyData, prepareClassData, prepareKitData } from "../utility/pawn-utils.mjs";
 
 export class Creature extends UtopiaActorBase {
 
@@ -45,13 +46,8 @@ export class Creature extends UtopiaActorBase {
 
     this.difficulty = this.parent.items.find(i => i.type === "body")?.system?.baseDR || 0;
 
-    for (const item of this.parent.items) {
-      if (item.type === "kit") {
-        this.difficulty += item.system.points;
-      }
-      if (item.type === "class") {
-        this.difficulty += item.system.difficulty;
-      }
-    }
+    this._bodyData = this.parent.items.find(i => i.type === "body");
+
+    prepareBodyData(this);
   }
 }

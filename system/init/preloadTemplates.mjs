@@ -31,6 +31,9 @@ export const preloadHandlebarsTemplates = async function () {
 
     'actor-header-field':
       'systems/utopia/templates/actor/partials/header-field.hbs',
+
+    'effects': 
+      'systems/utopia/templates/effects.hbs'
   });
 };
 

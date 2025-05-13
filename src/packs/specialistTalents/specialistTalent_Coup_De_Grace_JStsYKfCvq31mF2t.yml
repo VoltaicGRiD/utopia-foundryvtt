@@ -12,9 +12,11 @@ system:
   flavor: ''
   requirements:
     - '@stu.value >= 7'
+  attributeRequirements:
+    - subtraits.stu.total >= 7
 effects: []
-folder: null
-sort: 0
+folder: cDFyAqFrp5cBSEdu
+sort: 400000
 ownership:
   default: 0
   nLkleFyXeCclB3Jg: 3
@@ -24,9 +26,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1734394410045
-  modifiedTime: 1734395351399
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747065388678
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!JStsYKfCvq31mF2t'
 

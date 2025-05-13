@@ -36,7 +36,8 @@ system:
     actor: default
   actions: []
   requirements: []
-  grants: []
+  grants:
+    - Compendium.utopia.favors.Item.Zxsx6i2kiLNdgSfC
 effects:
   - name: Pragmatic
     origin: Compendium.utopia.specialistTalents.Item.frdn97pjwBnbJy7u
@@ -45,13 +46,9 @@ effects:
     _id: 76rwRi9umaaXdVnr
     system: {}
     changes:
-      - key: system.traits.int.subtraits.eng.bonus
+      - key: system.subtraits.eng.value
         mode: 2
         value: '1'
-        priority: null
-      - key: system.favors
-        mode: 2
-        value: devices
         priority: null
     disabled: false
     duration:
@@ -75,11 +72,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1738709815072
-      modifiedTime: 1739009718349
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1747014411023
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!frdn97pjwBnbJy7u.76rwRi9umaaXdVnr'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 87500
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -89,9 +86,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1738709519850
-  modifiedTime: 1738709540425
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014902743
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!frdn97pjwBnbJy7u'
 

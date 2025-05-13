@@ -2218,6 +2218,13 @@
   text-align: center;
   height: 40px;
 }
+.utopia.activity-sheet .operations-grid, .utopia.new-operation-sheet .operations-grid, .utopia.operation-sheet .operations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+}
 .utopia.activity-sheet .operations-list, .utopia.new-operation-sheet .operations-list, .utopia.operation-sheet .operations-list {
   display: flex;
   flex-direction: column;
@@ -2306,6 +2313,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 5px;
+  margin-bottom: 5px;
+  align-items: start;
 }
 .utopia.activity-sheet .operation-content-row select, .utopia.activity-sheet .operation-content-row multi-select, .utopia.activity-sheet .operation-content-row string-tags, .utopia.activity-sheet .operation-content-row input:not([type=checkbox]), .utopia.new-operation-sheet .operation-content-row select, .utopia.new-operation-sheet .operation-content-row multi-select, .utopia.new-operation-sheet .operation-content-row string-tags, .utopia.new-operation-sheet .operation-content-row input:not([type=checkbox]), .utopia.operation-sheet .operation-content-row select, .utopia.operation-sheet .operation-content-row multi-select, .utopia.operation-sheet .operation-content-row string-tags, .utopia.operation-sheet .operation-content-row input:not([type=checkbox]) {
   min-width: 100px;

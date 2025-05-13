@@ -3,7 +3,10 @@ type: specialistTalent
 _id: czrJtxMFsaf8SXsS
 img: icons/svg/item-bag.svg
 system:
-  description: ''
+  description: >-
+    <p>Your Appeal score increases by 1. You gain a point of favor on tests made
+    to persuade creatures that you've never attempted to persuade before, given
+    they're not hostile to you.</p>
   formula: ''
   flavor: ''
   resource:
@@ -43,13 +46,9 @@ effects:
     _id: 2iRP1QhEQGGadsjF
     system: {}
     changes:
-      - key: system.traits.cha.subtraits.app.bonus
+      - key: system.subtraits.app.value
         mode: 2
         value: '1'
-        priority: null
-      - key: system.favors
-        mode: 2
-        value: persuasion
         priority: null
     disabled: false
     duration:
@@ -73,11 +72,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1738948897924
-      modifiedTime: 1739009779175
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1746935595141
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!czrJtxMFsaf8SXsS.2iRP1QhEQGGadsjF'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 104688
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -87,9 +86,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1738948878240
-  modifiedTime: 1738948878240
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014921183
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!czrJtxMFsaf8SXsS'
 

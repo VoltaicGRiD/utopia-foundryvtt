@@ -97,6 +97,10 @@ export class Harvest extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) 
     for (const alwaysHarvestable of creature.alwaysHarvestables) {
       if (alwaysHarvestable.id === harvestId) {
         if (alwaysHarvestable.harvested.complete) return; // Already harvested
+        if (character.system.turnActions.available < 6) {
+          ui.notifications.warn(`${game.i18n.localize("UTOPIA.Items.Harvest.TurnActions")}`);
+          return;
+        }
         const earned = (await new Roll(alwaysHarvestable.quantity, {}).evaluate()).total;
         ui.notifications.info(`${game.i18n.localize("UTOPIA.Items.Harvest.Success")} ${alwaysHarvestable.componentData.name}.`);;
         alwaysHarvestable.harvested.complete = true;
@@ -106,6 +110,7 @@ export class Harvest extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) 
           component: alwaysHarvestable.component
         }
         await character.update({
+          "system.turnActions.value": character.system.turnActions.value - 6, // Reduce TA by 6 if fast harvest
           [`system.components.${alwaysHarvestable.component}.${creature.rarity}.available`]: character.system.components[alwaysHarvestable.component][creature.rarity].available + earned
         })
       }
@@ -114,6 +119,10 @@ export class Harvest extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2) 
     for (const testHarvestable of creature.testHarvestables) {
       if (testHarvestable.id === harvestId) {
         if (testHarvestable.harvested.complete) return; // Already harvested
+        if (character.system.turnActions.available < 6 && time === "fast") {
+          ui.notifications.warn(`${game.i18n.localize("UTOPIA.Items.Harvest.TurnActions")}`);
+          return;
+        }
         let success = false;
         if (!character) success = true; // No character, auto success (GM)
         let difficulty = testHarvestable.testDifficulty;

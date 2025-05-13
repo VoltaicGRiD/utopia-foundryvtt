@@ -1,0 +1,22 @@
+<div>
+  <hr/>
+  <span class="operation-category">Generic operation (chat message optional):</span>
+  
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="message">Message:</label>
+      <input type="text" name="message" value="{{operation.message}}" placeholder="Message"/>      
+      <span class="hint">You can use (including brackets) "{actor}", "{activity}", "{operation}" to reference their names.</span>
+      <span class="hint">Outputting data paths (i.e. "stamina.value") is not yet supported (WIP).</span>
+    </div>
+  </div>
+
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="sendToChat">Send to chat:</label>
+      <input type="checkbox" name="sendToChat" {{#if operation.sendToChat}}checked{{/if}}/>
+    </div>
+  </div>
+
+</div>

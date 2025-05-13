@@ -38,6 +38,7 @@ export class SpecialistTalent extends UtopiaItemBase {
     schema.speciesRequirements = new fields.StringField({ required: true, nullable: false });
     schema.talentRequirements = new fields.StringField({ required: true, nullable: false });
     schema.talentTreeRequirements = new fields.StringField({ required: true, nullable: false });
+    schema.singleTalentTreeRequirements = new fields.StringField({ required: true, nullable: false });
     schema.artistryRequirements = new fields.StringField({ required: true, nullable: false });
     schema.grants = new fields.SetField(new fields.DocumentUUIDField({ type: "Item" }), { required: true, nullable: true, initial: [] });
 
@@ -151,34 +152,10 @@ export class SpecialistTalent extends UtopiaItemBase {
     return acceptable;
   }
 
-  migrateData(source) {
-    if (source.requirements) {
-      source.attributeRequirements = source.requirements;
-    }
-
-    if (source.talentRequirements === "none") 
-      source.talentRequirements = null;
-    if (source.talentTreeRequirements === "none") 
-      source.talentTreeRequirements = null;
-    if (source.attributeRequirements === "none") 
-      source.attributeRequirements = null;
-    if (source.artistryRequirements === "none") 
-      source.artistryRequirements = null;
-    if (source.speciesRequirements === "none") 
-      source.speciesRequirements = null;
-
-    return source;
-  }
-
   prepareDerivedData() {
     const resources = this.resources;
     resources.forEach(async r => { // TODO - Implement in a way that avoids rolls
-      // if (!r.propagateToActor) {
-      //   // Max could be a formula
-      //   const roll = await new Roll(r.max.formula, this.parent.getRollData()).evaluate();
-      //   r.max.total  = roll.total;
-      //   r.amount = Math.min(r.amount, r.max.total);
-      // }
+
     });
   }
 }

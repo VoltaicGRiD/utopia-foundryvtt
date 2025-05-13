@@ -1,0 +1,41 @@
+<div>
+  <hr/>
+  <span class="operation-category">Consume a component to restore stamina:</span>
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="component">Component:</label>
+      <select name="component" required>
+        {{#each choices.component as |name id|}}
+          <option value="{{id}}" {{#if (eq ../operation.component id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="operation-content">
+      <label for="rarity">Rarity:</label>
+      <select name="rarity" required>
+        {{#each choices.rarity as |name id|}}
+          <option value="{{id}}" {{#if (eq ../operation.rarity id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+  </div>  
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="restoration">Restoration (allows formula):</label>
+      <input type="text" name="restoration" value="{{operation.restoration}}" placeholder="Restoration" required/>
+    </div>
+
+    <div class="operation-content">
+      <label for="amount">Amount (allows formulas):</label>
+      <input type="text" name="amount" value="{{operation.amount}}" placeholder="Amount" required />
+    </div>
+
+    <div class="operation-content">
+      <label for="useRarityValue">Use Rarity Value (@rarityValue):</label>
+      <input type="checkbox" name="useRarityValue" {{#if operation.useRarityValue}}checked{{/if}}>
+      <span class="hint">Crude: 0 - Mythical: 5</span>
+    </div>
+  </div>
+</div>

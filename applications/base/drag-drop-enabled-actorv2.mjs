@@ -272,7 +272,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     context.consumables = this.actor.items.filter(i => i.type === 'gear').filter(i => i.system.category === "consumable");
     context.talents = this.actor.items.filter(i => i.type === 'talent');
     context.spells = this.actor.items.filter(i => i.type === 'spell');
-    context.actions = [...this.actor.items.filter(i => i.type === 'action'), ...this.actor.system.gearActions ?? []];
+    context.actions = [...this.actor.items.filter(i => i.type === 'action'), ...this.actor.system.gearActions ?? [], ...this.actor.items.filter(i => i.type === 'activity')];
     context.generic = this.actor.items.filter(i => i.type === 'generic');
     context.specialist = this.actor.items.filter(i => i.type === 'specialistTalent');
     context.kits = this.actor.items.filter(i => i.type === 'kit');
@@ -517,15 +517,23 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
   static async _roll(event, target) {
     const roll = target.dataset.roll;
+    
+    let protections = 0;
+    if (this.actor.getFlag("utopia", "protections")) {
+      protections = parseInt(this.actor.getFlag("utopia", "protections"));
+      await this.actor.unsetFlag("utopia", "protections");
+    }
+
     switch (roll) {
+
       case "block":
         const block = this.actor.system.block;
         const blockFormula = `${block.quantity}d${block.size}`;
-        return await new Roll(blockFormula, this.actor.getRollData()).toMessage();
+        return await new Roll(blockFormula, this.actor.getRollData()).alter(1, protections).toMessage();
       case "dodge":
         const dodge = this.actor.system.dodge;
         const dodgeFormula = `${dodge.quantity}d${dodge.size}`;
-        return await new Roll(dodgeFormula, this.actor.getRollData()).toMessage();
+        return await new Roll(dodgeFormula, this.actor.getRollData()).alter(1, protections).toMessage();
       case "rest": 
         return this.actor.rest();
       case "forage": 
@@ -536,7 +544,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       case "check": 
         const check = target.dataset.check;
         const specification = target.dataset.specification ?? "always";
-        return this.actor.check(check, { specification });
+        const roll = await this.actor.check(check, { specification });
+        return await roll.toMessage();
       case "item": 
         const item = this.actor.items.get(target.dataset.item);
         return await item.roll();
@@ -579,6 +588,9 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
     if (equipped) {
       gear.system.use();
+    }
+    else {
+      ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.ItemNotEquipped"));
     }
   }
 
@@ -970,7 +982,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       const attributes = item.system.attributes;
       
       // Iterate through attributes based on their 'choiceSet' propery
-      const choiceSets = [...new Set(attributes.map(a => a.choiceSet))];
+      const choiceSets = [...new Set(attributes.filter(a => a.hasChoices).map(a => a.choiceSet))];
 
       for (const choiceSet of choiceSets) {
         if (choiceSet === "none" || choiceSet === undefined) continue;

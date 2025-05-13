@@ -51,22 +51,27 @@
 
     {{!-- ActiveEffects --}}
     <span class="operation-category">Operation Active Effects:</span>
-    {{#if (gt fields.toggleActiveEffects.fields.selectedEffects.elements.choices 0)}}
+    {{#if hasEffects}}
     <div class="operation-active-effects">
-      <label for="activeEffects.selectedEffects">Select Active Effects:</label>
-      <multi-select name="toggleActiveEffects.">
-        {{#each effectsList as |name key|}}
-          <option value="{{key}}">{{name}}</option>
-        {{/each}}
-      </multi-select>
-      <input type="text" name="toggleActiveEffects.notificationMessage" value="{{operation.activeEffects.notificationMessage}}" placeholder="Notification Message" />
       <div class="flexcol">
-        <input type="checkbox" name="toggleActiveEffects.displayNotification" {{#if operation.activeEffects.displayNotification}}checked{{/if}} />
-        <label for="toggleActiveEffects.displayNotification">Display Notification</label>
+        <label for="activeEffects.selectedEffects">Select Active Effects:</label>
+        <multi-select name="toggleActiveEffects.">
+          {{#each effectsList as |effect|}}
+            <option value="{{effect.uuid}}">{{effect.name}}</option>
+          {{/each}}
+        </multi-select>
       </div>
       <div class="flexcol">
-        <input type="checkbox" name="toggleActiveEffects.displayInChat" id="toggleActiveEffects.displayInChat" {{#if operation.activeEffects.displayInChat}}checked{{/if}} />
+        <span></span>
+        <input type="text" name="toggleActiveEffects.notificationMessage" value="{{operation.activeEffects.notificationMessage}}" placeholder="Notification Message" />
+      </div>
+      <div class="flexcol">
+        <label for="toggleActiveEffects.displayNotification">Display Notification</label>
+        <input type="checkbox" name="toggleActiveEffects.displayNotification" {{#if operation.activeEffects.displayNotification}}checked{{/if}} />
+      </div>
+      <div class="flexcol">
         <label for="toggleActiveEffects.displayInChat">Display in Chat</label>
+        <input type="checkbox" name="toggleActiveEffects.displayInChat" id="toggleActiveEffects.displayInChat" {{#if operation.activeEffects.displayInChat}}checked{{/if}} />
       </div>
     </div>
     {{else}}

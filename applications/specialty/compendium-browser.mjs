@@ -152,6 +152,41 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
       const itemUuid = target.dataset.uuid;
       const item = await fromUuid(itemUuid);
 
+      if (["kit", "class"].includes(item.type)) {
+        const selectedChoices = {};
+        
+        const attributes = item.system.attributes;
+        
+        // Iterate through attributes based on their 'choiceSet' propery
+        const choiceSets = [...new Set(attributes.filter(a => a.hasChoices).map(a => a.choiceSet))];
+
+        for (const choiceSet of choiceSets) {
+          if (choiceSet === "none" || choiceSet === undefined) continue;
+
+          const matchingAttributes = attributes.filter(a => a.choiceSet === choiceSet).map(a => {
+            return {
+          label: `${a.name}: ${(a.value < 0 ? "-" : "+") + a.value}`,
+          value: a.key,
+            };
+          });
+          const input = foundry.applications.fields.createSelectInput({ options: matchingAttributes });
+
+          await foundry.applications.api.DialogV2.prompt({
+            title: game.i18n.localize("UTOPIA.Items.Kit.FIELDS.attributes.DialogTitle"),
+            content: input.outerHTML,
+            render: true,
+          }).then((result) => {
+            if (result === "ok") {
+          selectedChoices[choiceSet] = input.selectedOptions[0].value;
+            }
+          }).catch(err => {
+            console.error("Error updating item attributes:", err);
+          });
+        }
+
+        item.system.selectedChoices = selectedChoices;
+      }
+
       // We need to have specific use-cases based on the item type
       this.actor.canTake(item);
 
@@ -164,6 +199,41 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
     if (this.actor.isOwner || game.user.isGM) {
       const itemUuid = target.dataset.uuid;
       const item = await fromUuid(itemUuid);
+
+      if (["kit", "class"].includes(item.type)) {
+        const selectedChoices = {};
+        
+        const attributes = item.system.attributes;
+        
+        // Iterate through attributes based on their 'choiceSet' propery
+        const choiceSets = [...new Set(attributes.filter(a => a.hasChoices).map(a => a.choiceSet))];
+
+        for (const choiceSet of choiceSets) {
+          if (choiceSet === "none" || choiceSet === undefined) continue;
+
+          const matchingAttributes = attributes.filter(a => a.choiceSet === choiceSet).map(a => {
+            return {
+          label: `${a.name}: ${(a.value < 0 ? "-" : "+") + a.value}`,
+          value: a.key,
+            };
+          });
+          const input = foundry.applications.fields.createSelectInput({ options: matchingAttributes });
+
+          await foundry.applications.api.DialogV2.prompt({
+            title: game.i18n.localize("UTOPIA.Items.Kit.FIELDS.attributes.DialogTitle"),
+            content: input.outerHTML,
+            render: true,
+          }).then((result) => {
+            if (result === "ok") {
+          selectedChoices[choiceSet] = input.selectedOptions[0].value;
+            }
+          }).catch(err => {
+            console.error("Error updating item attributes:", err);
+          });
+        }
+
+        item.system.selectedChoices = selectedChoices;
+      }
 
       // We need to have specific use-cases based on the item type
       this.actor.canTake(item);

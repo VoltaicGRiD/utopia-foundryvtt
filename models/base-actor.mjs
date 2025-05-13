@@ -211,7 +211,10 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       level: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       gearDiscounts: new fields.SchemaField({}),
       componentDiscounts: new fields.SchemaField({}),
-      components: new fields.SchemaField({})
+      components: new fields.SchemaField({}),
+      hasty: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+      relaxed: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+
     })
 
     for (const [key, value] of Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.components")))) {
@@ -229,6 +232,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       }),
       discount: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       spellcapTrait: new fields.StringField({ required: true, nullable: false, initial: "res" }),
+      spellcapMultiplier: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       bonuses: new fields.SchemaField({
         deepBreath: new fields.NumberField({ ...requiredInteger, initial: 0 }),
         consumeComponent: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -379,9 +383,9 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       equipped: new fields.ArrayField(new fields.StringField({ required: true, nullable: false })),
     });
 
-    schema.turnOrder = new fields.StringField({ required: true, nullable: false, initial: "spd.mod" })
+    schema.turnOrder = new fields.StringField({ required: true, nullable: false, initial: "@spd.mod" })
     schema.turnOrderOptions = new fields.StringField({
-      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['spd.mod'] }),
+      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['@spd.mod'] }),
     })
 
     const returns = {};
@@ -481,14 +485,12 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).forEach(k => {
       this.subtraits[k].total = this.subtraits[k].value;
-      this.subtraits[k].mod = this.subtraits[k].value - 4;
     })
 
     Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).forEach(([key, value]) => {
       this.traits[key].total = value.subtraits.reduce((acc, subtrait) => {
         return acc + this.subtraits[subtrait].total;
       }, 0);
-      this.traits[key].mod = this.traits[key].total - 4;
     })
 
     this.defenses = {};
@@ -563,6 +565,29 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         //prepareSpeciesData(this);
         this.prepareGearData();
         
+        Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).forEach(k => {
+          this.subtraits[k].total = this.subtraits[k].value;
+          this.subtraits[k].mod = this.subtraits[k].value - 4;
+        })
+
+        Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).forEach(([key, value]) => {
+          value.subtraits.forEach(subtrait => {
+            this.subtraits[subtrait].max = this[value.maximum];
+          })
+          this.traits[key].total = value.subtraits.reduce((acc, subtrait) => {
+            return acc + this.subtraits[subtrait].total;
+          }, 0);
+          this.traits[key].mod = this.traits[key].total - 4;
+        })
+
+        Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).forEach(k => {
+          if (this.subtraits[k].gifted) {
+            this.giftPoints.spent += 1;
+          }
+        })
+
+        this.giftPoints.available = this.giftPoints.available - this.giftPoints.spent;
+
         this.block.formula = `${this.block.quantity}d${this.block.size}`;
         this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
       }
@@ -793,7 +818,7 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.turnActions.available = this.turnActions.value + this.turnActions.temporary;
     this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;
 
-    this.spellcasting.spellcap = new Roll(`@${this.spellcasting.spellcapTrait}.total`, this.parent.getRollData()).evaluateSync().total;
+    this.spellcasting.spellcap = new Roll(`@${this.spellcasting.spellcapTrait}.total * @spellcasting.spellcapMultiplier`, this.parent.getRollData()).evaluateSync().total;
 
     if (["sm", "small"].includes(this.size)) 
       this.slotCapacity = 2 * this.traits.str.total;

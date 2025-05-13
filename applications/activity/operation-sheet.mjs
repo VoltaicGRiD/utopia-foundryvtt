@@ -13,8 +13,8 @@ export class OperationSheet extends api.HandlebarsApplicationMixin(api.DocumentS
       submit: this._submit,
     },
     form: {
-      submitOnChange: false,
-      closeOnSubmit: true,
+      submitOnChange: true,
+      closeOnSubmit: false,
     },
     position: {
       width: 600,
@@ -43,9 +43,10 @@ export class OperationSheet extends api.HandlebarsApplicationMixin(api.DocumentS
       activity: this.document,
       operation: this.operation,
       effects: this.document.effectCategories,
+      hasEffects: this.document.effects.size > 0,
       effectsList: this.document.system.getEffects(),
-      choices: this.document.system.operationChoices(this.operation.type) || {},
-      fields: this.document.system.operationFields(this.operation.type) || {},
+      choices: await this.document.system.operationChoices(this.operation.type) || {},
+      fields: await this.document.system.operationFields(this.operation.type) || {},
     }
 
     console.log("Preparing context for operation sheet:", context);
@@ -55,6 +56,11 @@ export class OperationSheet extends api.HandlebarsApplicationMixin(api.DocumentS
 
   _processFormData(event, form, formData) {
     return {};
+  }
+
+  async submit() {
+    await this._submit(null, null);
+    return null;
   }
 
   static async _submit(event, target) {

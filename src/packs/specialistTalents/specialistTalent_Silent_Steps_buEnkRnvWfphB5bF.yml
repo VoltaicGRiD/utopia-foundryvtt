@@ -7,45 +7,11 @@ system:
   description: <p>You gain a point of favor on tests made to remain inconspicuous.</p>
   flavor: ''
   requirements: []
-effects:
-  - name: Silent Steps
-    origin: Compendium.utopia.specialistTalents.Item.buEnkRnvWfphB5bF
-    img: icons/svg/aura.svg
-    type: specialist
-    _id: MVqN7DocGZEryXe8
-    system: {}
-    changes:
-      - key: system.favors
-        mode: 2
-        value: inconspicuous
-        priority: null
-    disabled: false
-    duration:
-      startTime: null
-      seconds: null
-      combat: null
-      rounds: null
-      turns: null
-      startRound: null
-      startTurn: null
-    description: ''
-    tint: '#ffffff'
-    transfer: true
-    statuses: []
-    sort: 0
-    flags: {}
-    _stats:
-      compendiumSource: null
-      duplicateSource: null
-      coreVersion: '12.331'
-      systemId: utopia
-      systemVersion: 0.1.0
-      createdTime: 1738707520099
-      modifiedTime: 1738707538999
-      lastModifiedBy: p7QOrF2iNLdEPi7z
-    _key: '!items.effects!buEnkRnvWfphB5bF.MVqN7DocGZEryXe8'
-folder: null
-sort: 0
+  grants:
+    - Compendium.utopia.favors.Item.VUwOfMr2SO7WIhSF
+effects: []
+folder: cDFyAqFrp5cBSEdu
+sort: 100000
 ownership:
   default: 0
   nLkleFyXeCclB3Jg: 3
@@ -55,9 +21,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1734394054278
-  modifiedTime: 1734394299891
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747065309593
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!buEnkRnvWfphB5bF'
 

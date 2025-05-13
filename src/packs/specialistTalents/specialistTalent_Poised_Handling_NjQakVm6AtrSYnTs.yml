@@ -9,7 +9,8 @@ system:
   formula: ''
   flavor: ''
   requirements: []
-  grants: []
+  grants:
+    - Compendium.utopia.favors.Item.hiEuhSoDX1qfNyYC
 effects:
   - name: Poised Handling
     origin: Compendium.utopia.specialistTalents.Item.NjQakVm6AtrSYnTs
@@ -18,13 +19,9 @@ effects:
     _id: 6IOw8IupqOV8g8nX
     system: {}
     changes:
-      - key: system.traits.agi.subtraits.dex.bonus
+      - key: system.subtraits.dex.value
         mode: 2
         value: '1'
-        priority: null
-      - key: system.favors
-        mode: 2
-        value: accuracy
         priority: null
     disabled: false
     duration:
@@ -48,11 +45,11 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1738707444563
-      modifiedTime: 1739009698128
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1747010405130
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!NjQakVm6AtrSYnTs.6IOw8IupqOV8g8nX'
-folder: null
-sort: 0
+folder: 05MvZ55BNFI5iy4k
+sort: 50000
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -62,9 +59,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1738707229558
-  modifiedTime: 1738707439831
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014887977
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!NjQakVm6AtrSYnTs'
 

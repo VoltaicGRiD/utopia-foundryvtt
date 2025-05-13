@@ -13,6 +13,11 @@ export class attack extends BaseOperation {
         damages: new fields.ArrayField(new fields.SchemaField({
           formula: new fields.StringField({ required: true, nullable: false, blank: false, initial: "1d4" }),
           damageType: new fields.StringField({ required: true, nullable: false, blank: false, initial: "physical" }),
+          modifier: new fields.StringField({ required: false, nullable: true, blank: true }),
+          range: new fields.StringField({ required: false, nullable: true, blank: true, initial: "0/0", validate: (v) => {
+            const regex = /^\d+\s*\/\s*\d+$/;
+            return regex.test(v);
+          } }),
           penetrate: new fields.BooleanField({ required: true, nullable: false, initial: false }),
           nonLethal: new fields.BooleanField({ required: true, nullable: false, initial: false }),
         }), { required: true, nullable: false, initial: [
@@ -28,6 +33,22 @@ export class attack extends BaseOperation {
       type: "attack",
       damages: [{ formula: "1d4", damageType: "physical", penetrate: false, nonLethal: false }],
       ...BaseOperation._toObject()
+    }
+  }
+
+  static async getChoices(activity) {
+    return {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
+        acc[key] = game.i18n.localize(value.label);
+        return acc;
+      }, {}),
+
+      ...activity.operations.reduce((acc, operation) => {
+        if (operation.type === "selectOption") {
+          acc[operation.id] = `Inherit from ${operation.name}`;
+        }
+        return acc;
+      }, {})    
     }
   }
 
@@ -79,11 +100,27 @@ export class attack extends BaseOperation {
     let instances = [];
     let targets = game.user.targets.size > 0 ? Array.from(game.user.targets) : [game.user.character] || [game.actors.get(options.actorId)] || [];    
     for (const damage of operation.damages) {
-      const roll = await new Roll(damage.formula).evaluate();
+      let modifiedFormula = damage.formula.replace(/(#[a-zA-Z0-9]+)/g, (match) => {
+        const operation = activity.system.operations.find(op => op.key === match.replace('#', ''));
+        return operation ? operation.value : match;
+      });
+
+      const roll = await new Roll(modifiedFormula).evaluate();
+      roll.toMessage({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        flavor: `${game.i18n.localize("Utopia.Operation.Attack")} ${game.i18n.localize(`Utopia.Operation.Attack.${damage.damageType}`)}`,
+        rollMode: game.settings.get("core", "rollMode"),
+      });
 
       for (const target of targets) {
         if (!target || !target.actor) continue; // Skip if no target or target has no actor
         
+        let type = damage.damageType;
+        if (activity.system.operations.some(op => op.id === type)) {
+          const operation = activity.system.operations.find(op => op.id === type);
+          type = operation.value;
+        }
+
         // Create a new DamageInstance for each target
         const instance = new DamageInstance({
           type: damage.damageType,

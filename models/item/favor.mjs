@@ -10,16 +10,16 @@ export class Favor extends UtopiaItemBase {
       
     //schema.always = new fields.BooleanField({ required: true, nullable: false, initial: true }),
     schema.conditions = new fields.SetField( new fields.StringField({ required: false, nullable: true, choices: {
-      always: "UTOPIA.Favors.always",
-      hostile: "UTOPIA.Favors.hostile",
-      neutral: "UTOPIA.Favors.neutral",
-      friendly: "UTOPIA.Favors.friendly",
-      detectedHostile: "UTOPIA.Favors.detectedHostile",
-      detectedNeutral: "UTOPIA.Favors.detectedNeutral",
-      detectedFriendly: "UTOPIA.Favors.detectedFriendly",
-      detectedByHostile: "UTOPIA.Favors.detectedByHostile",
-      detectedByNeutral: "UTOPIA.Favors.detectedByNeutral",
-      detectedByFriendly: "UTOPIA.Favors.detectedByFriendly",
+      always: "UTOPIA.Items.Favor.always",
+      hostile: "UTOPIA.Items.Favor.hostile",
+      neutral: "UTOPIA.Items.Favor.neutral",
+      friendly: "UTOPIA.Items.Favor.friendly",
+      detectedHostile: "UTOPIA.Items.Favor.detectedHostile",
+      detectedNeutral: "UTOPIA.Items.Favor.detectedNeutral",
+      detectedFriendly: "UTOPIA.Items.Favor.detectedFriendly",
+      detectedByHostile: "UTOPIA.Items.Favor.detectedByHostile",
+      detectedByNeutral: "UTOPIA.Items.Favor.detectedByNeutral",
+      detectedByFriendly: "UTOPIA.Items.Favor.detectedByFriendly",
     }}), { initial: ['always'] });
     
     const returns = {};
@@ -36,10 +36,6 @@ export class Favor extends UtopiaItemBase {
         acc[key] = { ...value, group: "UTOPIA.SPECIALTY_CHECKS.GroupName" };
         return acc;
       }, {}),
-      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
-        acc[key] = { ...value, group: "UTOPIA.DAMAGE_TYPES.GroupName" };
-        return acc;
-      }, {}),
     }
     
     schema.check = new fields.StringField({ required: true, nullable: false, initial: "agi", choices: allOptions });
@@ -50,8 +46,8 @@ export class Favor extends UtopiaItemBase {
       nullable: false,
       initial: "self",
       choices: {
-        self: "UTOPIA.Favors.self",
-        targeted: "UTOPIA.Favors.targeted",
+        self: "UTOPIA.Items.Favor.self",
+        targeted: "UTOPIA.Items.Favor.targeted",
       }
     });
     schema.value = new fields.NumberField({ required: true, nullable: false, initial: 1 });

@@ -10,7 +10,8 @@ system:
     stamina.</p>
   flavor: ''
   requirements: []
-  grants: []
+  grants:
+    - Compendium.utopia.actions.Item.ianKaGukk1c1skPj
   actions:
     - name: Iron Gripped
       category: generic
@@ -37,7 +38,7 @@ effects:
     _id: MlrBAx27v0lEfTtQ
     system: {}
     changes:
-      - key: system.traits.str.subtraits.pow.bonus
+      - key: system.subtraits.pow.value
         mode: 2
         value: '1'
         priority: null
@@ -63,10 +64,10 @@ effects:
       systemId: utopia
       systemVersion: 0.1.0
       createdTime: 1737029759367
-      modifiedTime: 1739009682861
-      lastModifiedBy: p7QOrF2iNLdEPi7z
+      modifiedTime: 1747010259800
+      lastModifiedBy: 1i5ql6CdWzasfqnA
     _key: '!items.effects!4Zt7MIQCOP6uTQ9F.MlrBAx27v0lEfTtQ'
-folder: null
+folder: 05MvZ55BNFI5iy4k
 sort: 0
 ownership:
   default: 0
@@ -77,9 +78,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1737029723396
-  modifiedTime: 1739009700177
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747014884931
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!4Zt7MIQCOP6uTQ9F'
 

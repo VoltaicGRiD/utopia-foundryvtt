@@ -435,6 +435,14 @@ export class UtopiaChatMessage extends ChatMessage {
       location.reload();
     });
 
+    let viewDocumentButtons = html.querySelectorAll('[data-action="viewDocument"]');
+    for (let button of viewDocumentButtons) {
+      button.addEventListener('click', async (event) => {
+        const documentId = button.dataset.documentId;
+        game.items.get(documentId)?.sheet.render(true);
+      });
+    }
+
     const visibilityHtml = UtopiaUserVisibility.process(html, { document: actor ?? this, message: this });
 
     return $(visibilityHtml);

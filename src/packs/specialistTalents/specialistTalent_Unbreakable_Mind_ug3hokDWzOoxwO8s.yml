@@ -70,9 +70,10 @@ system:
       actor: default
   requirements: []
   grants: []
+  speciesRequirements: dwarf
 effects: []
-folder: null
-sort: 0
+folder: QHESWU1hFDNX4X2W
+sort: 300000
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -82,9 +83,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1739005667119
-  modifiedTime: 1739005983049
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747027527638
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!ug3hokDWzOoxwO8s'
 

@@ -14,7 +14,7 @@
   
   <div class="operations-list">
     {{#each operations}}
-      <div class="operation-item" data-action="openOperation" data-operation="{{this.id}}">
+      <div class="operation-item" draggable="true" data-drag data-drop data-action="openOperation" data-operation="{{this.id}}">
         <span class="operation-name">{{this.name}}</span>
         <div class="operation-actions">
           <a data-action="removeOperation" data-operation="{{this.id}}"><i class="fas fa-trash-alt"></i></a>
@@ -24,4 +24,90 @@
     <button type="button" data-action="addOperation"><i class="fas fa-plus-circle"></i> New Operation</button>
     <button type="button" data-action="execute"><i class="fas fa-bolt"></i> Test Execution</button>
   </div>
+
+  {{! Effects Tab }}
+  <section
+    class='effects'
+    data-group='primary'
+    data-tab='effects'
+  >
+    <ol class='effects-list'>
+      {{#each effects as |section sid|}}
+        <li
+          class='effects-header flexrow'
+          data-effect-type='{{section.type}}'
+          data-drag="true"
+        >
+          <div class='effect-name flexrow'>
+            {{localize section.label}}
+          </div>
+          <div class='effect-source'>
+            {{localize 'UTOPIA.COMMON.Source'}}
+          </div>
+          <div class='effect-controls flexrow'>
+            <a
+              class='effect-control'
+              data-action='createEffect'
+              data-document-class='ActiveEffect'
+              data-origin="{{@root.actor.uuid}}"
+              data-img="icons/svg/aura.svg"
+              {{#if (eq section.type "inactive")}}
+                data-disabled="true"
+              {{else if (eq section.type "temporary")}}
+                data-duration.rounds="1"
+              {{/if}}
+              title='{{localize "DOCUMENT.Create" type='Effect'}}'
+            >
+              <i class='fas fa-plus'></i>
+              {{localize 'DOCUMENT.New' type='Effect'}}
+            </a>
+          </div>
+        </li>
+
+        <ol class='effect-list'>
+          {{#each section.effects as |effect|}}
+            <li
+              class='effect item flexrow'
+              data-effect-id='{{effect.id}}'
+              data-parent-id='{{effect.parent.id}}'
+              data-document-class='ActiveEffect'
+              data-drag="true"
+            >
+              <div class='effect-name flexrow'>
+                <div>{{effect.name}}</div>
+              </div>
+              <div class='effect-source'>{{effect.sourceName}}</div>
+              <div class='effect-controls flexrow'>
+                {{#if @root.editable}}
+                <a
+                  class='effect-control'
+                  data-action='toggleEffect'
+                  title='{{localize "UTOPIA.Effect.toggle"}}'
+                >
+                  <i class='fas {{#if effect.disabled}}fa-check{{else}}fa-times{{/if}}'></i>
+                </a>
+                {{/if}}
+                <a
+                  class='effect-control'
+                  data-action='viewEffect'
+                  title='{{localize "DOCUMENT.Update" type='Effect'}}'
+                >
+                  <i class='fas fa-edit'></i>
+                </a>
+                {{#if @root.editable}}
+                <a
+                  class='effect-control'
+                  data-action='deleteEffect'
+                  title='{{localize "DOCUMENT.Delete" type='Effect'}}'
+                >
+                  <i class='fas fa-trash'></i>
+                </a>
+                {{/if}}
+              </div>
+            </li>
+          {{/each}}
+        </ol>
+      {{/each}}
+    </ol>
+  </section>
 </div>

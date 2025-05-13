@@ -548,130 +548,265 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       return;
     }
 
+    var flags = {};
+
     // We need to iterate through all of our features, 
     // and go through the process of assigning values to things that don't have them
     for (const [id, feature] of [...Object.entries(this.selected), ...Object.entries(this.artifact.passive)]) {
-      if (feature.options && Object.keys(feature.options).length > 1) {
-        if (feature.handler === "distributed" || feature.handler === "Xd4") {
-          const optionKey = Object.values(feature.options)[0].key;
-          const options = Object.entries(feature.options).map(([key, option]) => {
-            return {
-              key: option.key,
-              label: game.i18n.localize(option.name),
-              value: option.value,
-            };
-          });
+      if (feature.flag) {
+        flags = {...flags, ...feature.flag };
+      }
 
-          const container = document.createElement("div");
-          const amount = document.createElement("span");
-          amount.innerText = `${game.i18n.localize("UTOPIA.ArtificeSheet.DistributedAmount")}: ${feature.stacks}`;
-          container.append(amount);
-          const inputContainer = document.createElement("div");
-          inputContainer.style.display = "flex";
-          inputContainer.style.flexDirection = "row";
-          inputContainer.style.gap = "5px";
-          inputContainer.style.marginBottom = "10px";
-          inputContainer.style.marginTop = "10px";
-          inputContainer.style.alignItems = "center";
-          for (const option of options) {
-            const label = document.createElement("label");
-            label.innerHTML = `<input type="number" name="${option.key}" data-key="${option.value}"> ${game.i18n.localize(option.label)}`;
-            label.style.width = "60px";
-            inputContainer.append(label);
-          }
-          container.append(inputContainer);
+      if (feature.options) {
+        if (Array.isArray(feature.options)) {
+          for (const option of feature.options) {
+            if (feature.handler === "distributed" || feature.handler === "Xd4") {
+              const optionKey = Object.values(option)[0].key;
+              const options = Object.entries(option).map(([key, option]) => {
+                return {
+                  key: option.key,
+                  label: game.i18n.localize(option.name),
+                  value: option.value,
+                };
+              });
 
-          let response;
-          try {
-            response = await foundry.applications.api.DialogV2.prompt({
-              window: { title: `Distribute stacks for ${game.i18n.localize(feature.name)}` },
-              content: container.outerHTML,
-              ok: {
-                label: "Submit",
-                callback: (event, button, dialog) => dialog,
+              const container = document.createElement("div");
+              const amount = document.createElement("span");
+              amount.innerText = `${game.i18n.localize("UTOPIA.ArtificeSheet.DistributedAmount")}: ${feature.stacks}`;
+              container.append(amount);
+              const inputContainer = document.createElement("div");
+              inputContainer.style.display = "flex";
+              inputContainer.style.flexDirection = "row";
+              inputContainer.style.gap = "5px";
+              inputContainer.style.marginBottom = "10px";
+              inputContainer.style.marginTop = "10px";
+              inputContainer.style.alignItems = "center";
+              for (const option of options) {
+                const label = document.createElement("label");
+                label.innerHTML = `<input type="number" name="${option.key}" data-key="${option.value}"> ${game.i18n.localize(option.label)}`;
+                label.style.width = "60px";
+                inputContainer.append(label);
               }
-            });
-          } catch (error) {
-            console.error("Error in dialog:", error);
-            return;
-          }
+              container.append(inputContainer);
 
-          if (response) {
-            const featureKey = feature.keys.find((k) => k.key === feature.parentKey ? `${feature.parentKey}.${optionKey}` : optionKey);
-            let keys = this.selected[id].keys.filter((k) => k.key !== featureKey.key);
-            if (feature.handler === "Xd4")
-              keys = [];
-            if (featureKey) {
-              response.querySelectorAll("input").forEach((input) => {
-                if (parseInt(input.value) > 0) {
-                  if (feature.handler === "distributed") {
-                    keys.push({
-                      display: `${input.name.capitalize()} ${feature.key.capitalize()}`,
-                      key: `${feature.key}.${input.name}`,
-                      value: parseInt(input.value) || 0,
-                      specialLabel: featureKey.specialLabel || false,
-                    })
+              let response;
+              try {
+                response = await foundry.applications.api.DialogV2.prompt({
+                  window: { title: `Distribute stacks for ${game.i18n.localize(feature.name)}` },
+                  content: container.outerHTML,
+                  ok: {
+                    label: "Submit",
+                    callback: (event, button, dialog) => dialog,
                   }
-                  else {
-                    keys.push({
-                      parts: [{
-                        display: `${feature.parentKey.capitalize()} ${feature.key.capitalize()}`,
-                        key: `${feature.parentKey}.${feature.key}`, // Formula key
-                        value: `${parseInt(input.value)}d4` || 0,
-                      }, {
-                        display: `${input.name.capitalize()}`,
-                        key: `${feature.parentKey}.${optionKey}`, // Type key
-                        value: input.dataset.key || 0,
-                      }]
-                    })
-                  }
+                });
+              } catch (error) {
+                console.error("Error in dialog:", error);
+                return;
+              }
+
+              if (response) {
+                const featureKey = feature.keys.find((k) => k.key === feature.parentKey ? `${feature.parentKey}.${optionKey}` : optionKey);
+                let keys = this.selected[id].keys.filter((k) => k.key !== featureKey.key);
+                if (feature.handler === "Xd4")
+                  keys = [];
+                if (featureKey) {
+                  response.querySelectorAll("input").forEach((input) => {
+                    if (parseInt(input.value) > 0) {
+                      if (feature.handler === "distributed") {
+                        keys.push({
+                          display: `${input.name.capitalize()} ${feature.key.capitalize()}`,
+                          key: `${feature.key}.${input.name}`,
+                          value: parseInt(input.value) || 0,
+                          specialLabel: featureKey.specialLabel || false,
+                        })
+                      }
+                      else {
+                        keys.push({
+                          parts: [{
+                            display: `${feature.parentKey.capitalize()} ${feature.key.capitalize()}`,
+                            key: `${feature.parentKey}.${feature.key}`, // Formula key
+                            value: `${parseInt(input.value)}d4` || 0,
+                          }, {
+                            display: `${input.name.capitalize()}`,
+                            key: `${feature.parentKey}.${optionKey}`, // Type key
+                            value: input.dataset.key || 0,
+                          }]
+                        })
+                      }
+                    }
+                  })
+                  this.selected[id].keys = keys;
                 }
+              }
+            }
+            else {
+              const optionKey = Object.values(option)[0].key;
+              const options = Object.entries(option).map(([key, value]) => {
+                return {
+                  label: game.i18n.localize(value.name),
+                  value: value.value,
+                };
+              });
+
+              const select = foundry.applications.fields.createSelectInput({
+                name: "select",
+                options,
+                type: "single",
+                autofocus: true,
+                required: true,
               })
-              this.selected[id].keys = keys;
+
+              let response;
+              try {
+                response = await foundry.applications.api.DialogV2.prompt({
+                  window: { title: `Select a value for ${game.i18n.localize(feature.name)}` },
+                  content: select.outerHTML,
+                  ok: {
+                    label: "Submit",
+                    callback: (event, button, dialog) => button.form.elements.select.value,
+                  }
+                });
+              } catch (error) {
+                console.error("Error in dialog:", error);
+                return;
+              }
+              
+              if (response) {
+                const selectedOption = options.find((option) => option.value === response);
+                if (selectedOption) {
+                  this.selected[id].output.selectedOption = response;
+                  let key = this.selected[id].parentKey ? `${this.selected[id].parentKey}.${optionKey}` : optionKey;
+                  if (!key) {
+                    key = this.selected[id].key;
+                  }
+                  this.selected[id].keys.find((k) => k.key === key).value = selectedOption.value;
+                }
+              }
             }
           }
         }
-        else {
-          const optionKey = Object.values(feature.options)[0].key;
-          const options = Object.entries(feature.options).map(([key, value]) => {
-            return {
-              label: game.i18n.localize(value.name),
-              value: value.value,
-            };
-          });
-
-          const select = foundry.applications.fields.createSelectInput({
-            name: "select",
-            options,
-            type: "single",
-            autofocus: true,
-            required: true,
-          })
-
-          let response;
-          try {
-            response = await foundry.applications.api.DialogV2.prompt({
-              window: { title: `Select a value for ${game.i18n.localize(feature.name)}` },
-              content: select.outerHTML,
-              ok: {
-                label: "Submit",
-                callback: (event, button, dialog) => button.form.elements.select.value,
-              }
+        else if (Object.keys(feature.options).length > 1) {
+          if (feature.handler === "distributed" || feature.handler === "Xd4") {
+            const optionKey = Object.values(feature.options)[0].key;
+            const options = Object.entries(feature.options).map(([key, option]) => {
+              return {
+                key: option.key,
+                label: game.i18n.localize(option.name),
+                value: option.value,
+              };
             });
-          } catch (error) {
-            console.error("Error in dialog:", error);
-            return;
-          }
-          
-          if (response) {
-            const selectedOption = options.find((option) => option.value === response);
-            if (selectedOption) {
-              this.selected[id].output.selectedOption = response;
-              let key = this.selected[id].parentKey ? `${this.selected[id].parentKey}.${optionKey}` : optionKey;
-              if (!key) {
-                key = this.selected[id].key;
+
+            const container = document.createElement("div");
+            const amount = document.createElement("span");
+            amount.innerText = `${game.i18n.localize("UTOPIA.ArtificeSheet.DistributedAmount")}: ${feature.stacks}`;
+            container.append(amount);
+            const inputContainer = document.createElement("div");
+            inputContainer.style.display = "flex";
+            inputContainer.style.flexDirection = "row";
+            inputContainer.style.gap = "5px";
+            inputContainer.style.marginBottom = "10px";
+            inputContainer.style.marginTop = "10px";
+            inputContainer.style.alignItems = "center";
+            for (const option of options) {
+              const label = document.createElement("label");
+              label.innerHTML = `<input type="number" name="${option.key}" data-key="${option.value}"> ${game.i18n.localize(option.label)}`;
+              label.style.width = "60px";
+              inputContainer.append(label);
+            }
+            container.append(inputContainer);
+
+            let response;
+            try {
+              response = await foundry.applications.api.DialogV2.prompt({
+                window: { title: `Distribute stacks for ${game.i18n.localize(feature.name)}` },
+                content: container.outerHTML,
+                ok: {
+                  label: "Submit",
+                  callback: (event, button, dialog) => dialog,
+                }
+              });
+            } catch (error) {
+              console.error("Error in dialog:", error);
+              return;
+            }
+
+            if (response) {
+              const featureKey = feature.keys.find((k) => k.key === feature.parentKey ? `${feature.parentKey}.${optionKey}` : optionKey);
+              let keys = this.selected[id].keys.filter((k) => k.key !== featureKey.key);
+              if (feature.handler === "Xd4")
+                keys = [];
+              if (featureKey) {
+                response.querySelectorAll("input").forEach((input) => {
+                  if (parseInt(input.value) > 0) {
+                    if (feature.handler === "distributed") {
+                      keys.push({
+                        display: `${input.name.capitalize()} ${feature.key.capitalize()}`,
+                        key: `${feature.key}.${input.name}`,
+                        value: parseInt(input.value) || 0,
+                        specialLabel: featureKey.specialLabel || false,
+                      })
+                    }
+                    else {
+                      keys.push({
+                        parts: [{
+                          display: `${feature.parentKey.capitalize()} ${feature.key.capitalize()}`,
+                          key: `${feature.parentKey}.${feature.key}`, // Formula key
+                          value: `${parseInt(input.value)}d4` || 0,
+                        }, {
+                          display: `${input.name.capitalize()}`,
+                          key: `${feature.parentKey}.${optionKey}`, // Type key
+                          value: input.dataset.key || 0,
+                        }]
+                      })
+                    }
+                  }
+                })
+                this.selected[id].keys = keys;
               }
-              this.selected[id].keys.find((k) => k.key === key).value = selectedOption.value;
+            }
+          }
+          else {
+            const optionKey = Object.values(feature.options)[0].key;
+            const options = Object.entries(feature.options).map(([key, value]) => {
+              return {
+                label: game.i18n.localize(value.name),
+                value: value.value,
+              };
+            });
+
+            const select = foundry.applications.fields.createSelectInput({
+              name: "select",
+              options,
+              type: "single",
+              autofocus: true,
+              required: true,
+            })
+
+            let response;
+            try {
+              response = await foundry.applications.api.DialogV2.prompt({
+                window: { title: `Select a value for ${game.i18n.localize(feature.name)}` },
+                content: select.outerHTML,
+                ok: {
+                  label: "Submit",
+                  callback: (event, button, dialog) => button.form.elements.select.value,
+                }
+              });
+            } catch (error) {
+              console.error("Error in dialog:", error);
+              return;
+            }
+            
+            if (response) {
+              const selectedOption = options.find((option) => option.value === response);
+              if (selectedOption) {
+                this.selected[id].output.selectedOption = response;
+                let key = this.selected[id].parentKey ? `${this.selected[id].parentKey}.${optionKey}` : optionKey;
+                if (!key) {
+                  key = this.selected[id].key;
+                }
+                this.selected[id].keys.find((k) => k.key === key).value = selectedOption.value;
+              }
             }
           }
         }
@@ -725,12 +860,63 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       }
     }
 
+    for (const [id, feature] of Object.entries(this.selected)) {
+      if (feature.conditions) {
+        let fulfilled = false;
+
+        for (const condition of feature.conditions) {
+          const outputKey = condition.outputKey;
+          const key = condition.key;
+          const value = condition.value;
+          const comparison = condition.comparison || "==";
+          const output = condition.output || false;
+
+          for (const [flag, flagValue] of Object.entries(flags)) {
+            if (flag === key) {
+              let conditionMet = false;
+              switch (comparison) {
+                case "==":
+                  conditionMet = flagValue == value;
+                  break;
+                case "!=":
+                  conditionMet = flagValue != value;
+                  break;
+                case ">=":
+                  conditionMet = flagValue >= value;
+                  break;
+                case "<=":
+                  conditionMet = flagValue <= value;
+                  break;
+                case ">":
+                  conditionMet = flagValue > value;
+                  break;
+                case "<":
+                  conditionMet = flagValue < value;
+                  break;
+              }
+              if (conditionMet) {
+                this.selected[id].keys.find(k => k.key === (feature.parentKey ? `${feature.parentKey}.${outputKey}` : outputKey)).value = output;
+                fulfilled = true;
+              }
+            }
+          }
+        }
+
+        if (!fulfilled) {
+          const defaultCondition = feature.conditions.find((condition) => condition.default);
+          this.selected[id].keys.find(k => k.key === (feature.parentKey ? `${feature.parentKey}.${defaultCondition.outputKey}` : defaultCondition.outputKey)).value = defaultCondition.output;
+          fulfilled = true;
+        }
+      }
+    }
+
     // Create the item and put it in the game's world
     if (game.user.isGM) {
       const item = await Item.create({
         name: "New Gear",
         type: "gear",
         system: {
+          crafter: game.user.character || game.actors[0],
           type: this.type,
           features: ["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type) ? this.artifact.passive : this.selected,
           activations: this.artifact.activations,
@@ -739,7 +925,6 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     }
 
     const actor = game.user.character || this.actor;
-    
   }
 
   handleFeature(feature) {
@@ -789,6 +974,15 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       }
     }
 
+    if (feature.conditions) {
+      keys.push({
+        display: output.display,
+        key: feature.parentKey ? `${feature.parentKey}.${feature.conditions[0].outputKey}` : feature.conditions[0].outputKey,
+        value: feature.conditions[0].output,
+        specialLabel: output.specialLabel || false,
+      })
+    }
+    
     if (keys.length === 0) {
       keys.push({
         display: output.display,

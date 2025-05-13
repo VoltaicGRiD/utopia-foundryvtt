@@ -42,7 +42,7 @@ system:
   selectedChoices: {}
 img: icons/svg/item-bag.svg
 effects: []
-folder: null
+folder: Dv2EoB9WzuOs8x0O
 ownership:
   default: 0
   J3DseiXIgI97Cf1C: 3
@@ -54,9 +54,9 @@ _stats:
   systemId: utopia
   systemVersion: 0.1.0
   createdTime: 1744059246676
-  modifiedTime: 1744059246686
-  lastModifiedBy: J3DseiXIgI97Cf1C
+  modifiedTime: 1747113607564
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _id: RVPgsVqHzle26x1Y
-sort: 200000
+sort: 300000
 _key: '!items!RVPgsVqHzle26x1Y'
 

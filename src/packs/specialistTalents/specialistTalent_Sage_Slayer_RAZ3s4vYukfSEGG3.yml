@@ -10,6 +10,7 @@ system:
   flavor: ''
   requirements:
     - specialist("Mage Slayer")
+  talentRequirements: mage fighter
 effects:
   - name: Sage Slayer
     origin: Compendium.utopia.specialistTalents.Item.RAZ3s4vYukfSEGG3
@@ -47,8 +48,8 @@ effects:
       modifiedTime: 1737029534783
       lastModifiedBy: nLkleFyXeCclB3Jg
     _key: '!items.effects!RAZ3s4vYukfSEGG3.yUtOPuwauBKoDNXu'
-folder: null
-sort: 0
+folder: cDFyAqFrp5cBSEdu
+sort: 300000
 ownership:
   default: 0
   nLkleFyXeCclB3Jg: 3
@@ -58,9 +59,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1734394350178
-  modifiedTime: 1734396047701
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747065365879
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!RAZ3s4vYukfSEGG3'
 

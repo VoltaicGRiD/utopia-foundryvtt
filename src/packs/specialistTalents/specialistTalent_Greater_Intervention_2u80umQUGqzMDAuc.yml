@@ -40,9 +40,10 @@ system:
   actions: []
   requirements: []
   grants: []
+  speciesRequirements: cambion
 effects: []
-folder: null
-sort: 0
+folder: QHESWU1hFDNX4X2W
+sort: 700000
 ownership:
   default: 0
   p7QOrF2iNLdEPi7z: 3
@@ -52,9 +53,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1739006154472
-  modifiedTime: 1739006173908
-  lastModifiedBy: p7QOrF2iNLdEPi7z
+  modifiedTime: 1747027855630
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!2u80umQUGqzMDAuc'
 

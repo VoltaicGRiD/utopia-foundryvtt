@@ -99,6 +99,24 @@
         "verb": "to Grapple",
         "label": "Grapple",
         "description": "Grapple is the ability to seize and hold onto a creature in combat."
+      },
+      "TraverseDifficultTerrain": {
+        "noun": "Traverse Difficult Terrain",
+        "verb": "to Traverse Difficult Terrain",
+        "label": "Traverse Difficult Terrain",
+        "description": "Traverse Difficult Terrain is the ability to navigate through difficult terrain and climb obstacles."
+      },
+      "Accuracy": {
+        "noun": "Accuracy",
+        "verb": "to Aim",
+        "label": "Accuracy",
+        "description": "Accuracy is the ability to hit a target with a ranged or thrown weapon."
+      },
+      "Devices": {
+        "noun": "Devices",
+        "verb": "to Use or Alter Devices",
+        "label": "Devices",
+        "description": "Devices is the ability to use and alter devices, such as computers or machinery."
       }
     },
     "COMMON": {
@@ -192,7 +210,11 @@
       "SpellCostExceedsStamina": "Your spellcap is too low to be able to cast this spell.",
       "AdvancementPointsWarning": "You have unspend talent points. You cannot level up until you spend them.",
       "IncompatibleFeature": "This feature is incompatible with another selected feature.",
-      "RequiredFeature": "This feature is required by another feature. Delete that feature first."
+      "RequiredFeature": "This feature is required by another feature. Delete that feature first.",
+      "TotalSuccess": "Total Success",
+      "TotalFailure": "Total Failure",
+      "PartialSuccess": "Partial Success",
+      "ItemNotEquipped": "This item is an equippable item, but it is not equipped. Please equip it first."
     },
     "CHAT": {
       "Block": "Block",
@@ -209,7 +231,8 @@
       "FinishCasting": "Finish Casting Spell",
       "DamagePreDefenses": "Rolls below indicate damage before defenses are applied.",
       "EstimatedDamage": "Estimated Damage: {damage}",
-      "DamageResponse": "You're being targeted to recieve the above damage, how will you respond. If you don't wish to respond, you can ignore this message."
+      "DamageResponse": "You're being targeted to recieve the above damage, how will you respond. If you don't wish to respond, you can ignore this message.",
+      "Harvestables": "Harvestables"
     },
     "Features": {
       "Slam": "Slam",
@@ -791,13 +814,31 @@
         }
       },
       "Activity": {
-        "AddOperation": "Select an Operation to add",
+        "AddOperation": "Select an Operation",
         "Operation": {
           "selectOperation": "Select Specific Operation",
+          "selectOption": "Select Option",
           "attack": "Attack",
+          "heal": "Heal",
+          "travel": "Travel",
           "castSpell": "Cast a Spell",
           "condition": "Check For Condition",
-          "variable": "Variable"
+          "variable": "Variable",
+          "test": "Test",
+          "check": "Check",
+          "use": "Use Item",
+          "setFlag": "Set Flag",
+          "createResource": "Create Resource",
+          "consumeResource": "Consume Resource",
+          "consumption": "Consume Component",
+          "augment": "Augment / De-augment Creature",
+          "generic": "Generic / Chat Message"
+        },
+        "Messages": {
+          "ErrorNoComponent": "No such component or rarity found.",
+          "ErrorNotEnoughComponents": "Not enough components of the specified rarity available to consume.",
+          "ErrorNegative": "A provided formula returned a negative value.",
+          "Consumption": "{actorName} consumed {amount} {rarity} {component} component to recover {restoration} stamina."
         },
         "ActionType": {
           "Turn": "Turn Action",
@@ -833,7 +874,8 @@
         "Yes": "Yes",
         "Success": "Harvest successful for ",
         "Failed": "Harvest failed for ",
-        "Complete": "[GM Only] Complete Encounter and Distribute EXP"
+        "Complete": "[GM Only] Complete Encounter and Distribute EXP",
+        "TurnActions": "Not enough Turn Actions to perform this action."
       },
       "Action": {
         "FIELDS": {
@@ -1535,7 +1577,19 @@
             "label": "Value",
             "hint": "disfavor < 0 < favor"
           }
-        }
+        },
+        "always": "Always Active",
+        "hostile": "vs. Hostiles",
+        "friendly": "vs. Friendlies",
+        "neutral": "vs. Neutrals",
+        "detectedHostile": "vs. Detected Hostiles",
+        "detectedFriendly": "vs. Detected Friendlies",
+        "detectedNeutral": "vs. Detected Neutrals",
+        "detectedByHostile": "vs. Detected By Hostiles",
+        "detectedByFriendly": "vs. Detected By Friendlies",
+        "detectedByNeutral": "vs. Detected By Neutrals",
+        "self": "Affects Self",
+        "targeted": "Affects Target(s) (use with caution)"
       },
       "Spell": {
         "FIELDS": {
@@ -1682,6 +1736,7 @@
         "speciesRequirements": "Species Requirements (species name contains value)",
         "talentRequirements": "Talent Requirements (talent name contains value)",
         "talentTreeRequirements": "Talent Tree Requirements (all talents in tree unlocked)",
+        "singleTalentTreeRequirements": "At least one talent in this tree unlocked (talent tree name contains value)",
         "artistryRequirements": "Artistry Requirements (artistry (name) unlocked)",
         "Resource": {
           "title": "Resource",
@@ -1779,6 +1834,7 @@
     },
     "Item": {
       "action": "Action",
+      "activity": "Activity",
       "body": "Body",
       "class": "Class",
       "favor": "(Dis)Favor",

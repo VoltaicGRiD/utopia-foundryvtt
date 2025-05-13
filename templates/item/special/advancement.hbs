@@ -8,6 +8,7 @@
     {{else}}
       <div class="subtrait" data-value="subtrait.value">
     {{/if}}
+        <span class="subtrait-max"><i class="fas fa-fw fa-box"></i> Max: {{subtrait.max}}</span>
         <a class="subtrait-decrease" data-action="decrease" data-key="{{subtrait.short}}"><i class="fas fa-fw fa-minus"></i></a>
         <label class="subtrait-name" for="subtrait-{{subtrait.short}}">{{localize subtrait.label}}</label>
         <a class="subtrait-increase" data-action="increase" data-key="{{subtrait.short}}"><i class="fas fa-fw fa-plus"></i></a>

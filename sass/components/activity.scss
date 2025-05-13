@@ -41,6 +41,14 @@ details {
   height: 40px;
 }
 
+.operations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+}
+
 .operations-list {
   display: flex;
   flex-direction: column;
@@ -135,6 +143,8 @@ section.window-content {
   justify-content: space-between;
   align-items: center;
   gap: 5px;
+  margin-bottom: 5px;
+  align-items: start;
 
   select, multi-select, string-tags, input:not([type="checkbox"]) {
     min-width: 100px;

@@ -19,6 +19,10 @@
         {{formInput systemFields.talentTreeRequirements name="system.talentTreeRequirements" value=system.talentTreeRequirements localize=true}}
       </div> 
       <div class="form-group slim">
+        <label for="system.singleTalentTreeRequirements" class="label">{{localize "UTOPIA.Items.SpecialistTalent.singleTalentTreeRequirements"}}</label>
+        {{formInput systemFields.singleTalentTreeRequirements name="system.singleTalentTreeRequirements" value=system.singleTalentTreeRequirements localize=true}}
+      </div>
+      <div class="form-group slim">
         <label for="system.artistryRequirements" class="label">{{localize "UTOPIA.Items.SpecialistTalent.artistryRequirements"}}</label>
         {{formInput systemFields.artistryRequirements name="system.artistryRequirements" value=system.artistryRequirements localize=true}}
       </div> 
@@ -26,9 +30,9 @@
 
     <br>
 
-    {{formGroup systemFields.grants stacked=true localize=true}}
+    {{formGroup systemFields.grants value=system.grants stacked=true localize=true}}
 
-    <div class="flexrow">
+    {{!-- <div class="flexrow">
       <select class="add-options" name="addOptions" id="addOptions" data-action="addOptions">
         <option value="resource">{{localize "UTOPIA.Items.SpecialistTalent.Resource.title"}}</option>
       </select>
@@ -69,20 +73,12 @@
             <label for="resource.{{@index}}.recoverInterval">{{localize "UTOPIA.Items.SpecialistTalent.Resource.recoverInterval"}}</label>
             {{formInput ../systemFields.resource.fields.recoverInterval value=resource.recoverInterval name=(concat "system.resources." @index ".recoverInterval") localize=true}}
           </div>
-          
-          {{!-- <div class="flexcol">
-            <label for="resource.{{@index}}.propagateToActor">{{localize "UTOPIA.Items.SpecialistTalent.Resource.propagateToActor"}}</label>
-            <label class="switch" for="resource.propagateToActor">
-              <input type="checkbox" id="resource.propagateToActor" name={{concat "system.resources." @index ".propagateToActor"}} {{#if (eq resource.propagateToActor true)}} checked {{/if}} />
-              <div class="slider round"></div>
-            </label>
-          </div> --}}
 
         </fieldset>
 
         <button type="button" class="grid-span-2" data-action="deleteResource" data-index="{{@index}}"><i class="fas fa-trash"></i> {{localize "UTOPIA.CommonTerms.deleteResource"}}</button>
       </details>
-    {{/each}}
+    {{/each}}  --}}
 
   </div>
 </div>

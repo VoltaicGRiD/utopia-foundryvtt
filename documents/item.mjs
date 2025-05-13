@@ -283,10 +283,10 @@ export class UtopiaItem extends Item {
     // and we should re-run the crafting function if we have not reached the max iterations.
   }
 
-  async use() {
+  async use(options = {}) {
     switch (this.type) {
       case "gear":
-        return this._useGear();
+        return this._useGear(options);
       case "featureSpell":
       case "featureGear":
       case "quirk":
@@ -299,6 +299,8 @@ export class UtopiaItem extends Item {
         return this._castSpell();
       case "action":
         return this.parent?._performAction({ item: this }) ?? this._performAction();
+      case "activity":
+        return await this.system.execute()
     }
   }
 
@@ -427,10 +429,12 @@ export class UtopiaItem extends Item {
   }
 
   async roll() {
-    this.use();
+    await this.use();
   }
 
-  async _useGear() {
+  async _useGear(options = {}) {
+    return this.system.use(options);
+
     // First, check if its a consumable, and if we have a quantity greater than 0.
     if (this.system.type === "consumable" && this.system.quantity <= 0) {
       return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.NoConsumableQuantity'));

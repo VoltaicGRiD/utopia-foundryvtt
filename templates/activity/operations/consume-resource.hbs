@@ -1,0 +1,19 @@
+<div>
+  <hr/>
+  <span class="operation-category">Consume an amount of a resource:</span>
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="resource">Resource:</label>
+      <select name="resource" required>
+        {{#each choices as |name id|}}
+          <option value="{{id}}" {{#if (eq ../operation.resource id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="operation-content">
+      <label for="amount">Amount (allows formulas):</label>
+      <input type="text" name="amount" value="{{operation.amount}}" placeholder="Amount" />
+    </div>
+  </div>
+</div>

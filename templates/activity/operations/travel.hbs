@@ -1,0 +1,19 @@
+<div>
+  <hr/>
+  <span class="operation-category">Travel a distance, in meters:</span>
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="speed">Type:</label>
+      <select name="speed" required>
+        {{#each choices as |name id|}}
+          <option value="{{id}}" {{#if (eq ../operation.speed id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="operation-content">
+      <label for="modifier">Modifier (e.g. "+ 4" or "+ @agi.mod"):</label>
+      <input type="text" name="modifier" value="{{operation.modifier}}" placeholder="Modifier" required/>
+    </div>
+  </div>
+</div>

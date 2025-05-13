@@ -13,12 +13,12 @@ export function registerHooks() {
       return false;
     });
 
-    Hooks.on("targetToken", (user, token, targeted) => {
-      if (ui.activeWindow.constructor.name === "UtopiaAttackSheet") {
-        let window = ui.activeWindow;
-        window.render();
-      }
-    });
+    // Hooks.on("targetToken", (user, token, targeted) => {
+    //   if (ui.activeWindow.constructor.name === "UtopiaAttackSheet") {
+    //     let window = ui.activeWindow;
+    //     window.render();
+    //   }
+    // });
 
     Hooks.on("deleteCombat", async (combat, options, userId) => {    
       console.warn("[UTOPIA] Combat is being deleted, restoring combatants' turn actions.", combat, options, userId);
@@ -26,7 +26,8 @@ export function registerHooks() {
       const harvestableCreatures = [];
 
       combat.combatants.forEach((combatant) => {
-        let actor = combatant.actor;
+        const token = game.canvas.tokens.get(combatant.tokenId);
+        let actor = token.actor;
         if (actor.type === "creature" && 
           actor.system.hitpoints.surface.value === 0 && 
           actor.system.hitpoints.deep.value === 0) { // We need to identify if the actor is a creature, so that they can be harvested for components
@@ -88,13 +89,13 @@ export function registerHooks() {
 
       console.log(item);
 
-      const template = await renderTemplate("systems/utopia/templates/chat/harvest-card.hbs");
+      const template = await renderTemplate("systems/utopia/templates/chat/harvest-card.hbs", { harvest: item[0].id });
 
       await UtopiaChatMessage.create({
         content: template,
-        speaker: ChatMessage.getSpeaker({ alias: game.i18n.localize("UTOPIA.Combat.Harvest") }),
+        speaker: ChatMessage.getSpeaker({ alias: game.i18n.localize("UTOPIA.CHAT.Harvest") }),
         system: {
-          harvest: item.uuid,
+          harvest: item[0].uuid,
         }
       });
     });
@@ -105,8 +106,13 @@ export function registerHooks() {
         token.control();
       }
 
+      console.warn("[UTOPIA] Combat turn changed", combat, from, to);
+
       combat.combatants.forEach(async (combatant) => {
-        let actor = game.actors.get(combatant.actorId);
+        // If the combatant is a creature, we need to modify the actorDelta instead of the actor
+        const token = game.canvas.tokens.get(combatant.tokenId);
+
+        let actor = token.actor;
         // If the combatant is the current combatant, we have to restore
         // their Turn Actions
         if (to.combatantId === combatant._id) {

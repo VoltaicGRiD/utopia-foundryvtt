@@ -2,7 +2,7 @@ name: Reflexive
 type: script
 _id: tZylDilTYj0SHdC7
 author: J3DseiXIgI97Cf1C
-img: icons/svg/dice-target.svg
+img: systems/utopia/assets/icons/talents/reflexive.svg
 scope: global
 command: |-
   const fields = foundry.applications.fields;
@@ -76,8 +76,8 @@ command: |-
       },
     },
   });
-folder: null
-sort: 600000
+folder: C4UM6vIV3xSPvNHR
+sort: 300000
 ownership:
   default: 0
   J3DseiXIgI97Cf1C: 3
@@ -89,7 +89,7 @@ _stats:
   systemId: utopia
   systemVersion: 0.1.0
   createdTime: 1741966475348
-  modifiedTime: 1745262993260
-  lastModifiedBy: J3DseiXIgI97Cf1C
+  modifiedTime: 1747150873106
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!macros!tZylDilTYj0SHdC7'
 

@@ -20,6 +20,7 @@ system:
     soul: 1
   ultimate: true
   body: 3
+  macro: Compendium.utopia.utopiaMacros.Macro.tI6A3Hytd8O5V5KP
 effects: []
 sort: 200000
 ownership:
@@ -31,9 +32,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.04'
   createdTime: 1731884622406
-  modifiedTime: 1743030031411
-  lastModifiedBy: Pnkm0ukCGcb868zv
+  modifiedTime: 1747149222808
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!ktYVaLMq004GG56v'
 

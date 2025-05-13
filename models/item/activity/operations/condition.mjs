@@ -10,6 +10,7 @@ export class condition extends BaseOperation {
       condition: new fields.SchemaField({
         type: new fields.StringField({ required: true, nullable: false, blank: false, initial: "condition" }),
         conditions: new fields.ArrayField(new fields.SchemaField({
+          source: new fields.StringField({ required: true, nullable: false, blank: true }),
           key: new fields.StringField({ required: true, nullable: false, blank: true }),
           comparison: new fields.StringField({ required: true, nullable: false, blank: true, initial: "==", validate: (v) => ["==", "!=", "<", ">", "<=", ">=", "has", "!has"].includes(v) }),
           value: new fields.StringField({ required: true, nullable: false, blank: true }),
@@ -27,16 +28,37 @@ export class condition extends BaseOperation {
     const parentData = activityParent?.system || {};
     const activityData = activity.system || {};
     const parentItems = activityParent?.items || [];
+    const flagKeys = activityParent?.items?.map(item => {
+      if (item.type === "activity" && item.system.operations) {
+        return item.system.operations.map(op => {
+          if (op.type === "setFlag") {
+            return { [op.setflag.flag]: "flag" };
+          }
+          return null;
+        }).filter(Boolean);
+      }
+      return [];
+    }) || [];
 
-    return Object.keys({
-      ...parentRollData, // Need to separate to be able to identify between data, and rollData, since keys could be the same
-      ...parentData,
-      ...activityData,
-      ...activity.getRollData(),
+    const keysWithSources = {
+      ...Object.fromEntries(Object.keys(parentRollData).map(key => [key, "parentRollData"])),
+      ...Object.fromEntries(Object.keys(parentData).map(key => [key, "parentData"])),
+      ...Object.fromEntries(Object.keys(activityData).map(key => [key, "activityData"])),
+      ...Object.fromEntries(Object.keys(activity.parent.getRollData()).map(key => [key, "activityRollData"])),
       ...parentItems.reduce((acc, item) => {
-        return { ...acc, ...item.getRollData() };
+        const itemRollData = item.getRollData();
+        Object.keys(itemRollData).forEach(key => {
+          acc[key] = "parentItem";
+        });
+        return acc;
+      }, {}),
+      ...flagKeys.reduce((acc, flag) => {
+        Object.assign(acc, flag);
+        return acc;
       }, {})
-    });
+    };
+
+    return keysWithSources;
   }
 
   static async addCondition(activity, operationId) {
@@ -74,17 +96,42 @@ export class condition extends BaseOperation {
 
   static processConditions(conditions, activity) {
     const keys = this.keys(activity);
-    
+
     return conditions.map(condition => {
-      const { key, comparison, value, priority } = condition;
-      
-      if (!keys.includes(key)) {
+      const { source, key, comparison, value, priority } = condition;
+
+      if (!keys[key]) {
         console.warn(`Condition key "${key}" not found in activity roll data.`);
         return null;
       }
-      
-      const activityValue = activity.system[key] || activity.getRollData()[key];
-      
+
+      let activityValue;
+
+      // Determine the value based on the source
+      switch (source) {
+        case "parentRollData":
+          activityValue = activity.parent?.getRollData()[key];
+          break;
+        case "parentData":
+          activityValue = activity.parent?.system[key];
+          break;
+        case "activityData":
+          activityValue = activity.system[key];
+          break;
+        case "activityRollData":
+          activityValue = activity.getRollData()[key];
+          break;
+        case "parentItem":
+          activityValue = activity.parent?.items.find(item => item.getRollData()[key])?.getRollData()[key];
+          break;
+        case "flag":
+          activityValue = activity.parent?.getFlag("utopia", key);
+          break;
+        default:
+          console.warn(`Unknown source "${source}" for key "${key}".`);
+          return null;
+      }
+
       if (activityValue === undefined) {
         console.warn(`Activity value for key "${key}" is undefined.`);
         return null;
@@ -130,7 +177,8 @@ export class condition extends BaseOperation {
         default:
           console.warn(`Unknown comparison operator "${comparison}".`);
       }
-      return { key, comparison, value, priority, met: conditionMet };
+
+      return { key, comparison, value, priority, met: conditionMet, source };
     }).filter(condition => condition !== null);
   }
 

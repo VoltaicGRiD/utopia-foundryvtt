@@ -1,8 +1,13 @@
 export async function prepareSpeciesData(character) {
   const species = character._speciesData;
 
-  if (character.languagePoints) character.languagePoints.available += species.communication.languages - character.languagePoints.spent;
-  if (character.communication) character.communication.telepathy = species.communication.telepathy;
+  if (Object.keys(species).length === 0) {
+    console.warn(`Species data is empty. Cannot prepare species data for ${character.parent.name}.`);
+    return;
+  }
+
+  //if (character.languagePoints) character.languagePoints.available += species.communication.languages - character.languagePoints.spent;
+  //if (character.communication) character.communication.telepathy = species.communication.telepathy;
   character.size = species.size;
 
   //character.block.size += species.block.size;

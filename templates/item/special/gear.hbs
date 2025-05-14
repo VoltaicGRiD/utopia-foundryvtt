@@ -16,7 +16,7 @@
   <div class="artifice-content" data-drop style="background-color: {{artifice.rarity.color}}bb; background-blend-mode: multiply;">
 
     <div class="artifice-type">
-      <span>{{localize (concat "UTOPIA.Artifice.Types." item.system.type)}}</span>
+      <span>{{localize (concat "UTOPIA.Artifice.Types." item.system.type)}} {{#if (eq item.system.type "consumable")}}[Qty. {{numberFormat item.system.quantity}}]{{/if}}</span>
     </div>
 
     <div class="artifice-totals">

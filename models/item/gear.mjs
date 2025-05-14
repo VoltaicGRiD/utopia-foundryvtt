@@ -44,6 +44,12 @@ export class Gear extends foundry.abstract.TypeDataModel {
       initial: {},
     });
 
+    schema.quantity = new fields.NumberField({
+      required: true,
+      nullable: false,
+      initial: 1,
+    });
+
     return schema;
   }  
 
@@ -364,7 +370,7 @@ export class Gear extends foundry.abstract.TypeDataModel {
   async _useWeapon(maximizeOutput) {
     if (game.settings.get("utopia", "targetRequired")) {
       if (game.user.targets.size === 0) {
-        ui.notifications.error(game.i18n.localize("UTOPIA.Error.noTarget"));
+        ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NoTargetsSelected"));
         return;
       }
     } 

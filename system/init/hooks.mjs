@@ -4,6 +4,7 @@ import { UtopiaChatMessage } from "../../documents/chat-message.mjs";
 import { getTextContrastHex } from "../helpers/textContrast.mjs";
 import { registerDiceSoNice } from "../integrations/DiceSoNice/diceSoNice.mjs";
 import { registerFeatures } from "./features.mjs";
+import { createDocMacro, rollItemMacro } from "./macros.mjs";
 
 export function registerHooks() {
   Hooks.once("ready", function () {
@@ -270,6 +271,9 @@ export function registerHooks() {
 
       game.settings.set("utopia", "lastSeenVersion", game.system.version);
     }
+
+    game.utopia = globalThis.utopia;
+    game.utopia.rollItemMacro = rollItemMacro;
   });
 
   Hooks.on('renderSettings', (settings) =>  {

@@ -5,6 +5,12 @@ import { UtopiaChatMessage } from "./chat-message.mjs";
 
 export class UtopiaItem extends Item {
 
+  static rollItemMacro(itemName) {
+    const item = game.user.character.items.getName(itemName);
+
+    item.use();
+  }
+
   async getRollData() {
     const owner = this.actor ?? this.parent ?? game.user.character ?? game.user;
     if (owner instanceof Actor) {

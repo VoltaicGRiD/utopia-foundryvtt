@@ -383,9 +383,9 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       equipped: new fields.ArrayField(new fields.StringField({ required: true, nullable: false })),
     });
 
-    schema.turnOrder = new fields.StringField({ required: true, nullable: false, initial: "@spd.mod" })
+    schema.turnOrder = new fields.StringField({ required: true, nullable: false, initial: "spd.mod" })
     schema.turnOrderOptions = new fields.StringField({
-      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['@spd.mod'] }),
+      traits: new fields.SetField(new fields.StringField({ required: true, nullable: false }), { initial: ['spd.mod'] }),
     })
 
     const returns = {};

@@ -11,14 +11,14 @@
       <div class="item-container">
         {{#each kits as |item|}} 
           {{#if ../isPlay}}
-            <div class="item">
+            <div class="item" data-drag draggable="true">
               <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
             </div>
           {{else}}
             <div class="item-edit">
-              <div class="item">
+              <div class="item" data-drag draggable="true">
                 <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
                   <span class="item-name">{{item.name}}</span>
                 </a>
@@ -42,14 +42,14 @@
       <div class="item-container">
         {{#each classes as |item|}} 
           {{#if ../isPlay}}
-            <div class="item">
+            <div class="item" data-drag draggable="true">
               <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
             </div>
           {{else}}
             <div class="item-edit">
-              <div class="item">
+              <div class="item" data-drag draggable="true">
                 <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
                   <span class="item-name">{{item.name}}</span>
                 </a>
@@ -79,14 +79,14 @@
     <div class="item-container">
       {{#each talents as |item|}} 
         {{#if ../isPlay}}
-          <div class="item">
+          <div class="item" data-drag draggable="true">
             <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
               <span class="item-name">{{item.name}}</span>
             </a>
           </div>
         {{else}}
           <div class="item-edit">
-            <div class="item">
+            <div class="item" data-drag draggable="true">
               <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
@@ -100,14 +100,14 @@
 
       {{#each specialist as |item|}} 
         {{#if ../isPlay}}
-          <div class="item">
+          <div class="item" data-drag draggable="true">
             <a class="specialistTalent" data-action="viewDocument" data-document-id="{{item.id}}">
               <span class="item-name">{{item.name}}</span>
             </a>
           </div>
         {{else}}
           <div class="item-edit">
-            <div class="item">
+            <div class="item" data-drag draggable="true">
               <a class="specialistTalent" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
@@ -125,20 +125,20 @@
     {{#if isPlay}}
       <legend>{{localize "UTOPIA.Actors.Items.Gear"}} <i class="fas fa-sword"></i></legend>
     {{else}}
-      <legend data-action="createDocument" data-document-type="gear" title="{{localize "UTOPIA.Gear.New"}}">{{localize "DOCUMENT.Create" type="Gear"}} <i class="fas fa-plus"></i></legend>
+      <legend data-action="openApplication" data-application="artifice" title="{{localize "UTOPIA.Gear.New"}}">{{localize "DOCUMENT.Create" type="Gear"}} <i class="fas fa-plus"></i></legend>
     {{/if}}
-    <a data-action="createDocument" data-document-type="gear"><i class="fas fa-hammer"></i> {{localize "UTOPIA.Actors.Actions.NewArtifice"}}</a>
+    <a data-action="openApplication" data-application="artifice"><i class="fas fa-hammer"></i> {{localize "UTOPIA.Actors.Actions.NewArtifice"}}</a>
     <div class="item-container">
       {{#each equipment as |item|}} 
         {{#if ../isPlay}}
-          <div class="item">
+          <div class="item" data-drag draggable="true">
             <a class="gear" data-action="gear" data-document-id="{{item.id}}">
               <span class="item-name">{{item.name}}</span>
             </a>
           </div>
         {{else}}
           <div class="item-edit">
-            <div class="item">
+            <div class="item" data-drag draggable="true">
               <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
@@ -154,14 +154,14 @@
     <div class="item-container">
       {{#each generic as |item|}} 
         {{#if ../isPlay}}
-          <div class="item">
+          <div class="item" data-drag draggable="true">
             <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
               <span class="item-name">{{item.name}}</span>
             </a>
           </div>
         {{else}}
           <div class="item-edit">
-            <div class="item">
+            <div class="item" data-drag draggable="true">
               <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
@@ -184,14 +184,14 @@
     <div class="item-container">
       {{#each actions as |item|}} 
         {{#if ../isPlay}}
-          <div class="item">
+          <div class="item" data-drag draggable="true">
             <a class="action" data-action="roll" data-roll="item" data-item="{{item.id}}">
               <span class="item-name">{{item.name}}</span>
             </a>
           </div>
         {{else}}
           <div class="item-edit">
-            <div class="item">
+            <div class="item" data-drag draggable="true">
               <a class="action" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
@@ -209,19 +209,20 @@
     {{#if isPlay}}
       <legend>{{localize "UTOPIA.Actors.Items.Consumables"}} <i class="fas fa-flask"></i></legend>
     {{else}}
-      <legend data-action="createDocument" data-document-type="gear" title="{{localize "UTOPIA.Consumables.New"}}">{{localize "DOCUMENT.Create" type="Consumable"}} <i class="fas fa-plus"></i></legend>
+      <legend data-action="openApplication" data-application="artifice" data-document-type="consumable" title="{{localize "UTOPIA.Consumables.New"}}">{{localize "DOCUMENT.Create" type="Consumable"}} <i class="fas fa-plus"></i></legend>
     {{/if}}
+    <a data-action="openApplication" data-application="artifice" data-document-type="consumable"><i class="fas fa-hammer"></i> {{localize "UTOPIA.Actors.Actions.NewConsumable"}}</a>
     <div class="item-container">
       {{#each consumables as |item|}} 
         {{#if ../isPlay}}
-          <div class="item">
+          <div class="item" data-drag draggable="true">
             <a class="consumable" data-action="viewDocument" data-document-id="{{item.id}}">
-              <span class="item-name">{{item.name}}</span>
+              <span class="item-name">{{item.name}} [Qty. {{item.quantity}}]</span>
             </a>
           </div>
         {{else}}
           <div class="item-edit">
-            <div class="item">
+            <div class="item" data-drag draggable="true">
               <a class="consumable" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
@@ -243,7 +244,7 @@
     {{/if}}
     <div class="item-container">
       {{#each favors as |item|}} 
-        <div class="item">
+        <div class="item" data-drag draggable="true">
           <a class="consumable" data-action="viewDocument" data-document-id="{{item.id}}">
             <span class="item-name">{{item.name}}</span>
             {{#each item.system.conditions}}

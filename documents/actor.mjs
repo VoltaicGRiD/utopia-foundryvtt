@@ -2173,32 +2173,32 @@ export class UtopiaActor extends Actor {
       }]
     }]);
 
-    this.createEmbeddedDocuments("Item", [{
-      type: "action",
-      name: game.i18n.localize("UTOPIA.Actors.Actions.Assist"),
-      system: {
-        isBaseAction: true,
-        category: "active",
-        toggleActiveEffects: true,
-        type: "turn",
-        cost: "2",
-        stamina: 0,
-      },
-      effects: [{
-        transfer: true,
-        name: game.i18n.localize("UTOPIA.Actors.Actions.Assist"),
-        changes: [{
-          key: "system.turnActions.temporary",
-          value: "1",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          priority: 1
-        }],
-        disabled: true,
-        duration: {
-          rounds: 1
-        }
-      }]
-    }]);
+    // this.createEmbeddedDocuments("Item", [{
+    //   type: "action",
+    //   name: game.i18n.localize("UTOPIA.Actors.Actions.Assist"),
+    //   system: {
+    //     isBaseAction: true,
+    //     category: "active",
+    //     toggleActiveEffects: true,
+    //     type: "turn",
+    //     cost: "2",
+    //     stamina: 0,
+    //   },
+    //   effects: [{
+    //     transfer: true,
+    //     name: game.i18n.localize("UTOPIA.Actors.Actions.Assist"),
+    //     changes: [{
+    //       key: "system.turnActions.temporary",
+    //       value: "1",
+    //       mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+    //       priority: 1
+    //     }],
+    //     disabled: true,
+    //     duration: {
+    //       rounds: 1
+    //     }
+    //   }]
+    // }]);
 
     this.update({
       "system.hitpoints.surface.value": this.system.hitpoints.surface.max,

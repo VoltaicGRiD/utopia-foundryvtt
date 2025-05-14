@@ -13,6 +13,8 @@ export class Activity extends foundry.abstract.TypeDataModel {
     schema.description = new fields.StringField({ required: true, nullable: false, initial: "" });
     schema.origin = new fields.DocumentUUIDField({ required: false, nullable: true, initial: null });
 
+    schema.replacesBaseAction = new fields.StringField({ required: true, nullable: false, blank: true });
+    
     schema.operations = new fields.ArrayField(new fields.TypedSchemaField({
       ...ops.selectOperation.defineSchema(),
       ...ops.selectOption.defineSchema(),
@@ -33,6 +35,10 @@ export class Activity extends foundry.abstract.TypeDataModel {
     }), { required: true, nullable: false, initial: [] });
 
     return schema;
+  }
+
+  static get baseActions() {
+    return ["takeCover", "aim", "grapple", "deepBreath", "weaponlessAttack", "block", "dodge", "travel", "stealth", "leap", "scaleSame", "scaleLarger", "holdAction", "assist"];''
   }
 
   operationFields(operation) {

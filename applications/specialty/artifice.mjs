@@ -25,9 +25,10 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
 
   constructor(options = {}) {
     super(options);
-    if (options.actor) {
+    if (options.actor) 
       this.actor = options.actor;
-    }
+    if (options.type) 
+      this.type = options.type;
   }
 
   // Default options for the application.
@@ -328,14 +329,24 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       }
     }
 
-    const rarities = Object.values(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")));
-    const rarity = rarities.find((r) => totalRP >= r.points.minimum && totalRP <= r.points.maximum) || rarities[0];
+    const rarities = Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.rarities")));
+    let rarity = {};
+
+    for (const [key, value] of rarities) {
+      if (totalRP >= value.points.minimum && totalRP <= value.points.maximum) {
+        rarity = {...value, key};
+      }
+    }
 
     let componentCosts = {}
     if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
       componentCosts.material = Math.max(Math.floor(totalRP / 25), 1);
       componentCosts.refinement = Math.max(Math.floor(totalRP / 40), 1);
       componentCosts.power = Math.max(Math.floor(totalRP / 50), 0);
+    }
+    else if (this.type === "consumable") {
+      componentCosts.refinement = Math.max(Math.floor(totalRP / 40), 1);
+      componentCosts.power = Math.max(Math.floor(totalRP / 50), 1);
     }
     else {
       componentCosts = Object.values(this.selected).reduce((acc, feature) => {
@@ -360,6 +371,8 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       refinement: componentCosts.refinement || 0,
       power: componentCosts.power || 0,
     }
+
+    this.artifice = artifice;
 
     const context = {
       features: this.features,
@@ -540,11 +553,6 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
   static async _craft(event, target) {
     if (!this.actor && !game.user.isGM && !game.user.character) {
       console.warn("No actor found for attack operation.");
-      return;
-    }
-
-    if (game.settings.get("utopia", "targetRequired") && game.user.targets.size === 0 && !game.user.isGM) {
-      ui.notifications.warn(game.i18n.localize("UTOPIA.Activity.Attack.NoTargets"));
       return;
     }
 
@@ -911,20 +919,56 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
     }
 
     // Create the item and put it in the game's world
-    if (game.user.isGM) {
+    if (game.user.isGM && !this.actor) {
       const item = await Item.create({
-        name: "New Gear",
+        name: `New ${this.type.capitalize()}`,
         type: "gear",
         system: {
-          crafter: game.user.character || game.actors[0],
+          crafter: game.user.character.uuid || game.actors[0].uuid,
           type: this.type,
           features: ["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type) ? this.artifact.passive : this.selected,
           activations: this.artifact.activations,
         }
       });
     }
+    else {
+      const actor = game.user.character || this.actor;
+      
+      const itemData = {
+        name: `New ${this.type.capitalize()}`,
+        type: "gear",
+        system: {
+          crafter: game.user.character.uuid || game.actors[0].uuid,
+          type: this.type,
+          features: ["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type) ? this.artifact.passive : this.selected,
+          activations: this.artifact.activations,
+        }
+      }
 
-    const actor = game.user.character || this.actor;
+      if (actor.type === "NPC") {
+        return await actor.addItem(itemData, true, false, undefined);
+      }
+
+      const actorComponents = actor.system.components ?? {};
+
+      if (actorComponents) { // NPC's don't have components
+        const rarityKey = this.artifice.rarity.key;
+        const components = {
+          material: this.artifice.material || 0,
+          refinement: this.artifice.refinement || 0,
+          power: this.artifice.power || 0
+        }
+
+        for (const [key, value] of Object.entries(components)) {
+          if (actorComponents[key][rarityKey].available < value) {
+            ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.NotEnoughComponents"));
+            return;
+          }
+        }
+      }
+
+      return await actor.addItem(itemData, true, false, undefined);
+    }  
   }
 
   handleFeature(feature) {
@@ -994,12 +1038,24 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
 
     let { slots, actions, hands } = this.getDefaults();
 
-    if (feature.output.key === "slots") 
-      slots = feature.output.value;
-    if (feature.output.key === "actions")
-      actions = feature.output.value;
-    if (feature.output.key === "hands")
-      hands = feature.output.value;
+    if (feature.output.key === "slots") {
+      if (feature.output.value < 0)
+        slots = slots + parseInt(feature.output.value);
+      else
+        slots = feature.output.value;
+    }
+    if (feature.output.key === "actions") {
+      if (feature.output.value < 0)
+        actions = actions + parseInt(feature.output.value);
+      else
+        actions = feature.output.value;
+    }
+    if (feature.output.key === "hands") {
+      if (feature.output.value < 0)
+        hands = hands + parseInt(feature.output.value);
+      else
+        hands = feature.output.value;
+    }
 
     return {feature, keys, slots, actions, hands};
   }

@@ -23,6 +23,7 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
       craft: this._craft,
       equip: this._equip,
       augment: this._augment,
+      duplicate: this._duplicate,
       edit: this._edit,
       save: this._save,
     },
@@ -217,6 +218,18 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
   async _onRender(context, options) {
     super._onRender(context, options);
 
+    this.element.querySelector(".window-content").style.position = "relative";
+    if (options.isFirstRender && this.item.system.type === "consumable") {
+      const div = document.createElement("div");
+      div.classList.add("artifice-craft-div");
+      const button = document.createElement("button");
+      button.dataset.action = "duplicate";
+      button.classList.add("artifice-craft-button");
+      button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="height: 512px; width: 512px;"><defs><filter id="shadow-3" height="300%" width="300%" x="-100%" y="-100%"><feFlood flood-color="rgba(255, 0, 0, 1)" result="flood"></feFlood><feComposite in="flood" in2="SourceGraphic" operator="atop" result="composite"></feComposite><feGaussianBlur in="composite" stdDeviation="15" result="blur"></feGaussianBlur><feOffset dx="5" dy="5" result="offset"></feOffset><feComposite in="SourceGraphic" in2="offset" operator="over"></feComposite></filter><filter id="shadow-5" height="300%" width="300%" x="-100%" y="-100%"><feFlood flood-color="rgba(255, 0, 0, 1)" result="flood"></feFlood><feComposite in="flood" in2="SourceGraphic" operator="atop" result="composite"></feComposite><feGaussianBlur in="composite" stdDeviation="15" result="blur"></feGaussianBlur><feOffset dx="0" dy="0" result="offset"></feOffset><feComposite in="SourceGraphic" in2="offset" operator="over"></feComposite></filter></defs><g class="" transform="translate(0,1)" style=""><g><path d="M256 18.365L50.14 136L256 253.635L461.86 136L256 18.365Z" class="" fill="#0097f8" fill-opacity="1"></path><path d="M102 186.365L50.14 216L256 333.635L461.86 216L410 186.365L256 274.365L102 186.365Z" class="" fill="#000000" fill-opacity="1" stroke="#fff8f8" stroke-opacity="1" stroke-width="8" filter="url(#shadow-3)"></path><path d="M102 266.365L50.14 296L256 413.635L461.86 296L410 266.365L256 354.365L102 266.365Z" class="" fill="#00b5ff" fill-opacity="1"></path><path d="M102 346.365L50.14 376L256 493.635L461.86 376L410 346.365L256 434.365L102 346.365Z" class="selected" fill="#000000" fill-opacity="1" filter="url(#shadow-5)" stroke="#ffffff" stroke-opacity="1" stroke-width="8"></path></g></g></svg>`;
+      div.append(button);
+      this.element.append(div);
+    }
+
     // Listen for updates on select elements.
     this.element.querySelectorAll("select[data-action='update']").forEach(selectEl => {
       selectEl.addEventListener("change", async (event) => {
@@ -317,5 +330,18 @@ export class GearSheet extends api.HandlebarsApplicationMixin(sheets.ItemSheetV2
   static async _augment(event, target) {
     await this.item.augment();
     this.render(true);
+  }
+
+  static async _duplicate(event, target) {
+    if (game.user.isGM) {
+      this.item.update({
+        "system.quantity": this.item.system.quantity + 1,
+      })
+
+      return ui.notifications.info(game.i18n.localize("UTOPIA.Artifice.Duplicated"));
+    }
+
+    const { material, refinement, power } = this.item.system.artifice;
+    const actor = game.user.character;
   }
 }

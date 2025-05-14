@@ -139,7 +139,13 @@ export class UtopiaChatMessage extends ChatMessage {
         });
         await this.delete();
       }
-    });         
+    });
+    
+    let takeCoverButton = html.querySelector('[data-action="takeCover"]');
+    takeCoverButton?.addEventListener('click', async (event) => {
+      const target = await fromUuid(this.system.target);
+      target.items.find(i => i.type === "action" && i.name === game.i18n.localize("UTOPIA.Actors.Actions.TakeCover"));
+    });
     
     let cancelButton = html.querySelector('[data-action="cancel"]');
     cancelButton?.addEventListener('click', async (event) => {

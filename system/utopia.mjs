@@ -30,6 +30,7 @@ globalThis.utopia = {
       await game.settings.set("utopia", "advancedSettings.rarities", CONFIG.UTOPIA.RARITIES);
     },
   },
+  rollItemMacro: Item.rollItemMacro,
   damageHandlers: globalThis.utopia?.damageHandlers || [],
 }
 
@@ -62,4 +63,3 @@ Hooks.once("init", async function () {
 });
 
 init.createDocMacro;
-init.rollItemMacro;

@@ -214,11 +214,13 @@
       "TotalSuccess": "Total Success",
       "TotalFailure": "Total Failure",
       "PartialSuccess": "Partial Success",
-      "ItemNotEquipped": "This item is an equippable item, but it is not equipped. Please equip it first."
+      "ItemNotEquipped": "This item is an equippable item, but it is not equipped. Please equip it first.",
+      "NotEnoughComponents": "You don't have enough components to craft this item."
     },
     "CHAT": {
       "Block": "Block",
       "Dodge": "Dodge",
+      "TakeCover": "Take Cover",
       "DamageAppliedFlavor": "Damage Applied",
       "SHPTaken": "SHP damage taken",
       "DHPTaken": "DHP damage taken",
@@ -500,6 +502,7 @@
       "ActivatedFeatures": "Activated Features",
       "PassiveFeatures": "Passive Features",
       "Activations": "Artifact Activations",
+      "Duplicated": "Increased consumable quantity by 1",
       "Types": {
         "fastWeapon": "Fast Weapon",
         "moderateWeapon": "Moderate Weapon",
@@ -537,6 +540,7 @@
         "OpenCompendiumBrowser": "Open Compendium Browser",
         "OpenSpellcraft": "Open Spellcraft",
         "NewArtifice": "New Gear Item",
+        "NewConsumable": "New Consumable",
         "NewGeneric": "New Generic Item",
         "NoSpecies": "Select a Species",
         "Perform": "Perform",

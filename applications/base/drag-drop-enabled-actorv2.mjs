@@ -2,6 +2,7 @@ import { getPaperDollContext } from "../../models/utility/paper-doll-utils.mjs";
 import { fitTextToWidth } from "../../system/helpers/fitTextToWidth.mjs";
 import { flattenFields } from "../../system/helpers/flattenFields.mjs";
 import { AdvancementSheet } from "../item/advancement.mjs";
+import { ArtificeSheet } from "../specialty/artifice.mjs";
 import { CompendiumBrowser } from "../specialty/compendium-browser.mjs";
 import { SpellcraftSheet } from "../specialty/spellcraft.mjs";
 import { TalentBrowser } from "../specialty/talent-browser.mjs";
@@ -268,8 +269,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
   _prepareItems(context) {
     context.favors = this.actor.items.filter(i => i.type === 'favor');
-    context.equipment = this.actor.items.filter(i => i.type === 'gear').filter(i => i.system.category !== "consumable");
-    context.consumables = this.actor.items.filter(i => i.type === 'gear').filter(i => i.system.category === "consumable");
+    context.equipment = this.actor.items.filter(i => i.type === 'gear').filter(i => i.system.type !== "consumable");
+    context.consumables = this.actor.items.filter(i => i.type === 'gear').filter(i => i.system.type === "consumable");
     context.talents = this.actor.items.filter(i => i.type === 'talent');
     context.spells = this.actor.items.filter(i => i.type === 'spell');
     context.actions = [...this.actor.items.filter(i => i.type === 'action'), ...this.actor.system.gearActions ?? [], ...this.actor.items.filter(i => i.type === 'activity')];
@@ -428,6 +429,17 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
       const inputElement = event.target;
       fitTextToWidth(inputElement, 12, 24);
     });
+
+    this.element.querySelectorAll("div.item").forEach((itemElement) => {
+      const documentId = itemElement.querySelector('a').dataset.documentId;
+      const item = this.actor.items.get(documentId);
+      if (!item || !item.uuid) return;
+      const data = { type: "Item", uuid: item.uuid };
+
+      itemElement.addEventListener("dragstart", (event) => {
+        event.dataTransfer.setData("text/plain", JSON.stringify(data));
+      });
+    })
 
     // const toggle = this.element.querySelector(".mode-toggle");
     // toggle.checked = this._mode === this.constructor.MODES.EDIT;
@@ -654,6 +666,10 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         if (this.actor.system.talentPoints.available > 5) 
           return ui.notifications.warn(game.i18n.localize("UTOPIA.ERRORS.AdvancementPointsWarning"));
         return new AdvancementSheet({ actor: this.actor }).render(true);
+      case "artifice": 
+        if (target.dataset.documentType) 
+          return new ArtificeSheet({ actor: this.actor, type: target.dataset.documentType }).render(true);
+        return new ArtificeSheet({ actor: this.actor }).render(true);
       case "browser": 
         return new CompendiumBrowser({ actor: this.actor, type: target.dataset.documentType }).render(true);
     }

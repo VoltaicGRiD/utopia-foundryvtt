@@ -9,9 +9,8 @@
     <p>{{localize "UTOPIA.CHAT.EstimatedDamage" damage=estimate}}</p>
   </div>
 
-  <hr/>
-
   <footer data-visibility="gm">
+    <span>&lt;GM&gt; Targets:</span>
     <div class="targets">
       {{#each damages as |damage|}}
         <img src="{{damage.target.img}}" alt="{{damage.target.name}}" width="40" height="40" data-tooltip="{{damage.target.name}}" />

@@ -9,8 +9,8 @@ export class heal extends BaseOperation {
         type: new foundry.data.fields.StringField({ required: true, nullable: false, blank: false, initial: "heal" }),
         formula: new foundry.data.fields.StringField({ required: true, nullable: false, blank: false, initial: "1d4" }),
         hitpoints: new foundry.data.fields.StringField({ required: true, nullable: false, blank: false, initial: "SHP" }),
-        modifier: new fields.StringField({ required: false, nullable: true, blank: true }),
-        range: new fields.StringField({ required: false, nullable: true, blank: true, initial: "0/0", validate: (v) => {
+        modifier: new foundry.data.fields.StringField({ required: false, nullable: true, blank: true }),
+        range: new foundry.data.fields.StringField({ required: false, nullable: true, blank: true, initial: "0/0", validate: (v) => {
           const regex = /^\d+\s*\/\s*\d+$/;
           return regex.test(v);
         } }),

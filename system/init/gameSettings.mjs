@@ -269,4 +269,13 @@ export async function registerGameSettings() {
     type: String,
     default: false,
   });
+
+  game.settings.register('utopia', 'damageHandlers', {
+    name: "UTOPIA.Settings.damageHandlers",
+    hint: "UTOPIA.Settings.damageHandlersHint",
+    scope: "world",
+    config: false,
+    type: Object,
+    default: CONFIG.UTOPIA.DAMAGE_HANDLERS,
+  })
 }

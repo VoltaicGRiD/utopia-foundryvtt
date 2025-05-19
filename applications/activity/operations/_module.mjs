@@ -13,4 +13,6 @@ export { ConsumeResourceSheet } from "./consume-resource-sheet.mjs";
 export { HealSheet } from "./heal-sheet.mjs";
 export { TravelSheet } from "./travel-sheet.mjs";
 export { ConsumptionSheet } from "./consumption-sheet.mjs";
+export { AttackResponseSheet } from "./attack-response-sheet.mjs";
 export { GenericSheet } from "./generic-sheet.mjs";
+export { TargetSheet } from "./target-sheet.mjs";

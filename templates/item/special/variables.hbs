@@ -22,7 +22,7 @@
           </button>
         </div>
         {{#if (eq (lookup (lookup ../system.variables key) "kind") "options")}}
-          <string-tags class="variable-options" name="{{concat "system.variables." key ".options"}}" data-key="{{key}}" autofocus></string-tags>
+          <string-tags class="variable-options" name="{{concat "system.variables." key ".options"}}" data-key="{{key}}" value={{concat "system.variables." key ".options"}} autofocus></string-tags>
         {{/if}}
         <div class="variable-description">
           {{formGroup ../systemFields.variableDescription value=(lookup (lookup ../system.variables key) "description") name=(concat "system.variables." key ".description") localize=true stacked=true placeholder=(localize 'UTOPIA.CommonTerms.description')}}

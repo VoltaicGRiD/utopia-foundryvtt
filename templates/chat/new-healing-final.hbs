@@ -1,0 +1,36 @@
+<div class="chat-card">
+  
+  <div class="card-header">
+    <img class="card-header-icon" src="systems/utopia/assets/heal.svg" title="Healing" width="30" height="30" />
+    <h3>Healing</h3>
+  </div>
+
+  {{#each rolls}} 
+    <div class="dice-roll" data-tooltip-class="utopia">
+      {{#if this.flavor~}}
+        <div class="dice-flavor">
+          {{this.flavor}}
+        </div>
+      {{~/if}}  
+      {{#if this.formula}}
+        <div class="dice-result">
+          <div class="dice-formula">{{this._formula}}</div>
+          {{{this.tooltip}}}
+          <h4 class="dice-total">{{this._total}}</h4>
+        </div>
+      {{/if}}
+    </div>
+  {{/each}}
+
+  {{!-- <div class="card-content">
+    <span class="healing-shp">{{handledHealing.shpHealing}} {{{localize "UTOPIA.CHAT.SHPHealed"}}}</span>
+
+    {{#if (gt handledHealing.dhpHealing 0)}}
+      <span class="healing-dhp">{{handledHealing.dhpHealing}} {{{localize "UTOPIA.CHAT.DHPHealed"}}}</span>
+    {{/if}}
+
+    {{#if (gt handledHealing.staminaHealing 0)}}
+      <span class="healing-stamina">{{handledHealing.staminaHealing}} {{{localize "UTOPIA.CHAT.STAHealed"}}}</span>
+    {{/if}}
+  </div> --}}
+</div>

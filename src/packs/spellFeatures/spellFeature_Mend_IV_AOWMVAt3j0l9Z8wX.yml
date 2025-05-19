@@ -4,7 +4,7 @@ type: spellFeature
 _id: AOWMVAt3j0l9Z8wX
 img: systems/utopia/assets/icons/artistries/alteration.svg
 system:
-  formula: '-(@X)d4[DHP]'
+  formula: (@X)d4
   description: >-
     <p style="text-align: left;">Upon casting and at the beginning of each turn
     after for the duration of the spell, affected creatures regain an additional
@@ -54,6 +54,8 @@ system:
   maximum: 0
   variableName: Variable
   variableDescription: ''
+  damageType: medical
+  formulaType: heal
 effects: []
 sort: 0
 ownership:
@@ -65,9 +67,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.05'
   createdTime: 1734769603326
-  modifiedTime: 1734829044642
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747287932112
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!AOWMVAt3j0l9Z8wX'
 

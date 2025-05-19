@@ -1,3 +1,5 @@
+import { DamageHandler } from "../../../../system/damage.mjs";
+import { rangeTest } from "../../../../system/helpers/rangeTest.mjs";
 import { DamageInstance } from "../../../../system/oldDamage.mjs";
 import { BaseOperation } from "../base-operation.mjs";
 
@@ -14,15 +16,20 @@ export class attack extends BaseOperation {
           formula: new fields.StringField({ required: true, nullable: false, blank: false, initial: "1d4" }),
           damageType: new fields.StringField({ required: true, nullable: false, blank: false, initial: "physical" }),
           modifier: new fields.StringField({ required: false, nullable: true, blank: true }),
-          range: new fields.StringField({ required: false, nullable: true, blank: true, initial: "0/0", validate: (v) => {
-            const regex = /^\d+\s*\/\s*\d+$/;
-            return regex.test(v);
-          } }),
-          penetrate: new fields.BooleanField({ required: true, nullable: false, initial: false }),
-          nonLethal: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+          useWeapon: new fields.BooleanField({ required: true, nullable: false, initial: false }),
         }), { required: true, nullable: false, initial: [
-          { formula: "1d4", damageType: "physical", penetrate: false, nonLethal: false }
+          { formula: "1d4", damageType: "physical", modifier: "", useWeapon: false,}
         ] }),
+        modifier: new fields.StringField({ required: false, nullable: true, blank: true }),
+        range: new fields.StringField({ required: false, nullable: true, blank: true, initial: "0/0", validate: (v) => {
+          const regex = /^\d+\s*\/\s*\d+$/;
+          return regex.test(v);
+        } }),
+        randomTarget: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+        penetrate: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+        nonLethal: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+        exhausting: new fields.BooleanField({ required: true, nullable: false, initial: false }),
+        ignoreSHP: new fields.BooleanField({ required: true, nullable: false, initial: false }),
         ...baseActivity
       })
     }
@@ -97,49 +104,117 @@ export class attack extends BaseOperation {
       return;
     }
 
-    let instances = [];
     let targets = game.user.targets.size > 0 ? Array.from(game.user.targets) : [game.user.character] || [game.actors.get(options.actorId)] || [];    
-    for (const damage of operation.damages) {
+    if (options.target) {
+      targets = [game.canvas.scene.tokens.find(t => t.id === options.target)];
+    }
+
+    const targetsInRange = targets.filter(target => {
+      if (operation.range) {
+        return rangeTest({ range: operation.range, target: target, trait: actor.system.accuracyTrait });
+      }
+      return true;
+    });
+
+    const damages = [];
+
+    for (const attackDamage of operation.damages.filter(d => d.useWeapon)) {
+      const slots = actor.system.handheldSlots.equipped;
+      for (const slot of slots) {
+        const item = actor.items.get(slot);
+        const weapons = [];
+        if (item && item.type === "gear") {
+          weapons.push(item);          
+        }
+      }
+
+      const select = await foundry.applications.fields.createSelectInput({
+        options: weapons.map(weapon => {
+          return {
+            label: `${weapon.name} (${weapon.system.damages.map(d => `${d.formula} ${d.type}`).join(", ")})`,
+            value: weapon.id,
+          };
+        }),
+      });
+
+      const selectedWeapon = await foundry.applications.api.DialogV2.prompt({
+        title: game.i18n.localize("UTOPIA.Activity.Attack.SelectWeapon"),
+        content: select.outerHTML,
+        render: true,
+        ok: {
+          label: "OK",
+          callback: (event, button, dialog) => dialog.querySelector("select")
+        }
+      }).then((result) => {
+        return result.selectedOptions[0].value;
+      }).catch(err => {
+        console.error("Error selecting weapon:", err);
+      });
+
+      // Set the activity's 'operationData' to the selected weapon
+      await activity.update({
+        "system.operationData": foundry.utils.mergeObject(activity.system.operationData, {
+          [operation.id]: {
+            weapon: selectedWeapon,
+          }
+        })
+      })
+
+      const weapon = actor.items.get(selectedWeapon);
+      const weaponDamages = weapon.system.damages;
+      const nonLethal = weapon.system.nonLethal ?? false;
+      const penetrate = weapon.system.penetrative ?? false;
+      const modifier = weapon.system.damage?.modifier ?? undefined;
+      const ignoreSHP = weapon.system.ignoreSHP ?? false;
+      const exhausting = weapon.system.exhausting ?? false;
+
+      for (const damage of weaponDamages) {
+        let formula = damage.formula;
+        if (modifier && modifier !== "") 
+          formula = `${formula} + ${modifier}`;
+        
+        damages.push({
+          formula: `(${formula}) ${attackDamage.formula}`,
+          type: damage.type,
+          options: {
+            penetrate: penetrate,
+            nonLethal: nonLethal,
+            ignoreSHP: ignoreSHP,
+            exhausting: exhausting,
+          }
+        });
+      }
+    }
+
+    const penetrate = operation.penetrate ?? false;
+    const nonLethal = operation.nonLethal ?? false;
+    const ignoreSHP = operation.ignoreSHP ?? false;
+    const exhausting = operation.exhausting ?? false;
+    const randomTarget = operation.randomTarget ?? false;
+
+    for (const damage of operation.damages.filter(d => !d.useWeapon)) {
       let modifiedFormula = damage.formula.replace(/(#[a-zA-Z0-9]+)/g, (match) => {
         const operation = activity.system.operations.find(op => op.key === match.replace('#', ''));
         return operation ? operation.value : match;
       });
 
-      const roll = await new Roll(modifiedFormula).evaluate();
-      roll.toMessage({
-        speaker: ChatMessage.getSpeaker({ actor }),
-        flavor: `${game.i18n.localize("Utopia.Operation.Attack")} ${game.i18n.localize(`Utopia.Operation.Attack.${damage.damageType}`)}`,
-        rollMode: game.settings.get("core", "rollMode"),
-      });
-
-      for (const target of targets) {
-        if (!target || !target.actor) continue; // Skip if no target or target has no actor
-        
-        let type = damage.damageType;
-        if (activity.system.operations.some(op => op.id === type)) {
-          const operation = activity.system.operations.find(op => op.id === type);
-          type = operation.value;
+      damages.push({
+        formula: modifiedFormula,
+        type: damage.damageType,
+        options: {
+          penetrate: damage.penetrate,
+          nonLethal: damage.nonLethal,
+          randomTarget: damage.randomTarget,
         }
-
-        // Create a new DamageInstance for each target
-        const instance = new DamageInstance({
-          type: damage.damageType,
-          value: roll.total,
-          source: activity,
-          target: target.actor,
-        }, { 
-          penetrate: damage.penetrate, 
-          nonLethal: damage.nonLethal 
-        });
-        
-        instances.push(instance);
-      }
+      })
     }
 
-    for (const instance of instances) {
-      if (game.settings.get("utopia", "autoRollAttacks")) 
-        return await instance.toFinalMessage();
-      return await instance.toMessage();
-    }
+    new DamageHandler({
+      damages,
+      targets: targetsInRange,
+      source: activity,
+    })
+
+    return true;
   }
 }

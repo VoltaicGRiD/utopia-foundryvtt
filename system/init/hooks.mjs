@@ -8,18 +8,13 @@ import { createDocMacro, rollItemMacro } from "./macros.mjs";
 
 export function registerHooks() {
   Hooks.once("ready", function () {
+    
+
     // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
     Hooks.on("hotbarDrop", (bar, data, slot) => {
       createDocMacro(data, slot);
       return false;
     });
-
-    // Hooks.on("targetToken", (user, token, targeted) => {
-    //   if (ui.activeWindow.constructor.name === "UtopiaAttackSheet") {
-    //     let window = ui.activeWindow;
-    //     window.render();
-    //   }
-    // });
 
     Hooks.on("deleteCombat", async (combat, options, userId) => {    
       console.warn("[UTOPIA] Combat is being deleted, restoring combatants' turn actions.", combat, options, userId);
@@ -102,9 +97,15 @@ export function registerHooks() {
     });
 
     Hooks.on("combatTurnChange", (combat, from, to) => {
+      //game.time.advance(6); // Advance the game time by 6 seconds to allow for any potential effects that may need to be processed after a turn change.
+
       if (game.user.isGM) {
         let token = game.canvas.tokens.placeables.find(t => t.id === to.tokenId);
-        token.control();
+        try {
+          token.control();
+        } catch (e) {
+          console.error("[UTOPIA] Error controlling token", e);
+        }
       }
 
       console.warn("[UTOPIA] Combat turn changed", combat, from, to);
@@ -141,6 +142,33 @@ export function registerHooks() {
           }));
         }
       }); 
+    });
+
+    Hooks.on("updateWorldTime", (worldTime, dt, options, userId) => {
+      for (const template of game.canvas.scene.templates) {
+        const flags = template.flags.utopia || {};
+        
+        // This is the original time the template was placed
+        if (flags.worldTime) { 
+          const elapsedTime = worldTime - flags.worldTime; // Calculate the elapsed time since the template was placed
+
+          // If the elapsed time is greater than the duration, we need to delete the template
+          if (elapsedTime > flags.duration) { 
+            template.delete();
+          }
+
+          // Otherwise, we need to re-cast the spell's effects
+          else { 
+            if (flags.origin) {
+              fromUuid(flags.origin).then((item) => {
+                fromUuid(flags.chatMessage).then((chatMessage) => {
+                  item._finishCastingSpell(chatMessage);
+                });
+              });
+            }
+          }
+        }
+      }
     });
 
     Hooks.on("deleteCombat", (combat) => {

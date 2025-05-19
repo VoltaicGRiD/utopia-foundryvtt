@@ -48,14 +48,14 @@
       <div class="attribute-set">
         <div class="attribute">
           <img class="box" src="systems/utopia/assets/attribute-box.png" />
-          <input type="number" class="attribute" name="system.hitpoints.deep.value" value="{{system.hitpoints.deep.value}}" placeholder="SHP" />
+          <input type="number" class="attribute" name="system.hitpoints.deep.value" value="{{system.hitpoints.deep.value}}" placeholder="DHP" />
         </div>
         <div class="attribute-max">
           <img class="box" src="systems/utopia/assets/attribute-max.png" />
           {{#if isPlay}}
             <span class="attribute">{{system.hitpoints.deep.max}}</span>
           {{else}}
-            <input type="number" class="attribute" name="system.hitpoints.deep.max" value="{{systemSource.hitpoints.deep.max}}" placeholder="SHP" />
+            <input type="number" class="attribute" name="system.hitpoints.deep.max" value="{{systemSource.hitpoints.deep.max}}" placeholder="DHP" />
           {{/if}}
         </div>
       </div>
@@ -68,14 +68,14 @@
       <div class="attribute-set-row">
         <div class="attribute">
           <img class="box" src="systems/utopia/assets/attribute-box.png" />
-          <input type="number" class="attribute" name="system.stamina.value" value="{{system.stamina.value}}" placeholder="SHP" />
+          <input type="number" class="attribute" name="system.stamina.value" value="{{system.stamina.value}}" placeholder="STA" />
         </div>
         <div class="attribute-max">
           <img class="box" src="systems/utopia/assets/attribute-max.png" />
           {{#if isPlay}}
             <span class="attribute">{{system.stamina.max}}</span>
           {{else}}
-            <input type="number" class="attribute" name="system.stamina.max" value="{{systemSource.stamina.max}}" placeholder="SHP" />
+            <input type="number" class="attribute" name="system.stamina.max" value="{{systemSource.stamina.max}}" placeholder="STA" />
           {{/if}}
         </div>
       </div>

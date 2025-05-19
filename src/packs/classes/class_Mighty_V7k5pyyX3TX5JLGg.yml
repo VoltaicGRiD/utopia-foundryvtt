@@ -52,12 +52,59 @@ system:
   formula: ''
   tags: []
   favors: {}
-  grants: []
+  grants:
+    - Compendium.utopia.favors.Item.xXfYCj5l7FEeIuF0
+    - Compendium.utopia.actions.Item.gBFV8fOWYCAs7C0b
+    - Compendium.utopia.actions.Item.CqPpslGjzlubgHE9
   specialtyPassives: []
   grantedEquipment: []
   selectedChoices: {}
 img: icons/svg/item-bag.svg
-effects: []
+effects:
+  - name: Mighty
+    origin: Compendium.utopia.classes.Item.V7k5pyyX3TX5JLGg
+    img: icons/svg/aura.svg
+    type: passive
+    _id: 0OqAewzwE6PG6Mfd
+    system: {}
+    changes:
+      - key: flags.utopia.overkillTarget
+        mode: 4
+        value: 'true'
+        priority: null
+      - key: flags.utopia.spreadTarget
+        mode: 4
+        value: 'true'
+        priority: null
+      - key: flags.utopia.acceleratedAttack
+        mode: 4
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.07'
+      createdTime: 1747536357591
+      modifiedTime: 1747536663513
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!V7k5pyyX3TX5JLGg.0OqAewzwE6PG6Mfd'
 folder: Dv2EoB9WzuOs8x0O
 ownership:
   default: 0
@@ -68,9 +115,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.07'
   createdTime: 1744059245719
-  modifiedTime: 1747113606888
+  modifiedTime: 1747536567838
   lastModifiedBy: 1i5ql6CdWzasfqnA
 _id: V7k5pyyX3TX5JLGg
 sort: 200000

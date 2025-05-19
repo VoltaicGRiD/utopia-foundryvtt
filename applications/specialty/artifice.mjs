@@ -818,53 +818,71 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
             }
           }
         }
-
-        if (feature.crafting) {
-          const type = feature.crafting.type;
-          const limit = feature.stacks || 1;
-          const key = feature.crafting.key
-
-          const items = (await gatherItems({ type, gatherFolders: false, gatherFromActor: true })).filter(i => i.system[key] && i.system[key] <= limit);
-          if (items.length > 0) {
-            const options = items.map((item) => {
-              return {
-                label: item.name,
-                value: item.uuid,
-              };
+        else {
+          if (feature.handler === "Xd4") {
+            const optionKey = Object.values(feature.options)[0].key;
+            const keys = [];
+            keys.push({
+              parts: [{
+                display: `${feature.parentKey.capitalize()} ${feature.key.capitalize()}`,
+                key: `${feature.parentKey}.${feature.key}`, // Formula key
+                value: `${feature.stacks}d4` || 0,
+              }, {
+                display: `${feature.parentKey.capitalize()} ${optionKey.capitalize()}`,
+                key: `${feature.parentKey}.${optionKey}`, // Type key
+                value: Object.values(feature.options)[0].value || 0,
+              }]
             })
-
-            const select = foundry.applications.fields.createSelectInput({
-              name: "select",
-              options,
-              type: "single",
-              autofocus: true,
-              required: true,
-            })
-
-            let response;
-            try {
-              response = await foundry.applications.api.DialogV2.prompt({
-                window: { title: `Select a ${type.capitalize()} for ${game.i18n.localize(feature.name)}` },
-                content: select.outerHTML,
-                ok: {
-                  label: "Submit",
-                  callback: (event, button, dialog) => button.form.elements.select.value,
-                }
-              });
-            } catch (error) {
-              console.error("Error in dialog:", error);
-              return;
-            }
-
-            if (response) {
-              feature.crafting.item = response;
-            }
+            this.selected[id].keys = keys;
           }
-          else {
-            ui.notifications.error(game.i18n.localize("UTOPIA.ArtificeSheet.NoAvailableCraftings"));
-            return;
-          }          
         }
+      }
+      
+      if (feature.crafting) {
+        const type = feature.crafting.type;
+        const limit = feature.stacks || 1;
+        const key = feature.crafting.key
+
+        const items = (await gatherItems({ type, gatherFolders: false, gatherFromActor: true })).filter(i => i.system[key] && i.system[key] <= limit);
+        if (items.length > 0) {
+          const options = items.map((item) => {
+            return {
+              label: item.name,
+              value: item.uuid,
+            };
+          })
+
+          const select = foundry.applications.fields.createSelectInput({
+            name: "select",
+            options,
+            type: "single",
+            autofocus: true,
+            required: true,
+          })
+
+          let response;
+          try {
+            response = await foundry.applications.api.DialogV2.prompt({
+              window: { title: `Select a ${type.capitalize()} for ${game.i18n.localize(feature.name)}` },
+              content: select.outerHTML,
+              ok: {
+                label: "Submit",
+                callback: (event, button, dialog) => button.form.elements.select.value,
+              }
+            });
+          } catch (error) {
+            console.error("Error in dialog:", error);
+            return;
+          }
+
+          if (response) {
+            feature.crafting.item = response;
+          }
+        }
+        else {
+          ui.notifications.error(game.i18n.localize("UTOPIA.ArtificeSheet.NoAvailableCraftings"));
+          return;
+        }          
       }
     }
 
@@ -924,7 +942,7 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
         name: `New ${this.type.capitalize()}`,
         type: "gear",
         system: {
-          crafter: game.user.character.uuid || game.actors[0].uuid,
+          crafter: "GM",
           type: this.type,
           features: ["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type) ? this.artifact.passive : this.selected,
           activations: this.artifact.activations,
@@ -932,20 +950,20 @@ export class ArtificeSheet extends api.HandlebarsApplicationMixin(api.Applicatio
       });
     }
     else {
-      const actor = game.user.character || this.actor;
+      const actor = this.actor || game.user.character;
       
       const itemData = {
         name: `New ${this.type.capitalize()}`,
         type: "gear",
         system: {
-          crafter: game.user.character.uuid || game.actors[0].uuid,
+          crafter: this.actor.uuid || game.user.character.uuid,
           type: this.type,
           features: ["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type) ? this.artifact.passive : this.selected,
           activations: this.artifact.activations,
         }
       }
 
-      if (actor.type === "NPC") {
+      if (actor.type === "NPC" || actor.type === "creature") {
         return await actor.addItem(itemData, true, false, undefined);
       }
 

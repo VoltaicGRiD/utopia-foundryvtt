@@ -42,12 +42,26 @@ export class Creature extends UtopiaActorBase {
   }
 
   prepareDerivedData() {
-    super.prepareDerivedData();
-
     this.difficulty = this.parent.items.find(i => i.type === "body")?.system?.baseDR || 0;
-
     this._bodyData = this.parent.items.find(i => i.type === "body");
 
-    prepareBodyData(this);
+    prepareBodyData(this).then(() => {
+      this.turnActions.available = this.turnActions.value + this.turnActions.temporary;
+      this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;
+
+      this.spellcasting.spellcap = new Roll(`@${this.spellcasting.spellcapTrait}.total * @spellcasting.spellcapMultiplier`, this.parent.getRollData()).evaluateSync().total;
+
+      this.talentPoints.available = 0; // Creatures don't have talent points
+      this.specialistPoints.available = 0; // Creatures don't have specialist points
+      this.subtraitPoints.available = 0; // Creatures don't have subtrait points
+
+      this.spellcap = this.subtraits.res.total;
+
+      this.handheldSlots.capacity = this.evolution.hands;
+      this.handheldSlots.equipped = this.handheldSlots.equipped || [];
+      for (let i = 0; i < this.handheldSlots.capacity; i++) {
+        if (!this.handheldSlots.equipped[i]) this.handheldSlots.equipped[i] = null;
+      }
+    })    
   }
 }

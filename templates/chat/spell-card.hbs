@@ -15,6 +15,7 @@
   <div class="spell-features">
     <ol class="selected-feature-list flexcol">
       {{#each features as |feature key|}}
+        
         <li class="feature" 
           style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
           data-id="{{feature.uuid}}">
@@ -64,7 +65,7 @@
   {{/if}} --}}
 
   <div class="card-content">
-    {{{item.system.flavor}}}
+    <i>{{{item.system.flavor}}}</i>
   </div>
 
   <div class="card-actions">

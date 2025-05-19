@@ -12,6 +12,9 @@ export class Creature extends DragDropActorV2 {
     attributes: {
       template: "systems/utopia/templates/actor/attributes.hbs",
     },
+    equipment: {
+      template: "systems/utopia/templates/actor/equipment.hbs",
+    },
     spellbook: {
       template: "systems/utopia/templates/actor/spellbook.hbs",
     },
@@ -34,6 +37,8 @@ export class Creature extends DragDropActorV2 {
     classes: ["utopia", "actor-sheet", "creature"],
     actions: {
       toggleMode: this._toggleMode,
+      increaseStack: this._increaseStack,
+      decreaseStack: this._decreaseStack,
     },
     position: {
       height: 800,
@@ -43,7 +48,7 @@ export class Creature extends DragDropActorV2 {
 
   _configureRenderOptions(options) {
     super._configureRenderOptions(options);
-    options.parts = ["header", "tabs", "attributes", "spellbook", "background", "effects"];
+    options.parts = ["header", "tabs", "attributes", "equipment", "spellbook", "background", "effects"];
   }
 
   async _prepareContext(options) {
@@ -100,4 +105,23 @@ export class Creature extends DragDropActorV2 {
     this.render();
   }
   
+  static async _increaseStack(event, target) {
+    const itemId = target.dataset.documentId;
+    const item = this.actor.items.get(itemId);
+    await (item.update({
+      "system.stacks": item.system.stacks + 1
+    }))
+  }
+
+  static async _decreaseStack(event, target) {
+    const itemId = target.dataset.documentId;
+    const item = this.actor.items.get(itemId);
+    await (item.update({
+      "system.stacks": item.system.stacks - 1
+    }))
+
+    if (item.system.stacks <= 0) {
+      await item.delete();
+    }
+  }
 }

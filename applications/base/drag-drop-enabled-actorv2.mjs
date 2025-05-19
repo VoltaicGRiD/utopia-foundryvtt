@@ -264,12 +264,12 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
   
       tabs[partId] = tab;
       return tabs;
-    }, {});
+  }, {});
   }
 
   _prepareItems(context) {
     context.favors = this.actor.items.filter(i => i.type === 'favor');
-    context.equipment = this.actor.items.filter(i => i.type === 'gear').filter(i => i.system.type !== "consumable");
+    context.equipment = this.actor.items.filter(i => i.type === 'gear');
     context.consumables = this.actor.items.filter(i => i.type === 'gear').filter(i => i.system.type === "consumable");
     context.talents = this.actor.items.filter(i => i.type === 'talent');
     context.spells = this.actor.items.filter(i => i.type === 'spell');
@@ -292,7 +292,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     });
 
     // Enable the drag-drop function for equipment
-    const equipmentItems = this.element.querySelectorAll("div[data-drag][data-draggable='gear']");
+    const equipmentItems = this.element.querySelectorAll("div[data-draggable='gear']");
     equipmentItems.forEach(item => {
       item.addEventListener('dragstart', (event) => {
         const id = item.dataset.documentId;
@@ -312,7 +312,13 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         const droppedSlot = slot.dataset.slot;
         const type = "equipmentSlots";
         const data = event.dataTransfer.getData('text/plain');
-        const item = this.actor.items.get(data);
+        let itemId = data;
+        let uuid = undefined;
+        if (JSON.parse(data).uuid)
+          uuid = JSON.parse(data).uuid;
+        if (uuid) 
+          itemId = uuid.split('Item.')[1];
+        const item = this.actor.items.get(itemId);
         if (this.checkGearSlot(item, droppedSlot, type) && this.checkCanEquip(item, droppedSlot, type)) {
           const equippedItems = this.actor.system[type].equipped[droppedSlot] || [];
           const capacity = this.actor.system[type].capacity[droppedSlot] || 1;
@@ -321,7 +327,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
             equippedItems.shift();
           }
           await this.actor.update({
-            [`system.${type}.equipped.${droppedSlot}`]: item ? [...equippedItems, data] : [...equippedItems]
+            [`system.${type}.equipped.${droppedSlot}`]: item ? [...equippedItems, itemId] : [...equippedItems]
           })
         }
       });
@@ -347,7 +353,13 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         const droppedSlot = slot.dataset.slot;
         const type = "augmentSlots";
         const data = event.dataTransfer.getData('text/plain');
-        const item = this.actor.items.get(data);
+        let itemId = data;
+        let uuid = undefined;
+        if (JSON.parse(data).uuid)
+          uuid = JSON.parse(data).uuid;
+        if (uuid) 
+          itemId = uuid.split('Item.')[1];
+        const item = this.actor.items.get(itemId);
         if (this.checkGearSlot(item, droppedSlot, type) && this.checkCanEquip(item, droppedSlot, type)) {
           const equippedItems = this.actor.system[type].equipped[droppedSlot] || [];
           const capacity = this.actor.system[type].capacity[droppedSlot] || 1;
@@ -356,7 +368,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
             equippedItems.shift();
           }
           await this.actor.update({
-            [`system.${type}.equipped.${droppedSlot}`]: item ? [...equippedItems, data] : [...equippedItems]
+            [`system.${type}.equipped.${droppedSlot}`]: item ? [...equippedItems, itemId] : [...equippedItems]
           })
         }
       });
@@ -383,7 +395,13 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
         const droppedSlot = parseInt(slot.dataset.slot);
         const type = "handheldSlots";
         const data = event.dataTransfer.getData('text/plain');
-        const item = this.actor.items.get(data);
+        let itemId = data;
+        let uuid = undefined;
+        if (JSON.parse(data).uuid)
+          uuid = JSON.parse(data).uuid;
+        if (uuid) 
+          itemId = uuid.split('Item.')[1];
+        const item = this.actor.items.get(itemId);
         if (this.checkGearSlot(item, droppedSlot, type) && this.checkCanEquip(item, droppedSlot, type)) {
           const equippedItems = this.actor.system[type].equipped || [];
           const capacity = this.actor.system[type].capacity || 1;
@@ -391,7 +409,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
             // Remove the oldest item
             ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.HandheldSlotCapacityWarning"));
           }
-          equippedItems[droppedSlot] = item ? data : null;
+          equippedItems[droppedSlot] = item ? itemId : null;
           await this.actor.update({
             [`system.${type}.equipped`]: equippedItems
           })
@@ -575,7 +593,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     const type = gear.system.type;
     var equipped = false;
     
-    if (["handheldArtifact", "fastWeapon", "moderateWeapon", "slowWeapon", "shield"].includes(type)) {
+    if (["handheldArtifact", "fastWeapon", "moderateWeapon", "slowWeapon", "shield", "consumable"].includes(type)) {
       for (const item of this.actor.system.handheldSlots.equipped) {
         if (item === gear.id) {
           equipped = true;
@@ -713,7 +731,7 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
   checkGearSlot(item, slot, slotType) {
     const type = item.system.type;
 
-    if (["fastWeapon", "moderateWeapon", "slowWeapon", "handheldArtifact", "shield"].includes(type) && slotType === "handheldSlots") return true;
+    if (["fastWeapon", "moderateWeapon", "slowWeapon", "handheldArtifact", "shield", "consumable"].includes(type) && slotType === "handheldSlots") return true;
     if (["headArmor"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["head"].includes(slot)) return true;
     if (["chestArmor"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["chest"].includes(slot)) return true;
     if (["feetArmor"].includes(type) && ["equipmentSlots", "augmentSlots"].includes(slotType) && ["feet"].includes(slot)) return true;
@@ -876,6 +894,10 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
 
     let dragData = null;
 
+    if (li.dataset.draggable === "gear") {
+      dragData = li.dataset.documentId;;
+    }
+
     // Active Effect
     if (li.dataset.effectId) {
       const effect = this.actor.effects.get(li.dataset.effectId);
@@ -883,6 +905,8 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
     }
 
     if (!dragData) return;
+
+    console.warn(dragData);
 
     // Set data transfer
     event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
@@ -991,6 +1015,9 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
   async _onDropItem(event, data) {
     if (!this.actor.isOwner) return false;
     const item = (await Item.fromDropData(data)).toObject();
+
+    if (["handheld-slot", "equipment-slot", "augment-slot"].includes(event.target.className)) 
+      return true;
     
     if (["kit", "class"].includes(item.type)) {
       const selectedChoices = {};
@@ -1015,10 +1042,12 @@ export class DragDropActorV2 extends api.HandlebarsApplicationMixin(sheets.Actor
           title: game.i18n.localize("UTOPIA.Items.Kit.FIELDS.attributes.DialogTitle"),
           content: input.outerHTML,
           render: true,
-        }).then((result) => {
-          if (result === "ok") {
-        selectedChoices[choiceSet] = input.selectedOptions[0].value;
+          ok: {
+            label: "OK",
+            callback: (event, button, dialog) => dialog.querySelector("select")
           }
+        }).then((result) => {
+          selectedChoices[choiceSet] = result.selectedOptions[0].value;
         }).catch(err => {
           console.error("Error updating item attributes:", err);
         });

@@ -10,15 +10,15 @@ export class BaseOperation extends foundry.abstract.DataModel {
     schema.id = new fields.StringField({ required: true, nullable: false, blank: false, initial: foundry.utils.randomID(16) });
 
     schema.costs = new fields.SchemaField({
-      actions: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
+      actions: new fields.StringField({ required: true, nullable: false, initial: "0" }),
       actionType: new fields.StringField({ required: true, nullable: false, initial: "turn", choices: { 
         turn: game.i18n.localize("UTOPIA.Items.Activity.ActionType.Turn"),
         interrupt: game.i18n.localize("UTOPIA.Items.Activity.ActionType.Interrupt"),
         current: game.i18n.localize("UTOPIA.Items.Activity.ActionType.Current"),
       } }),
-      stamina: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
-      shp: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
-      dhp: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
+      stamina: new fields.StringField({ required: true, nullable: false, initial: "0" }),
+      //shp: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
+      //dhp: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
     })
     
     schema.performance = new fields.SchemaField({

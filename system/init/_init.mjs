@@ -7,3 +7,4 @@ export { registerItemDataModels, registerActorDataModels } from './dataModels.mj
 export { registerItemSheets, registerActorSheets } from './registerSheets.mjs';
 export { preloadHandlebarsTemplates } from './preloadTemplates.mjs';
 export { registerFeatures } from './features.mjs';
+export { UtopiaSocketHandler } from './socketHandler.mjs';

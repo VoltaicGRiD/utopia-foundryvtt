@@ -4,16 +4,15 @@ type: spellFeature
 _id: Vri6JY1u7ltjUocI
 img: systems/utopia/assets/icons/artistries/alteration.svg
 system:
-  formula: '-(@X)d4[DHP]'
+  formula: (@X)d4
   description: >-
-    <p style="text-align: left;">Upon casting and at the beginning of each turn
-    after for the duration of the spell, affected creatures regain an additional
-    IdA DHP. Healing dice may be redistributed in any fashion as long as the
-    maximum healing is the same. </p><p style="text-align: left;">This effect
-    cannot restore a creature’s DHP beyond 50. </p><p style="text-align:
-    left;">Each time affected creatures regain DHP this way, an Extraordinary
-    component or item must be consumed. If the caster does not have enough or
-    chooses not to, this effect ends instead.</p>
+    <p style="">Upon casting and at the beginning of each turn after for the
+    duration of the spell, affected creatures regain an additional 1d4 DHP.
+    Healing dice may be redistributed in any fashion as long as the maximum
+    healing is the same.</p><p style="">This effect cannot restore a creature’s
+    DHP beyond 50.</p><p style="">Each time affected creatures regain DHP this
+    way, an Extraordinary component or item must be consumed. If the caster does
+    not have enough or chooses not to, this effect ends instead.</p>
   flavor: ''
   art: alteration
   cost: 60
@@ -54,6 +53,8 @@ system:
   maximum: 0
   variableName: Variable
   variableDescription: ''
+  damageType: medical
+  formulaType: heal
 effects: []
 sort: 0
 ownership:
@@ -65,9 +66,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.05'
   createdTime: 1734769603326
-  modifiedTime: 1734829028442
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747287943586
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!Vri6JY1u7ltjUocI'
 

@@ -460,6 +460,8 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       phobias: new fields.StringField({ required: true, nullable: false, initial: "" }),
     });
 
+    schema.imbued = new fields.BooleanField({ required: true, nullable: false, initial: false });
+
     schema._speciesData = new fields.ObjectField({ required: true, nullable: false, initial: {} });
     schema._hasSpecies = new fields.BooleanField({ required: true, nullable: false, initial: false });
     
@@ -543,9 +545,18 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     this.block.quantity = 0;
     this.dodge.quantity = 0;
 
-    if (this._speciesData) {
+    this.accuracyTrait = "dex";
+    this.rangedTDModifier = 0;
+
+    this.immunities = Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, key) => {
+      acc[key] = false;
+      return acc;
+    }, {});
+
+    if (this.parent.type !== "creature") {
       prepareSpeciesData(this);
     }
+    this._preparePostSpeciesData(this);
   }
 
 
@@ -557,40 +568,34 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
     super.prepareDerivedData();
 
     try {
-      // Prepare species data
-      if (!this._speciesData) {
-        //ui.notifications.error(game.i18n.localize("UTOPIA.ERRORS.SpeciesDataNotFound"));
-      }
-      else {
-        //prepareSpeciesData(this);
-        this.prepareGearData();
-        
-        Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).forEach(k => {
-          this.subtraits[k].total = this.subtraits[k].value;
-          this.subtraits[k].mod = this.subtraits[k].value - 4;
+      this.prepareGearData();
+      
+      Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).forEach(k => {
+        this.subtraits[k].total = this.subtraits[k].value;
+        this.subtraits[k].mod = this.subtraits[k].value - 4;
+      })
+
+      Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).forEach(([key, value]) => {
+        value.subtraits.forEach(subtrait => {
+          this.subtraits[subtrait].max = this[value.maximum];
         })
+        this.traits[key].total = value.subtraits.reduce((acc, subtrait) => {
+          return acc + this.subtraits[subtrait].total;
+        }, 0);
+        this.traits[key].mod = this.traits[key].total - 4;
+      })
 
-        Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).forEach(([key, value]) => {
-          value.subtraits.forEach(subtrait => {
-            this.subtraits[subtrait].max = this[value.maximum];
-          })
-          this.traits[key].total = value.subtraits.reduce((acc, subtrait) => {
-            return acc + this.subtraits[subtrait].total;
-          }, 0);
-          this.traits[key].mod = this.traits[key].total - 4;
-        })
+      Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).forEach(k => {
+        if (this.subtraits[k].gifted) {
+          this.giftPoints.spent += 1;
+        }
+      })
 
-        Object.keys(JSON.parse(game.settings.get("utopia", "advancedSettings.subtraits"))).forEach(k => {
-          if (this.subtraits[k].gifted) {
-            this.giftPoints.spent += 1;
-          }
-        })
+      this.giftPoints.available = this.giftPoints.available - this.giftPoints.spent;
 
-        this.giftPoints.available = this.giftPoints.available - this.giftPoints.spent;
-
-        this.block.formula = `${this.block.quantity}d${this.block.size}`;
-        this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
-      }
+      this.block.formula = `${this.block.quantity}d${this.block.size}`;
+      this.dodge.formula = `${this.dodge.quantity}d${this.dodge.size}`;
+      
     } catch (err) {
       console.error("Error preparing derived data:", err);
     }
@@ -767,16 +772,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
   _preparePostSpeciesData(characterData) {
     foundry.utils.mergeObject(this, characterData);
 
-    // Prepare travel speeds
-    Object.keys(this.travel).forEach(k => {
-      this.travel[k].speed = new Roll(this.travel[k].formula, this.parent.getRollData()).evaluateSync().total;
-    });
-
-    // Prepare defenses
-    Object.keys(this.innateDefenses).forEach(k => {
-      this.defenses[k] = this.innateDefenses[k];
-    });
-
     this.canLevel = this.experience >= this.level * 100;
 
     for (const item of this.parent.items) {
@@ -785,6 +780,16 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
 
     // Prepare points
     if (["character", "npc"].includes(this.parent.type)) {
+      // Prepare travel speeds
+      Object.keys(this.travel).forEach(k => {
+        this.travel[k].speed = new Roll(this.travel[k].formula, this.parent.getRollData()).evaluateSync().total;
+      });
+
+      // Prepare defenses
+      Object.keys(this.innateDefenses).forEach(k => {
+        this.defenses[k] = this.innateDefenses[k];
+      });
+
       this.hitpoints.surface.max += (this.body * this.constitution) + this.level;
       this.hitpoints.deep.max += (this.soul * this.effervescence) + this.level;
       this.stamina.max += (this.mind * this.endurance) + this.level;
@@ -792,6 +797,17 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
       this.hitpoints.surface.value = Math.min(this.hitpoints.surface.value, this.hitpoints.surface.max);
       this.hitpoints.deep.value = Math.min(this.hitpoints.deep.value, this.hitpoints.deep.max);
       this.stamina.value = Math.min(this.stamina.value, this.stamina.max);
+
+      this.talentPoints.spent = this.body + this.mind + this.soul;
+      this.talentPoints.available = this.level - this.talentPoints.spent;
+      
+      this.specialistPoints.spent = this.parent.items.filter(i => i.type === "specialist").length;
+      this.specialistPoints.available = Math.floor(this.level / 10) - this.specialistPoints.spent;
+
+      Object.keys(this.subtraits).forEach(k =>{
+        this.subtraitPoints.spent += (this.subtraits[k].value - 1);
+        this.subtraitPoints.available = 5 + this.level - this.subtraitPoints.spent;
+      })    
     }
 
     Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.traits"))).forEach(([key, trait]) => {
@@ -803,17 +819,6 @@ export default class UtopiaActorBase extends foundry.abstract.TypeDataModel {
         }
       })
     })
-
-    this.talentPoints.spent = this.body + this.mind + this.soul;
-    this.talentPoints.available = this.level - this.talentPoints.spent;
-    
-    this.specialistPoints.spent = this.parent.items.filter(i => i.type === "specialist").length;
-    this.specialistPoints.available = Math.floor(this.level / 10) - this.specialistPoints.spent;
-
-    Object.keys(this.subtraits).forEach(k =>{
-      this.subtraitPoints.spent += (this.subtraits[k].value - 1);
-      this.subtraitPoints.available = 5 + this.level - this.subtraitPoints.spent;
-    })    
 
     this.turnActions.available = this.turnActions.value + this.turnActions.temporary;
     this.interruptActions.available = this.interruptActions.value + this.interruptActions.temporary;

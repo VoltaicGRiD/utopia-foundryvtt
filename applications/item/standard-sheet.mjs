@@ -44,7 +44,7 @@ export class ItemSheet extends DragDropItemV2 {
       options.parts = ["header", "tabs", "attributes"];
       options.position= {
         width: 1000,
-        height: 400
+        height: 800
       };
     }
   }
@@ -55,8 +55,6 @@ export class ItemSheet extends DragDropItemV2 {
     context.tabs = super._getTabs(options.parts);
     context.position = options.position;
       
-    console.log(context);
-
     return context;
   }
 }

@@ -4,7 +4,7 @@ type: spellFeature
 _id: Xqw2TgS6TszVXZCD
 img: systems/utopia/assets/icons/artistries/evocation.svg
 system:
-  formula: 1d4
+  formula: (@X)d4
   description: >-
     <p style="text-align: left;">All weapons and creatures affected become
     imbued, dealing an additional 1d4 damage on its next attack. The type may be
@@ -19,12 +19,16 @@ system:
   art: evocation
   cost: 15
   allowRedistribution: 'false'
-  doesTarget: 'false'
-  targetType: point
+  doesTarget: false
+  targetType: template
   templateType: circle
   costMultiplier: flat
   templateAngle: 53.13
-  variables: {}
+  variables:
+    stacks:
+      name: stacks
+      kind: number
+      description: ''
   modifies: none
   modifiedAoE:
     value: 0
@@ -55,6 +59,7 @@ system:
   maximum: 0
   variableName: Variable
   variableDescription: ''
+  formulaType: imbue
 effects: []
 sort: 0
 ownership:
@@ -66,9 +71,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.05'
   createdTime: 1734769606898
-  modifiedTime: 1734769606898
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747318241959
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!Xqw2TgS6TszVXZCD'
 

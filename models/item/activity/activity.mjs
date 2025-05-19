@@ -1,6 +1,7 @@
 import { BaseOperation } from "./base-operation.mjs";
 import * as ops from "./_module.mjs";
 import * as sheets from "../../../applications/activity/operations/_module.mjs";
+import { isNumeric } from "../../../system/helpers/isNumeric.mjs";
 
 export class Activity extends foundry.abstract.TypeDataModel {
   static LOCALIZATION_PREFIXES = [...super.LOCALIZATION_PREFIXES, "UTOPIA.Items.Activity"];
@@ -32,13 +33,16 @@ export class Activity extends foundry.abstract.TypeDataModel {
       ...ops.consumeResource.defineSchema(),
       ...ops.travel.defineSchema(),
       ...ops.generic.defineSchema(),
+      ...ops.attackResponse.defineSchema(),
+      ...ops.target.defineSchema(),
     }), { required: true, nullable: false, initial: [] });
+    schema.operationData = new fields.ObjectField({ required: true, nullable: false, initial: {} });  
 
     return schema;
   }
 
-  static get baseActions() {
-    return ["takeCover", "aim", "grapple", "deepBreath", "weaponlessAttack", "block", "dodge", "travel", "stealth", "leap", "scaleSame", "scaleLarger", "holdAction", "assist"];''
+  get baseActions() {
+    return ["takeCover", "aim", "grapple", "deepBreath", "weaponlessAttack", "block", "dodge", "travel", "stealth", "leap", "scaleSame", "scaleLarger", "holdAction", "assist"];
   }
 
   operationFields(operation) {
@@ -90,6 +94,8 @@ export class Activity extends foundry.abstract.TypeDataModel {
       "travel": sheets.TravelSheet,
       "selectOption": sheets.SelectOptionSheet,
       "generic": sheets.GenericSheet,
+      "attackResponse": sheets.AttackResponseSheet,
+      "target": sheets.TargetSheet,
       //"variable": VariableSheet,
     }
   }
@@ -110,7 +116,7 @@ export class Activity extends foundry.abstract.TypeDataModel {
   }
 
   get allOperations() {
-    return ["attack", "heal", "travel", "consumption", "castSpell", "use", "selectOption", "generic", "selectOperation", "condition", "test", "check", "setFlag", "variable", "createResource", "consumeResource"];
+    return ["attack", "attackResponse", "heal", "travel", "consumption", "castSpell", "use", "selectOption", "generic", "selectOperation", "condition", "target", "test", "check", "setFlag", "variable", "createResource", "consumeResource"];
   }
 
   async newOperation(operation) {
@@ -154,16 +160,32 @@ export class Activity extends foundry.abstract.TypeDataModel {
       shp: 0,
       dhp: 0
     }
-    
+  
+    await this.parent.update({
+      "system.operationData": {}
+    })
+
     for (const operation of operations) {
+      const rollData = this.parent.getRollData();
+      if (this.operationData['target']) 
+        rollData['target'] = this.operationData['target'];
+
       if (operation.executeImmediately) {
-        if (await ops[operation.type].execute(this.parent, operation, options)) {
-          costs.turnActions = operation.costs.actionType === "turn" ? operation.costs.actions : 0;
-          costs.interruptActions = operation.costs.actionType === "interrupt" ? operation.costs.actions : 0;
-          costs.currentActions = operation.costs.actionType === "current" ? operation.costs.actions : 0;
-          costs.stamina = operation.costs.stamina;
-          costs.shp = operation.costs.shp;
-          costs.dhp = operation.costs.dhp;
+        if (await ops[operation.type].execute(this.parent, operation, {...options, rollData})) {
+          if (operation.type === "attack" && operation.damages.some(d => d.useWeapon)) {
+            const weapon = this.parent.items.get(this.operationData[operation.id].weapon);
+            rollData["inherit"] = weapon.system.actions;
+          }
+          else if (operation.type === "attackResponse" && operation.useWeapon) {
+            const weapon = this.parent.items.get(this.operationData[operation.id].weapon);
+            rollData["inherit"] = weapon.system.actions;
+          }
+
+          const actions = isNumeric(operation.costs.actions) ? parseInt(operation.costs.actions) : await new roll(operation.costs.actions, this.parent.getRollData()).total;
+          costs.turnActions = operation.costs.actionType === "turn" ? actions : 0;
+          costs.interruptActions = operation.costs.actionType === "interrupt" ? actions : 0;
+          costs.currentActions = operation.costs.actionType === "current" ? actions : 0;
+          costs.stamina = isNumeric(operation.costs.stamina) ? parseInt(operation.costs.stamina) : await new roll(operation.costs.stamina, this.parent.getRollData()).total;
 
           await this.parent.parent._consumeResources(operation.costs.actionType, operation.costs.actions, operation.costs.stamina);
 
@@ -174,20 +196,19 @@ export class Activity extends foundry.abstract.TypeDataModel {
           break;
         }
       }
-
     }
 
     // If all operations executed successfully, update the parent actor with the costs
-    if (fullExecution) {
-      await this.parent.update({
-        "system.actions.turnActions": this.parent.system.actions.turnActions - costs.turnActions,
-        "system.actions.interruptActions": this.parent.system.actions.interruptActions - costs.interruptActions,
-        "system.actions.currentActions": this.parent.system.actions.currentActions - costs.currentActions,
-        "system.stamina": this.parent.system.stamina - costs.stamina,
-        "system.shp": this.parent.system.shp - costs.shp,
-        "system.dhp": this.parent.system.dhp - costs.dhp
-      });
-    }
+    // if (fullExecution) {
+    //   await this.parent.update({
+    //     "system.actions.turnActions": this.parent.system.actions.turnActions - costs.turnActions,
+    //     "system.actions.interruptActions": this.parent.system.actions.interruptActions - costs.interruptActions,
+    //     "system.actions.currentActions": this.parent.system.actions.currentActions - costs.currentActions,
+    //     "system.stamina": this.parent.system.stamina - costs.stamina,
+    //     "system.shp": this.parent.system.shp - costs.shp,
+    //     "system.dhp": this.parent.system.dhp - costs.dhp
+    //   });
+    // }
   }
 
   async executeSpecificOperation(operationId, options = {}) {
@@ -199,9 +220,14 @@ export class Activity extends foundry.abstract.TypeDataModel {
     }
 
     if (!operation.executeImmediately) {
-      await ops[operation.type].execute(this.parent, operation, options);
+      const rollData = this.parent.getRollData();
+      if (options.target) {
+        rollData['target'] = game.user.targets.get(options.target).actor.getRollData();
+      }
+
+      await ops[operation.type].execute(this.parent, operation, {...options, rollData });
       await this.parent.parent._consumeResources(operation.costs.actionType, operation.costs.actions, operation.costs.stamina);
-      await this.continueExecutionFrom(operationId, options);
+      await this.continueExecutionFrom(operationId, {...options, rollData });
       return true;
     } else {
       console.warn(`Operation "${operation.type}" executes immediately.`);
@@ -212,9 +238,14 @@ export class Activity extends foundry.abstract.TypeDataModel {
   async continueExecutionFrom(operationId, options = {}) {
     const index = this.operations.findIndex(op => op.id === operationId);
     for (let i = index + 1; i < this.operations.length; i++) {
+      const rollData = this.parent.getRollData();
+      if (options.target) {
+        rollData['target'] = game.user.targets.get(options.target).actor.getRollData();
+      }
+
       const operation = this.operations[i];
       if (operation.executeImmediately) {
-        if (await ops[operation.type].execute(this.parent, operation, options)) {
+        if (await ops[operation.type].execute(this.parent, operation, {...options, rollData})) {
           await this.parent.parent._consumeResources(operation.costs.actionType, operation.costs.actions, operation.costs.stamina);
           continue;
         } else {
@@ -229,14 +260,51 @@ export class Activity extends foundry.abstract.TypeDataModel {
     }
   }
 
+  async executeOnTarget(operationId, target, options = {}) {
+    const operation = this.operations.find(op => op.id === operationId);
+    game.user.targets.get(target);
+  }
+
   prepareDerivedData() {
+    const turnActions = this.operations.reduce((sum, op) => {
+      if (op.costs?.actionType === "turn") {
+        if (isNumeric(op.costs.actions)) 
+          return sum + parseInt(op.costs.actions);
+        else 
+          return sum + new Roll(op.costs.actions, this.parent.getRollData()).evaluateSync().total;
+      }
+      return sum;
+    }, 0);
+    const interruptActions = this.operations.reduce((sum, op) => {
+      if (op.costs?.actionType === "interrupt") {
+        if (isNumeric(op.costs.actions)) 
+          return sum + parseInt(op.costs.actions);
+        else 
+          return sum + new Roll(op.costs.actions, this.parent.getRollData()).evaluateSync().total;
+      }
+      return sum;
+    }, 0);
+    const currentActions = this.operations.reduce((sum, op) => {
+      if (op.costs?.actionType === "current") {
+        if (isNumeric(op.costs.actions)) 
+          return sum + parseInt(op.costs.actions);
+        else 
+          return sum + new Roll(op.costs.actions, this.parent.getRollData()).evaluateSync().total;
+      }
+      return sum;
+    }, 0);
+    const stamina = this.operations.reduce((sum, op) => {
+      if (isNumeric(op.costs.stamina)) 
+        return sum + parseInt(op.costs.stamina);
+      else 
+        return sum + new Roll(op.costs.stamina, this.parent.getRollData()).evaluateSync().total;
+    }, 0);
+
     this.costs = {
-      turnActions: this.operations.reduce((sum, op) => sum + (op.costs?.actionType === "turn" ? op.costs.actions : 0), 0), 
-      interruptActions: this.operations.reduce((sum, op) => sum + (op.costs?.actionType === "interrupt" ? op.costs.actions : 0), 0),
-      currentActions: this.operations.reduce((sum, op) => sum + (op.costs?.actionType === "current" ? op.costs.actions : 0), 0),
-      stamina: this.operations.reduce((sum, op) => sum + (op.costs?.stamina || 0), 0),
-      shp: this.operations.reduce((sum, op) => sum + (op.costs?.shp || 0), 0),
-      dhp: this.operations.reduce((sum, op) => sum + (op.costs?.dhp || 0), 0),
+      turnActions,
+      interruptActions,
+      currentActions,
+      stamina
     }
   }
 }

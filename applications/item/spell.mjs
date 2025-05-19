@@ -58,10 +58,7 @@ export class SpellSheet extends api.HandlebarsApplicationMixin(
     }) ?? [];
 
     if (context.features.length === 0) {
-      context.features = await Promise.all(this.item.system.features?.map(async (feature) => {
-        const featureItem = await fromUuid(feature);
-        return featureItem;
-      })) ?? [];
+      context.features = this.item.system.features ?? {};
     }
     
     console.log(context);
@@ -122,18 +119,128 @@ export class SpellSheet extends api.HandlebarsApplicationMixin(
   async _onRender(context, options) {
     super._onRender(context, options);
 
-    // const variables = this.element.querySelectorAll("input.variable-input");
-    // variables.forEach(v => {
-    //   v.addEventListener("change", (event) => {
-    //     const featureId = event.target.dataset.feature;
-    //     const variableId = event.target.dataset.variable;
-    //     const value = event.target.value;
+    const textVariables = this.element.querySelectorAll("input[class='feature-variable-text']");
+    textVariables.forEach(v => {
+      v.addEventListener("change", async (event) => {
+        const featureItem = event.target.closest("li");
+        const featureId = featureItem.dataset.id;
+        const variableId = event.target.dataset.variable;
+        const value = event.target.value;
+        const feature = this.item.system.features[featureId];
 
-    //     this.item.update({
-    //       [`system.featureSettings.${featureId}.${variableId}`]: value
-    //     });
-    //   });
-    // });
+        const variable = feature.system.variables[variableId];
+        variable.value = value;
+
+        await this.item.update({
+          [`system.featureSettings.${featureId}.${variable.name}`]: variable
+        })
+        
+        this.render();
+      });
+    });
+
+    const numVariables = this.element.querySelectorAll("input[type='number']");
+    numVariables.forEach(v => {
+      v.addEventListener("change", async (event) => {
+        const featureItem = event.target.closest("li");
+        const featureId = featureItem.dataset.id;
+        const variableId = event.target.dataset.variable;
+        const value = event.target.value;
+        const feature = this.item.system.features[featureId];
+
+        const variable = feature.system.variables[variableId];
+        variable.value = parseInt(value);
+
+        await this.item.update({
+          [`system.featureSettings.${featureId}.${variable.name}`]: variable
+        });
+
+        this.render();
+      });
+    });
+
+    const optVariables = this.element.querySelectorAll(".feature-variable-options");
+    optVariables.forEach(v => {
+      v.addEventListener("click", async (event) => {
+        const featureItem = event.target.closest("li");
+        const featureId = featureItem.dataset.id;
+        const variableId = event.target.dataset.variable;
+        const feature = this.item.system.features[featureId];
+        const name = feature.system.variables[variableId].name;
+        let options = [];
+        if (Array.isArray(feature.system.variables[variableId].options)) {
+          options = feature.system.variables[variableId].options;
+        }
+        else {
+          options = feature.system.variables[variableId].options.split(',');
+        }
+        const variable = feature.system.variables[variableId];
+        const value = feature.system.variables[variableId].value || options[0];
+        const description = feature.system.variables[variableId].description || "No description provided.";
+        const template = await renderTemplate(
+          'systems/utopia/templates/dialogs/variable-options.hbs', 
+          {name: name, description: description, options: options, selected: value}
+        );
+
+        new api.DialogV2({
+          window: {title: `Options for ${name}`},
+          content: template,
+          buttons: [{
+            action: "save",
+            label: "Save",
+            default: true,
+            callback: (event, button, dialog) => button.form.elements["variable-option"].value
+          }],
+          submit: async result => {
+            event.target.style.backgroundColor = "#90c96b";
+            event.target.style.color = "#000";
+            event.target.innerHTML = `&#x2713`;
+
+            variable.value = result;
+
+            await this.item.update({
+              [`system.featureSettings.${featureId}.${name}`]: variable
+            });
+          }
+        }).render(true);
+      });
+    });
+
+    const formulaDown = this.element.querySelectorAll(".formula-down");
+    formulaDown.forEach(f => {
+      f.addEventListener("click", async (event) => {
+        const featureId = event.target.dataset.feature;
+        const feature = this.selected[featureId];
+        let currentFormula = feature.currentFormula;
+        const options = Object.values(feature.formulaOptions)[0];
+
+        if (currentFormula === 0) return;
+        else currentFormula--;
+
+        this.selected[featureId].currentFormula = currentFormula;
+        this.selected[featureId].customFormula = true;
+        
+        this.render();
+      });
+    });
+
+    const formulaUp = this.element.querySelectorAll(".formula-up");
+    formulaUp.forEach(f => {
+      f.addEventListener("click", async (event) => {
+        const featureId = event.target.dataset.feature;
+        const feature = this.selected[featureId];
+        let currentFormula = feature.currentFormula;
+        const options = Object.values(feature.formulaOptions)[0];
+
+        if (currentFormula === options.length - 1) return;
+        else currentFormula++;
+
+        this.selected[featureId].currentFormula = currentFormula;
+        this.selected[featureId].customFormula = true;
+
+        this.render();
+      });
+    });
   }
 
   static async _edit(event, target) {

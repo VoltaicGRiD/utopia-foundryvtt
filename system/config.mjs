@@ -182,6 +182,14 @@ export function registerConfig() {
   }
 
   CONFIG.UTOPIA.SPECIALTY_CHECKS = {
+    resistSpellEffects: {
+      defaultAttribute: "wil",
+      formula: "3d6 + @wil.mod",
+      tags: ["will", "resistSpellEffects", "resist"],
+      label: "UTOPIA.SPECIALTY_CHECKS.ResistSpellEffects.label",
+      description: "UTOPIA.SPECIALTY_CHECKS.ResistSpellEffects.description",
+      icon: "fas fa-shield-alt"
+    },
     devices: {
       defaultAttribute: "eng",
       formula: "3d6 + @eng.mod",
@@ -415,8 +423,8 @@ export function registerConfig() {
       label: 'UTOPIA.DAMAGE_TYPES.Stamina',
       appliesTo: 'stamina'
     },
-    healing: {
-      name: 'Healing',
+    heal: {
+      name: 'Heal',
       icon: 'fas fa-heart',
       initialDefense: 0,
       healing: true,
@@ -426,25 +434,25 @@ export function registerConfig() {
       label: 'UTOPIA.DAMAGE_TYPES.Healing',
       appliesTo: 'shp'
     },
-    deepHealing: {
-      name: 'Healing',
+    medical: {
+      name: 'Medical',
       icon: 'fas fa-heart',
       initialDefense: 0,
       healing: true,
       block: 0,
       dodge: false,
       armor: false,
-      label: 'UTOPIA.DAMAGE_TYPES.DeepHealing',
+      label: 'UTOPIA.DAMAGE_TYPES.Medical',
       appliesTo: 'dhp'
     },
-    restoreStamina: {
+    restore: {
       name: 'Restore Stamina',
       icon: 'fas fa-heartbeat',
       healing: true,
       block: 0,
       dodge: false,
       armor: false,
-      label: 'UTOPIA.DAMAGE_TYPES.RestoreStamina',
+      label: 'UTOPIA.DAMAGE_TYPES.Restore',
       appliesTo: 'stamina'
     }
   }

@@ -36,12 +36,55 @@ system:
   formula: ''
   tags: []
   favors: {}
-  grants: []
+  grants:
+    - Compendium.utopia.actions.Item.lYvRpkpnuIZUbKgG
+    - Compendium.utopia.favors.Item.i93e7ZqzPtnDl6TL
+    - Compendium.utopia.actions.Item.Th6RpbN54qH2VXU1
+    - Compendium.utopia.actions.Item.2Dp6E10qwBgUZ2Wr
   specialtyPassives: []
   grantedEquipment: []
   selectedChoices: {}
 img: icons/svg/item-bag.svg
-effects: []
+effects:
+  - name: Militant
+    origin: Compendium.utopia.classes.Item.RVPgsVqHzle26x1Y
+    img: icons/svg/aura.svg
+    type: passive
+    _id: iZzpFmNmI2XzRWbu
+    system: {}
+    changes:
+      - key: flags.utopia.overkillTarget
+        mode: 4
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: >-
+      <p>When a melee attack this creature makes deals enough damage to reduce
+      its target's DHP to 0, it may retarget the remaining damage to another
+      creature within range.</p>
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.07'
+      createdTime: 1747534186963
+      modifiedTime: 1747534206606
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!RVPgsVqHzle26x1Y.iZzpFmNmI2XzRWbu'
 folder: Dv2EoB9WzuOs8x0O
 ownership:
   default: 0
@@ -52,9 +95,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.07'
   createdTime: 1744059246676
-  modifiedTime: 1747113607564
+  modifiedTime: 1747536284852
   lastModifiedBy: 1i5ql6CdWzasfqnA
 _id: RVPgsVqHzle26x1Y
 sort: 300000

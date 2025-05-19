@@ -10,6 +10,8 @@ const { api } = foundry.applications
 export class UtopiaChatMessage extends ChatMessage {
   async getHTML() {
     const actor = this.getActor() ?? this.system.actor ?? null;
+
+    console.log("Chat Message", this);
     
     const $html = await super.getHTML();
     const html = $html[0];
@@ -80,10 +82,21 @@ export class UtopiaChatMessage extends ChatMessage {
         const item = await fromUuid(this.getFlag('utopia', 'itemUuid'));
         if (!item) return ui.notifications.error("Item not found.");
         item._finishCastingSpell(this);
-        await this.delete();
+        if (item.system.duration <= 6)
+          await this.delete();
       })
     }
 
+    let finishUsing = html.querySelectorAll('[data-action="finishUsing"]');
+    for (let button of finishCasting) {
+      button.addEventListener('click', async (event) => {
+        const item = await fromUuid(this.getFlag('utopia', 'itemUuid'));
+        if (!item) return ui.notifications.error("Item not found.");
+        item.system.finishUsingConsumable(this);
+        if (item.system.duration <= 6)
+          await this.delete();
+      })
+    }
 
     let blockButton = html.querySelector('[data-action="block"]');
     blockButton?.addEventListener('click', async (event) => {
@@ -406,7 +419,9 @@ export class UtopiaChatMessage extends ChatMessage {
         const harvested = await item.harvestAlways(target, this);
         if (harvested) {
           this.setComplete(true);
-          this.render();
+          this.update({
+  content: this.content
+});
         }
       });
     }
@@ -446,6 +461,20 @@ export class UtopiaChatMessage extends ChatMessage {
       button.addEventListener('click', async (event) => {
         const documentId = button.dataset.documentId;
         game.items.get(documentId)?.sheet.render(true);
+      });
+    }
+
+    let removeTargetButtons = html.querySelectorAll('[data-action="removeTarget"]'); 
+    for (let button of removeTargetButtons) {
+      button.addEventListener('click', async (event) => {
+        const target = button.dataset.target;
+        const handler = DamageHandler.get(this.system.handler);
+        if (handler) {
+          handler.targetDamages = handler.targetDamages.filter(t => t.target.id !== target);
+        }
+        await this.update({
+  content: this.content
+});
       });
     }
 
@@ -504,7 +533,9 @@ export class UtopiaChatMessage extends ChatMessage {
     for (let button of strikeButtons) {
       button.remove();
     }
-    this.render();
+    this.update({
+  content: this.content
+});
   }
 
   async removeDamageButtons() {
@@ -513,7 +544,9 @@ export class UtopiaChatMessage extends ChatMessage {
     for (let button of damageButtons) {
       button.remove();
     }
-    this.render();
+    this.update({
+  content: this.content
+});
   }
 
   async setComplete(value) {

@@ -1,118 +1,93 @@
 <div class="tab attributes {{tab.cssClass}}" data-group="primary" data-tab="attributes">
   <div class="spell-feature-attributes">
 
-    <div class="grid grid-9col">
-      <div class="flexcol spell-art grid-span-3">
-        <label for="system.art">{{localize 'UTOPIA.Item.SpellFeatures.art'}}</label>
-        {{formInput systemFields.art value=system.art name='system.art' localize=true}}
-      </div>
-      <div class="flexcol grid-span-2">
-        <label for="system.cost">{{localize 'UTOPIA.Item.SpellFeatures.cost'}}</label>
-        {{formInput systemFields.cost value=system.cost name='system.cost' localize=true}}
-      </div>
-      <div class="flexcol grid-span-2">
-        <label for="system.costMultiplier">{{localize 'UTOPIA.Item.SpellFeatures.costMultiplier'}}</label>
-        {{formInput systemFields.costMultiplier value=system.costMultiplier name='system.costMultiplier' localize=true}}
-      </div>
-      <div class="flexcol grid-span-2">
-        <label for="system.costResult">{{localize 'UTOPIA.Item.SpellFeatures.costResult'}}</label>
-        <input type="text" disabled value="{{system.costResult}}" />
-      </div>
-    </div>
+    {{#each attributeFields as |field|}}
+      {{formGroup field.field classes=field.classes value=field.value stacked=field.stacked localize=true options=field.options columns=field.columns flex=field.flex}}
+    {{/each}}
 
-    <div class="grid grid-4col">
-      <div class="flexcol">
-        <label for="system.modifies">{{localize 'UTOPIA.Item.SpellFeatures.modifies'}}</label>
-        {{formInput systemFields.modifies value=system.modifies name='system.modifies' localize=true}}
-      </div>
-      {{#if (eq system.modifies "range")}}
-        <div class="flexcol">
-          <label for="system.modifiedRange.value">{{localize 'UTOPIA.Item.value'}}</label>
-          {{formInput systemFields.modifiedRange.fields.value value=system.modifiedRange.value name='system.modifiedRange.value' localize=true}}
-        </div>
-        <div class="flexcol">
-          <label for="system.modifiedRange.variable">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.variable'}}</label>
-          {{formInput systemFields.modifiedRange.fields.variable value=system.modifiedRange.variable name='system.modifiedRange.variable' localize=true}}
-        </div>
-        <div class="flexcol">
-          <label for="system.modifiedRange.unit">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.unit'}}</label>
-          {{formInput systemFields.modifiedRange.fields.unit value=system.modifiedRange.unit name='system.modifiedRange.unit' localize=true}}
-        </div>
-      {{/if}}
-      {{#if (eq system.modifies "duration")}}
-        <div class="flexcol">
-          <label for="system.modifiedDuration.value">{{localize 'UTOPIA.Item.value'}}</label>
-          {{formInput systemFields.modifiedDuration.fields.value value=system.modifiedDuration.value name='system.modifiedDuration.value' localize=true}}
-        </div>
-        <div class="flexcol">
-          <label for="system.modifiedDuration.variable">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.variable'}}</label>
-          {{formInput systemFields.modifiedDuration.fields.variable value=system.modifiedDuration.variable name='system.modifiedDuration.variable' localize=true}}
-        </div>
-        <div class="flexcol">
-          <label for="system.modifiedDuration.unit">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.unit'}}</label>
-          {{formInput systemFields.modifiedDuration.fields.unit value=system.modifiedDuration.unit name='system.modifiedDuration.unit' localize=true}}
-        </div>
-      </div>
-      <div class="grid grid-3col">
-        <div class="flexcol">
-          <label for="system.modifiedDuration.requirements">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.requirements'}}</label>
-          {{formInput systemFields.modifiedDuration.fields.requirements value=system.modifiedDuration.requirements name='system.modifiedDuration.requirements' localize=true}}
-        </div>
-        <div class="flexcol">
-          <label for="system.modifiedDuration.dispelInterruptCost">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.dispelInterruptCost'}}</label>
-          {{formInput systemFields.modifiedDuration.fields.dispelInterruptCost value=system.modifiedDuration.dispelInterruptCost name='system.modifiedDuration.dispelInterruptCost' localize=true}}
-        </div>
-        <div class="flexcol">
-          <label for="system.modifiedDuration.dispelActionCost">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.dispelActionCost'}}</label>
-          {{formInput systemFields.modifiedDuration.fields.dispelActionCost value=system.modifiedDuration.dispelActionCost name='system.modifiedDuration.dispelActionCost' localize=true}}
-        </div>
-      {{/if}}
-      {{#if (eq system.modifies "aoe")}}
-        <div class="flexcol">
-          <label for="system.modifiedAoE.value">{{localize 'UTOPIA.Item.value'}}</label>
-          {{formInput systemFields.modifiedAoE.fields.value value=system.modifiedAoE.value name='system.modifiedAoE.value' localize=true}}
-        </div>
-        <div class="flexcol">
-          <label for="system.modifiedAoE.variable">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.variable'}}</label>
-          {{formInput systemFields.modifiedAoE.fields.variable value=system.modifiedAoE.variable name='system.modifiedAoE.variable' localize=true}}
-        </div>
-        <div class="flexcol">
-          <label for="system.modifiedAoE.shape">{{localize 'UTOPIA.Item.SpellFeatures.Modifications.shape'}}</label>
-          {{formInput systemFields.modifiedAoE.fields.shape value=system.modifiedAoE.shape name='system.modifiedAoE.shape' localize=true}}
-        </div>
-      {{/if}}
-    </div>
+    <div class="grid grid-1col">
+      <span>{{localize "UTOPIA.Items.SpellFeature.FIELDS.grantEffect.label"}}</span>
+      <section class='effects'>
+        <ol class='effects-list'>
+          {{#each effects as |section sid|}}
+            <li
+              class='effects-header flexrow'
+              data-effect-type='{{section.type}}'
+              data-drag="true"
+            >
+              <div class='effect-name flexrow'>
+                {{localize section.label}}
+              </div>
+              <div class='effect-source'>
+                {{localize 'UTOPIA.COMMON.Source'}}
+              </div>
+              <div class='effect-controls flexrow'>
+                <a
+                  class='effect-control'
+                  data-action='createEffect'
+                  data-document-class='ActiveEffect'
+                  data-origin="{{@root.actor.uuid}}"
+                  data-img="icons/svg/aura.svg"
+                  {{#if (eq section.type "inactive")}}
+                    data-disabled="true"
+                  {{else if (eq section.type "temporary")}}
+                    data-duration.rounds="1"
+                  {{/if}}
+                  title='{{localize "DOCUMENT.Create" type='Effect'}}'
+                >
+                  <i class='fas fa-plus'></i>
+                  {{localize 'DOCUMENT.New' type='Effect'}}
+                </a>
+              </div>
+            </li>
 
-    <div class="grid grid-4col">
-      <div class="flexcol">
-        <label for="system.doesTarget">{{localize 'UTOPIA.Item.SpellFeatures.doesTarget'}}</label>
-        {{formInput systemFields.doesTarget value=system.doesTarget name='system.doesTarget' localize=true}}
-      </div>
-      {{#if (eq system.doesTarget "true")}}
-        <div class="flexcol">
-          <label for="system.targetType">{{localize 'UTOPIA.Item.SpellFeatures.targetType'}}</label>
-          {{formInput systemFields.targetType value=system.targetType name='system.targetType' localize=true}}
-        </div>
-        {{#if (eq system.targetType 'template')}}
-          <div class="flexcol">
-            <label for="system.templateType">{{localize 'UTOPIA.Item.SpellFeatures.templateType'}}</label>
-            {{formInput systemFields.templateType value=system.templateType name='system.templateType' localize=true}}
-          </div>
-        {{/if}}
-        {{#if (and (eq system.templateType 'cone') (eq system.targetType 'template'))}}
-          <div class="flexcol">
-            <label for="system.templateAngle">{{localize 'UTOPIA.Item.SpellFeatures.templateAngle'}}</label>
-            {{formInput systemFields.templateAngle value=system.templateAngle name='system.templateAngle' localize=true}}
-          </div>
-        {{/if}}
-      {{/if}}
-    </div>
-
-    <div class="grid grid-2col">
-      <div class="flexcol grid-span-2">
-        <label for="system.formula">{{localize 'UTOPIA.CommonTerms.formula'}}</label>
-        {{formInput systemFields.formula value=system.formula name='system.formula' localize=true}}
-      </div>
+            <ol class='effect-list'>
+              {{#each section.effects as |effect|}}
+                <li
+                  class='effect item flexrow'
+                  data-effect-id='{{effect.id}}'
+                  data-parent-id='{{effect.parent.id}}'
+                  data-document-class='ActiveEffect'
+                  data-drag="true"
+                >
+                  <div class='effect-name flexrow'>
+                    <div>{{effect.name}}</div>
+                  </div>
+                  <div class='effect-source'>{{effect.sourceName}}</div>
+                  <div class='effect-controls flexrow'>
+                    {{#if @root.editable}}
+                    <a
+                      class='effect-control'
+                      data-action='toggleEffect'
+                      title='{{localize "UTOPIA.Effect.toggle"}}'
+                    >
+                      <i class='fas {{#if effect.disabled}}fa-check{{else}}fa-times{{/if}}'></i>
+                    </a>
+                    {{/if}}
+                    <a
+                      class='effect-control'
+                      data-action='viewEffect'
+                      title='{{localize "DOCUMENT.Update" type='Effect'}}'
+                    >
+                      <i class='fas fa-edit'></i>
+                    </a>
+                    {{#if @root.editable}}
+                    <a
+                      class='effect-control'
+                      data-action='deleteEffect'
+                      title='{{localize "DOCUMENT.Delete" type='Effect'}}'
+                    >
+                      <i class='fas fa-trash'></i>
+                    </a>
+                    {{/if}}
+                  </div>
+                </li>
+              {{/each}}
+            </ol>
+          {{/each}}
+        </ol>
+      </section>
+      <span>{{localize "UTOPIA.Items.SpellFeature.FIELDS.grantEffect.hint"}}</span>
     </div>
   </div>
 </div>

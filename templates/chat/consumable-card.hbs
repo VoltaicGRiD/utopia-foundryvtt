@@ -1,0 +1,57 @@
+<div class="chat-card consumable-card">
+  
+  <div class="card-header">
+    <img class="card-header-icon" src="systems/utopia/assets/spell.svg" title="Spell" style="width: 30px; height: 30px;"/>
+    <span class="card-title">Spell</span>
+  </div>
+
+  <div class="consumable-attributes">
+    <span class="consumable-duration"><i class="fas fa-clock"></i> {{item.system.durationOut}}</span>
+    <span class="consumable-radius"><i class="fas fa-code-compare"></i> {{item.system.radiusOut}}</span>
+  </div>
+
+  <div class="consumable-features">
+    <ol class="selected-feature-list flexcol">
+      {{#each features as |feature key|}}
+        
+        <li class="feature" 
+          style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
+          data-id="{{feature.uuid}}">
+          
+          <details>
+            <summary class="feature-name">
+              <img src="{{feature.img}}" class="feature-icon" />
+              {{feature.name}} 
+            </summary>
+          </details>  
+        </li>
+      {{/each}}
+    </ol>
+  </div>
+
+  {{#each templates}} 
+    <a data-action="template" data-template="{{this.flags.utopia.feature}}"><i class='fa-solid fa-bullseye'></i> {{localize "UTOPIA.CHAT.PlaceTemplate"}}</a>
+  {{/each}}
+
+  {{#if (gt templates.length 0)}}
+    <a data-action="finishUsing"><i class='fa-solid fa-check'></i> {{localize "UTOPIA.CHAT.FinishUsing"}}</a>
+  {{/if}}
+
+  {{!-- {{#if template}}
+    <a data-action="template" data-template="{{template}}"><i class='fa-solid fa-bullseye'></i></a>
+  {{/if}} --}}
+
+  <div class="card-content">
+    <i>{{{item.system.flavor}}}</i>
+  </div>
+
+  <div class="card-actions">
+    {{#each item.redistributions}}
+      <a data-action="performStrike" data-target="target" data-percent="100" data-formula="{{this}}"></a>
+    {{/each}}
+  </div>
+
+  <!-- <footer data-visibility="gm">
+    <button data-action="acceptSpell"><i class="fa-solid fa-check"></i>{{localize "UTOPIA.COMMON.accept"}}</button>
+  </footer> -->
+</div>

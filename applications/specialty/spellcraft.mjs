@@ -5,7 +5,7 @@ import { gatherItems } from '../../system/helpers/gatherItems.mjs';
 import { getTextContrast } from '../../system/helpers/textContrast.mjs';
 
 export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.ApplicationV2) {
-  selected = [];
+  selected = {};
   allFeatures = {};
   features = {};
   secretFeatures = {};
@@ -173,7 +173,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
 
       this.artistries = artistries;      
       this.features = features;
-      this.selected = [];
+      this.selected = {};
       this.cost = 0;
       this.duration = 0;
       this.durationOut = "";
@@ -200,15 +200,11 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
     entries.sort((a, b) => b[1].favorite - a[1].favorite);  
     this.remainingFeatures = Object.fromEntries(entries);
 
-    const selected = await Promise.all(this.selected.length > 0 ? this.selected.map(async i => {
-      return await fromUuid(i);
-    }) : []);
-
     const context = {
       filter: this.filter,
       artistries: this.artistries,
       features: this.remainingFeatures,
-      selected: selected,
+      selected: this.selected,
       duration: this.durationOut,
       range: this.rangeOut,
       aoe: this.aoe,
@@ -275,7 +271,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
     removeButtons.forEach(b => {
       b.addEventListener("click", (event) => {
         const id = event.target.closest("li").dataset.id;
-        this.selected = this.selected.filter(f => f !== id);
+        delete this.selected[id];
         this.render();
       });
     });
@@ -336,9 +332,11 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
         if (!feature) 
           return ui.notifications.error("This feature does not exist.");
         
-        this.selected.push(uuid);
+        const newId = foundry.utils.randomID(16);
 
-        this.featureSettings[feature._id] = { 
+        this.selected[newId] = feature;
+
+        this.featureSettings[newId] = { 
           stacks: {
             variableName: "stacks",
             variableDescription: "Stacks",
@@ -350,7 +348,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
         };
 
         for (const variable of Object.values(feature.system.variables)) {
-          this.featureSettings[feature._id][variable.name] = variable; 
+          this.featureSettings[newId][variable.name] = variable; 
         }
 
         this.render();
@@ -380,11 +378,11 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
         const parentList = event.target.closest("ol");
         const isSelected = parentList.classList.contains("selected-feature-list");
         const selected = isSelected ? this.selected : this.features;
-        const feature = isSelected ? await fromUuid(selected.find(f => f === featureId)) : selected[featureId];
+        const feature = selected[featureId];
 
         const variable = feature.system.variables[variableId];
         variable.value = value;
-        this.featureSettings[feature.uuid][variable.name] = variable;
+        this.featureSettings[featureId][variable.name] = variable;
         
         this.render();
       });
@@ -401,7 +399,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
         const parentList = event.target.closest("ol");
         const isSelected = parentList.classList.contains("selected-feature-list");
         const selected = isSelected ? this.selected : this.features;
-        const feature = isSelected ? await fromUuid(selected.find(f => f === featureId)) : selected[featureId];
+        const feature = selected[featureId];
 
         const variable = feature.system.variables[variableId];        
         variable.value = parseInt(value);
@@ -420,7 +418,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
         const parentList = event.target.closest("ol");
         const isSelected = parentList.classList.contains("selected-feature-list");
         const selected = isSelected ? this.selected : this.features;
-        const feature = isSelected ? await fromUuid(selected.find(f => f === featureId)) : selected[featureId];
+        const feature = selected[featureId];
         const name = feature.system.variables[variableId].name;
         const options = feature.system.variables[variableId].options.split(',');   
         const value = feature.system.variables[variableId].value || options[0];
@@ -445,6 +443,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
             event.target.style.color = "#000";
             event.target.innerHTML = `&#x2713`;
             variable.value = result;
+            this.featureSettings[featureId] ??= {};
             this.featureSettings[featureId][variable.name] = variable;
           }
         }).render(true);
@@ -531,13 +530,11 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
     this.aoe = "None";
     this.cost = 0;
 
-    const features = await Promise.all(this.selected.map(async i => {
-      return await fromUuid(i);
-    }));
+    const features = this.selected;
 
     let ppCost = 0;
     let staminaCost = 0;
-    for (let feature of features) {
+    for (let [key, feature] of Object.entries(features)) {
       feature.stacks = this.featureSettings[feature.uuid]?.stacks?.value ?? 1;
       feature.costVariable = this.featureSettings[feature.uuid]?.cost?.value ?? 1;
       feature.cost = feature.system.cost;
@@ -707,17 +704,13 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
       await this.actor.createEmbeddedDocuments("Item", [spell]);
     }
     else if (this.spells.length === 1) { // We need to update the current spell instead
-      await this.spells[0].update({
-        name: name,
-        system: {
-          features: selected,
-          duration: duration,
-          range: range,
-          aoe: aoe,
-          flavor: flavor,
-          cost: cost,
-        }
-      });
+      for (const feature of Object.keys(this.spells[0].system.features)) {
+        await this.spells[0].update({
+          [`system.features.-=${feature.id}`]: null,
+          [`system.featureSettings.-=${feature.id}`]: null
+        });
+      }      
+      await this.spells[0].update(spell);
     }
     else {
       const doc = await Item.create(spell);
@@ -888,8 +881,7 @@ export class SpellcraftSheet extends api.HandlebarsApplicationMixin(api.Applicat
   static async _cast(event, target) {
     const settings = {};
 
-    for (const feature of this.selected) {
-      const item = await fromUuid(feature);
+    for (const feature of Object.values(this.selected)) {
       settings[feature] = {};
 
       if (item.system.variables) {

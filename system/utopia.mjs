@@ -32,11 +32,15 @@ globalThis.utopia = {
   },
   rollItemMacro: Item.rollItemMacro,
   damageHandlers: globalThis.utopia?.damageHandlers || [],
+  healingHandlers: globalThis.utopia?.healingHandlers || [],
+  aciveSpellTemplates: globalThis.utopia?.aciveSpellTemplates || {},
 }
 
 Hooks.once("init", async function () {
   CONFIG.UTOPIA = {};
   registerConfig();
+  const myPackage = game.system;
+  myPackage.socketHandler = new init.UtopiaSocketHandler();
   await init.registerGameSettings();
   init.registerHooks();
   init.registerHandlebarsSettings();
@@ -58,6 +62,8 @@ Hooks.once("init", async function () {
   CONFIG.Actor.documentClass = UtopiaActor;
   CONFIG.Item.documentClass = UtopiaItem;
   CONFIG.ChatMessage.documentClass = UtopiaChatMessage;
+
+  CONFIG.time.turnTime = 6;
 
   init.preloadHandlebarsTemplates();
 });

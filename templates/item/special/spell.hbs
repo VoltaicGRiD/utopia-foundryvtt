@@ -19,7 +19,7 @@
     </div>
     <div class="spell-attribute">
       <span class="spell-aoe">{{localize 'UTOPIA.Items.Spell.FIELDS.AoeShort.label'}}</span>
-      <span class="spell-aoe-value">{{system.aoe}}</span>
+      <span class="spell-aoe-value">{{system.aoeOut}}</span>
     </div>
     <div class="spell-attribute">
       <span class="spell-cost">{{localize 'UTOPIA.Items.Spell.FIELDS.Stamina.label'}}</span>
@@ -30,9 +30,9 @@
   <div class="spell-features">
     <ol class="selected-feature-list flexcol">
       {{#each features as |feature key|}}
-        {{log feature}}
+        
 
-        <li class="feature" style="background: {{feature.system.style.background}}; color: {{feature.system.style.color}}" data-id="{{key}}">
+        <li class="feature" style="background: {{feature.style.background}}; color: {{feature.style.color}}" data-id="{{key}}">
           <img src="{{feature.img}}" class="feature-icon" />
           <button type="button" class="remove-feature hidden">
             <i class="fa-fw fa-solid fa-times"></i>
@@ -43,9 +43,9 @@
             (<span id="cost" class="cost">{{feature.system.cost}}</span>)
           </span>
           <div class="feature-controls">
-            {{#each feature.variables as |variable varKey|}}
-              {{log variable}}
-              {{log varKey}}
+            {{!-- {{#each feature.system.variables as |variable varKey|}}
+              
+              
 
               {{#if (eq varKey "stacks")}}
                 <div class="flexrow feature-variable">
@@ -80,6 +80,53 @@
                   </button>
                 </div>
               {{/if}}
+            {{/each}} --}}
+            {{#each feature.system.variables as |variable varKey|}}
+              {{#if (eq varKey "stacks")}}
+                <div class="flexrow feature-variable">
+                  <input type="number" 
+                        min="{{variable.minimum}}" 
+                        max="{{variable.maximum}}" 
+                        value="{{variable.value}}"
+                        data-feature="{{key}}" 
+                        data-variable="{{varKey}}" />
+                  <span class="feature-variable-character"><i class="fa-solid fa-cubes-stacked"></i></span>
+                </div>
+              {{else if (eq variable.kind "number")}}
+                <div class="flexrow feature-variable">
+                  <input type="number" 
+                        min="{{variable.minimum}}" 
+                        max="{{variable.maximum}}" 
+                        value="{{variable.value}}"
+                        data-feature="{{key}}" 
+                        data-variable="{{varKey}}" />
+                  <span class="feature-variable-character">{{variable.character}}</span>
+                </div>
+              {{else if (eq variable.kind "options")}}
+                <div class="feature-variable">
+                  <button type="button" 
+                          class="feature-variable-options feature-variable-character" 
+                          style="background-color: #ed3f41; color: white;"
+                          data-variable="{{varKey}}"
+                          data-feature="{{key}}">
+                    {{#if (or (eq variable.value "") (not variable.value))}}
+                      {{variable.character}}
+                    {{else}}
+                      &#x2713;
+                    {{/if}}
+                  </button>
+                </div>
+              {{else if (eq variable.kind "text")}}
+                <div class="feature-variable">
+                  <input type="text" 
+                        class="feature-variable-text"
+                        value="{{variable.value}}"
+                        placeholder="{{variable.name}}"
+                        data-feature="{{key}}" 
+                        data-variable="{{varKey}}" />
+                  <span class="feature-variable-character" data-tooltip="{{variable.name}}">{{variable.character}}</span>
+                </div>
+              {{/if}}
             {{/each}}
           </div>
         </li>
@@ -87,7 +134,7 @@
     </ol>
   </div>
   <div class="spell-flavor">
-    <textarea name="system.flavor" placeholder="{{localize 'UTOPIA.Item.flavor'}}"></textarea>
+    <textarea name="system.flavor" placeholder="{{localize 'UTOPIA.Item.flavor'}}">{{system.flavor}}</textarea>
   </div>
   <div class="spell-controls">
     <a type="button" data-action="save">{{localize "UTOPIA.Items.Spell.BUTTONS.Save"}}</a>

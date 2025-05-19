@@ -1,8 +1,6 @@
 export class SchemaArrayField extends foundry.data.fields.ArrayField {
   /** @override */
   _toInput(config, parentName = undefined) {
-    console.log(this);
-
     const e = this.element;
 
     // Schema Fields

@@ -36,7 +36,7 @@ export async function prepareBodyData(pawn) {
   for (const [pawnTrait, data] of Object.entries(pawn.traits)) {
     if (bodyTraits.includes(pawnTrait)) {
       const trait = body.system.traits.find(trait => trait.trait === pawnTrait);
-      data.value += trait.value;
+      //data.value += trait.value;
     }
   }
 
@@ -49,9 +49,7 @@ export async function prepareBodyData(pawn) {
       data.value += body.system.traitDefault;
     }
     
-    console.log("Subtrait", pawnTrait, data);
-
-    pawn.subtraits[pawnTrait].value += data.value;
+    //pawn.subtraits[pawnTrait].value += data.value;
     pawn.subtraits[pawnTrait].mod = pawn.subtraits[pawnTrait].value - 4;
     data.mod = data.value - 4;
   }
@@ -92,25 +90,52 @@ export async function prepareClassData(pawn) {
     for (const attribute of item.system.attributes) {
       const key = attribute.key.replace("system.", "");
       var value = attribute.value;
-      var addValue = true;
-      
-      if (isNumeric(value)) {
-        value = parseFloat(value);
+      var operation = "+";
+
+      if (["true", "false"].includes(value.toLowerCase())) {
+        value = true;
+        operation = "=";
       }
-      // Check if the value starts with an '='
-      else if (value.startsWith("=")) {
-        addValue = false;
-        value = parseFloat(value.substring(1));
+      else if (typeof value === "string" && !isNumeric(value) && !["true", "false"].includes(value.toLowerCase())) {
+        // Handle string value that isn't "true" or "false"
+        operation = "=";
       }
-      else if (value.startsWith("+") || value.startsWith("-")) {
-        addValue = true;
-        value = parseFloat(value.substring(1));
+      else {
+        if (isNumeric(value)) {
+          value = parseFloat(value);
+        }
+        // Check if the value starts with an '='
+        else if (typeof value === "string" && value.startsWith("=")) {
+          operation = "=";
+          value = parseFloat(value.substring(1));
+        }
+        else if (typeof value === "string" && value.startsWith("+")) {
+          operation = "+";
+          value = parseFloat(value.substring(1));
+        }
+        else if (typeof value === "string" && value.startsWith("-")) {
+          operation = "-";
+          value = parseFloat(value.substring(1));
+        }
       }
       
       const originalValue = foundry.utils.getProperty(pawn, key);
-      foundry.utils.setProperty(pawn, key, 
-        addValue ? originalValue + value : value
-      );
+      switch (operation) {
+        case "=":
+          // Set the value to the value of the attribute
+          foundry.utils.setProperty(pawn, key, value);
+          break;
+        case "+":
+          // Add the value to the original value
+          foundry.utils.setProperty(pawn, key, originalValue + value);
+          break;
+        case "-":
+          // Subtract the value from the original value
+          foundry.utils.setProperty(pawn, key, originalValue - value);
+          break;
+        default:
+          console.warn("Unknown operation", operation);
+      }
     }
   }
 
@@ -136,25 +161,27 @@ export async function prepareKitData(pawn) {
     const choices = kit.system.selectedChoices;
 
     for (const attribute of kit.system.attributes) {
-      var key = attribute.key;
-      var value = attribute.value;
-      if (isNumeric(value)) {
-        value = parseFloat(value);
-      }
-      const choiceSet = attribute.choiceSet;
-      if (attribute.hasChoices) {
-        if (Object.keys(choices).includes(choiceSet)) {
-          key = choices[choiceSet];
-          // remove this set from the choices
-          delete choices[choiceSet];
-        } 
-        else {
-          continue;
+      for (let i = 0; i < kit.system.stacks; i++) {
+        var key = attribute.key;
+        var value = attribute.value;
+        if (isNumeric(value)) {
+          value = parseFloat(value);
         }
+        const choiceSet = attribute.choiceSet;
+        if (attribute.hasChoices) {
+          if (Object.keys(choices).includes(choiceSet)) {
+            key = choices[choiceSet];
+            // remove this set from the choices
+            delete choices[choiceSet];
+          } 
+          else {
+            continue;
+          }
+        }
+        key = key.replace("system.", "");
+        const originalValue = foundry.utils.getProperty(pawn, key);
+        foundry.utils.setProperty(pawn, key, originalValue + value);
       }
-      key = key.replace("system.", "");
-      const originalValue = foundry.utils.getProperty(pawn, key);
-      foundry.utils.setProperty(pawn, key, originalValue + value);
     }
   }
 

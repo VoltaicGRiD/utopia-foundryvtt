@@ -1,0 +1,128 @@
+folder: KHhdClefP1zcgRhJ
+name: Spitter
+type: class
+_id: f910LIpTs6hDzNFF
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 30
+  type: arcane
+  grants:
+    - Compendium.utopia.actions.Item.wJCsQ3PXAxR6aKFZ
+  specialtyPassives: []
+  grantedEquipment: []
+  attributes:
+    - key: system.hitpoints.surface.max
+      value: '30'
+    - key: system.stamina.max
+      value: '30'
+    - key: system.hitpoints.deep.max
+      value: '65'
+    - key: innateDefenses.physical
+      value: '4'
+    - key: innateDefenses.energy
+      value: '4'
+    - key: innateDefenses.heat
+      value: '4'
+    - key: innateDefenses.chill
+      value: '4'
+    - key: innateDefenses.psyche
+      value: '4'
+    - key: subtraits.spd.value
+      value: '3'
+    - key: subtraits.for.value
+      value: '3'
+    - key: subtraits.res.value
+      value: '3'
+    - key: subtraits.awa.value
+      value: '3'
+    - key: subtraits.dex.value
+      value: '12'
+    - key: subtraits.pow.value
+      value: '2'
+    - key: subtraits.por.value
+      value: '4'
+    - key: subtraits.app.value
+      value: '1'
+    - key: subtraits.lan.value
+      value: '1'
+    - key: dodge.quantity
+      value: '6'
+  selectedChoices: {}
+effects:
+  - name: Spitter
+    origin: Compendium.utopia.classes.Item.f910LIpTs6hDzNFF
+    img: icons/svg/aura.svg
+    type: passive
+    _id: 2Fhon1VqdXrIoqke
+    system: {}
+    changes:
+      - key: flags.utopia.enhancedRange
+        mode: 4
+        value: 'true'
+        priority: null
+      - key: flags.utopia.spreadShot
+        mode: 4
+        value: 'true'
+        priority: null
+      - key: system.travel.land.speed
+        mode: 5
+        value: '@spd.total + 8'
+        priority: null
+      - key: system.travel.water.speed
+        mode: 5
+        value: '@spd.total + 8'
+        priority: null
+      - key: system.travel.air.speed
+        mode: 5
+        value: '@spd.total + 8'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.07'
+      createdTime: 1747552332316
+      modifiedTime: 1747553066265
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!f910LIpTs6hDzNFF.2Fhon1VqdXrIoqke'
+sort: 600000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747551230876
+  modifiedTime: 1747553484483
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!f910LIpTs6hDzNFF'
+

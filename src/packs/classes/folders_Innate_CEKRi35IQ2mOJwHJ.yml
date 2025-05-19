@@ -1,0 +1,20 @@
+name: Innate
+sorting: a
+folder: null
+type: Item
+_id: CEKRi35IQ2mOJwHJ
+description: ''
+sort: 0
+color: '#808080'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747637583430
+  modifiedTime: 1747637590649
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!CEKRi35IQ2mOJwHJ'
+

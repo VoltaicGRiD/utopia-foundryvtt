@@ -1,0 +1,148 @@
+name: Powerful
+type: kit
+_id: lOxLeIZ8meciAzlv
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 20
+  stacks: 1
+  attributes:
+    - key: system.hitpoints.surface.max
+      value: '40'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.hitpoints.deep.max
+      value: '40'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.stamina.max
+      value: '20'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.physical
+      value: '12'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.energy
+      value: '10'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.heat
+      value: '9'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.chill
+      value: '9'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.psyche
+      value: '5'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.por.value
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.stu.value
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.app.value
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.lan.value
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.awa.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.dex.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.eng.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.for.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.mem.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.pow.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.res.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.spd.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.dodge.quantity
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.block.quantity
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+  selectedChoices: {}
+  grants:
+    - Compendium.utopia.favors.Item.H5of4InpFzgWGCtD
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747501361472
+  modifiedTime: 1747501632898
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!lOxLeIZ8meciAzlv'
+

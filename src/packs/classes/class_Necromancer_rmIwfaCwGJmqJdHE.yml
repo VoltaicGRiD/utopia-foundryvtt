@@ -1,0 +1,55 @@
+folder: KHhdClefP1zcgRhJ
+name: Necromancer
+type: class
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 14
+  type: arcane
+  grants: []
+  specialtyPassives: []
+  grantedEquipment: []
+  attributes:
+    - key: system.stamina.max
+      value: '70'
+    - key: system.spellcasting.artistries.array.unlocked
+      value: 'true'
+    - key: system.spellcasting.artistries.wake.unlocked
+      value: 'true'
+    - key: system.spellcasting.spellcapTrait
+      value: wil
+    - key: system.subtraits.res.value
+      value: '7'
+    - key: system.subtraits.awa.value
+      value: '7'
+    - key: system.spellcasting.artistries.necromancy.unlocked
+      value: 'true'
+    - key: system.spellcasting.discount
+      value: '7'
+  selectedChoices: {}
+effects: []
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747538927992
+  modifiedTime: 1747553444042
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_id: rmIwfaCwGJmqJdHE
+sort: 300000
+_key: '!items!rmIwfaCwGJmqJdHE'
+

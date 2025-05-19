@@ -1,0 +1,66 @@
+folder: N9RTuEGNGbELMjeY
+name: Healer
+type: class
+_id: 1rMTteAaUMG37YNi
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 13
+  type: support
+  grants:
+    - Compendium.utopia.actions.Item.DSg2hYy0JWT9U6DO
+    - Item.sCIZJuQl0Ffo5iLs
+    - Compendium.utopia.actions.Item.Z1xIlrn8cYKxlK9X
+  specialtyPassives: []
+  grantedEquipment: []
+  attributes:
+    - key: hitpoints.deep.max
+      value: '5'
+    - key: hitpoints.stamina.max
+      value: '60'
+    - key: innateDefenses.physical
+      value: '4'
+    - key: innateDefenses.psyche
+      value: '2'
+    - key: innateDefenses.energy
+      value: '1'
+    - key: innateDefenses.heat
+      value: '1'
+    - key: innateDefenses.chill
+      value: '1'
+    - key: subtraits.app.value
+      value: '8'
+    - key: subtraits.eng.value
+      value: '3'
+    - key: subtraits.res.value
+      value: '2'
+    - key: subtraits.lan.value
+      value: '1'
+    - key: block.quantity
+      value: '2'
+  selectedChoices: {}
+effects: []
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747553531328
+  modifiedTime: 1747637568906
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!1rMTteAaUMG37YNi'
+

@@ -1,0 +1,79 @@
+name: Defensive
+type: kit
+_id: Dn6nHDEl76sbPiEP
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  points: 2
+  attributes:
+    - key: system.hitpoints.surface.max
+      value: '5'
+      name: SHP
+      hasChoices: false
+      choiceSet: ''
+    - key: system.hitpoints.deep.max
+      value: '5'
+      name: DHP
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.physical
+      value: '4'
+      name: Physical Defense
+      hasChoices: true
+      choiceSet: Defenses
+    - key: system.innateDefenses.energy
+      value: '4'
+      name: Energy Defense
+      hasChoices: true
+      choiceSet: Defenses
+    - key: system.innateDefenses.heat
+      value: '4'
+      name: Heat Defense
+      hasChoices: true
+      choiceSet: Defenses
+    - key: system.innateDefenses.chill
+      value: '4'
+      name: Chill Defense
+      hasChoices: true
+      choiceSet: Defenses
+    - key: system.innateDefenses.psyche
+      value: '4'
+      name: Psyche Defense
+      hasChoices: true
+      choiceSet: Defenses
+    - key: system.block.quantity
+      value: '1'
+      name: Block Rating
+      hasChoices: true
+      choiceSet: Ratings
+    - key: system.dodge.quantity
+      value: '1'
+      name: Dodge Rating
+      hasChoices: true
+      choiceSet: Ratings
+  selectedChoices: {}
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747117240489
+  modifiedTime: 1747117427695
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!Dn6nHDEl76sbPiEP'
+

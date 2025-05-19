@@ -1,0 +1,61 @@
+folder: KHhdClefP1zcgRhJ
+name: Elemancer
+type: class
+_id: gPsEJ52rUtfSLyNN
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 14
+  type: arcane
+  grants: []
+  specialtyPassives: []
+  grantedEquipment: []
+  attributes:
+    - key: system.stamina.max
+      value: '70'
+    - key: system.subtraits.spd.value
+      value: '2'
+    - key: system.subtraits.dex.value
+      value: '2'
+    - key: system.subtraits.res.value
+      value: '6'
+    - key: system.subtraits.awa.value
+      value: '4'
+    - key: system.spellcasting.artistries.evocation.unlocked
+      value: 'true'
+    - key: system.spellcasting.artistries.array.unlocked
+      value: 'true'
+    - key: system.spellcasting.artistries.wake.unlocked
+      value: 'true'
+    - key: system.spellcasting.artistries.enchantment.unlocked
+      value: 'true'
+    - key: system.spellcasting.discount
+      value: '8'
+    - key: system.spellcasting.spellcapTrait
+      value: wil
+  selectedChoices: {}
+effects: []
+sort: 200000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747538381260
+  modifiedTime: 1747553444042
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!gPsEJ52rUtfSLyNN'
+

@@ -1,0 +1,49 @@
+name: Arcane Withdrawal (Activity)
+type: activity
+_id: l5toNr5yb9p3NrtG
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  operations:
+    - type: generic
+      sendToChat: true
+      message: '{actor} is undoing one of their permanent spells.'
+      name: Generic / Chat Message
+      id: aLtcH09gBctNur6U
+      costs:
+        actions: 6
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747060580657
+  modifiedTime: 1747061330272
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!l5toNr5yb9p3NrtG'
+

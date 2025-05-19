@@ -1,0 +1,82 @@
+name: Consume
+type: activity
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  operations:
+    - type: selectOption
+      options:
+        - key: common
+          name: Common
+        - key: extraordinary
+          name: Extraordinary
+        - key: rare
+          name: Rare
+        - key: legendary
+          name: Legendary
+      value: ''
+      name: Select Rarity
+      id: i4OE8OyEpfXrsbQd
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: consumption
+      component: power
+      rarity: i4OE8OyEpfXrsbQd
+      restoration: 3 * (pow(2, @rarityValue-1))
+      useRarityValue: true
+      amount: '1'
+      name: Consume Component
+      id: wbp1ykkMcQeHbBLA
+      costs:
+        actions: 1
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+folder: null
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747026974012
+  modifiedTime: 1747027072139
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_id: mL2omYUXEsHaGXIq
+sort: 0
+_key: '!items!mL2omYUXEsHaGXIq'
+

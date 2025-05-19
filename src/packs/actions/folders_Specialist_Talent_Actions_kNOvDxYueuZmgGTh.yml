@@ -1,0 +1,20 @@
+name: Specialist Talent Actions
+sorting: a
+folder: null
+type: Item
+_id: kNOvDxYueuZmgGTh
+description: ''
+sort: 200000
+color: '#ae00ff'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1746935278969
+  modifiedTime: 1747405341166
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!kNOvDxYueuZmgGTh'
+

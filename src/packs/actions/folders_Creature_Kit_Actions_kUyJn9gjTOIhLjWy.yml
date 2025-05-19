@@ -1,0 +1,20 @@
+name: Creature Kit Actions
+sorting: a
+folder: null
+type: Item
+_id: kUyJn9gjTOIhLjWy
+description: ''
+sort: 300000
+color: '#008f2f'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747405336397
+  modifiedTime: 1747405341166
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!kUyJn9gjTOIhLjWy'
+

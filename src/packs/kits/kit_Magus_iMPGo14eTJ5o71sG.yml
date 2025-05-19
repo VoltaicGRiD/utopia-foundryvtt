@@ -1,0 +1,52 @@
+name: Magus
+type: kit
+_id: iMPGo14eTJ5o71sG
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 4
+  stacks: 1
+  attributes:
+    - key: system.stamina.max
+      value: '20'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.res.value
+      value: '4'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.spellcasting.discount
+      value: '3'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+  selectedChoices: {}
+  grants: []
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747448282546
+  modifiedTime: 1747448334801
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!iMPGo14eTJ5o71sG'
+

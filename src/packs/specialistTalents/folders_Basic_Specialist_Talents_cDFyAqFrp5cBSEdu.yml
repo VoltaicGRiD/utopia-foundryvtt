@@ -1,0 +1,20 @@
+name: Basic Specialist Talents
+sorting: m
+folder: null
+type: Item
+_id: cDFyAqFrp5cBSEdu
+description: ''
+sort: 0
+color: '#00c241'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747065245022
+  modifiedTime: 1747065252953
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!cDFyAqFrp5cBSEdu'
+

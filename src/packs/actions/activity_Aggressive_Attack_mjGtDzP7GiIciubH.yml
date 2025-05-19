@@ -1,0 +1,55 @@
+folder: kUyJn9gjTOIhLjWy
+name: Aggressive Attack
+type: activity
+_id: mjGtDzP7GiIciubH
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  replacesBaseAction: ''
+  operations:
+    - type: attack
+      damages:
+        - formula: '* (@origin.system.stacks + 1)'
+          damageType: physical
+          penetrate: false
+          nonLethal: false
+          randomTarget: true
+          useWeapon: true
+          modifier: ''
+          range: 0/0
+      name: Attack
+      id: V4N6jKYetUAJsEqY
+      costs:
+        actions: 2 * @origin.system.stacks
+        actionType: turn
+        stamina: 12 * @origin.system.stacks
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747448582377
+  modifiedTime: 1747493409109
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!mjGtDzP7GiIciubH'
+

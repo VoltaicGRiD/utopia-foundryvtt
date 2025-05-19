@@ -1,0 +1,55 @@
+name: Thespian (Activity)
+type: activity
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  operations:
+    - type: test
+      executorTest: mimic
+      targetTest: mimic
+      overrideRoll:
+        enabled: true
+        ifLessThan: 10
+        setTo: 10
+        beforeModifiers: true
+      successfulTargets: []
+      name: Mimic Behavior
+      id: QtfWCAETaNpyl4W6
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+folder: kNOvDxYueuZmgGTh
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1746935285505
+  modifiedTime: 1747009913428
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_id: lErsoqixdaZ833ih
+sort: 300000
+_key: '!items!lErsoqixdaZ833ih'
+

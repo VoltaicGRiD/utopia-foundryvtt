@@ -1,0 +1,52 @@
+folder: 4sk8vxzYn6wlYXxc
+name: Arcane Withdrawal
+type: specialistTalent
+_id: xH27wSsOzNOQlB1D
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>You may spend 6 turn actions to undo a permanent spell that you cast,
+    given you are within 1 meter of the spell's effects.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: N3gRol4RFtMp26vx
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: ''
+  talentTreeRequirements: ''
+  singleTalentTreeRequirements: ''
+  artistryRequirements: enchantment
+  grants:
+    - Compendium.utopia.actions.Item.l5toNr5yb9p3NrtG
+effects: []
+sort: 100000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747060532529
+  modifiedTime: 1747061433782
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!xH27wSsOzNOQlB1D'
+

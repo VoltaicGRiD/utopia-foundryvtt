@@ -1,0 +1,74 @@
+folder: kUyJn9gjTOIhLjWy
+name: Aggressive Travel
+type: activity
+_id: wu51xMtYVnWAU76C
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  replacesBaseAction: travel
+  operations:
+    - type: selectOption
+      options:
+        - key: land
+          name: Land
+        - key: water
+          name: Water
+        - key: air
+          name: Air
+      value: ''
+      name: Select Option
+      id: EERCxIAKtsZ3AR8k
+      costs:
+        actions: '0'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: travel
+      speed: EERCxIAKtsZ3AR8k
+      modifier: '* @origin.system.stacks'
+      name: Travel
+      id: xTexBwXVGcMoCSuH
+      costs:
+        actions: '1'
+        actionType: turn
+        stamina: 3 * @origin.system.stacks
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747405356418
+  modifiedTime: 1747410088215
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!wu51xMtYVnWAU76C'
+

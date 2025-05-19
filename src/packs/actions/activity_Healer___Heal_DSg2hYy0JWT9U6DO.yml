@@ -1,0 +1,147 @@
+folder: HcwJR0kwGrXh1Rky
+name: Healer - Heal
+type: activity
+_id: DSg2hYy0JWT9U6DO
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  replacesBaseAction: ''
+  operations:
+    - type: selectOperation
+      selectMultiple: false
+      selectedOperations:
+        - Bb6jlQx5TxVF5VSC
+        - tOqu2keAQlVnxvYv
+      name: Select Specific Operation
+      id: RaxTXyBi4EkHwkni
+      costs:
+        actions: '0'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: test
+      executorTest: app
+      targetTest: formula
+      targetTestFormula: '@stamina.max - @stamina.value'
+      overrideRoll:
+        enabled: false
+        ifLessThan: 10
+        setTo: 10
+        beforeModifiers: true
+      continueExecution: true
+      successfulTargets: []
+      name: Appeal vs Missing Stamina (Xd6 SHP)
+      id: Bb6jlQx5TxVF5VSC
+      costs:
+        actions: '6'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: false
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: heal
+      formula: (@app.total)d6
+      hitpoints: surface
+      name: Heal
+      id: 26OwWSDFfYMwKlBF
+      costs:
+        actions: '0'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: test
+      executorTest: app
+      targetTest: formula
+      targetTestFormula: '@hitpoints.surface.max - @hitpoints.surface.value'
+      overrideRoll:
+        enabled: false
+        ifLessThan: 10
+        setTo: 10
+        beforeModifiers: true
+      continueExecution: true
+      successfulTargets: []
+      name: Appeal vs Missing SHP (Xd4 SHP)
+      id: tOqu2keAQlVnxvYv
+      costs:
+        actions: '6'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: false
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: heal
+      formula: (@app.total)d4
+      hitpoints: surface
+      name: Heal
+      id: 8QBo8wzyDTnPjItZ
+      costs:
+        actions: '0'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+  operationData: {}
+effects: []
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747633437330
+  modifiedTime: 1747633999748
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!DSg2hYy0JWT9U6DO'
+

@@ -1,0 +1,123 @@
+name: Rugged (Activity)
+type: activity
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  operations:
+    - type: createResource
+      resourceName: Protection Charges
+      description: ''
+      source: Rugged
+      maximumFormula: '@for.total'
+      value: 0
+      startFull: true
+      negative: false
+      resetOnRest:
+        enabled: true
+      name: Create Protection Charges
+      id: 0OiOsGwKoxsUejWS
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: variable
+      variableName: Multiplier
+      key: mult
+      value: 0
+      name: Variable
+      id: lOM1LITXnNrtLoLS
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: consumeResource
+      resource: 0OiOsGwKoxsUejWS
+      amount: '1 * #mult'
+      name: Consume Charge
+      id: Lkr7VtngRxk1IxON
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: setFlag
+      flag: protections
+      value: '#mult'
+      name: Set Flag
+      id: TrLYyZjb7v39M3H1
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+folder: kNOvDxYueuZmgGTh
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747009913416
+  modifiedTime: 1747009913428
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_id: HOJB30FNx8Ls0ldI
+sort: 200000
+_key: '!items!HOJB30FNx8Ls0ldI'
+

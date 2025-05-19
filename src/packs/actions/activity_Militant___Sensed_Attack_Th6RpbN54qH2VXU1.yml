@@ -1,0 +1,57 @@
+folder: v1gc1lNnkWqNXlBS
+name: Militant - Sensed Attack
+type: activity
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  replacesBaseAction: ''
+  operations:
+    - type: attack
+      damages:
+        - formula: 1d4
+          damageType: physical
+          penetrate: false
+          nonLethal: false
+          randomTarget: false
+          useWeapon: true
+          modifier: ''
+          range: 0/0
+          exhausting: false
+          ignoreSHP: false
+      name: Attack
+      id: Z0G4BaCCtQipiE6A
+      costs:
+        actions: '@inherit'
+        actionType: turn
+        stamina: '8'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747536211780
+  modifiedTime: 1747538045419
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_id: Th6RpbN54qH2VXU1
+sort: 900000
+_key: '!items!Th6RpbN54qH2VXU1'
+

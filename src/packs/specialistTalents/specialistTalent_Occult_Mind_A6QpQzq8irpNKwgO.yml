@@ -1,0 +1,52 @@
+folder: 4sk8vxzYn6wlYXxc
+name: Occult Mind
+type: specialistTalent
+_id: A6QpQzq8irpNKwgO
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>You gain 2 points of favor on test made to resist losing Focus or
+    breaking Concentration.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: M2Pk8OU8NLkytH4k
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: ''
+  talentTreeRequirements: ''
+  singleTalentTreeRequirements: magecraft
+  artistryRequirements: ''
+  grants:
+    - Compendium.utopia.favors.Item.BtOpb3mQt3Ljqaiu
+effects: []
+sort: 400000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747062966076
+  modifiedTime: 1747063446739
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!A6QpQzq8irpNKwgO'
+

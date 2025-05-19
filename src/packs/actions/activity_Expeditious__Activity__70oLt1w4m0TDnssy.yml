@@ -1,0 +1,77 @@
+name: Expeditious (Activity)
+type: activity
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  operations:
+    - type: selectOption
+      options:
+        - key: land
+          name: Land
+        - key: air
+          name: Air
+        - key: water
+          name: Water
+      value: '[object Object]'
+      name: Select Travel Type
+      id: 41pOlT5XgylfDLbB
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: travel
+      speed: 41pOlT5XgylfDLbB
+      modifier: ''
+      name: Travel
+      id: 0d13s2QYsW9FpiDx
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 3
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+folder: null
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747014351270
+  modifiedTime: 1747014383741
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_id: 70oLt1w4m0TDnssy
+sort: 0
+_key: '!items!70oLt1w4m0TDnssy'
+

@@ -1,0 +1,20 @@
+name: Support
+sorting: a
+folder: null
+type: Item
+_id: N9RTuEGNGbELMjeY
+description: ''
+sort: 175000
+color: '#0300c7'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747553510081
+  modifiedTime: 1747637595899
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!N9RTuEGNGbELMjeY'
+

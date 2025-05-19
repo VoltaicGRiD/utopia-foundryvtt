@@ -1,0 +1,194 @@
+name: Natural Healer (Activity)
+type: activity
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  operations:
+    - type: createResource
+      resourceName: Restoration Charges
+      description: ''
+      source: Natural Healer
+      maximumFormula: '@res.total'
+      value: -25
+      startFull: true
+      negative: false
+      resetOnRest:
+        enabled: true
+      name: Create Restoration Charges
+      id: 0OiOsGwKoxsUejWS
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: variable
+      variableName: Multiplier
+      key: mult
+      value: 2
+      name: Variable
+      id: plS9w4mXO6YSLuk9
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: selectOperation
+      selectMultiple: false
+      selectedOperations:
+        - Lkr7VtngRxk1IxON
+        - hqUb2C2ZqXuhV4EM
+      name: Select Specific Operation
+      id: GblY9NXKKU2ZByWU
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: consumeResource
+      resource: 0OiOsGwKoxsUejWS
+      amount: '1 * #mult'
+      name: Consume (1 * mult) Charge(s)
+      id: Lkr7VtngRxk1IxON
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: false
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: heal
+      formula: (#mult)d4
+      hitpoints: surface
+      name: Heal SHP
+      id: OB3gFFx02pVf53fs
+      costs:
+        actions: 3
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: consumeResource
+      resource: 0OiOsGwKoxsUejWS
+      amount: '2 * #mult'
+      name: Consume (2 * mult) Charges
+      id: hqUb2C2ZqXuhV4EM
+      costs:
+        actions: 0
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: false
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: heal
+      formula: (#mult)d4
+      hitpoints: deep
+      name: Heal DHP
+      id: I0g9Ium7Tarqn9kN
+      costs:
+        actions: 3
+        actionType: turn
+        stamina: 0
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+folder: kNOvDxYueuZmgGTh
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags:
+  utopia:
+    createdResources:
+      - id: 0OiOsGwKoxsUejWS
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747009462267
+  modifiedTime: 1747009929772
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_id: fkVAbVEuF6EtpBtk
+sort: 100000
+_key: '!items!fkVAbVEuF6EtpBtk'
+

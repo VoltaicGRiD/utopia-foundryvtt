@@ -1,0 +1,20 @@
+name: Arcane Specialist Talents
+sorting: m
+folder: null
+type: Item
+_id: 4sk8vxzYn6wlYXxc
+description: ''
+sort: 0
+color: '#00b3ff'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747060008680
+  modifiedTime: 1747060008680
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!4sk8vxzYn6wlYXxc'
+

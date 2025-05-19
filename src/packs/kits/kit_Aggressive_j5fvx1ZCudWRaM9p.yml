@@ -1,0 +1,73 @@
+name: Aggressive
+type: kit
+_id: j5fvx1ZCudWRaM9p
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 4
+  attributes:
+    - key: system.hitpoints.deep.max
+      value: '5'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.stamina.max
+      value: '15'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.dex.value
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.pow.value
+      value: '3'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.travel.land.speed
+      value: '2'
+      name: Land Speed
+      hasChoices: true
+      choiceSet: Speed
+    - key: system.travel.water.speed
+      value: '2'
+      name: Water Travel
+      hasChoices: true
+      choiceSet: Speed
+    - key: system.travel.air.speed
+      value: '2'
+      name: Air Speed
+      hasChoices: true
+      choiceSet: Speed
+  selectedChoices: {}
+  grants:
+    - Compendium.utopia.actions.Item.wu51xMtYVnWAU76C
+    - Compendium.utopia.actions.Item.mjGtDzP7GiIciubH
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747405061297
+  modifiedTime: 1747501625744
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!j5fvx1ZCudWRaM9p'
+

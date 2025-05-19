@@ -1,0 +1,49 @@
+folder: CEKRi35IQ2mOJwHJ
+name: Seaborn
+type: class
+_id: PBA9XhfdIu9okuBf
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 3
+  type: innate
+  grants: []
+  specialtyPassives: []
+  grantedEquipment: []
+  attributes:
+    - key: hitpoints.surface.max
+      value: '5'
+    - key: hitpoints.deep.max
+      value: '5'
+    - key: subtraits.spd.value
+      value: '1'
+    - key: subtraits.for.value
+      value: '1'
+    - key: travel.water.speed
+      value: '@spd.total'
+  selectedChoices: {}
+effects: []
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747638306888
+  modifiedTime: 1747638480130
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!PBA9XhfdIu9okuBf'
+

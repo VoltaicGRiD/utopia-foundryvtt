@@ -1,0 +1,20 @@
+name: Martial
+sorting: a
+folder: UAGBgFkP95hbyEss
+type: Item
+_id: v1gc1lNnkWqNXlBS
+description: ''
+sort: 0
+color: '#004116'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: null
+  modifiedTime: 1747538039189
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!v1gc1lNnkWqNXlBS'
+

@@ -1,0 +1,110 @@
+folder: v1gc1lNnkWqNXlBS
+name: Martialist - Attack
+type: activity
+_id: HryY2EA48dISS95I
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  replacesBaseAction: ''
+  operations:
+    - type: selectOperation
+      selectMultiple: false
+      selectedOperations:
+        - 7jnwsbBucvafl2FV
+        - 1BAYrQh3CR1o4Q3u
+      name: Select Specific Operation
+      id: dyS0e2sbYUOUDDXf
+      costs:
+        actions: '0'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: attack
+      damages:
+        - formula: 8d8
+          damageType: physical
+          useWeapon: false
+          modifier: ''
+      modifier: ''
+      range: 2/2
+      randomTarget: false
+      penetrate: false
+      nonLethal: false
+      exhausting: false
+      ignoreSHP: false
+      name: Melee Attack
+      id: 7jnwsbBucvafl2FV
+      costs:
+        actions: '3'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: false
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+    - type: attack
+      damages:
+        - formula: 4d10
+          damageType: physical
+          modifier: ''
+          useWeapon: false
+      modifier: '@dex.mod'
+      range: 20/40
+      randomTarget: false
+      penetrate: false
+      nonLethal: false
+      exhausting: false
+      ignoreSHP: false
+      name: Ranged Attack
+      id: 1BAYrQh3CR1o4Q3u
+      costs:
+        actions: '3'
+        actionType: turn
+        stamina: '0'
+      performance:
+        combatOnly: false
+        isMyTurn: true
+        isNotMyTurn: true
+      executeImmediately: false
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+sort: 200000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747532554854
+  modifiedTime: 1747538041153
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!HryY2EA48dISS95I'
+

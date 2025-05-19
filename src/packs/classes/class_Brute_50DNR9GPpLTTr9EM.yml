@@ -1,0 +1,99 @@
+name: Brute
+type: class
+_id: 50DNR9GPpLTTr9EM
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  points: 8
+  type: martial
+  grants:
+    - Compendium.utopia.actions.Item.WmVPVRFKT0chhzWX
+    - Compendium.utopia.favors.Item.whxVb4LdMXGnafMI
+  specialtyPassives: []
+  grantedEquipment: []
+  attributes:
+    - key: system.hitpoints.surface.max
+      value: '25'
+    - key: system.hitpoints.deep.max
+      value: '15'
+    - key: system.innateDefenses.physical
+      value: '4'
+    - key: system.innateDefenses.energy
+      value: '1'
+    - key: system.innateDefenses.heat
+      value: '1'
+    - key: system.innateDefenses.chill
+      value: '1'
+    - key: system.subtraits.pow.value
+      value: '4'
+    - key: system.subtraits.spd.value
+      value: '2'
+    - key: system.subtraits.for.value
+      value: '2'
+    - key: system.block.quantity
+      value: '1'
+  selectedChoices: {}
+effects:
+  - name: Overkill Target
+    origin: Compendium.utopia.classes.Item.50DNR9GPpLTTr9EM
+    img: icons/svg/aura.svg
+    type: passive
+    _id: aFTeI53kBaITjLOR
+    system: {}
+    changes:
+      - key: flags.utopia.overkillTarget
+        mode: 4
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: >-
+      <p>When a melee attack this creature makes deals enough damage to reduce
+      its target's DHP to 0, it may retarget the remaining damage to another
+      creature within range.</p>
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.04'
+      createdTime: 1747113874786
+      modifiedTime: 1747114060906
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!50DNR9GPpLTTr9EM.aFTeI53kBaITjLOR'
+folder: Dv2EoB9WzuOs8x0O
+sort: 150000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747113634283
+  modifiedTime: 1747501770616
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!50DNR9GPpLTTr9EM'
+

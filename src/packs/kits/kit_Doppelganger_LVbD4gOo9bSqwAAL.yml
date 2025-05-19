@@ -1,0 +1,98 @@
+name: Doppelganger
+type: kit
+_id: LVbD4gOo9bSqwAAL
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 6
+  stacks: 1
+  attributes:
+    - key: system.hitpoints.surface.max
+      value: '20'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.hitpoints.deep.max
+      value: '20'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.stamina.max
+      value: '5'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.physical
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.energy
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.heat
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.chill
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.innateDefenses.psyche
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.stu.value
+      value: '1'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.por.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.app.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+    - key: system.subtraits.lan.value
+      value: '2'
+      name: ''
+      hasChoices: false
+      choiceSet: ''
+  selectedChoices: {}
+  grants:
+    - Compendium.utopia.favors.Item.RoYFJQ3WlNpK6cJK
+effects: []
+folder: null
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747501200157
+  modifiedTime: 1747501345895
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!LVbD4gOo9bSqwAAL'
+

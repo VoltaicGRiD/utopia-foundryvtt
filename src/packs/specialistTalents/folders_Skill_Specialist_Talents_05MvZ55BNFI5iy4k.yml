@@ -1,0 +1,20 @@
+name: Skill Specialist Talents
+sorting: m
+folder: null
+type: Item
+_id: 05MvZ55BNFI5iy4k
+description: ''
+sort: 0
+color: '#ff0000'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1746935563281
+  modifiedTime: 1747014881313
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!05MvZ55BNFI5iy4k'
+

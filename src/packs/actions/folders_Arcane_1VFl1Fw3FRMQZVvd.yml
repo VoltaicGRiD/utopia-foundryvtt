@@ -1,0 +1,20 @@
+name: Arcane
+sorting: a
+folder: UAGBgFkP95hbyEss
+type: Item
+_id: 1VFl1Fw3FRMQZVvd
+description: ''
+sort: 0
+color: '#004116'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: null
+  modifiedTime: null
+  lastModifiedBy: null
+_key: '!folders!1VFl1Fw3FRMQZVvd'
+

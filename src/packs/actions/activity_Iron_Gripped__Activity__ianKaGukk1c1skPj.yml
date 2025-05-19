@@ -1,0 +1,55 @@
+name: Iron Gripped (Activity)
+type: activity
+img: icons/svg/item-bag.svg
+system:
+  name: ''
+  description: ''
+  origin: null
+  operations:
+    - type: test
+      executorTest: str
+      targetTest: str
+      overrideRoll:
+        enabled: false
+        ifLessThan: 10
+        setTo: 10
+        beforeModifiers: true
+      successfulTargets: []
+      name: Test
+      id: ptloJrjMdGZl1507
+      costs:
+        actions: 2
+        actionType: interrupt
+        stamina: 6
+        shp: 0
+        dhp: 0
+      performance:
+        combatOnly: false
+        isMyTurn: false
+        isNotMyTurn: true
+      executeImmediately: true
+      toggleActiveEffects:
+        selectedEffects: []
+        notificationMessage: UTOPIA.Items.Activity.NotificationMessage
+        displayNotification: true
+        displayInChat: false
+      priority: 0
+effects: []
+folder: kNOvDxYueuZmgGTh
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747010367467
+  modifiedTime: 1747010367467
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_id: ianKaGukk1c1skPj
+sort: 0
+_key: '!items!ianKaGukk1c1skPj'
+

@@ -1,0 +1,79 @@
+folder: CEKRi35IQ2mOJwHJ
+name: Untouchable
+type: class
+_id: vMbQWlzVIcoIBPr8
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  origin: null
+  points: 25
+  type: innate
+  grants: []
+  specialtyPassives: []
+  grantedEquipment: []
+  attributes:
+    - key: hitpoints.surface.max
+      value: '50'
+    - key: hitpoints.deep.max
+      value: '50'
+    - key: stamina.max
+      value: '25'
+    - key: innateDefenses.energy
+      value: '5'
+    - key: innateDefenses.heat
+      value: '5'
+    - key: innateDefenses.chill
+      value: '5'
+    - key: innateDefenses.psyche
+      value: '5'
+    - key: subtraits.for.value
+      value: '6'
+    - key: subtraits.app.value
+      value: '3'
+    - key: subtraits.awa.value
+      value: '3'
+    - key: subtraits.dex.value
+      value: '3'
+    - key: subtraits.eng.value
+      value: '3'
+    - key: subtraits.lan.value
+      value: '3'
+    - key: subtraits.mem.value
+      value: '3'
+    - key: subtraits.por.value
+      value: '3'
+    - key: subtraits.pow.value
+      value: '3'
+    - key: subtraits.res.value
+      value: '3'
+    - key: subtraits.spd.value
+      value: '3'
+    - key: subtraits.stu.value
+      value: '3'
+    - key: immunities.physical
+      value: 'true'
+  selectedChoices: {}
+effects: []
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.07'
+  createdTime: 1747638352851
+  modifiedTime: 1747638687484
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!vMbQWlzVIcoIBPr8'
+

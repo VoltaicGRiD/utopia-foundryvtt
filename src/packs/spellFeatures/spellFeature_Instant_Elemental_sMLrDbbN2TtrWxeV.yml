@@ -4,7 +4,7 @@ type: spellFeature
 _id: sMLrDbbN2TtrWxeV
 img: systems/utopia/assets/icons/artistries/evocation.svg
 system:
-  formula: 1d4[@Type]
+  formula: (@X)d4
   description: >-
     <p style="text-align: left;">Upon casting, affected creatures and objects
     are dealt an additional ld4 damage. The type may be chosen between Energy,
@@ -25,10 +25,17 @@ system:
       kind: options
       description: ''
       dice: ''
-      options: Energy,Heat,Chill
+      options:
+        - Heat
+        - Energy
+        - Chill
       minimum: 0
       maximum: 0
       name: Type
+    stacks:
+      name: stacks
+      kind: number
+      description: ''
   modifies: none
   modifiedAoE:
     value: 0
@@ -70,9 +77,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.05'
   createdTime: 1734769606898
-  modifiedTime: 1734769606898
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747318495062
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!sMLrDbbN2TtrWxeV'
 

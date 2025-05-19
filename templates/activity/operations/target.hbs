@@ -1,0 +1,29 @@
+<div>
+  <hr/>
+  <span class="operation-category">Gather target(s) data:</span>
+  
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="appliesTo">Applies to:</label>
+      <select name="appliesTo" required>
+        {{#each choices.appliesTo as |name id|}}
+          <option value="{{id}}" {{#if (eq operation.appliesTo id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+      <span class="hint">"Each" applies the operation to each target individually. "Random" selects a random target to apply the operation to.</span>
+      <span class="hint">Access the target's roll data with `@target`.</span>
+    </div>
+  </div>
+    
+  {{!-- <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="operation">Operation:</label>
+      <select name="operation" required>
+        {{#each choices.operations as |name id|}}
+          <option value="{{id}}" {{#if (eq operation.operation id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+      <span class="hint">The operation to run on the target. Operations must <b>not</b> be set to "Execute Immediately" for them to appear as an option here. To access the target's roll-data, use `@target`. If the operation runs successfully, it will continue to run all consecutive operations that are set to "Execute Immediately" following the chosen operation.</span>
+    </div>
+  </div> --}}
+</div>

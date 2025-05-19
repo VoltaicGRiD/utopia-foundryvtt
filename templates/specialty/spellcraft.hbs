@@ -43,7 +43,9 @@
                   </div>
                 {{else if (eq variable.kind "options")}}
                   <div class="feature-variable">
-                    <button type="button" class="feature-variable-options feature-variable-character" style="background-color: #ed3f41; color: white;"
+                    <button type="button" 
+                            class="feature-variable-options feature-variable-character" 
+                            style="background-color: #ed3f41; color: white;"
                             data-variable="{{varKey}}"
                             data-feature="{{key}}">
                       {{#if (or (eq variable.value "") (not variable.value))}}
@@ -106,7 +108,7 @@
             
             <li class="feature" 
               style="{{#if (eq feature.locked false)}}background: {{feature.background}}; color: {{feature.color}}{{else}}background: #302831; color: white;{{/if}}" 
-              data-id="{{feature._id}}">
+              data-id="{{key}}">
               <img src="{{feature.img}}" class="feature-icon" />
               <button type="button" class="remove-feature hidden">
                 <i class="fa-fw fa-solid fa-times"></i>
@@ -145,7 +147,9 @@
                     </div>
                   {{else if (eq variable.kind "options")}}
                     <div class="feature-variable">
-                      <button type="button" class="feature-variable-options feature-variable-character" style="background-color: #ed3f41; color: white;"
+                      <button type="button" 
+                              class="feature-variable-options feature-variable-character" 
+                              style="background-color: #ed3f41; color: white;"
                               data-variable="{{varKey}}"
                               data-feature="{{key}}">
                         {{#if (or (eq variable.value "") (not variable.value))}}
@@ -173,7 +177,7 @@
         </ol>
       </div>
       <div class="spell-flavor">
-        <textarea name="flavor" placeholder="{{localize 'UTOPIA.Spellcraft.Flavor'}}"></textarea>
+        <textarea name="flavor" placeholder="{{localize 'UTOPIA.Spellcraft.Flavor'}}">{{flavor}}</textarea>
       </div>
       <div class="spell-controls">
         <button type="button" data-action="cast">{{localize 'UTOPIA.Spellcraft.Cast'}}</button>

@@ -3,7 +3,7 @@
     <h3>{{localize "UTOPIA.Items.Activity.AddOperation"}}</h3>
     <div class="operations-grid">
       {{#each operations}}
-        {{log this}}
+        
         <button type="button" class="operation-item" data-action="selectOperation" data-operation="{{this.type}}">
           <span>{{this.name}}</span>
         </button>

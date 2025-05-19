@@ -9,12 +9,11 @@
     <p>{{localize "UTOPIA.CHAT.ExactDamage" damage=exact}}</p>
   </div>
 
-  <hr/>
-
   <footer data-visibility="gm">
+    <p>&lt;GM&gt; Targets (click to remove target from this damage):</p>
     <div class="targets">
       {{#each damages as |damage|}}
-        <img src="{{damage.target.img}}" alt="{{damage.target.name}}" width="40" height="40" data-tooltip="{{damage.target.name}}" />
+        <img src="{{damage.target.img}}" alt="{{damage.target.name}}" width="40" height="40" data-tooltip="{{damage.target.name}}" data-target="{{damage.target.id}}" data-action="removeTarget"/>
       {{/each}}
     </div>
     <div class="card-actions">

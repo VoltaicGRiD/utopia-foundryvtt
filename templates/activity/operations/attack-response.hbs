@@ -1,0 +1,36 @@
+<div>
+  <hr/>
+  <span class="operation-category">Attack Response:</span>
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="countsAs">Counts as:</label>
+      <select name="countsAs" required>
+        {{#each choices as |name id|}}
+          <option value="{{id}}" {{#if (eq operation.countsAs id)}}selected{{/if}}>{{name}}</option>
+        {{/each}}
+      </select>
+      <span class="hint">The response type is used to determine the type of response to be made. If "Use equipped weapon" is checked, this value is ignored.</span>
+    </div>
+
+    <div class="operation-content">
+      <label for="useWeapon">Use equipped weapon:</label>  
+      <input type="checkbox" name="useWeapon" {{#if operation.useWeapon}}checked{{/if}}>
+      <span class="hint">If checked, the formula and modifier will be ignored and the equipped weapon's formula and modifier will be used instead.</span>
+    </div>
+  </div>  
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="formula">Formula:</label>
+      <input type="text" name="damages.{{@index}}.formula" value="{{operation.formula}}" placeholder="" required>
+      <span class="hint">Do not include modifiers in the formula, use the 'Modifier' input. If "Use equipped weapon" is checked, this formula will be ignored.</span>
+    </div>
+
+    <div class="operation-content">
+      <label for="modifier">Modifier:</label>
+      <input type="text" name="damages.{{@index}}.modifier" value="{{operation.modifier}}" placeholder="" />
+      <span class="hint">The modifier to be used alongside the formula. If "Use equipped weapon" is check, this modifier is ignored.</span>
+    </div>
+  </div>  
+</div>

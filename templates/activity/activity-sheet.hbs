@@ -10,6 +10,16 @@
         {{/if}}
       {{/each}}
     </span> 
+
+    <div class="flexcol">
+      <span class="activity-category">{{localize "UTOPIA.Items.Activity.BaseAction"}}</span>
+      <select name="system.replacesBaseAction">
+        <option value="" {{#if (eq item.system.replacesBaseAction "")}}selected{{/if}}>{{localize "UTOPIA.Items.Activity.DoesNotReplaceBaseAction"}}</option>
+        {{#each baseActions}}
+          <option value="{{this}}" {{#if (eq this ../item.system.replacesBaseAction)}}selected{{/if}}>{{localize (concat "UTOPIA.Actors.Actions." (capitalize this))}}</option>
+        {{/each}}
+      </select> 
+    </div>
   </div>
   
   <div class="operations-list">
@@ -22,7 +32,9 @@
       </div>
     {{/each}}
     <button type="button" data-action="addOperation"><i class="fas fa-plus-circle"></i> New Operation</button>
-    <button type="button" data-action="execute"><i class="fas fa-bolt"></i> Test Execution</button>
+    {{#if isGM}}
+      <button type="button" data-action="execute"><i class="fas fa-bolt"></i> Test Execution</button>
+    {{/if}}
   </div>
 
   {{! Effects Tab }}

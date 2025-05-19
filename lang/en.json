@@ -117,6 +117,12 @@
         "verb": "to Use or Alter Devices",
         "label": "Devices",
         "description": "Devices is the ability to use and alter devices, such as computers or machinery."
+      },
+      "ResistSpellEffects": {
+        "noun": "Resist Spell Effects",
+        "verb": "to Resist Spell Effects",
+        "label": "Resist Spell Effects",
+        "description": "Resist Spell Effects is the ability to resist the effects of spells."
       }
     },
     "COMMON": {
@@ -129,7 +135,8 @@
       "saveFinal": "Save (You cannot undo this action)",
       "gmCraftItem": "No actor owns this item. As the GM you can craft it.<br/>This will not create a new item, but will mark this item as crafted.<br/>Craft anyways?",
       "success": "Success",
-      "failure": "Failure"
+      "failure": "Failure",
+      "Source": "Source"
     },
     "RARITIES": {
       "Crude": "Crude",
@@ -153,8 +160,10 @@
       "Psyche": "Psyche",
       "Kinetic": "Kinetic",
       "Necrotic": "Necrotic",
-      "Healing": "Healing",
-      "Stamina": "Stamina"
+      "Stamina": "Stamina (Damage)",
+      "Healing": "Healing (SHP)",
+      "Medical": "Medical (DHP)",
+      "Restore": "Restoration (STA)"
     },  
     "ARTISTRIES": {
       "Alteration": "Alteration",
@@ -222,9 +231,13 @@
       "Dodge": "Dodge",
       "TakeCover": "Take Cover",
       "DamageAppliedFlavor": "Damage Applied",
+      "HealingAppliedFlavor": "Healing Applied",
       "SHPTaken": "SHP damage taken",
       "DHPTaken": "DHP damage taken",
       "STATaken": "STA removed",
+      "SHPHealed": "SHP healed",
+      "DHPHealed": "DHP healed",
+      "STAHealed": "STA restored",
       "DamageAbsorbed": "Damage absorbed by defenses",
       "Absorbed": "Damage <b>absorbed entirely</b> by defenses!",
       "NotAbsorbed": "Damage <b>not</b> entirely absorbed by defenses!",
@@ -234,7 +247,22 @@
       "DamagePreDefenses": "Rolls below indicate damage before defenses are applied.",
       "EstimatedDamage": "Estimated Damage: {damage}",
       "DamageResponse": "You're being targeted to recieve the above damage, how will you respond. If you don't wish to respond, you can ignore this message.",
-      "Harvestables": "Harvestables"
+      "Harvestables": "Harvestables",
+      "FinishUsing": "Finish Using Consumable"
+    },
+    "DIALOGS": {
+      "AttackQuery": {
+        "Title": "Incoming Damage",
+        "Header": "Respond to incoming damage",
+        "Description": "You are being attacked{damageString}. How will you respond?",
+        "Block": "Block {rating}",
+        "Dodge": "Dodge {rating}",
+        "TakeCover": "Take Cover",
+        "None": "No Response",
+        "Redacted": " {REDACTED damage}",
+        "Estimated": " for approximately {damage} damage",
+        "Exact": " for {damage} damage"
+      }
     },
     "Features": {
       "Slam": "Slam",
@@ -818,7 +846,10 @@
         }
       },
       "Activity": {
+        "BaseAction": "Activity replaces base action",
+        "DoesNotReplaceBaseAction": "Activity does not replace base action",
         "AddOperation": "Select an Operation",
+        "Formula": "Formula",
         "Operation": {
           "selectOperation": "Select Specific Operation",
           "selectOption": "Select Option",
@@ -836,7 +867,11 @@
           "consumeResource": "Consume Resource",
           "consumption": "Consume Component",
           "augment": "Augment / De-augment Creature",
-          "generic": "Generic / Chat Message"
+          "generic": "Generic / Chat Message",
+          "attackResponse": "Attack Response",
+          "counterAttack": "Counter Attack",
+          "counterDamage": "Counter Damage",
+          "target": "Run Operation on Target(s)"
         },
         "Messages": {
           "ErrorNoComponent": "No such component or rarity found.",
@@ -855,6 +890,16 @@
           "stamina": "Stamina",
           "shp": "Surface HP",
           "dhp": "Deep HP"
+        },
+        "AttackResponse": {
+          "Block": "Block",
+          "Dodge": "Dodge"
+        },
+        "Target": {
+          "Each": "Each Target",
+          "All": "All Targets",
+          "Random": "Random Target",
+          "NoTargets": "You have no targets selected. Please select at least one target."
         },
         "TotalCosts": "Total Costs",
         "OperationHeader": "Base Operation Details"
@@ -1618,6 +1663,14 @@
       },
       "SpellFeature": {
         "FIELDS": {
+          "formulaType": {
+            "label": "Formula Type",
+            "hint": "The type of formula this feature uses."
+          },
+          "damageType": {
+            "label": "Damage Type",
+            "hint": "The type of damage (or healing) this feature does."
+          },
           "art": {
             "label": "Artistry",
             "hint": "The artistry the feature belongs to."
@@ -1712,7 +1765,17 @@
             "dispelActionCost": {
               "label": "Dispel TA Cost"
             }
+          },
+          "grantEffect": {
+            "label": "Grant Effect(s)",
+            "hint": "Any effects added here will apply their changes to the target of the spell for one turn, and will re-apply each turn the spell is active."
           }
+        },
+        "FormulaType": {
+          "Damage": "Damage",
+          "Heal": "Heal",
+          "Test": "Test",
+          "Imbue": "Imbue"
         },
         "Variables": {
           "New": "New Variable",

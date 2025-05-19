@@ -10,6 +10,10 @@ export class SpellFeatureSheet extends DragDropItemV2 {
     actions: {
       newVariable: this._newVariable,
       removeVariable: this._removeVariable,
+      viewEffect: this._viewEffect,
+      createEffect: this._createEffect,
+      deleteEffect: this._deleteEffect,
+      toggleEffect: this._toggleEffect,      
     },
   });
 
@@ -42,7 +46,8 @@ export class SpellFeatureSheet extends DragDropItemV2 {
 
     context.tabs = this._getTabs(options.parts);
     context.position = options.position;
-      
+    context.effects = this.item.effectCategories;
+
     console.log(context);
 
     return context;
@@ -144,7 +149,6 @@ export class SpellFeatureSheet extends DragDropItemV2 {
     console.log(this.document.system.variables[variableKey].options);
     const options = this.document.system.variables[variableKey].options;
     option.value = options;
-
   }
 
   static async _newVariable(event) {
@@ -179,5 +183,99 @@ export class SpellFeatureSheet extends DragDropItemV2 {
       [`system.variables.-=${id}`]: null,
     });
     this.render();
+  }
+
+  /**
+   * Renders an embedded document's sheet
+   *
+   * @this BoilerplateItemSheet
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @protected
+   */
+  static async _viewEffect(event, target) {
+    const effect = this._getEffect(target);
+    effect.sheet.render(true, {typeLocked: true});
+  }
+
+  /**
+   * Handles item deletion
+   *
+   * @this BoilerplateItemSheet
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @protected
+   */
+  static async _deleteEffect(event, target) {
+    const effect = this._getEffect(target);
+    await effect.delete();
+  }
+
+  /**
+   * Handle creating a new Owned Item or ActiveEffect for the actor using initial data defined in the HTML dataset
+   *
+   * @this BoilerplateItemSheet
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @private
+   */
+  static async _createEffect(event, target) {
+    // Retrieve the configured document class for ActiveEffect
+    const aeCls = getDocumentClass("ActiveEffect");
+    // Prepare the document creation data by initializing it a default name.
+    // As of v12, you can define custom Active Effect subtypes just like Item subtypes if you want
+    const effectData = {
+      name: aeCls.defaultName({
+        // defaultName handles an undefined type gracefully
+        type: "base",
+        parent: this.item,
+      }),
+    };
+    // Loop through the dataset and add it to our effectData
+    for (const [dataKey, value] of Object.entries(target.dataset)) {
+      // These data attributes are reserved for the action handling
+      if (["action", "documentClass"].includes(dataKey)) continue;
+      // Nested properties require dot notation in the HTML, e.g. anything with `system`
+      // An example exists in spells.hbs, with `data-system.spell-level`
+      // which turns into the dataKey 'system.spellLevel'
+      foundry.utils.setProperty(effectData, dataKey, value);
+    }
+
+    // Get the type from the nearest li dataset 'effectType'
+    effectData.type = target.closest("li").dataset.effectType;
+
+    effectData.name = this.item.name;
+    effectData.origin = this.item.uuid;
+
+    console.log(effectData);
+
+    // Finally, create the embedded document!
+    await aeCls.create(effectData, { parent: this.item });
+  }
+
+  /**
+   * Determines effect parent to pass to helper
+   *
+   * @this BoilerplateItemSheet
+   * @param {PointerEvent} event   The originating click event
+   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
+   * @private
+   */
+  static async _toggleEffect(event, target) {
+    const effect = this._getEffect(target);
+    await effect.update({ disabled: !effect.disabled });
+  }
+
+  /** Helper Functions */
+
+  /**
+   * Fetches the row with the data for the rendered embedded document
+   *
+   * @param {HTMLElement} target  The element with the action
+   * @returns {HTMLLIElement} The document's row
+   */
+  _getEffect(target) {
+    const li = target.closest(".effect");
+    return this.item.effects.get(li?.dataset?.effectId);
   }
 }

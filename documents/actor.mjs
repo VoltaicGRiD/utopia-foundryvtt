@@ -254,8 +254,6 @@ export class UtopiaActor extends Actor {
    * @returns {Promise<*>} Notification message.
    */
   async addItem(item, showNotification = false, trackDecendant = false, parent = undefined) {
-    if (parent) 
-      item.system.origin = parent.uuid;
     const newItems = await this.createEmbeddedDocuments("Item", [item]);
 
     if (showNotification)
@@ -284,12 +282,16 @@ export class UtopiaActor extends Actor {
     if (item.system.grants) {
       for (const grantedUuid of Array.from(item.system.grants)) {
         const grantedItem = await fromUuid(grantedUuid);
-        this.addItem(grantedItem, showNotification, true, newItems[0]);
+        const itemData = grantedItem.toObject();
+        itemData.system.origin = newItems[0].uuid;
+        this.addItem(itemData, showNotification, true, newItems[0]);
       }
     }
     else if (item.type === "class" && item.system.grantedEquipment) {
-      for (const grantedItem of item.system.grantedEquipment) {
-        const itemData = await fromUuid(grantedItem.itemUuid);
+      for (const grantedItemData of item.system.grantedEquipment) {
+        const grantedItem = await fromUuid(grantedItemData.itemUuid);
+        const itemData = grantedItem.toObject();
+        itemData.system.origin = newItems[0].uuid;
         this.addItem(itemData, showNotification, true, newItems[0]);
       }
     }
@@ -1644,17 +1646,62 @@ export class UtopiaActor extends Actor {
     await this._applySiphons(damage);
   }
 
-  async applyNewDamage({ result, damages, blockRoll = undefined, dodgeRoll = undefined}) {
-    const updateData = {
-      "system.hitpoints.surface.value": result > 0 ? Math.max(this.system.hitpoints.surface.value - result, 0) : this.system.hitpoints.surface.value,
-    }
-
-    const overflow = this.system.hitpoints.surface.value - result < 0 ? Math.abs(this.system.hitpoints.surface.value - result) : 0;
-    if (overflow > 0) {
-      updateData["system.hitpoints.deep.value"] = this.system.hitpoints.deep.value - overflow;
-    }
-
+  async applyNewHealing({ healings }) {
     const rolls = [];
+
+    let surface = this.system.hitpoints.surface.value;
+    let deep = this.system.hitpoints.deep.value;
+    let stamina = this.system.stamina.value;
+
+    for (const healing of healings) {
+      const roll = healing.roll;
+      const tooltip = await roll.getTooltip();
+      const newRoll = foundry.utils.deepClone(roll);
+      newRoll.tooltip = tooltip;
+      newRoll.flavor = healing.type.capitalize() + " Healing";
+      newRoll._total = healing.targetHealing; // Override the total to show the damage dealt, including defenses
+
+      if (healing.type === "heal") 
+        surface += healing.targetHealing;
+      else if (healing.type === "medical")
+        deep += healing.targetHealing;
+      else if (healing.type === "recover")
+        stamina += healing.targetHealing;
+      
+      rolls.push(newRoll);
+    }
+
+    const handledHealing = {
+      shpHealing: surface > this.system.hitpoints.surface.max ? this.system.hitpoints.surface.max - this.system.hitpoints.surface.value : 0,
+      dhpHealing: deep > this.system.hitpoints.deep.max ? this.system.hitpoints.deep.max - this.system.hitpoints.deep.value : 0,
+      staminaHealing: stamina > this.system.stamina.max ? this.system.stamina.max - this.system.stamina.value : 0,
+    }
+
+    const template = await renderTemplate("systems/utopia/templates/chat/new-healing-final.hbs", {
+      actor: this,
+      rolls: rolls,
+      handledHealing: handledHealing
+    });
+
+    await UtopiaChatMessage.create({
+      content: template,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: game.i18n.localize("UTOPIA.CHAT.HealingAppliedFlavor"),
+    });
+
+    await this.update({
+      "system.hitpoints.surface.value": Math.min(this.system.hitpoints.surface.max, surface),
+      "system.hitpoints.deep.value": Math.min(this.system.hitpoints.deep.max, deep),
+      "system.stamina.value": Math.min(this.system.stamina.max, stamina),
+    });
+  }
+
+  async applyNewDamage({ result, damages, blockRoll = undefined, dodgeRoll = undefined}) {
+    const rolls = [];
+
+    let surface = 0;
+    let deep = 0;
+    let stamina = 0;
 
     for (const damage of damages) {
       const roll = damage.roll;
@@ -1662,8 +1709,42 @@ export class UtopiaActor extends Actor {
       const newRoll = foundry.utils.deepClone(roll);
       newRoll.tooltip = tooltip;
       newRoll.flavor = damage.type.capitalize() + " Damage";
-      newRoll._formula += ` - ${damage.targetDefenses[damage.type]}`
+      if (damage.targetDefenses) 
+        newRoll._formula += ` - ${damage.targetDefenses[damage.type] }`
       newRoll._total = damage.targetDamage; // Override the total to show the damage dealt, including defenses
+
+      switch (damage.appliesTo) {
+        case "shp": 
+          if (damage.targetDamage + surface > this.system.hitpoints.surface.value) {
+            surface += this.system.hitpoints.surface.value;
+            deep += (damage.targetDamage - this.system.hitpoints.surface.value);
+          }
+          else {
+            surface += damage.targetDamage;
+          }
+          break;
+        case "dhp": 
+          deep += damage.targetDamage;
+          break;
+        case "stamina":
+          if (damage.targetDamage + stamina > this.system.stamina.value) {
+            stamina += this.system.stamina.value;
+            deep += (damage.targetDamage - this.system.stamina.value);
+          }
+          else {
+            stamina += damage.targetDamage;
+          }
+          break;
+        default:
+          if (damage.targetDamage + surface > this.system.hitpoints.surface.value) {
+            surface += this.system.hitpoints.surface.value;
+            deep += (damage.targetDamage - this.system.hitpoints.surface.value);
+          }
+          else {
+            surface += damage.targetDamage;
+          }
+          break;
+      }
 
       rolls.push(newRoll);
     }
@@ -1674,9 +1755,7 @@ export class UtopiaActor extends Actor {
       newRoll.tooltip = tooltip;
       newRoll.flavor = "Block";
 
-      rolls.push(newRoll);
-
-      
+      rolls.push(newRoll);      
     }
 
     if (dodgeRoll) {
@@ -1689,8 +1768,21 @@ export class UtopiaActor extends Actor {
     }
 
     const handledDamage = {
-      shpDamage: this.system.hitpoints.surface.value - result < 0 ? this.system.hitpoints.surface.value : result,
-      dhpDamage: overflow,
+      shpDamage: Math.abs(surface),
+      dhpDamage: Math.abs(deep),
+      staminaDamage: Math.abs(stamina),
+    }
+
+    if (handledDamage.shpDamage > this.system.hitpoints.surface.value) {
+      handledDamage.shpDamage = this.system.hitpoints.surface.value;
+      handledDamage.dhpDamage += Math.abs(surface) - this.system.hitpoints.surface.value;
+      surface = this.system.hitpoints.surface.value;
+    }
+
+    if (handledDamage.staminaDamage > this.system.stamina.value) {
+      handledDamage.staminaDamage = this.system.stamina.value;
+      handledDamage.dhpDamage += Math.abs(stamina) - this.system.stamina.value;
+      stamina = this.system.stamina.value;
     }
 
     const template = await renderTemplate("systems/utopia/templates/chat/new-damage-final.hbs", {
@@ -1705,7 +1797,11 @@ export class UtopiaActor extends Actor {
       flavor: game.i18n.localize("UTOPIA.CHAT.DamageAppliedFlavor"),
     });
 
-    await this.update(updateData);
+    await this.update({
+      "system.hitpoints.surface.value": this.system.hitpoints.surface.value - Math.abs(surface),
+      "system.hitpoints.deep.value": this.system.hitpoints.deep.value - Math.abs(deep),
+      "system.stamina.value": this.system.stamina.value - Math.abs(stamina),
+    });
   }
 
   /**
@@ -1967,6 +2063,7 @@ export class UtopiaActor extends Actor {
   _onCreate(data, options, userId) {
     super._onCreate(data, options, userId);
 
+    if (!game.user.isGM) return;
     this.createEmbeddedDocuments("Item", [{
       type: "action",
       name: game.i18n.localize("UTOPIA.Actors.Actions.WeaponlessAttack"),

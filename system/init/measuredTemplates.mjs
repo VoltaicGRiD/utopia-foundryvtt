@@ -92,7 +92,7 @@ export class UtopiaTemplates extends MeasuredTemplate {
       });
       this.document.updateSource(dest);
       const canvasTemplate = await canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [
-        this.document.toObject(),
+        { ...this.document.toObject(), [`flags.utopia.chatMessage`]: chatMessage?.uuid || null },
       ]);
 
       if (chatMessage) {
@@ -100,6 +100,7 @@ export class UtopiaTemplates extends MeasuredTemplate {
         placedTemplates.push(canvasTemplate[0].id);
         chatMessage.setFlag("utopia", "placedTemplates", placedTemplates);
       }
+      //canvasTemplate[0].setFlag("utopia", "chatMessage", chatMessage?.uuid || null);
 
       console.log(canvasTemplate);
       console.log(this);

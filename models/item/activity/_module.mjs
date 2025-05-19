@@ -14,3 +14,5 @@ export { consumeResource } from "./operations/consume-resource.mjs";
 export { travel } from "./operations/travel.mjs";
 export { consumption } from "./operations/consumption.mjs";
 export { generic } from "./operations/generic.mjs";
+export { attackResponse } from "./operations/attack-response.mjs";
+export { target } from "./operations/target.mjs";

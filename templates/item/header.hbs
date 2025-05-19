@@ -10,7 +10,7 @@
   <input class="item-name" name='name' type='text' class="item-name-input" value='{{item.name}}' placeholder='Name' />
   <img class='item-icon' src='{{item.img}}' data-edit='img' data-action="image" title='{{item.name}}'/>
   {{#each headerFields as |field|}}
-    {{log field}}
+    
     {{#if (eq field.field "hr")}}
       <hr/>
     {{else}}

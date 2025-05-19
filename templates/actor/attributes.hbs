@@ -12,16 +12,18 @@
         {{#each kits as |item|}} 
           {{#if ../isPlay}}
             <div class="item" data-drag draggable="true">
-              <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
+              <a class="item-link" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
             </div>
           {{else}}
             <div class="item-edit">
               <div class="item" data-drag draggable="true">
-                <a class="talent" data-action="viewDocument" data-document-id="{{item.id}}">
+                <a class="decrease-stack" data-action="decreaseStack" data-document-id="{{item.id}}"><i class="fa-fw fas fa-minus"></i></a>
+                <a class="item-link" data-action="viewDocument" data-document-id="{{item.id}}">
                   <span class="item-name">{{item.name}}</span>
                 </a>
+                <a class="increase-stack" data-action="increaseStack" data-document-id="{{item.id}}"><i class="fa-fw fas fa-plus"></i></a>
               </div>
               <div class="item-actions">
                 <a class="item-delete" data-action="deleteDocument" data-document-id="{{item.id}}"><i class="fa-fw fas fa-trash"></i></a>
@@ -217,7 +219,7 @@
         {{#if ../isPlay}}
           <div class="item" data-drag draggable="true">
             <a class="consumable" data-action="viewDocument" data-document-id="{{item.id}}">
-              <span class="item-name">{{item.name}} [Qty. {{item.quantity}}]</span>
+              <span class="item-name">{{item.name}} [Qty. {{item.system.quantity}}]</span>
             </a>
           </div>
         {{else}}

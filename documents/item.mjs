@@ -2,6 +2,8 @@ import { prepareGearDataPostActorPrep } from "../models/utility/gear-utils.mjs";
 import { DamageInstance } from "../system/oldDamage.mjs";
 import { UtopiaTemplates } from "../system/init/measuredTemplates.mjs";
 import { UtopiaChatMessage } from "./chat-message.mjs";
+import { DamageHandler } from "../system/damage.mjs";
+import { HealingHandler } from "../system/healing.mjs";
 
 export class UtopiaItem extends Item {
 
@@ -11,13 +13,17 @@ export class UtopiaItem extends Item {
     item.use();
   }
 
-  async getRollData() {
-    const owner = this.actor ?? this.parent ?? game.user.character ?? game.user;
-    if (owner instanceof Actor) {
+  getRollData() {
+    const owner = this.actor ?? this.parent ?? game.user.character;
+    if (owner && owner instanceof Actor) {
       const rollData = owner.getRollData() ?? {};
       rollData.item = this;
+      if (this.system.origin && this.system.origin.length > 0) {
+        const origin = fromUuidSync(this.system.origin);
+        rollData["origin"] = origin;
+      }
       return rollData;
-    }
+    }  
     return {};
   }
 
@@ -523,18 +529,17 @@ export class UtopiaItem extends Item {
     }
   }
 
-  async _castSpell() {
+  async _castSpell(options = {}) {
     const featureSettings = this.system.featureSettings;
-    const owner = this.actor ?? this.parent ?? game.user.character ?? game.user;
-    const stamina = owner.isGM ? Infinity : owner.system.stamina.value;
-    const spellcasting = owner.isGM ? this.constructor.GM_SPELLCASTING() : owner.system.spellcasting;
+    const owner = this.actor ?? this.parent ?? game.user.character;
+    const stamina = game.user.isGM ? Infinity : owner.system.stamina.value;
+    const spellcasting = game.user.isGM ? this.constructor.GM_SPELLCASTING() : owner.system.spellcasting;
     const features = [];
     var cost = 0;
 
-    for (const featureUuid of this.system.features) {
-      const feature = await fromUuid(featureUuid);
+    for (const [key, feature] of Object.entries(this.system.features || {})) {
       const art = feature.system.art;
-      const settings = featureSettings[feature.id] ?? {};
+      const settings = featureSettings[key] ?? {};
       const stacks = settings.stacks.value ?? 1;
 
       if (spellcasting.artistries[art]) {
@@ -552,14 +557,20 @@ export class UtopiaItem extends Item {
         }
       }
 
+      if (spellcasting.artistries[art].discount > 0) 
+        cost -= spellcasting.artistries[art].discount;
+
       feature.variables = settings;
+      feature.background = feature.style.background;
+      feature.color = feature.style.color || "#ffffff";
       features.push(feature);
     }
 
     cost = Math.floor(cost / 10);
+    cost = Math.max(cost - spellcasting.discount, 1); // Minimum cost is 1
 
     // First and foremost, we need to validate the spell's stamina is less than the owner's spellcap
-    if (cost > owner.system.spellcasting.spellcap) {
+    if (!game.user.isGM && cost > owner?.system?.spellcap || 0) {
       return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.SpellCostExceedsSpellcap'));
     }
 
@@ -574,15 +585,19 @@ export class UtopiaItem extends Item {
       }
     }
 
-    if (!owner.isGM) {
-      const damage = new DamageInstance({
-        type: "stamina",
-        source: this,
-        value: cost,
-        target: owner.uuid,
-      });
-      const handledDamage = await damage.handle();
-      const damageMessage = await damage.toFinalMessage();
+    if (!game.user.isGM) {
+      const damages = [{ formula: cost, type: "stamina" }];
+      const handler = new DamageHandler({
+        damages: damages,
+        targets: [owner],
+        source: this.uuid
+      }, {
+        canBlock: false,
+        canDodge: false,
+        canTakeCover: false,
+        resolveImmediately: true,
+        penetrative: true,
+      })
     }
 
     const templates = await this.system.getTemplate(this);
@@ -609,165 +624,193 @@ export class UtopiaItem extends Item {
     // Perform automatic attacks if necessary
     //this._autoRollAttacks(chatMessage);
 
-    if (templates.length > 0) {
-      for (const feature of features) {
-        if (feature.system.formula && feature.system.formula.length > 0) {
-          // There are special flavors attributed to spell features,
-          // `[DHP]` is used as a "damage type" that restores Deep Health Points (DHP),
-          // `[SHP]` is used as a "damage type" that restores Stamina Health Points (SHP).
-          // `[STA]` is used as a "damage type" that restores Stamina (STA).
+    for (const feature of features) {
+      if (feature.system.formula && feature.system.formula.length > 0) {
+        // There are special flavors attributed to spell features,
+        // `[DHP]` is used as a "damage type" that restores Deep Health Points (DHP),
+        // `[SHP]` is used as a "damage type" that restores Stamina Health Points (SHP).
+        // `[STA]` is used as a "damage type" that restores Stamina (STA).
 
-          // We need to substitute any 'X' in the formula, with the actual cost of the spell.
-          let formula = feature.system.formula;
+        // We need to substitute any 'X' in the formula, with the actual cost of the spell.
+        let formula = feature.system.formula;
 
-          if (feature.system.costMultiplier === "multiply") {
-            formula = formula.replace("@X", featureSettings[feature.id]?.cost?.value ?? 1);
-          }
+        if (feature.system.costMultiplier === "multiply") {
+          formula = formula.replace("@X", featureSettings[feature.id]?.cost?.value ?? 1);
+        }
 
-          if (featureSettings[feature.id]?.stacks?.value > 1) {
-            for (let i = 1; i < featureSettings[feature.id].stacks.value; i++) {
-              if (feature.system.costMultiplier === "multiply") {
-                formula += ` + ${feature.system.formula.replace("@X", featureSettings[feature.id]?.cost?.value ?? 1)}`;
-              }
-              else {
-                formula += ` + ${feature.system.formula}`;
-              }
+        if (featureSettings[feature._id]?.stacks?.value > 1) {
+          for (let i = 1; i < featureSettings[feature.id].stacks.value; i++) {
+            if (feature.system.costMultiplier === "multiply") {
+              formula += ` + ${feature.system.formula.replace("@X", featureSettings[feature.id]?.cost?.value ?? 1)}`;
+            }
+            else {
+              formula += ` + ${feature.system.formula}`;
             }
           }
+        }
 
-          const roll = new Roll(formula, this.getRollData());
-          const rollValue = await roll.evaluate();
+        const roll = new Roll(formula, this.getRollData());
+        const rollValue = await roll.evaluate();
 
-          let damageType = feature.system.damageType ?? "physical";
-          for (const die of roll.dice.filter(d => d.constructor.name === "Die")) {
-            if (die.flavor === "DHP") {
-              damageType = "deepHealing";
-            }
-            else if (die.flavor === "SHP") {
-              damageType = "healing";
-            }
-            else if (die.flavor === "STA") {
-              damageType = "restoreStamina";
-            }
+        let damageType = feature.system.damageType ?? "physical";
+        if (featureSettings[feature.id]?.Type?.value) {
+          damageType = featureSettings[feature.id].Type.value;
+        }
+
+        for (const die of roll.dice.filter(d => d.constructor.name === "Die")) {
+          if (die.flavor === "DHP") {
+            damageType = "deepHealing";
           }
-
-          // If there are no templates to place, we simply roll the damage.
-          for (const target of Array.from(game.user.targets)) {
-            const damage = new DamageInstance({
-              type: damageType,
-              value: rollValue.total,
-              target: target.actor.uuid,
-              source: this,
-              roll: roll,
-            });
-            const handledDamage = await damage.handle();
-            const damageMessage = await damage.toMessage();
+          else if (die.flavor === "SHP") {
+            damageType = "healing";
           }
+          else if (die.flavor === "STA") {
+            damageType = "restoreStamina";
+          }
+        }
+
+        // If there are no templates to place, we simply roll the damage.
+        for (const target of Array.from(game.user.targets)) {
+          const damage = new DamageInstance({
+            type: damageType,
+            value: rollValue.total,
+            target: target.actor.uuid,
+            source: this,
+            roll: roll,
+          });
+          const handledDamage = await damage.handle();
+          const damageMessage = await damage.toMessage();
         }
       }
     }
   }
 
-  async _finishCastingSpell(chatMessage, options = {}) {
-    const templates = chatMessage.getFlag("utopia", "placedTemplates") || [];
-    const targets = [];
+  async _finishCastingSpell(chatMessage = undefined, targets = [], options = {}) {
+    const templates = chatMessage?.getFlag("utopia", "placedTemplates") || [];
 
-    for (const template of templates) {
-      const sceneTemplate = canvas.scene.templates.get(template);
+    // If targets are provided as a parameter, use them; otherwise, collect from templates
+    let finalTargets = Array.isArray(targets) && targets.length > 0 ? targets.slice() : [];
 
-      for (const token of canvas.scene.tokens) {
-        if (token.object && UtopiaTemplates.testPoint(token.object.getCenterPoint(), sceneTemplate._object)) {
-          targets.push(token.actor);
+    if (finalTargets.length === 0 && templates.length > 0) {
+      for (const template of templates) {
+        const sceneTemplate = canvas.scene.templates.get(template);
+        for (const token of canvas.scene.tokens) {
+          if (token.object && UtopiaTemplates.testPoint(token.object.getCenterPoint(), sceneTemplate._object)) {
+            finalTargets.push(token.actor);
+          }
+        }
+      }
+    }
+
+    const featureSettings = this.system.featureSettings;
+    const owner = this.actor ?? this.parent ?? game.user.character ?? game.user;
+    const stamina = owner.isGM ? Infinity : owner.system.stamina.value;
+    const spellcasting = owner.isGM ? this.constructor.GM_SPELLCASTING() : owner.system.spellcasting;
+    const features = [];
+    let cost = 0;
+
+    for (const [key, feature] of Object.entries(this.system.features)) {
+      const art = feature.system.art;
+      const settings = featureSettings[key] ?? {};
+      const stacks = settings.stacks?.value ?? 1;
+
+      if (spellcasting.artistries[art]) {
+        if (spellcasting.artistries[art].unlocked === false)
+          return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.ArtistryNotUnlocked'));
+        if (spellcasting.artistries[art].multiplier === 0)
+          return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.ArtistryMultiplierZero'));
+
+        if (featureSettings) {
+          const costVariable = settings.cost?.value ?? 1;
+          cost += feature.system.cost *
+            stacks *
+            spellcasting.artistries[art].multiplier *
+            costVariable;
         }
       }
 
-      const featureSettings = this.system.featureSettings;
-      const owner = this.actor ?? this.parent ?? game.user.character ?? game.user;
-      const stamina = owner.isGM ? Infinity : owner.system.stamina.value;
-      const spellcasting = owner.isGM ? this.constructor.GM_SPELLCASTING() : owner.system.spellcasting;
-      const features = [];
-      var cost = 0;
+      feature.variables = settings;
+      features.push(feature);
+    }
 
-      for (const featureUuid of this.system.features) {
-        const feature = await fromUuid(featureUuid);
-        const art = feature.system.art;
-        const settings = featureSettings[feature.id] ?? {};
-        const stacks = settings.stacks.value ?? 1;
+    let damages = [];
+    let healing = [];
 
-        if (spellcasting.artistries[art]) {
-          if (spellcasting.artistries[art].unlocked === false)
-            return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.ArtistryNotUnlocked'));
-          if (spellcasting.artistries[art].multiplier === 0)
-            return ui.notifications.error(game.i18n.localize('UTOPIA.ERRORS.ArtistryMultiplierZero'));
+    for (const feature of features) {
+      if (feature.system.formula && feature.system.formula.length > 0) {
+        // There are special flavors attributed to spell features,
+        // `[DHP]` is used as a "damage type" that restores Deep Health Points (DHP),
+        // `[SHP]` is used as a "damage type" that restores Stamina Health Points (SHP).
+        // `[STA]` is used as a "damage type" that restores Stamina (STA).
 
-          if (featureSettings) {
-            const costVariable = settings.cost?.value ?? 1;
-            cost += feature.system.cost *
-              stacks *
-              spellcasting.artistries[art].multiplier *
-              costVariable;
-          }
+        // We need to substitute any 'X' in the formula, with the actual cost of the spell.
+        let formula = feature.system.formula;
+
+        if (feature.system.costMultiplier === "multiply") {
+          formula = formula.replace("@X", featureSettings[feature.id]?.cost?.value ?? 1);
         }
 
-        feature.variables = settings;
-        features.push(feature);
-      }
-
-      for (const feature of features) {
-        if (feature.system.formula && feature.system.formula.length > 0) {
-          // There are special flavors attributed to spell features,
-          // `[DHP]` is used as a "damage type" that restores Deep Health Points (DHP),
-          // `[SHP]` is used as a "damage type" that restores Stamina Health Points (SHP).
-          // `[STA]` is used as a "damage type" that restores Stamina (STA).
-
-          // We need to substitute any 'X' in the formula, with the actual cost of the spell.
-          let formula = feature.system.formula;
-
-          if (feature.system.costMultiplier === "multiply") {
-            formula = formula.replace("@X", featureSettings[feature.id]?.cost?.value ?? 1);
-          }
-
-          if (featureSettings[feature.id]?.stacks?.value > 1) {
-            for (let i = 1; i < featureSettings[feature.id].stacks.value; i++) {
-              if (feature.system.costMultiplier === "multiply") {
-                formula += ` + ${feature.system.formula.replace("@X", featureSettings[feature.id]?.cost?.value ?? 1)}`;
+        if (feature.variables?.stacks?.value > 1) {
+          for (let i = 1; i < feature.variables.stacks.value; i++) {
+            if (feature.system.costMultiplier === "multiply") {
+              formula += ` + ${feature.system.formula.replace("@X", feature.variables?.cost?.value ?? 1)}`;
+            }
+            else {
+              if (formula.includes("@X")) {
+                formula = formula.replace("@X", feature.variables?.stacks?.value ?? 1);
               }
               else {
                 formula += ` + ${feature.system.formula}`;
               }
             }
           }
+        }
 
-          const roll = new Roll(formula, this.getRollData());
-          const rollValue = await roll.evaluate();
-
+        if (feature.system.formulaType === "heal") {
+          let damageType = feature.system.damageType ?? "heal";
+          if (feature.variables?.Type?.value) {
+            damageType = feature.variables.Type.value.toLowerCase();
+          }
+          healing.push({
+            formula,
+            type: damageType,
+          });
+          continue;
+        }
+        else if (feature.system.formulaType === "damage") {
           let damageType = feature.system.damageType ?? "physical";
-          for (const die of roll.dice.filter(d => d.constructor.name === "Die")) {
-            if (die.flavor === "DHP") {
-              damageType = "deepHealing";
-            }
-            else if (die.flavor === "SHP") {
-              damageType = "healing";
-            }
-            else if (die.flavor === "STA") {
-              damageType = "restoreStamina";
-            }
+          if (feature.variables?.Type?.value) {
+            damageType = feature.variables.Type.value.toLowerCase();
           }
-
-          // If there are no templates to place, we simply roll the damage.
-          for (const target of targets) {
-            const damage = new DamageInstance({
-              type: damageType,
-              value: rollValue.total,
-              target: target.uuid,
-              source: this,
-              roll: roll,
-            });
-            const handledDamage = await damage.handle();
-            const damageMessage = await damage.toMessage();
+          damages.push({
+            formula,
+            type: damageType,
+          });
+          continue;
+        }
+        else if (feature.system.formulaType === "imbue") {
+          for (const target of finalTargets) {
+            await target.setFlag("utopia", "imbued", formula);
           }
+          continue;
         }
       }
+    }
+
+    if (healing.length > 0) {
+      new HealingHandler({
+        healings: healing,
+        targets: finalTargets.map(t => t.uuid),
+        source: this,
+      })
+    }
+
+    if (damages.length > 0) {
+      new DamageHandler({
+        damages: damages,
+        targets: finalTargets.map(t => t.uuid),
+        source: this,
+      })
     }
   }
 

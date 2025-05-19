@@ -175,10 +175,12 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
             title: game.i18n.localize("UTOPIA.Items.Kit.FIELDS.attributes.DialogTitle"),
             content: input.outerHTML,
             render: true,
-          }).then((result) => {
-            if (result === "ok") {
-          selectedChoices[choiceSet] = input.selectedOptions[0].value;
+            ok: {
+              label: "OK",
+              callback: (event, button, dialog) => dialog.querySelector("select")
             }
+          }).then((result) => {
+            selectedChoices[choiceSet] = result.selectedOptions[0].value;
           }).catch(err => {
             console.error("Error updating item attributes:", err);
           });
@@ -223,10 +225,12 @@ export class CompendiumBrowser extends api.HandlebarsApplicationMixin(api.Applic
             title: game.i18n.localize("UTOPIA.Items.Kit.FIELDS.attributes.DialogTitle"),
             content: input.outerHTML,
             render: true,
-          }).then((result) => {
-            if (result === "ok") {
-          selectedChoices[choiceSet] = input.selectedOptions[0].value;
+            ok: {
+              label: "OK",
+              callback: (event, button, dialog) => dialog.querySelector("select")
             }
+          }).then((result) => {
+            selectedChoices[choiceSet] = result.selectedOptions[0].value;
           }).catch(err => {
             console.error("Error updating item attributes:", err);
           });

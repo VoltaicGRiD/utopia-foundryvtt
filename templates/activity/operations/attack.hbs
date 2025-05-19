@@ -1,12 +1,12 @@
 <div>
   <hr/>
-  <span class="operation-category">Check a condition:</span>
+  <span class="operation-category">Attack:</span>
   {{#each operation.damages}}
     <div class="operation-content-row">
       <div class="operation-content">
         <label for="damages.{{@index}}.formula">Formula:</label>
         <input type="text" name="damages.{{@index}}.formula" value="{{this.formula}}" placeholder="" required>
-        <span class="hint">Do not include modifiers in the formula, use the 'Modifier' input below.</span>
+        <span class="hint">Do not include modifiers in the formula, use the 'Modifier' input below. If "Use equipped weapon" is checked, this formula will be appended AFTER the weapon's formula. i.e. "2d4 (this formula)". If so, make sure you include an operator, such as '+, -, *, or /'</span>
       </div>
 
       <div class="operation-content">
@@ -16,38 +16,66 @@
             <option value="{{id}}" {{#if (eq ../this.damageType id)}}selected{{/if}}>{{name}}</option>
           {{/each}}
         </select>
+        <span class="hint">The damage type is used to determine the type of damage dealt. If "Use equipped weapon" is checked, this value is ignored.</span>
       </div>
-
-      <button class="operation-button" type="button" data-damage="{{@index}}" data-action="removeDamage" {{#if (lt operation.damages.length 2)}}disabled{{/if}}>Remove</button>
     </div>  
-
     <div class="operation-content-row">
       <div class="operation-content">
-        <label for="damages.{{@index}}.penetrate">Penetrate:</label>
-        <input type="checkbox" name="damages.{{@index}}.penetrate" {{#if this.penetrate}}checked{{/if}}>
+        <label for="damages.{{@index}}.useWeapon">Use equipped weapon:</label>  
+        <input type="checkbox" name="damages.{{@index}}.useWeapon" {{#if this.useWeapon}}checked{{/if}}>
       </div>
 
-      <div class="operation-content">
-        <label for="damages.{{@index}}.nonLethal">Non-Lethal:</label>  
-        <input type="checkbox" name="damages.{{@index}}.nonLethal" {{#if this.nonLethal}}checked{{/if}}>
-      </div>
-    </div>
-
-    <div class="operation-content-row">
       <div class="operation-content">
         <label for="damages.{{@index}}.modifier">Modifier (accepts roll-data):</label>
         <input type="text" name="damages.{{@index}}.modifier" value="{{this.modifier}}" placeholder="" />
         <span class="hint">This modifier will be added to the damage roll. It can be a number or a roll-data expression (e.g. '@pow.mod' for Power subtrait modifier)</span>
       </div>
+    </div>
 
-      <div class="operation-content">
-        <label for="damages.{{@index}}.range">Range:</label>
-        <input type="text" name="damages.{{@index}}.range" value="{{this.range}}" placeholder="" />
-        <span class="hint">Range is ALWAYS defined as '[Close]/[Far]', for melee weapons, this is between '0/0' and '3/3'.</span>
-      </div>
+    <div class="operation-content-row">
+      <button class="operation-button" type="button" data-damage="{{@index}}" data-action="removeDamage" {{#if (lt operation.damages.length 2)}}disabled{{/if}}>Remove</button>
     </div>
   {{/each}}    
+
   <div class="operation-content-row">
     <button class="operation-button" type="button" data-action="addDamage">Add Damage</button>
+  </div>
+
+  <h4 class="header">Global options</h4>
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="penetrate">Penetrate:</label>
+      <input type="checkbox" name="penetrate" {{#if operation.penetrate}}checked{{/if}}>
+    </div>
+
+    <div class="operation-content">
+      <label for="nonLethal">Non-lethal:</label>  
+      <input type="checkbox" name="nonLethal" {{#if operation.nonLethal}}checked{{/if}}>
+    </div>
+
+    <div class="operation-content">
+      <label for="randomTarget">Random target:</label>
+      <input type="checkbox" name="randomTarget" {{#if operation.randomTarget}}checked{{/if}}>
+    </div>
+
+    <div class="operation-content">
+      <label for="ignoreSHP">Ignore SHP:</label>  
+      <input type="checkbox" name="ignoreSHP" {{#if operation.ignoreSHP}}checked{{/if}}>
+    </div>
+  </div>
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="modifier">Modifier (accepts roll-data):</label>
+      <input type="text" name="modifier" value="{{operation.modifier}}" placeholder="" />
+      <span class="hint">This modifier will be added to the total roll. It can be a number or a roll-data expression (e.g. '@pow.mod' for Power subtrait modifier)</span>
+    </div>
+
+    <div class="operation-content">
+      <label for="range">Range:</label>
+      <input type="text" name="range" value="{{operation.range}}" placeholder="" />
+      <span class="hint">Range is ALWAYS defined as '[Close]/[Far]', for melee weapons, this is between '0/0' and '3/3'.</span>
+    </div>
   </div>
 </div>

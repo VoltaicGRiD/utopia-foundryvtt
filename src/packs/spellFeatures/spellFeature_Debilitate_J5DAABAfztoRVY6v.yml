@@ -52,6 +52,7 @@ system:
   maximum: 0
   variableName: Variable
   variableDescription: ''
+  formulaType: test
 effects: []
 sort: 0
 ownership:
@@ -63,9 +64,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.05'
   createdTime: 1734769603326
-  modifiedTime: 1734769603326
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747287027030
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!J5DAABAfztoRVY6v'
 

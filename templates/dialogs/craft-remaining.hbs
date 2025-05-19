@@ -22,9 +22,9 @@
             - ../../ takes us back to the top-level context where "components" is defined.
           --}}
           {{#each ../componentTypes as |componentType|}}
-            {{log componentType}}
-            {{log rarity}}
-            {{log ../../components}}
+            
+            
+            
             {{!-- Lookup the value in the components object using the componentType and rarity keys --}}
             <td>
               {{lookup (lookup ../../components componentType.key) rarity.key}}

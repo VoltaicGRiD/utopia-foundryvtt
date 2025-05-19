@@ -24,9 +24,9 @@
       "thumbnail": "systems/utopia/assets/Utopia-Logo.webp"
     }
   ],
-  "version": "1.05",
+  "version": "1.07",
   "flags": {
-    "lastConfigurationResetVersion": "1.05"
+    "lastConfigurationResetVersion": "1.07"
   },
   "compatibility": {
     "minimum": 12,

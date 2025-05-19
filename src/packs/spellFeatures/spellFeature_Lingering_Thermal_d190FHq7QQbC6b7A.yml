@@ -4,7 +4,7 @@ type: spellFeature
 _id: d190FHq7QQbC6b7A
 img: systems/utopia/assets/icons/artistries/evocation.svg
 system:
-  formula: 1d4[@Type]
+  formula: (@X)d4[@Type]
   description: >-
     <p style="text-align: left;">Upon casting and at the beginning of each turn
     for the duration of the spell, affected creatures and objects are dealt an
@@ -26,10 +26,16 @@ system:
   templateAngle: 53.13
   variables:
     variable0:
-      options: Heat,Chill
+      options:
+        - Heat
+        - Chill
       character: A
       kind: options
       name: Type
+      description: ''
+    stacks:
+      name: stacks
+      kind: number
       description: ''
   modifies: none
   modifiedAoE:
@@ -72,9 +78,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.05'
   createdTime: 1734769606898
-  modifiedTime: 1734769606898
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747318507796
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!d190FHq7QQbC6b7A'
 

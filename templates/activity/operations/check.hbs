@@ -5,7 +5,7 @@
   <div class="operation-content-row">
     <select name="check" required>
       {{#each choices as |group|}}
-        {{log group}}
+        
         <optgroup label="{{group.name}}">
           {{#each group.choices as |name id|}}
             <option value="{{id}}" {{#if (eq ../../operation.check id)}}selected{{/if}}>{{localize name.label}}</option>

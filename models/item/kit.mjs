@@ -12,6 +12,7 @@ export class Kit extends UtopiaItemBase {
     const schema = super.defineSchema();
       
     schema.points = new fields.NumberField({ required: true, nullable: false, initial: 1 });
+    schema.stacks = new fields.NumberField({ required: true, nullable: false, initial: 1 });
 
     // TODO - Look into changing this
     // In theory, we want the attributes to be ActiveEffects, but there may be reason
@@ -26,6 +27,8 @@ export class Kit extends UtopiaItemBase {
     );
 
     schema.selectedChoices = new fields.ObjectField();
+
+    schema.grants = new fields.SetField(new fields.DocumentUUIDField({ required: true, nullable: false, blank: true }), { required: true, nullable: false, initial: [] });    
 
     return schema;
   }
@@ -53,6 +56,12 @@ export class Kit extends UtopiaItemBase {
             return a.choiceSet;
           })
         ]
+      },
+      {
+        field: this.schema.fields.grants,
+        stacked: true,
+        editable: true,
+        columns: 2,
       }
     ]
   }

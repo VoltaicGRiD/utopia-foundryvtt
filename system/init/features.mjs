@@ -60,9 +60,46 @@ Notes:
   - cost: The action cost to attempt the counter.
 */
 
-function FastWeapon(settings) {
-  console.log(settings);
+// Rewrite example:
+// slam: {
+//   name: "UTOPIA.Features.Slam",
+//   maxStacks: Infinity,
+//   keys: [{
+//     key: "damage.formula",
+//     handler: "Xd4",
+//   }, {
+//     key: "damage.type",
+//     value: "physical",
+//   }],
+//   cost: {
+//     RP: 10,
+//     material: 1,
+//   },
+// },
+// harsh: {
+//   name: "UTOPIA.Features.Harsh",
+//   maxStacks: Infinity,
+//   keys: [{
+//     key: "damage.formula",
+//     handler: "Xd4",
+//   }, {
+//     key: "damage.type",
+//     type: "distributed",
+//     options: {
+//       ...Object.entries(settings.damageTypes).reduce((acc, [key, value]) => {
+//         if (!value.harsh) return acc; // Only include harsh damage types
+//         acc[key] = value.label;
+//         return acc;
+//       }, {}),
+//     },
+//   }],
+//   cost: {
+//     RP: 15,
+//     power: 1,
+//   },
+// },
 
+function FastWeapon(settings) {
   return {
     slam: {
       name: "UTOPIA.Features.Slam",
@@ -2744,23 +2781,13 @@ function Consumable(settings) {
       name: "UTOPIA.Features.Splash",
       stackable: false,
       maxStacks: 1,
-      key: "radius",
-      handler: "+X",
+      key: "thrown",
+      value: true,
+      handler: "override",
       cost: {
         RP: 10,
       },
       incompatible: ["charged", "deployed"],
-      options: {
-        ...Object.entries(settings.traits).reduce((acc, [key, value]) => {
-          if (!value.splash) return acc; // Only include splash subtraits
-          acc[key] = {
-            name: value.label,
-            key: "radius",
-            value: `@${key}.total`,
-          };
-          return acc;
-        }, {}),
-      },
     },
     spelltech: {
       name: "UTOPIA.Features.Spelltech",
@@ -2851,7 +2878,7 @@ function Consumable(settings) {
         shp: {
           name: "UTOPIA.DAMAGE_TYPES.healing.label",
           key: "type",
-          value: "shp",
+          value: "heal",
         },
       },
     },
@@ -2871,7 +2898,7 @@ function Consumable(settings) {
         stamina: {
           name: "UTOPIA.DAMAGE_TYPES.restoreStamina.label",
           key: "type",
-          value: "stamina",
+          value: "restore",
         },
       },
     },
@@ -2898,7 +2925,7 @@ function Consumable(settings) {
         deepHealing: {
           name: "UTOPIA.DAMAGE_TYPES.deepHealing.label",
           key: "type",
-          value: "dhp",
+          value: "medical",
         },
       },
     },

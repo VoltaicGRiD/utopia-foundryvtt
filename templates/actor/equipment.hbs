@@ -11,7 +11,7 @@
       {{#each equipment as |item|}} 
         {{#if ../isPlay}}
           <div class="item-play">
-            <div class="item {{#if (eq item.system.prototype true)}}prototype{{/if}}" data-drag draggable="true" data-draggable="gear" data-document-id="{{item.id}}">
+            <div class="item {{#if (eq item.system.prototype true)}}prototype{{/if}}" draggable="true" data-draggable="gear" data-document-id="{{item.id}}">
               <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
                 <span class="item-name">{{item.name}}</span>
               </a>
@@ -46,7 +46,7 @@
     <div class="item-container">
       {{#each generic as |item|}} 
         {{#if ../isPlay}}
-          <div class="item" data-drag draggable="true" data-draggable="gear" data-document-id="{{item.id}}">
+          <div class="item" draggable="true" data-draggable="gear" data-document-id="{{item.id}}">
             <a class="gear" data-action="viewDocument" data-document-id="{{item.id}}">
               <span class="item-name">{{item.name}}</span>
             </a>
@@ -69,7 +69,7 @@
 
   <div class="handheld-slots">
     {{#each handheldSlotsEquipped as |item|}}
-      {{log item}}
+      
       {{#if (ne item null)}}
         <div class="handheld-slot filled" data-action="viewItem" data-slot="{{@index}}" data-id="{{item.id}}">
           <img class="profile-img" src="{{item.img}}" data-action="viewItem" title="{{item.name}}" height="60" width="60"/>

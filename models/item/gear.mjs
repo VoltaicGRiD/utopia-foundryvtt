@@ -1,4 +1,5 @@
 import { DamageHandler } from "../../system/damage.mjs";
+import { HealingHandler } from "../../system/healing.mjs";
 import { isNumeric } from "../../system/helpers/isNumeric.mjs";
 import UtopiaItemBase from "../base-item.mjs";
 
@@ -253,25 +254,31 @@ export class Gear extends foundry.abstract.TypeDataModel {
 
   handleFeatures() {
     if (["fastWeapon", "moderateWeapon", "slowWeapon"].includes(this.type)) {
-      const damageFeatures = Object.values(this.features).filter(f => f.parentKey === "damage");
       const damages = [];
-      for (const feature of damageFeatures) {
-        for (const key of feature.keys) { 
-          
-          if (key.parts) { // Special case for damage
-            const parts = key.parts;
-            damages.push({
-              formula: parts.find(k => k.key === "damage.formula").value,
-              type: parts.find(k => k.key === "damage.type").value,
-            })
+
+      for (const feature of Object.values(this.features)) {
+        if (feature.parentKey === "damage") {
+          for (const key of feature.keys) { 
+            if (key.parts) { // Special case for damage
+              const parts = key.parts;
+              damages.push({
+                formula: parts.find(k => k.key === "damage.formula").value,
+                type: parts.find(k => k.key === "damage.type").value,
+              })
+            }
+            
+            else { // Return to standard behavior for other features
+              this.handle(this, feature.handler, key.key, key.value);
+            }
           }
-          
-          else { // Return to standard behavior for other features
+        }
+        else {
+          for (const key of feature.keys) {
             this.handle(this, feature.handler, key.key, key.value);
           }
         }
       }
-      
+
       this.damages = damages;
     }
     else if (["headArmor", "chestArmor", "handsArmor", "feetArmor"].includes(this.type)) {
@@ -291,12 +298,94 @@ export class Gear extends foundry.abstract.TypeDataModel {
       }
     }
     else if (["consumable"].includes(this.type)) {
-      const consumableFeatures = Object.values(this.features).filter(f => f.appliesTo && f.appliesTo === "this");
-      for (const feature of consumableFeatures) {
-        for (const key of feature.keys) {
-          this.handle(this, feature.handler, key.key, key.value)
+      const damages = [];
+      const healings = [];
+
+      for (const feature of Object.values(this.features)) {
+        if (feature.parentKey === "damage") {
+          for (const key of feature.keys) { 
+            if (key.parts) { // Special case for damage
+              const parts = key.parts;
+              damages.push({
+                formula: parts.find(k => k.key === "damage.formula").value,
+                type: parts.find(k => k.key === "damage.type").value,
+              })
+            }
+            
+            else { // Return to standard behavior for other features
+              this.handle(this, feature.handler, key.key, key.value);
+            }
+          }
+        }
+        else if (feature.parentKey === "healing") {
+          for (const key of feature.keys) { 
+            if (key.parts) { // Special case for healing
+              const parts = key.parts;
+              healings.push({
+                formula: parts.find(k => k.key === "healing.formula").value,
+                type: parts.find(k => k.key === "healing.type").value,
+              })
+            }
+            
+            else { // Return to standard behavior for other features
+              this.handle(this, feature.handler, key.key, key.value);
+            }
+          }
+        }
+        else {
+          for (const key of feature.keys) {
+            this.handle(this, feature.handler, key.key, key.value);
+          }
+        }
+
+        if (feature.crafting) {
+          this[feature.key] = feature.crafting.item;
         }
       }
+
+      if (damages.length > 0) 
+        this.damages = damages;
+
+      if (healings.length > 0)
+        this.healings = healings;
+
+      const turns = this.duration?.turns || 0;
+      const minutes = this.duration?.minutes || 0;
+      const hours = this.duration?.hours || 0;
+      const seconds = turns * 6 + minutes * 60 + hours * 3600;
+      
+      let durationNumber = seconds;
+      let unit = "seconds";
+
+      // Convert based on thresholds
+      if (seconds >= 6 && seconds % 6 === 0 && seconds < 60) {
+        durationNumber /= 6;
+        unit = "turns";
+      }
+      else if (seconds >= 60 && seconds < 3600) {
+        durationNumber /= 60;
+        unit = "minutes";
+      }
+      else if (seconds >= 3600 && seconds < 86400) {
+        durationNumber /= 3600;
+        unit = "hours";
+      }
+      else if (seconds >= 86400 && seconds < 2592000) {
+        durationNumber /= 86400;
+        unit = "days";
+      }
+      else if (seconds >= 2592000 && seconds < 31536000) {
+        durationNumber /= 2592000;
+        unit = "months";
+      }
+      else if (seconds >= 31536000) {
+        durationNumber /= 31536000;
+        unit = "years";
+      }
+
+      this.durationOut = `${durationNumber} ${unit}`;
+
+      this.radiusOut = `${this.radius}M`;
     }
     else if (["equippableArtifact", "handheldArtifact", "ammunitionArtifact"].includes(this.type)) {
       const artifactFeatures = Object.values(this.features).filter(f => f.appliesTo && f.appliesTo === "this");
@@ -364,7 +453,13 @@ export class Gear extends foundry.abstract.TypeDataModel {
   async use({ maximizeOutput = false } = {}) {
     if (["fastWeapon", "moderateWeapon", "slowWeapon"].includes(this.type)) {
       await this._useWeapon(maximizeOutput);
-    }    
+    }
+
+    if (["consumable"].includes(this.type)) {
+      await this._useConsumable();
+    }
+
+    await this.parent.parent._consumeResources("turn", this.actions, this.stamina ?? 0);
   }
 
   async _useWeapon(maximizeOutput) {
@@ -410,6 +505,99 @@ export class Gear extends foundry.abstract.TypeDataModel {
 
         const damageHandler = new DamageHandler({ damages, targets: Array.from(game.user.targets), source: this.parent })
       }
+    }
+  }
+
+  getTemplate(item) {
+    // Base data for all templates
+    const templateBaseData = {
+      user: game.user?.id,
+      distance: 0,
+      direction: 0,
+      x: 0,
+      y: 0,
+      fillColor: game.user?.color,
+      flags: item ? { 
+        utopia: { 
+          origin: item.uuid, 
+          worldTime: game.time.worldTime, 
+          duration: item.system.duration 
+        } 
+      } : {}
+    };
+
+    const templates = [];
+
+    // Parse this AoE and return a placeable template that corresponds to the AoE
+    if (item.system.radius) {
+      const template = new CONFIG.MeasuredTemplate.documentClass(
+        foundry.utils.mergeObject(templateBaseData, {
+          t: foundry.CONST.MEASURED_TEMPLATE_TYPES.CIRCLE,
+          distance: item.system.radius,
+        }), { parent: canvas.scene ?? undefined }
+      );
+
+      templates.push(templateData);
+    }
+
+    return templates;
+  }
+
+  async _useConsumable() {
+    if (this.radius) {
+      const templates = await this.getTemplate(this.parent);
+    
+      const content = await renderTemplate("systems/utopia/templates/chat/consumable-card.hbs", {
+        item: this,
+        owner: owner,
+        features: this.features,
+        templates: templates
+      });
+  
+      const chatMessage = await UtopiaChatMessage.create({
+        user: game.user._id,
+        speaker: ChatMessage.getSpeaker(),
+        content: content,
+        system: {
+          item: this,
+          templates: templates
+        },
+        flags: { utopia: { itemUuid: this.uuid } }
+      });
+    
+      return;
+    }
+
+    await this.finishUsingConsumable();
+  }
+
+  async finishUsingConsumable(chatMessage) {
+    let finalTargets = [];
+
+    if (chatMessage) {
+      const templates = chatMessage?.getFlag("utopia", "placedTemplates") || [];
+
+      for (const template of templates) {
+        const sceneTemplate = canvas.scene.templates.get(template);
+        for (const token of canvas.scene.tokens) {
+          if (token.object && UtopiaTemplates.testPoint(token.object.getCenterPoint(), sceneTemplate._object)) {
+            finalTargets.push(token.actor);
+          }
+        }
+      }
+    }
+
+    if (this.spelltech) {
+      const spell = await fromUuid(this.spelltech);
+      await spell._finishCastingSpell(undefined, finalTargets);
+    }
+    
+    if (this.damages && Array.isArray(this.damages)) {
+      new DamageHandler({ damages: this.damages, targets: finalTargets, source: this.parent });
+    }
+
+    if (this.healings && Array.isArray(this.healings)) {
+      new HealingHandler({ healings: this.healings, targets: finalTargets, source: this.parent });
     }
   }
 }

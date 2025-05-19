@@ -99,6 +99,91 @@
     <a class="action-button" data-action="roll" data-roll="block"><i class="fa-fw fas fa-shield"></i> {{localize "UTOPIA.Actors.Actions.Block"}}</a>
     <a class="action-button" data-action="roll" data-roll="dodge"><i class="fa-fw fas fa-person-walking-dashed-line-arrow-right"></i> {{localize "UTOPIA.Actors.Actions.Dodge"}}</a>
     <a class="action-button" data-action="roll" data-roll="rest"><i class="fa-fw fas fa-bed-pulse"></i> {{localize "UTOPIA.Actors.Actions.Reset"}}</a>
+    <a class="action-button" data-action="openApplication" data-application="advancement"><i class="fa-fw fas fa-arrow-up"></i> {{localize "UTOPIA.Actors.Actions.ViewSubtraits"}}</a>
+  </div>
+
+  <div class="checks">
+    <select data-type="trait" class="check-attribute trait-select" style="color: black;">
+      {{#each checks.Traits as |trait key|}}
+        <option value="{{trait.short}}">
+          {{localize trait.label}} 
+        </option>
+      {{/each}}
+    </select>
+    {{#if isPlay}}
+    <div class="check-formula">
+      <a data-action="roll" data-roll="check" class="formula trait-check" style="color: black;">{{check.formula}}</a>
+      <div class="sub-buttons">
+        <a data-action="roll" data-roll="check" data-specification="hostile" data-tooltip="vs. Hostile" class="sub-button trait-check" style="color: black;"><i class="fas fa-dragon"></i></a>
+        <a data-action="roll" data-roll="check" data-specification="neutral" data-tooltip="vs. Neutral" class="sub-button trait-check" style="color: black;"><i class="fas fa-handshake"></i></a>
+        <a data-action="roll" data-roll="check" data-specification="friendly" data-tooltip="vs. Friendly" class="sub-button trait-check" style="color: black;"><i class="fas fa-dove"></i></a>
+      </div>
+    </div>
+    {{else}}
+      <div class="trait-check-edit">
+        <input class="formula trait-check" data-key="value" name="" type="number">
+        <input class="formula trait-check" data-key="mod"   name="" type="number">
+      </div>
+    {{/if}}
+
+    <select data-type="subtrait" class="check-attribute trait-select" style="color: black;">
+      {{#each checks.Subtraits as |trait key|}}
+        
+        <option value="{{trait.short}}">
+          {{localize trait.label}}
+          <!-- <span>&#8212;{{numberFormat trait.total}}</span>&#8212;
+          <span>{{numberFormat trait.mod sign=true}}</span> -->
+        </option>
+      {{/each}}
+    </select>
+    {{#if isPlay}}
+      <div class="check-formula">
+        <a data-action="roll" data-roll="check" class="formula subtrait-check" style="color: black;">{{check.formula}}</a>
+        <div class="sub-buttons">
+          <a data-action="roll" data-roll="check" data-specification="hostile" data-tooltip="vs. Hostile" class="sub-button subtrait-check" style="color: black;"><i class="fas fa-dragon"></i></a>
+          <a data-action="roll" data-roll="check" data-specification="neutral" data-tooltip="vs. Neutral" class="sub-button subtrait-check" style="color: black;"><i class="fas fa-handshake"></i></a>
+          <a data-action="roll" data-roll="check" data-specification="friendly" data-tooltip="vs. Friendly" class="sub-button subtrait-check" style="color: black;"><i class="fas fa-dove"></i></a>
+        </div>
+      </div>    
+    {{else}}
+      <div class="subtrait-check-edit">
+        <input class="formula subtrait-check" data-key="value"    name="" type="number">
+        <input class="formula subtrait-check" data-key="mod"      name="" type="number">
+        <input class="formula subtrait-check" data-key="gifted"   name="" type="checkbox">
+      </div>
+    {{/if}}  
+
+    <details>
+      <summary>{{localize "UTOPIA.Actors.SpecialtyChecks.Summary"}}</summary>
+      <div class="details">
+        {{#each specialtyChecks as |specialtyCheck key|}}
+          <a data-action="viewDocument" data-document-type="specialtyCheck" data-check="{{key}}" class="check-name" style="color: black;"><i class="fa-fw {{specialtyCheck.icon}}"></i> {{localize specialtyCheck.label}}</a>
+          {{#if ../isPlay}}
+            <div class="check-formula">
+              <a data-action="roll" data-roll="check" data-check="{{specialtyCheck.key}}" class="formula specialty-check" style="color: black;">{{specialtyCheck.formula}}</a>
+              <div class="sub-buttons">
+                <a data-action="roll" data-roll="check" data-specification="hostile" data-tooltip="vs. Hostile" class="sub-button trait-check" style="color: black;"><i class="fas fa-dragon"></i></a>
+                <a data-action="roll" data-roll="check" data-specification="neutral" data-tooltip="vs. Neutral" class="sub-button trait-check" style="color: black;"><i class="fas fa-handshake"></i></a>
+                <a data-action="roll" data-roll="check" data-specification="friendly" data-tooltip="vs. Friendly" class="sub-button trait-check" style="color: black;"><i class="fas fa-dove"></i></a>
+              </div>
+            </div>    
+          {{else}}
+            <select name="system.checks.{{check.key}}" class="check-attribute" style="color: black;">
+              <optgroup label="{{localize "UTOPIA.TRAITS.GroupName"}}">
+                {{#each ../checks.Traits as |trait traitKey|}}
+                <option value="{{trait.short}}" {{#if (eq check.attribute trait.short)}}selected{{/if}}>{{localize trait.label}}</option>
+                {{/each}}
+              </optgroup>
+              <optgroup label="{{localize "UTOPIA.SUBTRAITS.GroupName"}}">
+                {{#each ../checks.Subtraits as |subtrait subtraitKey|}}
+                  <option value="{{subtrait.short}}" {{#if (eq check.attribute subtrait.short)}}selected{{/if}}>{{localize subtrait.label}}</option>
+                {{/each}}
+              </optgroup>
+            </select>
+          {{/if}}
+        {{/each}}
+      </div>
+    </details>
   </div>
 
   <details>

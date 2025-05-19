@@ -1,4 +1,5 @@
 export async function prepareSpeciesData(character) {
+
   const species = character._speciesData;
 
   if (Object.keys(species).length === 0) {
@@ -91,7 +92,7 @@ export async function prepareSpeciesData(character) {
     if (!character.handheldSlots.equipped[i]) character.handheldSlots.equipped[i] = null;
   }
 
-  character._preparePostSpeciesData(character);
+  //character._preparePostSpeciesData(character);
 }
 
 export async function prepareSpeciesDefault(character) {

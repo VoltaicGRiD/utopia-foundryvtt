@@ -70,6 +70,8 @@ export class ActivitySheet extends api.HandlebarsApplicationMixin(sheets.ItemShe
     context.system = this.document.system;
     context.operations = this.document.system.operations || [];
     context.effects = this.document.effectCategories || [];
+    context.baseActions = this.document.system.baseActions || [];
+    context.isGM = game.user.isGM;
 
     console.log("Activity Sheet Context:", context);
 

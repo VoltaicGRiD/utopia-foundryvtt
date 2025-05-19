@@ -11,7 +11,7 @@ export const DAMAGE_STATE = {
 export class Damage {
   constructor({ formula = "", type = "", source = {}, target, options = {} }) {
     this.formula = formula; // The damage formula (e.g., "2d6 + 3")
-    this.type = type; // The type of damage (e.g., "fire", "cold")
+    this.type = type; // The type of damage (e.g., "heat", "chill")
     this.options = options; // Additional options for the damage instance
     this.source = source;
     this.target = target; // The target actor or token
@@ -29,7 +29,7 @@ export class Damage {
 
   async _rollFormula() {
     // Roll the formula using the Roll class from FoundryVTT
-    const roll = new Roll(this.formula, await this.source.getRollData()); // Create a new Roll instance with the formula
+    const roll = new Roll(String(this.formula), await this.source.getRollData()); // Create a new Roll instance with the formula
     await roll.evaluate(); // Evaluate the roll asynchronously
     return roll; // Return the evaluated roll
   }
@@ -41,11 +41,12 @@ export class Damage {
     }
 
     var targetDamage = this.result; // Initialize target damage with the result of the roll
+    let targetDefenses = undefined; 
 
     // Check if the source of the damage has 'penetrative'
-    if (!this.source.system.penetrative) {
+    if (!this.source.system.penetrative && !this.options?.penetrative) {
       // Handle the damage application to the target
-      const targetDefenses = this.target.system.defenses;
+      targetDefenses = this.target.system.defenses || {}; // Get the target's defenses
       const damageType = this._getDamageTypes()[this.type]; // Get the damage type from the configuration
       if (!damageType) return {}; // If the damage type is not valid, exit
       targetDamage -= targetDefenses[this.type]; // Calculate the effective damage after applying defenses
@@ -59,46 +60,14 @@ export class Damage {
 
     this.targetDefenses = targetDefenses; // Store the target defenses for later use
     this.targetDamage = targetDamage; // Store the target damage for later use
+
+    this.appliesTo = this._getDamageTypes()[this.type].appliesTo;
   }
 
-  static estimate(formula) {
+  static async estimate(formula) {
     // Calculate the estimated damage based on the roll and target defenses
     const simulations = game.settings.get("utopia", "estimateDamageSimulations") || 100; // Get the number of simulations from the settings
     return Roll.simulate(formula, simulations);
-  }
-
-  _shp({ target, targetDamage }) {
-    // Calculate overflow based on the target's current SHP and max SHP
-    const targetShp = target.system.hitpoints.surface;
-    const overflow = targetShp.value - targetDamage > 0 ? 0 : Math.abs(targetShp - targetDamage);
-
-    // Return the targets new SHP value, and apply overflow to DHP if necessary
-    return {
-      surface: Math.max(targetShp.value - targetDamage, 0), // Set the new SHP value (cannot go below 0)
-      overflow: overflow > 0 ? overflow : 0, // Set the overflow value (if any)
-    };
-  }
-
-  _dhp({ target, targetDamage }) {
-    // DHP cannot overflow, but it can go negative
-    const targetDhp = target.system.hitpoints.deep;
-
-    // Return the targets new DHP value, and apply overflow to SHP if necessary
-    return {
-      deep: targetDhp - targetDamage, // Set the new DHP value (cannot go below 0)
-    };
-  }
-
-  _stamina({ target, targetDamage }) {
-    // Calculate overflow based on the target's current stamina and max stamina
-    const targetStamina = target.system.stamina;
-    const overflow = targetStamina.value - targetDamage > 0 ? 0 : Math.abs(targetStamina - targetDamage);
-
-    // Return the targets new stamina value, and apply overflow to SHP if necessary
-    return {
-      stamina: Math.max(targetStamina.value - targetDamage, 0), // Set the new stamina value (cannot go below 0)
-      overflow: overflow > 0 ? overflow : 0, // Set the overflow value (if any)
-    };
   }
 
   _getDamageTypes() {
@@ -157,7 +126,7 @@ export class DamageHandler {
   _initialize() {
     // Set up any necessary properties or methods for the damage instance
     for (const td of this.targetDamages) {
-      td.damages = td.damages.map(d => new Damage({ ...d, target: td.target, source: this.source })); // Create a new Damage instance for each damage object
+      td.damages = td.damages.map(d => new Damage({ ...d, target: td.target, source: this.source, options: d.options ?? this.options })); // Create a new Damage instance for each damage object
     }
 
     this.id = foundry.utils.randomID(16);  // Generate a random ID for the handler
@@ -173,7 +142,7 @@ export class DamageHandler {
 
     for (const target of this.targetDamages) {
       for (let i = 0; i < target.damages.length; i++) {
-        target.damages[i]._handle()
+        await target.damages[i]._handle()
       }
     }
 
@@ -183,6 +152,11 @@ export class DamageHandler {
   /* ====== Outputting Damage Results ====== */
   // Output the damage results to the chat
   async _outputDamageResults() {
+    if (this.options?.resolveImmediately) {
+      await this.handleFinalDamage();
+      return this.state = DAMAGE_STATE.RESOLVED;  // Set the state to resolved
+    }
+
     // Check game settings for outputting damage results
     const outputSetting = game.settings.get("utopia", "displayDamage");
     if (outputSetting === 0) return;  // If the setting is 0, do not output anything
@@ -192,6 +166,7 @@ export class DamageHandler {
       this.message = await this._createExactDamageMessage();  // Create an exact damage message
     }
 
+    
     // TODO - Replace with a socket connection message to the target actors
     await this._createTargetMessages(this.message, this.targetDamages);  // Create target messages based on the damage results
 
@@ -200,10 +175,9 @@ export class DamageHandler {
 
   async _createEstimateDamageMessage() {
     const estimateRolls = (await Promise.all(this.damages.map(async (damage) => {
-      return Damage.estimate(damage.formula); // Wait for the estimate to be calculated
-    }))).reduce((acc, estimate) => acc + estimate, 0); // Sum the estimates for all damages
-    const estimate = Math.round(estimateRolls.split(",").map(v => parseInt(v)).reduce((acc, v) => acc + v, 0) / estimateRolls.split(",").length); // Calculate the total estimate
-
+        return Damage.estimate(damage.formula); // Wait for the estimate to be calculated
+      }))).reduce((acc, estimate) => acc + estimate, 0); // Sum the estimates for all damages
+    const estimate = Math.round(estimateRolls.split(",").map(v => parseInt(v)).reduce((acc, v) => acc + v, 0) / estimateRolls.split(",").length); // Calculate the total estimate     
     const content = await renderTemplate("systems/utopia/templates/chat/new-estimate-damage-card.hbs", { estimate, damages: this.targetDamages });
 
     // Create an estimate damage message based on the target damages
@@ -239,48 +213,72 @@ export class DamageHandler {
 
   async _createTargetMessages() {
     for (const targetDamage of this.targetDamages) {
-      const content = await renderTemplate("systems/utopia/templates/chat/new-target-damage-card.hbs", { targetDamage });
+      let damage = 0;
+      if (game.settings.get("utopia", "displayDamage") === 0) return; // If the setting is 0, do not output anything
+      else if (game.settings.get("utopia", "displayDamage") === 1) {
+        const estimateRolls = (await Promise.all(this.damages.map(async (damage) => {
+          return Damage.estimate(damage.formula); // Wait for the estimate to be calculated
+        }))).reduce((acc, estimate) => acc + estimate, 0); // Sum the estimates for all damages
+        damage = Math.round(estimateRolls.split(",").map(v => parseInt(v)).reduce((acc, v) => acc + v, 0) / estimateRolls.split(",").length); // Calculate the total estimate 
+      }
+      else if (game.settings.get("utopia", "displayDamage") === 2) {
+        damage = this.damages.reduce((acc, damage) => acc + damage.result, 0); // Calculate the total exact damage
+      }
 
-      // Create a target damage message based on the target damages
-      const message = await UtopiaChatMessage.create({
-        id: foundry.utils.randomID(16), // Generate a random ID for the message
-        content: content,
-        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-        speaker: ChatMessage.getSpeaker({ actor: this.source }),
-        whisper: [...game.users.filter(u => u.character === targetDamage.target.id), ...game.users.filter(u => u.isGM)], // Whisper the message to the target and GMs
-        system: {
-          target: targetDamage.target.uuid, // Store the target's UUID in the message system
-          damage: targetDamage,
-          handler: this.id,
-        }
-      });
-
-      this.targetMessages.push(message.id); // Store the target message in the target messages array
+      game.system.socketHandler.emit("attackQuery", {
+        target: targetDamage.target.id, // Send the target ID to the socket
+        canBlock: targetDamage.options?.canBlock ?? true, // Check if the target can block the damage
+        canDodge: targetDamage.options?.canDodge ?? true, // Check if the target can dodge the damage
+        canTakeCover: targetDamage.options?.canTakeCover ?? true, // Check if the target can take cover
+        damage: damage, // Send the damage results to the socket
+        damageHandler: this.id, // Send the damage handler ID to the socket
+      })
     }
   }
 
   // Handle the final damage application to the targets
   async handleFinalDamage() {
-    for (const target of this.targetDamages) {
-      var totalDamage = 0;
-      const blocked = target.blocked || 0; // Get the blocked amount for the target
-      const dodged = target.dodged || false; // Get the dodged amount for the target
+    try {
+      for (const target of this.targetDamages) {
+        let totalDamage = 0;
+        const blocked = target.blocked || 0; // Get the blocked amount for the target
+        const dodged = target.dodged || false; // Get the dodged amount for the target
 
-      if (blocked) totalDamage -= blocked; // Reduce the total damage by the blocked amount
+        if (blocked) totalDamage -= blocked; // Reduce the total damage by the blocked amount
 
-      for (const damage of target.damages) {
-        totalDamage += damage.targetDamage;
+        for (const damage of target.damages) {
+          if (!damage || typeof damage.targetDamage !== 'number') {
+            console.error("Invalid damage object:", damage);
+            continue;
+          }
+          totalDamage += damage.targetDamage;
+        }
+
+        if (dodged) totalDamage = 0; // If the target dodged, set total damage to 0
+
+        if (totalDamage < 0) totalDamage = 0; // Ensure total damage is not negative
+
+        if (totalDamage > 0 && this.source?.system?.exhausting) {
+          this.targetDamages.push({
+            target: target.target,
+            damages: target.damages.map(d => d._dhp({ target: target.target, targetDamage: totalDamage }))
+          });
+        }
+
+        if (!target.target || typeof target.target.applyNewDamage !== 'function') {
+          console.error("Invalid target or missing applyNewDamage method:", target.target);
+          continue;
+        }
+
+        await target.target.applyNewDamage({
+          result: totalDamage,
+          damages: target.damages,
+          blockRoll: target.blockRoll ?? undefined,
+          dodgeRoll: target.dodgeRoll ?? undefined
+        });
       }
-
-      if (dodged) totalDamage = 0; // If the target dodged, set total damage to 0
-
-      if (totalDamage < 0) totalDamage = 0; // Ensure total damage is not negative
-
-      if (totalDamage > 0 && this.source.system.exhausting) {
-        this.targetDamages.push({ target: target.target, damages: target.damages.map(d => d._dhp({ target: target.target, targetDamage: totalDamage })) }); // Push the damage to the target damages array
-      }
-
-      await target.target.applyNewDamage({ result: totalDamage, damages: target.damages, blockRoll: target.blockRoll ?? undefined, dodgeRoll: target.dodgeRoll ?? undefined }); // Apply the final damage to the target
+    } catch (error) {
+      console.error("Error in handleFinalDamage:", error);
     }
   }
 

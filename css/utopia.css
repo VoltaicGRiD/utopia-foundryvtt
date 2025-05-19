@@ -172,7 +172,7 @@
 }
 
 .chat-message footer {
-  color: rgb(192, 192, 192);
+  color: rgb(0, 0, 0);
 }
 .chat-message .chat-card {
   display: flex;
@@ -2283,7 +2283,6 @@
   text-align: center;
 }
 .utopia.activity-sheet .operation-cost, .utopia.new-operation-sheet .operation-cost, .utopia.operation-sheet .operation-cost {
-  width: 80px;
   text-align: center;
 }
 .utopia.activity-sheet .operation-category, .utopia.new-operation-sheet .operation-category, .utopia.operation-sheet .operation-category {

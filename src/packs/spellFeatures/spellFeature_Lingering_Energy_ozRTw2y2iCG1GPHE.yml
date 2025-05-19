@@ -4,7 +4,7 @@ type: spellFeature
 _id: ozRTw2y2iCG1GPHE
 img: systems/utopia/assets/icons/artistries/evocation.svg
 system:
-  formula: 1d4[Energy]
+  formula: (@X)d4[Energy]
   description: >-
     <p style="text-align: left;">Upon casting and at the beginning of each turn
     for the duration of the spell, affected creatures and objects are dealt an
@@ -19,7 +19,11 @@ system:
   templateType: circle
   costMultiplier: flat
   templateAngle: 53.13
-  variables: {}
+  variables:
+    stacks:
+      name: stacks
+      kind: number
+      description: ''
   modifies: none
   modifiedAoE:
     value: 0
@@ -50,6 +54,7 @@ system:
   maximum: 0
   variableName: Variable
   variableDescription: ''
+  damageType: energy
 effects: []
 sort: 0
 ownership:
@@ -61,9 +66,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.05'
   createdTime: 1734769606898
-  modifiedTime: 1734769606898
-  lastModifiedBy: nLkleFyXeCclB3Jg
+  modifiedTime: 1747318210425
+  lastModifiedBy: 1i5ql6CdWzasfqnA
 _key: '!items!ozRTw2y2iCG1GPHE'
 

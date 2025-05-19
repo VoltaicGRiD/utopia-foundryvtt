@@ -11,6 +11,24 @@ export class SpellFeature extends UtopiaItemBase {
     const schema = super.defineSchema();
 
     schema.formula = new fields.StringField({ required: false, nullable: true });
+    schema.formulaType = new fields.StringField({
+      required: true,
+      nullable: false,
+      initial: "damage",
+      choices: {
+        "damage": "UTOPIA.Items.SpellFeature.FormulaType.Damage",
+        "heal": "UTOPIA.Items.SpellFeature.FormulaType.Heal",
+        "test": "UTOPIA.Items.SpellFeature.FormulaType.Test",
+        "imbue": "UTOPIA.Items.SpellFeature.FormulaType.Imbue",
+      }
+    });
+
+    schema.damageType = new fields.StringField({ required: false, nullable: true, initial: "physical", choices: {
+      ...Object.entries(JSON.parse(game.settings.get("utopia", "advancedSettings.damageTypes"))).reduce((acc, [key, value]) => {
+        acc[key] = value.label;
+        return acc;
+      }, {}),
+    }});
 
     const artistries = JSON.parse(game.settings.get("utopia", "advancedSettings.artistries"))
     schema.art = new fields.StringField({ required: true, nullable: false, initial: "array", choices: artistries });
@@ -23,7 +41,7 @@ export class SpellFeature extends UtopiaItemBase {
       "multiply": "UTOPIA.MATH.Multiply",
       //"divide": "UTOPIA.MATH.divide",
       //"square": "UTOPIA.Items.SpellFeature.CostMultiplier.power",
-    } });
+    } });    
     
     // Should only be used if the spell artistry is "Wake", since none of the other features will ever modify the AOE / Direction
     // schema.doesTarget = new fields.StringField({ required: false, nullable: true, initial: "false", choices: {
@@ -138,6 +156,12 @@ export class SpellFeature extends UtopiaItemBase {
     schema.minimum = new fields.NumberField({ required: false, nullable: true, initial: 0 });
     schema.maximum = new fields.NumberField({ required: false, nullable: true, initial: 0 });
 
+    schema.style = new fields.ObjectField({
+      required: false,
+      nullable: true,
+      initial: null,
+    });
+
     return schema;
   }
 
@@ -216,6 +240,20 @@ export class SpellFeature extends UtopiaItemBase {
     })
 
     fields.push({
+      field: this.schema.fields.formulaType,
+      stacked: false,
+      editable: true,
+    })
+
+    if (["damage", "heal", "imbue"].includes(this.formulaType)) {
+      fields.push({
+        field: this.schema.fields.damageType,
+        stacked: false,
+        editable: true,
+      })
+    }
+
+    fields.push({
       field: this.schema.fields.doesTarget,
       stacked: false,
       editable: true,
@@ -248,21 +286,20 @@ export class SpellFeature extends UtopiaItemBase {
     return fields;
   }
 
+  prepareBaseData() {
+    const artistries = JSON.parse(game.settings.get("utopia", "advancedSettings.artistries"));
+    this.style = {
+      background: artistries[this.art].color,
+      color: getTextContrastHex(artistries[this.art].color),
+      label: artistries[this.art].label,
+    }
+  }
+
   prepareDerivedData() {
     if (this.costMultiplier === "flat") {
       this.costResult = `${this.cost} PP`;
     } else if (this.costMultiplier === "multiply") {
       this.costResult = `${this.cost}X PP`;  
-      
     } 
-  }
-
-  get style() {
-    const artistries = JSON.parse(game.settings.get("utopia", "advancedSettings.artistries"));
-    return {
-      background: artistries[this.art].color,
-      color: getTextContrastHex(artistries[this.art].color),
-      label: artistries[this.art].label,
-    }
   }
 }

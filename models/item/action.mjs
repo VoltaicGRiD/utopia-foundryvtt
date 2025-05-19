@@ -411,8 +411,6 @@ export class Action extends UtopiaItemBase {
       const system = this.parent.parent.system;
 
       if (this.isBaseAction && this.parent.name === game.i18n.localize("UTOPIA.Actors.Actions.DeepBreath")) {
-        console.log("Updating Deep Breath action with actor's data");
-
         // Get the parent's data for "system.deepBreath"
         this.formula = `${this.formula} + @deepBreath.additionalStamina` || this.formula;
       }

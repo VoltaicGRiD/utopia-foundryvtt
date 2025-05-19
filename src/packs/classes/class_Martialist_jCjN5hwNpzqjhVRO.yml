@@ -34,12 +34,55 @@ system:
   formula: ''
   tags: []
   favors: {}
-  grants: []
+  grants:
+    - Compendium.utopia.actions.Item.HryY2EA48dISS95I
+    - Compendium.utopia.actions.Item.fr5lwiyrQvTKWVDI
+    - Compendium.utopia.favors.Item.lnmiAafvur9cxmWK
+    - Compendium.utopia.actions.Item.u7IH4PDI0eCwXA8N
   specialtyPassives: []
   grantedEquipment: []
   selectedChoices: {}
 img: icons/svg/item-bag.svg
-effects: []
+effects:
+  - name: Martialist
+    origin: Compendium.utopia.classes.Item.jCjN5hwNpzqjhVRO
+    img: icons/svg/aura.svg
+    type: passive
+    _id: mtBqfBCiawKi4cCi
+    system: {}
+    changes:
+      - key: flags.utopia.overkillTarget
+        mode: 4
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: >-
+      <p>When a melee attack this creature makes deals enough damage to reduce
+      its target's DHP to 0, it may retarget the remaining damage to another
+      creature within range.</p>
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.07'
+      createdTime: 1747532969412
+      modifiedTime: 1747532988302
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!jCjN5hwNpzqjhVRO.mtBqfBCiawKi4cCi'
 folder: Dv2EoB9WzuOs8x0O
 ownership:
   default: 0
@@ -50,9 +93,9 @@ _stats:
   duplicateSource: null
   coreVersion: '12.331'
   systemId: utopia
-  systemVersion: 0.1.0
+  systemVersion: '1.07'
   createdTime: 1744059244856
-  modifiedTime: 1747113606279
+  modifiedTime: 1747534152543
   lastModifiedBy: 1i5ql6CdWzasfqnA
 _id: jCjN5hwNpzqjhVRO
 sort: 100000

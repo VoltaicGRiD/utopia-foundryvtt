@@ -7,6 +7,7 @@
       <label for="formula">Formula:</label>
       <input type="text" name="formula" value="{{operation.formula}}" placeholder="Formula" required/>
     </div>
+    
     <div class="operation-content">
       <label for="hitpoints">Hitpoints:</label>
       <select name="hitpoints" required>
@@ -14,6 +15,20 @@
           <option value="{{id}}" {{#if (eq ../operation.hitpoints id)}}selected{{/if}}>{{name}}</option>
         {{/each}}
       </select> 
+    </div>
+  </div>
+
+  <div class="operation-content-row">
+    <div class="operation-content">
+      <label for="modifier">Modifier (accepts roll-data):</label>
+      <input type="text" name="modifier" value="{{operation.modifier}}" placeholder="" />
+      <span class="hint">This modifier will be added to the total roll. It can be a number or a roll-data expression (e.g. '@pow.mod' for Power subtrait modifier)</span>
+    </div>
+    
+    <div class="operation-content">
+      <label for="range">Range:</label>
+      <input type="text" name="range" value="{{operation.range}}" placeholder="" />
+      <span class="hint">Range is ALWAYS defined as '[Close]/[Far]', for melee weapons, this is between '0/0' and '3/3'.</span>
     </div>
   </div>
 </div>

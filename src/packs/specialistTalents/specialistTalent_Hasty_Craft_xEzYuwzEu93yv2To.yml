@@ -1,0 +1,84 @@
+folder: RWXuo6b76vtNTrBb
+name: Hasty Craft
+type: specialistTalent
+_id: xEzYuwzEu93yv2To
+img: icons/svg/item-bag.svg
+system:
+  description: ''
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: sV9cbzZFTtiFrm7m
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: ''
+  talentTreeRequirements: ''
+  artistryRequirements: ''
+  grants: []
+effects:
+  - name: Hasty Craft
+    origin: Compendium.utopia.specialistTalents.Item.xEzYuwzEu93yv2To
+    img: icons/svg/aura.svg
+    type: passive
+    _id: TMhk5WEZuTnihnMN
+    system: {}
+    changes:
+      - key: system.artifice.hasty
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.04'
+      createdTime: 1747028071815
+      modifiedTime: 1747028083105
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!xEzYuwzEu93yv2To.TMhk5WEZuTnihnMN'
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747027893064
+  modifiedTime: 1747027893064
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!xEzYuwzEu93yv2To'
+

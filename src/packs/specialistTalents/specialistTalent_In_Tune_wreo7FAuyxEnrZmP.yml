@@ -1,0 +1,88 @@
+folder: 4sk8vxzYn6wlYXxc
+name: In Tune
+type: specialistTalent
+_id: wreo7FAuyxEnrZmP
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>Your Spellcap is equal to your Will score. If you have no Spellcap,
+    spells you cast cost less stamina by an amount equal to your Soul score.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: M2Pk8OU8NLkytH4k
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements:
+    - traits.wil.total >= 10
+  speciesRequirements: ''
+  talentRequirements: ''
+  talentTreeRequirements: ''
+  singleTalentTreeRequirements: ''
+  artistryRequirements: ''
+  grants: []
+effects:
+  - name: In Tune
+    origin: Compendium.utopia.specialistTalents.Item.wreo7FAuyxEnrZmP
+    img: icons/svg/aura.svg
+    type: passive
+    _id: zeBS4HKzwtO5bRM5
+    system: {}
+    changes:
+      - key: system.spellcasting.spellcapTrait
+        mode: 5
+        value: wil
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.04'
+      createdTime: 1747062556672
+      modifiedTime: 1747062572531
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!wreo7FAuyxEnrZmP.zeBS4HKzwtO5bRM5'
+sort: 200000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747061449815
+  modifiedTime: 1747062592517
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!wreo7FAuyxEnrZmP'
+

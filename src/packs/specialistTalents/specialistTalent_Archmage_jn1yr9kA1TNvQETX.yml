@@ -1,0 +1,87 @@
+folder: XhI5FooVhAc2YSE5
+name: Archmage
+type: specialistTalent
+_id: jn1yr9kA1TNvQETX
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>You have no Spellcap. You may use SHP for spells that use the Perpetual
+    feature.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: n3ufcanqO50LGNXs
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: ''
+  talentTreeRequirements: magecraft
+  singleTalentTreeRequirements: ''
+  artistryRequirements: ''
+  grants: []
+effects:
+  - name: Archmage
+    origin: Compendium.utopia.specialistTalents.Item.jn1yr9kA1TNvQETX
+    img: icons/svg/aura.svg
+    type: passive
+    _id: kljOwRYgr2TY6bUS
+    system: {}
+    changes:
+      - key: system.spellcasting.spellcap
+        mode: 4
+        value: '9999'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.04'
+      createdTime: 1747064736611
+      modifiedTime: 1747064750108
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!jn1yr9kA1TNvQETX.kljOwRYgr2TY6bUS'
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747064710596
+  modifiedTime: 1747064730841
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!jn1yr9kA1TNvQETX'
+

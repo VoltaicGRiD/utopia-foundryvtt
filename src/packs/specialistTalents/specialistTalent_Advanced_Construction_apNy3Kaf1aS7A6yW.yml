@@ -1,0 +1,86 @@
+folder: RWXuo6b76vtNTrBb
+name: Advanced Construction
+type: specialistTalent
+_id: apNy3Kaf1aS7A6yW
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>When you make an attack with a weapon that you crafted, additional damage
+    calculated by modifiers is doubled, minimum bonus of +1.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: KSeLnyvCR1ilub2R
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: craftsman
+  talentTreeRequirements: ''
+  artistryRequirements: ''
+  grants: []
+effects:
+  - name: Advanced Construction
+    origin: Compendium.utopia.specialistTalents.Item.apNy3Kaf1aS7A6yW
+    img: icons/svg/aura.svg
+    type: passive
+    _id: pQcmaTyHL6YjoWGs
+    system: {}
+    changes:
+      - key: system.artifice.advancedConstructor
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.04'
+      createdTime: 1747033530020
+      modifiedTime: 1747033543214
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!apNy3Kaf1aS7A6yW.pQcmaTyHL6YjoWGs'
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747029803017
+  modifiedTime: 1747029937484
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!apNy3Kaf1aS7A6yW'
+

@@ -1,0 +1,20 @@
+name: Fabrication Specialist Talents
+sorting: m
+folder: null
+type: Item
+_id: RWXuo6b76vtNTrBb
+description: ''
+sort: 0
+color: '#4400ff'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747027883405
+  modifiedTime: 1747028225280
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!RWXuo6b76vtNTrBb'
+

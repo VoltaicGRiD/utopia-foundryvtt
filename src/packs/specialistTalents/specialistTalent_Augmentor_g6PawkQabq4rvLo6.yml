@@ -1,0 +1,86 @@
+folder: RWXuo6b76vtNTrBb
+name: Augmentor
+type: specialistTalent
+_id: g6PawkQabq4rvLo6
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>You may remove an augmented item from a creature without dealing damage
+    to it.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: sV9cbzZFTtiFrm7m
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: tinkerer
+  talentTreeRequirements: ''
+  artistryRequirements: ''
+  grants: []
+effects:
+  - name: Augmentor
+    origin: Compendium.utopia.specialistTalents.Item.g6PawkQabq4rvLo6
+    img: icons/svg/aura.svg
+    type: passive
+    _id: 1wrKqiQzIzye27D4
+    system: {}
+    changes:
+      - key: system.artifice.augmentor
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.04'
+      createdTime: 1747028171624
+      modifiedTime: 1747028186726
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!g6PawkQabq4rvLo6.1wrKqiQzIzye27D4'
+sort: 100000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747028138862
+  modifiedTime: 1747028245126
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!g6PawkQabq4rvLo6'
+

@@ -1,0 +1,20 @@
+name: Species Specialist Talents
+sorting: m
+folder: null
+type: Item
+_id: QHESWU1hFDNX4X2W
+description: ''
+sort: 0
+color: '#d400ff'
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747015112690
+  modifiedTime: 1747015115742
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!folders!QHESWU1hFDNX4X2W'
+

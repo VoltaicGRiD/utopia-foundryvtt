@@ -1,0 +1,51 @@
+folder: 4sk8vxzYn6wlYXxc
+name: Cryomancy
+type: specialistTalent
+_id: RMhDA9bPQgptK06k
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>You may cast spells that deal only Chill damage and cost 3 stamina or
+    less after discounts without spending any stamina.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: n3ufcanqO50LGNXs
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: ''
+  talentTreeRequirements: ''
+  singleTalentTreeRequirements: ''
+  artistryRequirements: evocation
+  grants: []
+effects: []
+sort: 600000
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747063501571
+  modifiedTime: 1747063942797
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!RMhDA9bPQgptK06k'
+

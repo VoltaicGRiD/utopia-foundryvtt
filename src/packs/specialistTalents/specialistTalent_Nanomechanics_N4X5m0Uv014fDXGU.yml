@@ -1,0 +1,114 @@
+folder: RWXuo6b76vtNTrBb
+name: Nanomechanics
+type: specialistTalent
+_id: N4X5m0Uv014fDXGU
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>You may augment two items into yourself per armor slot instead of
+    one.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: KjEadcfTS1RT2BhW
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: creator
+  talentTreeRequirements: ''
+  artistryRequirements: ''
+  grants: []
+effects:
+  - name: Nanomechanics
+    origin: Compendium.utopia.specialistTalents.Item.N4X5m0Uv014fDXGU
+    img: icons/svg/aura.svg
+    type: passive
+    _id: OmFJMgNeezreggxM
+    system: {}
+    changes:
+      - key: system.augmentSlots.head.capacity
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.augmentSlots.neck.capacity
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.augmentSlots.chest.capacity
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.augmentSlots.back.capacity
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.augmentSlots.ring.capacity
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.augmentSlots.waist.capacity
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.augmentSlots.feet.capacity
+        mode: 2
+        value: '1'
+        priority: null
+      - key: system.augmentSlots.hands.capacity
+        mode: 2
+        value: '1'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.04'
+      createdTime: 1747059916718
+      modifiedTime: 1747059983166
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!N4X5m0Uv014fDXGU.OmFJMgNeezreggxM'
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747059895943
+  modifiedTime: 1747059914772
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!N4X5m0Uv014fDXGU'
+

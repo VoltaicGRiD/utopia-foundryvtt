@@ -1,0 +1,87 @@
+folder: RWXuo6b76vtNTrBb
+name: Relaxed Craft
+type: specialistTalent
+_id: geFtZkdxw3nPn2uK
+img: icons/svg/item-bag.svg
+system:
+  description: >-
+    <p>You regain all SHP and stamina after crafting an item other than a
+    component that is Common or rarer. You may only regain SHP and stamina this
+    way once between rests.</p>
+  formula: ''
+  tags: []
+  favors: {}
+  material: 0
+  refinement: 0
+  power: 0
+  equipped: false
+  resource:
+    resourceId: KjEadcfTS1RT2BhW
+    name: ''
+    max:
+      formula: '0'
+    amount: 0
+    secret: false
+    propagateToActor: true
+    recoverAmount: 0
+    recoverInterval: none
+  resources: []
+  attributeRequirements: []
+  speciesRequirements: ''
+  talentRequirements: maker
+  talentTreeRequirements: ''
+  artistryRequirements: ''
+  grants: []
+effects:
+  - name: Relaxed Craft
+    origin: Compendium.utopia.specialistTalents.Item.geFtZkdxw3nPn2uK
+    img: icons/svg/aura.svg
+    type: passive
+    _id: ebmcnL3AYKHaO32a
+    system: {}
+    changes:
+      - key: system.artifice.relaxed
+        mode: 5
+        value: 'true'
+        priority: null
+    disabled: false
+    duration:
+      startTime: null
+      seconds: null
+      combat: null
+      rounds: null
+      turns: null
+      startRound: null
+      startTurn: null
+    description: ''
+    tint: '#ffffff'
+    transfer: true
+    statuses: []
+    sort: 0
+    flags: {}
+    _stats:
+      compendiumSource: null
+      duplicateSource: null
+      coreVersion: '12.331'
+      systemId: utopia
+      systemVersion: '1.04'
+      createdTime: 1747059803451
+      modifiedTime: 1747059813297
+      lastModifiedBy: 1i5ql6CdWzasfqnA
+    _key: '!items.effects!geFtZkdxw3nPn2uK.ebmcnL3AYKHaO32a'
+sort: 0
+ownership:
+  default: 0
+  1i5ql6CdWzasfqnA: 3
+flags: {}
+_stats:
+  compendiumSource: null
+  duplicateSource: null
+  coreVersion: '12.331'
+  systemId: utopia
+  systemVersion: '1.04'
+  createdTime: 1747059725862
+  modifiedTime: 1747059733877
+  lastModifiedBy: 1i5ql6CdWzasfqnA
+_key: '!items!geFtZkdxw3nPn2uK'
+

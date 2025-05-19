@@ -1,29 +1,23 @@
 /**
- * Determine if the target is within range for the item’s attack.
- * @param {Item} item - The item being used for the attack.
+ * Determine if the target is within range for the item’s attack or a raw range value.
+ * @param {Object} options - The options for the range test.
+ * @param {Item} [options.item] - The item being used for the attack.
+ * @param {string|Object} [options.range] - The range value or object.
+ * @param {Token} options.target - The target token.
+ * @param {string} [options.trait='dex'] - The trait to use for the check.
  * @returns {Promise<boolean>} Whether the attack can proceed based on range.
  */
-export async function rangeTest({item, target, trait = 'dex'}) {
+export async function rangeTest({ item, range, target, trait = 'dex' }) {
   // Get the user's selected token.
   let userToken = canvas.tokens.controlled[0];
   if (!userToken) {
-    // If no token is controlled, get the first owned token.
     userToken = canvas.tokens.owned?.[0] || null;
-
-    if (!userToken) {
-      // If no owned token is available, get the first controlled token.
-      userToken = canvas.tokens.controlled[0];
-    }
+    if (!userToken) userToken = canvas.tokens.controlled[0];
   }
-
   if (!userToken) {
-    // If no token is selected or owned, show an error and exit.
     ui.notifications.error("You must select a token to attack.");
     return false;
   }
-
-  // Calculate the user's position.
-  let userPosition = userToken.x + userToken.y;
 
   // Get the target token.
   let targetToken = target;
@@ -32,314 +26,109 @@ export async function rangeTest({item, target, trait = 'dex'}) {
     return false;
   }
 
-  // Calculate the target's position.
+  // Calculate positions and distance.
+  let userPosition = userToken.x + userToken.y;
   let targetPosition = targetToken.x + targetToken.y;
-
-  // Determine the distance between the user and the target.
   let distance = Math.abs(userPosition - targetPosition) / 100;
 
-  let traitCheck;
-  let range = item.system.range;
-
-  // Determine the Test Difficulty from the item's parent's `system.rangedTDModifier` attribute.
-  let testDifficulty = item.parent.system.rangedTDModifier || 0;
-   
-  if (item.system.ranged || item.system.range) {
-    // If the weapon is ranged.
-
-    if (range.includes('/')) {
-      // The range is specified as close/far (e.g., "30/60").
-
-      // Split the range into close and far values.
-      let [closeRange, farRange] = [0, 0];
-
-      if (range.close && range.far) {
-        closeRange = rangte.close
-        farRange = range.far
-      }
-      else {
-        [closeRange, farRange] = range.split('/').map(r => parseInt(r) || 0);
-      }
-
-      // If the range is represented as '0/0', treat it as a melee attack,
-      // which means the target is always in range.
-      if (closeRange === 0 && farRange === 0) {
-        return true;
-      }
-
-      // Get the roll data for the item.
-      let rollData = item.getRollData();
-
-      console.log(distance, range, closeRange, farRange);
-
-      // Determine the appropriate dexterity check based on distance.
-      if (distance <= closeRange) {
-        // Within close range, use a favorable roll.
-        if (item.parent.system.favors?.accuracy) {
-          const favorAmount = item.parent.system.favors.accuracy;
-          traitCheck = `${4 + favorAmount}d6 + @${trait}.mod`;
-        }
-        else 
-          traitCheck = `4d6 + @${trait}.mod`;
-      } else if (distance <= farRange) {
-        // Within far range, use a standard roll.
-        if (item.parent.system.favors?.accuracy) {
-          const favorAmount = item.parent.system.favors.accuracy;
-          traitCheck = `${2 + favorAmount}d6 + @${trait}.mod`;
-        }
-        else
-          traitCheck = `2d6 + @${trait}.mod`;
-      } else {
-        // Beyond far range, the attack cannot proceed.
-        ui.notifications.error("Target is out of range.");
-        return false;
-      }
-
-      // Prepare the roll.
-      const speaker = ChatMessage.getSpeaker({ actor: item.parent });
-      const rollMode = game.settings.get('core', 'rollMode');
-      const label = `[${item.type}] Ranged Check`;
-
-      // Perform the dexterity check roll.
-      const roll = new Roll(traitCheck, rollData);
-      const chat = await roll.toMessage({
-        speaker: speaker,
-        rollMode: rollMode,
-        flavor: label,
-      });
-
-      // Calculate the total of the roll.
-      let sum = chat.rolls.reduce((acc, current) => acc + current.total, 0);
-
-      // We also need to modify the distance based on the TD modifier.
-      // If the TD modifier is 0, the distance is unchanged.
-      // For each point below 0, the distance is halved.
-      // For each point above 0, the distance is doubled.
-      for (let i = 0; i < Math.abs(testDifficulty); i++) {
-        if (testDifficulty < 0) {
-          distance /= 2;
-        } else {
-          distance *= 2;
-        }
-      }
-
-      if (sum >= distance) {
-        // The attack hits.
-        let chatData = {
-          user: game.user._id,
-          speaker: speaker,
-          rollMode: rollMode,
-          flavor: label,
-          content: "Success! Ranged attack hits.",
-        };
-        ChatMessage.create(chatData, {});
-
-        return true;
-      } else {
-        // The attack misses.
-        let chatData = {
-          user: game.user._id,
-          speaker: speaker,
-          rollMode: rollMode,
-          flavor: label,
-          content: "Failure! Ranged attack misses.",
-        };
-        ChatMessage.create(chatData, {});
-
-        return false;
-      }
-    } else {
-      // If the range is a single value.
-      if (distance <= parseInt(range)) {
-        // The target is within range.
-        return true;
-      } else {
-        // The target is out of range.
-        ui.notifications.error("Target is out of range.");
-        return false;
-      }
-    }
+  // Determine source of range and actor.
+  let actor, itemType, favors, testDifficulty, rollData, rangeValue;
+  if (item) {
+    actor = item.parent;
+    itemType = item.type;
+    favors = actor?.system?.favors?.accuracy;
+    testDifficulty = actor?.system?.rangedTDModifier || 0;
+    rollData = item.getRollData();
+    rangeValue = item.system.range;
   } else {
-    // If the weapon is melee.
+    actor = userToken.actor;
+    itemType = "Generic";
+    favors = actor?.system?.favors?.accuracy;
+    testDifficulty = actor?.system?.rangedTDModifier || 0;
+    rollData = actor.getRollData();
+    rangeValue = range;
+  }
 
-    if (distance <= parseInt(range)) {
-      // The target is within melee range.
-      return true;
+  // If range is not set, treat as melee (adjacent).
+  if (!rangeValue) rangeValue = 1;
+
+  // Handle close/far range (e.g., "30/60" or {close, far}).
+  let closeRange = 0, farRange = 0;
+  if (typeof rangeValue === "string" && rangeValue.includes('/')) {
+    [closeRange, farRange] = rangeValue.split('/').map(r => parseInt(r) || 0);
+  } else if (typeof rangeValue === "object" && rangeValue.close !== undefined && rangeValue.far !== undefined) {
+    closeRange = rangeValue.close;
+    farRange = rangeValue.far;
+  } else {
+    closeRange = farRange = parseInt(rangeValue) || 0;
+  }
+
+  // If the range is '0/0', treat as melee (always in range).
+  if (closeRange === 0 && farRange === 0) return true;
+
+  // Determine if ranged or melee.
+  let isRanged = (item?.system?.ranged || item?.system?.range || typeof rangeValue === "string" || typeof rangeValue === "object");
+
+  // If ranged, perform trait check.
+  if (isRanged) {
+    // Determine the appropriate trait check based on distance.
+    let traitCheck;
+    if (distance <= closeRange) {
+      traitCheck = `${4 + (favors || 0)}d6 + @${trait}.mod`;
+    } else if (distance <= farRange) {
+      traitCheck = `${2 + (favors || 0)}d6 + @${trait}.mod`;
     } else {
-      // The target is out of melee range.
       ui.notifications.error("Target is out of range.");
       return false;
     }
-  }
-}
 
-export async function rangeTest({range, target, trait = 'dex'}) {
-  // Get the user's selected token.
-  let userToken = canvas.tokens.controlled[0];
-  if (!userToken) {
-    // If no token is controlled, get the first owned token.
-    userToken = canvas.tokens.owned?.[0] || null;
+    // Prepare the roll.
+    const speaker = ChatMessage.getSpeaker({ actor });
+    const rollMode = game.settings.get('core', 'rollMode');
+    const label = `[${itemType}] Ranged Check`;
 
-    if (!userToken) {
-      // If no owned token is available, get the first controlled token.
-      userToken = canvas.tokens.controlled[0];
+    // Perform the trait check roll.
+    const roll = new Roll(traitCheck, rollData);
+    const chat = await roll.toMessage({
+      speaker: speaker,
+      rollMode: rollMode,
+      flavor: label,
+    });
+
+    // Calculate the total of the roll.
+    let sum = chat.rolls.reduce((acc, current) => acc + current.total, 0);
+
+    // Modify the distance based on the TD modifier.
+    for (let i = 0; i < Math.abs(testDifficulty); i++) {
+      if (testDifficulty < 0) distance /= 2;
+      else distance *= 2;
     }
-  }
 
-  if (!userToken) {
-    // If no token is selected or owned, show an error and exit.
-    ui.notifications.error("You must select a token to attack.");
-    return false;
-  }
-
-  // Calculate the user's position.
-  let userPosition = userToken.x + userToken.y;
-
-  // Get the target token.
-  let targetToken = target;
-  if (!targetToken) {
-    ui.notifications.error("No target selected.");
-    return false;
-  }
-
-  // Calculate the target's position.
-  let targetPosition = targetToken.x + targetToken.y;
-
-  // Determine the distance between the user and the target.
-  let distance = Math.abs(userPosition - targetPosition) / 100;
-
-  let traitCheck;
-
-  // Determine the Test Difficulty from the item's parent's `system.rangedTDModifier` attribute.
-  let testDifficulty = actor.system.rangedTDModifier || 0;
-   
-  if (item.system.ranged || item.system.range) {
-    // If the weapon is ranged.
-
-    if (range.includes('/')) {
-      // The range is specified as close/far (e.g., "30/60").
-
-      // Split the range into close and far values.
-      let [closeRange, farRange] = [0, 0];
-
-      if (range.close && range.far) {
-        closeRange = rangte.close
-        farRange = range.far
-      }
-      else {
-        [closeRange, farRange] = range.split('/').map(r => parseInt(r) || 0);
-      }
-
-      // If the range is represented as '0/0', treat it as a melee attack,
-      // which means the target is always in range.
-      if (closeRange === 0 && farRange === 0) {
-        return true;
-      }
-
-      // Get the actor associated to the test.
-      const actor = userToken.actor;
-
-      // Get the roll data for the item.
-      let rollData = actor.getRollData();
-
-      console.log(distance, range, closeRange, farRange);
-
-      // Determine the appropriate dexterity check based on distance.
-      if (distance <= closeRange) {
-        // Within close range, use a favorable roll.
-        if (actor.system.favors?.accuracy) {
-          const favorAmount = actor.system.favors.accuracy;
-          traitCheck = `${4 + favorAmount}d6 + @${trait}.mod`;
-        }
-        else 
-          traitCheck = `4d6 + @${trait}.mod`;
-      } else if (distance <= farRange) {
-        // Within far range, use a standard roll.
-        if (actor.system.favors?.accuracy) {
-          const favorAmount = actor.system.favors.accuracy;
-          traitCheck = `${2 + favorAmount}d6 + @${trait}.mod`;
-        }
-        else
-          traitCheck = `2d6 + @${trait}.mod`;
-      } else {
-        // Beyond far range, the attack cannot proceed.
-        ui.notifications.error("Target is out of range.");
-        return false;
-      }
-
-      // Prepare the roll.
-      const speaker = ChatMessage.getSpeaker({ actor: item.parent });
-      const rollMode = game.settings.get('core', 'rollMode');
-      const label = `[${item.type}] Ranged Check`;
-
-      // Perform the dexterity check roll.
-      const roll = new Roll(traitCheck, rollData);
-      const chat = await roll.toMessage({
+    if (sum >= distance) {
+      ChatMessage.create({
+        user: game.user._id,
         speaker: speaker,
         rollMode: rollMode,
         flavor: label,
-      });
-
-      // Calculate the total of the roll.
-      let sum = chat.rolls.reduce((acc, current) => acc + current.total, 0);
-
-      // We also need to modify the distance based on the TD modifier.
-      // If the TD modifier is 0, the distance is unchanged.
-      // For each point below 0, the distance is halved.
-      // For each point above 0, the distance is doubled.
-      for (let i = 0; i < Math.abs(testDifficulty); i++) {
-        if (testDifficulty < 0) {
-          distance /= 2;
-        } else {
-          distance *= 2;
-        }
-      }
-
-      if (sum >= distance) {
-        // The attack hits.
-        let chatData = {
-          user: game.user._id,
-          speaker: speaker,
-          rollMode: rollMode,
-          flavor: label,
-          content: "Success! Ranged attack hits.",
-        };
-        ChatMessage.create(chatData, {});
-
-        return true;
-      } else {
-        // The attack misses.
-        let chatData = {
-          user: game.user._id,
-          speaker: speaker,
-          rollMode: rollMode,
-          flavor: label,
-          content: "Failure! Ranged attack misses.",
-        };
-        ChatMessage.create(chatData, {});
-
-        return false;
-      }
-    } else {
-      // If the range is a single value.
-      if (distance <= parseInt(range)) {
-        // The target is within range.
-        return true;
-      } else {
-        // The target is out of range.
-        ui.notifications.error("Target is out of range.");
-        return false;
-      }
-    }
-  } else {
-    // If the weapon is melee.
-
-    if (distance <= parseInt(range)) {
-      // The target is within melee range.
+        content: "Success! Ranged attack hits.",
+      }, {});
       return true;
     } else {
-      // The target is out of melee range.
-      ui.notifications.error("Target is out of range.");
+      ChatMessage.create({
+        user: game.user._id,
+        speaker: speaker,
+        rollMode: rollMode,
+        flavor: label,
+        content: "Failure! Ranged attack misses.",
+      }, {});
+      return false;
+    }
+  } else {
+    // Melee check: just compare distance to range.
+    if (distance <= closeRange) {
+      return true;
+    } else {
+      ui.notifications.error("Target is out of melee range.");
       return false;
     }
   }
